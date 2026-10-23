@@ -1,0 +1,42 @@
+PASS GET / returns HTML
+PASS GET / includes the noindex robots meta
+PASS GET /robots.txt returns 200
+PASS full MP3 has the expected type and length
+PASS MP3 range returns exactly the first 100 bytes
+PASS blocked path /README.md
+PASS blocked path /scripts/build_site.py
+PASS blocked path /site/data/T1.json
+PASS blocked path /%2e%2e/index.html
+PASS blocked path /site/audio/../index.html
+PASS health reports ask: true
+PASS ask without a passcode returns 401
+PASS ask with a wrong passcode returns 401
+PASS valid T4 ask returns the mock answer
+PASS ask upstream uses the test-key auth header
+PASS ask prompt begins with the study-helper rules
+PASS ask prompt contains the T4 chapter title
+PASS valid P02 ask succeeds
+PASS P02 prompt includes the do-not-quote rule
+PASS unknown id returns 400
+PASS bad chapter index returns 400
+PASS 501-character question returns 400
+PASS seven history turns returns 400
+PASS Spanish speak returns the mock MP3
+PASS Spanish speak selects Fish with authenticated upstream access
+PASS English speak returns the mock MP3
+PASS English speak selects Deepgram and flux-alexis-en
+PASS normal mock stops before the failure-mode restart
+PASS English speak succeeds through the Fish fallback
+PASS Deepgram failure causes exactly one Fish fallback
+PASS authenticated API calls 10 through 20 stay below the limit
+PASS the 21st authenticated API call returns 429
+PASS the rate-limited call does not reach OpenRouter
+PASS ten wrong passcodes from one address each return 401
+PASS after ten wrong passcodes, that address gets 429 even with the right passcode
+PASS a faked first X-Forwarded-For entry does not escape the lock
+PASS another address with the right passcode still gets an answer
+PASS all spawned child processes stop cleanly
+PASS every server response sets nosniff
+PASS no response body or header leaks either test secret
+PASS no server output line leaks either test secret
+ALL SERVER CHECKS PASSED

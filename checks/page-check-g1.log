@@ -1,0 +1,80 @@
+[PASS] template has no all-caps labels
+[PASS] template has no "·"-joined meta strings
+[PASS] template has no "→" in link or button text
+[PASS] template names neither Claude nor Anthropic in visible content
+[PASS] an empty hash, #route and #home all show the front page  {"empty":"Innovation systems and sustainable transformation","route":"Innovation systems and sustainable transformation","home":"Innovation systems and sustainable transformation"}
+[PASS] the doors count the classes and the papers from the data  ["8 classes, 2 hours 47 minutes","17 papers, 4 hours 50 minutes"]
+  screenshot workspace/lecture-audio/checks/desktop-home.png
+[PASS] #classes lists every class in order and marks the ready ones  {"rows":8,"ready":8,"sessions":2,"teachers":8,"h1":"Classes"}
+[PASS] #classes has sessions 7 and 8 as quiet rows  sessions 2
+[PASS] every class row names its teacher  8 of 8
+  screenshot workspace/lecture-audio/checks/desktop-classes.png
+[PASS] #papers groups every paper under its class  {"rows":20,"ids":17,"ready":20,"groups":8,"h1":"Papers"}
+[PASS] #papers marks the ready papers  {"rows":20,"ids":17,"ready":20,"groups":8,"h1":"Papers"}
+  screenshot workspace/lecture-audio/checks/desktop-papers.png
+[PASS] #T1 opens the class with all its chapters  {"stops":7,"sections":7,"h1":"Innovation as systemic and sustainable transformation"}
+[PASS] normal file load keeps every ask button hidden  {"count":7,"visible":0}
+[PASS] a chapter plays from its button  {"src":"T1-02.mp3","paused":false,"t":3.418132,"d":188.424}
+[PASS] paragraph highlight follows the audio  {"count":1,"inChapter":"ch-1"}
+[PASS] next chapter starts on its own  {"src":"T1-03.mp3","now":"2"}
+[PASS] finished chapter fills the route and is saved  {"done":true,"fill":58.09375,"saved":{"T1":[1]}}
+[PASS] speed button changes playback rate  rate 1.15
+[PASS] the classes door shows progress and a continue button  {"p":"0.017241379310344827","info":"1 of 58 chapters heard","resume":true,"label":"Continue Class 1, chapter 3"}
+[PASS] the class row shows the same progress  {"p":"0.14285714285714285","info":"20 minutes, 1 of 7 chapters heard. 3 papers","meter":true}
+[PASS] #T1 links to its paper P01  {"hash":"#P01","h1":"The evolution of Norway's national innovation system"}
+[PASS] a paper has a breadcrumb back to Papers and a Where next block  {"crumbs":true,"next":true,"h2":"Where next"}
+[PASS] a class has a breadcrumb back to Classes and a Where next block  {"crumbs":true,"next":true}
+[PASS] the top bar stays at the top of a scrolled paper  {"top":0,"y":3000}
+[PASS] both top bar links stay visible  [{"href":"#classes","w":76,"top":6,"bottom":50},{"href":"#papers","w":70,"top":6,"bottom":50}]
+[PASS] the Papers link in the top bar opens the papers page  {"papers":true,"current":"page"}
+[PASS] the player title names what is playing and links to it  {"href":"#T1","text":"Class 1, chapter 3: Norway's innovation puzzle","tag":"A"}
+[PASS] the player title opens what is playing  {"hash":"#T1","h1":"Innovation as systemic and sustainable transformation"}
+[PASS] all 17 ready papers open with their chapters and page subheadings  []
+[PASS] a page link in T1 opens P01 at page 431  {"hash":"#P01","found":true,"top":72}
+  (every class is ready: the class not-ready check is skipped)
+  (every paper is ready: the paper not-ready check is skipped)
+[PASS] the theme follows the device until a choice is saved  {"light":"rgb(250, 249, 245)","dark":"rgb(38, 38, 36)"}
+[PASS] the theme button switches colours, label and saved choice  {"start":{"theme":"light","bg":"rgb(250, 249, 245)"},"next":{"theme":"dark","bg":"rgb(38, 38, 36)","label":"Switch to light theme","saved":"dark"}}
+[PASS] the chosen theme survives a reload  {"theme":"dark","bg":"rgb(38, 38, 36)","saved":"dark"}
+[PASS] the second theme click returns to the starting theme  {"theme":"light","bg":"rgb(250, 249, 245)","saved":"light","label":"Switch to dark theme"}
+[PASS] the theme button fits in the phone top bar  {"inner":390,"scroll":390,"left":330,"right":374}
+[PASS] no horizontal scroll at phone width (home)  {"scroll":390,"inner":390}
+  screenshot workspace/lecture-audio/checks/phone-home.png
+  screenshot workspace/lecture-audio/checks/phone-home-dark.png
+[PASS] no horizontal scroll at phone width (classes)  {"scroll":390,"inner":390}
+  screenshot workspace/lecture-audio/checks/phone-classes.png
+  screenshot workspace/lecture-audio/checks/phone-classes-dark.png
+[PASS] no horizontal scroll at phone width (papers)  {"scroll":390,"inner":390}
+  screenshot workspace/lecture-audio/checks/phone-papers.png
+  screenshot workspace/lecture-audio/checks/phone-papers-dark.png
+[PASS] no horizontal scroll at phone width (lecture)  {"scroll":390,"inner":390}
+  screenshot workspace/lecture-audio/checks/phone-lecture.png
+  screenshot workspace/lecture-audio/checks/phone-lecture-dark.png
+[PASS] no horizontal scroll at phone width (reading)  {"scroll":390,"inner":390}
+  screenshot workspace/lecture-audio/checks/phone-reading.png
+  screenshot workspace/lecture-audio/checks/phone-reading-dark.png
+[PASS] the mock makes every class chapter ask button visible  {"count":7,"visible":7}
+[PASS] a chapter tap opens one panel with four chips and an input  {"open":true,"chips":4,"input":1}
+[PASS] a second chapter tap closes the first ask panel  {"firstClosed":true,"secondOpen":true,"openCount":1}
+[PASS] a chip sends the chapter title and prompt rules  {"title":true,"rules":true,"backup":true,"first":true,"second":true}
+[PASS] with no device voice the whole answer appears as backup text  {"title":true,"rules":true,"backup":true,"first":true,"second":true}
+[PASS] the mock makes every paper chapter ask button visible  {"count":5,"visible":5}
+[PASS] Paper 2 sends the do-not-quote rule
+[PASS] not_granted hides every orb and keeps its error visible  {"status":"Asking isn't available here.","visible":0}
+[PASS] rate_limited keeps its error visible  Too many questions right now. Try again in a minute.
+[PASS] the open ask panel has no horizontal scroll at 390 px  {"inner":390,"scroll":390}
+[PASS] the open claude ask panel is in view for its screenshot  {"open":true,"top":232,"bottom":612,"inner":844,"y":832,"hash":"#T1"}
+  screenshot workspace/lecture-audio/checks/phone-ask.png
+  screenshot workspace/lecture-audio/checks/phone-ask-dark.png
+[PASS] server mode makes the class ask buttons visible  {"count":7,"visible":7}
+[PASS] the first server question asks for a passcode  {"row":true,"note":"Answers are written by a free AI model from this chapter's text and read aloud by an AI voice. Don't type personal details."}
+[PASS] server mode shows its AI-voice honesty line
+[PASS] a wrong server passcode shows its error and is forgotten  {"status":"That passcode didn't work.","row":true,"saved":null}
+[PASS] the right passcode retries the question and reaches the answer model  ["/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech"]
+[PASS] server mode calls /api/speak  ["/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech"]
+[PASS] the server answer speaks or falls back to text and saves the passcode  {"saved":"test-pass","status":"Speaking… Stop","text":"","inner":390,"scroll":390}
+[PASS] the server ask panel has no horizontal scroll at 390 px  {"saved":"test-pass","status":"Speaking… Stop","text":"","inner":390,"scroll":390}
+[PASS] the open server ask panel is in view for its screenshot  {"open":true,"top":271,"bottom":573,"inner":844,"y":793,"hash":"#T1"}
+  screenshot workspace/lecture-audio/checks/phone-ask-server.png
+[PASS] no script errors
+ALL PAGE CHECKS PASSED

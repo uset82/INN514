@@ -14,6 +14,7 @@
 // COMPANION_SITE may point at a scratch copy of site/ for testing.
 import { spawn } from 'node:child_process';
 import { mkdirSync, writeFileSync, rmSync, readFileSync } from 'node:fs';
+import { createServer } from 'node:net';
 
 const PORT = 9351;
 const CHROME = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
@@ -33,6 +34,25 @@ const NCH = DATA.lectures[FIRST].chapters.length;
 const ROWS = READINGS.reduce((n, r) => n + r.lectures.length, 0);   // 20: a paper for each class it goes with
 const HOME_H1 = 'Innovation systems and sustainable transformation';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+let mockChild = null, serverChild = null;
+const freePort = () => new Promise((resolve, reject) => {
+  const s = createServer(); s.unref(); s.on('error', reject);
+  s.listen(0, '127.0.0.1', () => { const port = s.address().port; s.close(() => resolve(port)); });
+});
+async function waitHttp(url, timeout = 15000) {
+  const end = Date.now() + timeout;
+  while (Date.now() < end) {
+    try { const r = await fetch(url); if (r.ok) return r; } catch {}
+    await sleep(200);
+  }
+  throw new Error('Timed out waiting for ' + url);
+}
+async function stopChild(child) {
+  if (!child || child.exitCode !== null || child.killed) return;
+  const exited = new Promise((resolve) => child.once('exit', resolve));
+  child.kill();
+  await Promise.race([exited, sleep(1500)]);
+}
 
 mkdirSync(OUT, { recursive: true });
 rmSync(PROFILE, { recursive: true, force: true });
@@ -47,8 +67,10 @@ const template = readFileSync('workspace/lecture-audio/site/template.html', 'utf
 check('template has no all-caps labels', !/uppercase/i.test(template));
 check('template has no "·"-joined meta strings', !template.includes(' · '));
 check('template has no "→" in link or button text', !template.includes('→'));
-// The host's layout hint <meta name="claude:viewport-fit-sides"> is not branding, so it is left out of this test.
-check('template names neither Claude nor Anthropic', !/claude|anthropic/i.test(template.replace(/<meta name="claude:[^>]*>/g, '')));
+// Branding is a visible-content rule. Internal mode names and the host's layout hint are not shown to the reader.
+const visibleTemplate = template.replace(/<style>[\s\S]*?<\/style>/g, '').replace(/<script>[\s\S]*?<\/script>/g, '')
+  .replace(/<meta name="claude:[^>]*>/g, '');
+check('template names neither Claude nor Anthropic in visible content', !/claude|anthropic/i.test(visibleTemplate));
 
 async function cdp() {
   for (let i = 0; i < 60; i++) {
@@ -72,6 +94,13 @@ try {
   const ev = async (expr) => (await send('Runtime.evaluate', { expression: expr, returnByValue: true, awaitPromise: true })).result?.result?.value;
   const shot = async (name) => { const r = await send('Page.captureScreenshot', { format: 'png' }); writeFileSync(`${OUT}/${name}`, Buffer.from(r.result.data, 'base64')); console.log(`  screenshot ${OUT}/${name}`); };
   const go = async (hash) => { await ev(`location.hash = '${hash}'`); await sleep(600); };
+  const waitFor = async (expr, timeout = 8000) => {
+    const end = Date.now() + timeout;
+    while (Date.now() < end) { const value = await ev(expr); if (value) return value; await sleep(100); }
+    return false;
+  };
+  const askVisibility = `(() => { const bs = [...document.querySelectorAll('.ask-btn')];
+    return {count: bs.length, visible: bs.filter((b) => getComputedStyle(b).display !== 'none').length}; })()`;
 
   await send('Page.enable'); await send('Runtime.enable');
   await send('Page.navigate', { url: FILE }); await sleep(2500);
@@ -123,6 +152,8 @@ try {
   const lec = await ev(`({stops: document.querySelectorAll('.chapters .stop').length, sections: document.querySelectorAll('section.chapter').length,
     h1: document.querySelector('h1')?.textContent})`);
   check(`#${FIRST} opens the class with all its chapters`, lec.stops === NCH && lec.sections === NCH, JSON.stringify(lec));
+  const normalAsk = await ev(askVisibility);
+  check('normal file load keeps every ask button hidden', normalAsk.count === NCH && normalAsk.visible === 0, JSON.stringify(normalAsk));
 
   await ev(`document.querySelector('.listen[data-i="1"]').click()`); await sleep(3500);
   const p1 = await ev(`(() => { const a = document.getElementById('audio'); return {src: a.src.split('/').pop(), paused: a.paused, t: a.currentTime, d: a.duration}; })()`);
@@ -251,6 +282,53 @@ try {
     console.log('  (every paper is ready: the paper not-ready check is skipped)');
   }
 
+  // ---- theme switch: device default, explicit choice, persistence and phone fit
+  await send('Emulation.setDeviceMetricsOverride', { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'light' }] });
+  await go('home');
+  await ev(`(() => { try { localStorage.removeItem('inn514-theme'); } catch (e) {}
+    document.documentElement.removeAttribute('data-theme'); showThemeButton(); })()`);
+  await sleep(200);
+  const deviceLight = await ev(`getComputedStyle(document.body).backgroundColor`);
+  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'dark' }] });
+  await sleep(300);
+  const deviceDark = await ev(`getComputedStyle(document.body).backgroundColor`);
+  check('the theme follows the device until a choice is saved',
+    !await ev(`document.documentElement.dataset.theme || ''`) && deviceLight !== deviceDark,
+    JSON.stringify({light: deviceLight, dark: deviceDark}));
+  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'light' }] });
+  await sleep(300);
+  const themeStart = await ev(`(() => ({theme: effectiveTheme(), bg: getComputedStyle(document.body).backgroundColor}))()`);
+  await ev(`document.getElementById('themeBtn').click()`); await sleep(300);
+  const themeNext = await ev(`(() => ({theme: document.documentElement.dataset.theme,
+    bg: getComputedStyle(document.body).backgroundColor, label: document.getElementById('themeBtn').getAttribute('aria-label'),
+    saved: localStorage.getItem('inn514-theme')}))()`);
+  const opposite = themeStart.theme === 'dark' ? 'light' : 'dark';
+  check('the theme button switches colours, label and saved choice',
+    themeNext.theme === opposite && themeNext.bg !== themeStart.bg && themeNext.saved === opposite
+    && themeNext.label === `Switch to ${themeStart.theme} theme`, JSON.stringify({start: themeStart, next: themeNext}));
+  await send('Page.navigate', { url: FILE + '#home' }); await sleep(1600);
+  const themeReload = await ev(`(() => ({theme: document.documentElement.dataset.theme,
+    bg: getComputedStyle(document.body).backgroundColor, saved: localStorage.getItem('inn514-theme')}))()`);
+  check('the chosen theme survives a reload',
+    themeReload.theme === opposite && themeReload.saved === opposite && themeReload.bg === themeNext.bg, JSON.stringify(themeReload));
+  await ev(`document.getElementById('themeBtn').click()`); await sleep(300);
+  const themeBack = await ev(`(() => ({theme: effectiveTheme(), bg: getComputedStyle(document.body).backgroundColor,
+    saved: localStorage.getItem('inn514-theme'), label: document.getElementById('themeBtn').getAttribute('aria-label')}))()`);
+  check('the second theme click returns to the starting theme',
+    themeBack.theme === themeStart.theme && themeBack.bg === themeStart.bg && themeBack.saved === themeStart.theme
+    && themeBack.label === `Switch to ${opposite} theme`, JSON.stringify(themeBack));
+  await ev(`if (!document.querySelector('meta[name="viewport"]'))
+    document.head.insertAdjacentHTML('afterbegin', '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">')`);
+  await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 2, mobile: true });
+  await sleep(300);
+  const themePhone = await ev(`(() => { const r = document.getElementById('themeBtn').getBoundingClientRect();
+    return {inner: innerWidth, scroll: document.documentElement.scrollWidth, left: r.left, right: r.right}; })()`);
+  check('the theme button fits in the phone top bar',
+    themePhone.inner === 390 && themePhone.scroll <= 390 && themePhone.left >= 0 && themePhone.right <= 390, JSON.stringify(themePhone));
+  await ev(`(() => { try { localStorage.removeItem('inn514-theme'); } catch (e) {}
+    document.documentElement.removeAttribute('data-theme'); showThemeButton(); })()`);
+
   // ---- phone: no horizontal scroll, light and dark, on all five views
   // claude.ai adds the viewport meta when it publishes; add the same one here.
   await ev(`document.head.insertAdjacentHTML('afterbegin', '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">')`);
@@ -266,11 +344,157 @@ try {
     await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'light' }] });
   }
 
+  // ---- claude mock pass: chapter context, one panel, fallback text and errors
+  await send('Emulation.setDeviceMetricsOverride', { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'light' }] });
+  const mockPage = await send('Page.addScriptToEvaluateOnNewDocument', { source: `(() => {
+    window.__sampleMode = 'ok'; window.__lastSample = null;
+    if (window.speechSynthesis) {
+      window.speechSynthesis.getVoices = () => [];
+      window.speechSynthesis.speak = () => {};
+      window.speechSynthesis.cancel = () => {};
+    }
+    window.claude = { use: async (name) => async (turns, opts) => {
+      window.__lastSample = turns;
+      const mode = window.__sampleMode || 'ok';
+      if (mode !== 'ok') throw Object.assign(new Error(mode), {code: mode});
+      opts.onText({delta: 'First sentence. '}); opts.onText({delta: 'Second sentence.'});
+    } };
+  })();` });
+  await send('Page.navigate', { url: FILE }); await sleep(1800); await go(FIRST);
+  const mockClass = await ev(askVisibility);
+  check('the mock makes every class chapter ask button visible',
+    mockClass.count === NCH && mockClass.visible === NCH, JSON.stringify(mockClass));
+  const firstPanel = await ev(`(() => { const bs = document.querySelectorAll('.ask-btn'); bs[0].click();
+    const p = document.querySelectorAll('.ask')[0]; return {open: !p.hidden, chips: p.querySelectorAll('.ask-chips button').length,
+      input: p.querySelectorAll('.ask-input').length}; })()`);
+  check('a chapter tap opens one panel with four chips and an input',
+    firstPanel.open && firstPanel.chips === 4 && firstPanel.input === 1, JSON.stringify(firstPanel));
+  const secondPanel = await ev(`(() => { const bs = document.querySelectorAll('.ask-btn'); bs[1].click();
+    const ps = document.querySelectorAll('.ask'); return {firstClosed: ps[0].hidden, secondOpen: !ps[1].hidden,
+      openCount: [...ps].filter((p) => !p.hidden).length}; })()`);
+  check('a second chapter tap closes the first ask panel',
+    secondPanel.firstClosed && secondPanel.secondOpen && secondPanel.openCount === 1, JSON.stringify(secondPanel));
+  await ev(`window.__sampleMode = 'ok'; window.__lastSample = null;
+    document.querySelectorAll('.ask')[1].querySelector('.ask-chips button').click()`);
+  await waitFor(`document.querySelectorAll('.ask')[1].querySelector('.ask-text')?.textContent.includes('Second sentence.')`);
+  const chip = await ev(`(() => { const turns = window.__lastSample || [], first = turns[0]?.content || '';
+    const text = document.querySelectorAll('.ask')[1].querySelector('.ask-text')?.textContent || '';
+    return {title: first.includes(${JSON.stringify(DATA.lectures[FIRST].chapters[1].title)}),
+      rules: first.includes('You are a study helper'), backup: text.includes('This device has no voice'),
+      first: text.includes('First sentence.'), second: text.includes('Second sentence.')}; })()`);
+  check('a chip sends the chapter title and prompt rules', chip.title && chip.rules, JSON.stringify(chip));
+  check('with no device voice the whole answer appears as backup text',
+    chip.backup && chip.first && chip.second, JSON.stringify(chip));
+  await go('P02');
+  const mockPaper = await ev(askVisibility);
+  const p02chapters = DATA.lectures.P02.chapters.length;
+  check('the mock makes every paper chapter ask button visible',
+    mockPaper.count === p02chapters && mockPaper.visible === p02chapters, JSON.stringify(mockPaper));
+  await ev(`window.__sampleMode = 'ok'; window.__lastSample = null; document.querySelector('.ask-btn').click();
+    document.querySelector('.ask:not([hidden]) .ask-chips button').click()`);
+  await waitFor(`window.__lastSample?.[0]?.content.includes('do not quote')`);
+  check('Paper 2 sends the do-not-quote rule', !!await ev(`window.__lastSample?.[0]?.content.includes('do not quote')`));
+  await ev(`window.__sampleMode = 'not_granted'; document.querySelector('.ask:not([hidden]) .ask-chips button').click()`);
+  await waitFor(`document.querySelector('.ask:not([hidden]) .ask-status')?.textContent.includes("Asking isn't available here.")`);
+  await sleep(1300);
+  const denied = await ev(`(() => ({status: document.querySelector('.ask:not([hidden]) .ask-status')?.textContent || '',
+    visible: [...document.querySelectorAll('.ask-btn')].filter((b) => getComputedStyle(b).display !== 'none').length}))()`);
+  check('not_granted hides every orb and keeps its error visible',
+    denied.visible === 0 && denied.status.includes("Asking isn't available here."), JSON.stringify(denied));
+  await send('Page.navigate', { url: FILE + '#' + FIRST }); await sleep(1800);
+  await ev(`document.querySelector('.ask-btn').click(); window.__sampleMode = 'rate_limited';
+    document.querySelector('.ask:not([hidden]) .ask-chips button').click()`);
+  await waitFor(`document.querySelector('.ask-status')?.textContent.includes('Too many questions')`);
+  await sleep(1300);
+  const limited = await ev(`document.querySelector('.ask-status')?.textContent || ''`);
+  check('rate_limited keeps its error visible', limited.includes('Too many questions right now. Try again in a minute.'), limited);
+  await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 2, mobile: true });
+  // The tab is already on the first class: navigating to the same address keeps the old page (and its open panel), so reload it.
+  await send('Page.navigate', { url: FILE + '#' + FIRST }); await send('Page.reload', {}); await sleep(1800);
+  await ev(`document.head.insertAdjacentHTML('afterbegin', '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">');
+    document.querySelector('.ask-btn').click(); window.__sampleMode = 'ok';
+    document.querySelector('.ask:not([hidden]) .ask-chips button').click()`);
+  await waitFor(`document.querySelector('.ask-text')?.textContent.includes('Second sentence.')`);
+  const mockPhone = await ev(`({inner: innerWidth, scroll: document.documentElement.scrollWidth})`);
+  check('the open ask panel has no horizontal scroll at 390 px',
+    mockPhone.inner === 390 && mockPhone.scroll <= 390, JSON.stringify(mockPhone));
+  await ev(`document.querySelector('.ask:not([hidden])')?.scrollIntoView({ block: 'center' })`); await sleep(300);
+  const inView_claude = await ev(`(() => { const p = document.querySelector('.ask:not([hidden])'); const r = p && p.getBoundingClientRect();
+    return {open: !!p, top: r ? Math.round(r.top) : null, bottom: r ? Math.round(r.bottom) : null, inner: innerHeight, y: scrollY, hash: location.hash}; })()`);
+  check('the open claude ask panel is in view for its screenshot', inView_claude.open && inView_claude.top >= 0 && inView_claude.top < inView_claude.inner, JSON.stringify(inView_claude));
+  await shot('phone-ask.png');
+  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'dark' }] });
+  await sleep(400); await shot('phone-ask-dark.png');
+  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'light' }] });
+  await send('Page.removeScriptToEvaluateOnNewDocument', { identifier: mockPage.result.identifier });
+
+  // ---- server mode pass: real page server, fake upstream, wrong then right passcode
+  const mockPort = await freePort(), appPort = await freePort();
+  mockChild = spawn(process.execPath, ['workspace/lecture-audio/scripts/mock_openrouter.mjs', String(mockPort)], { stdio: 'ignore' });
+  await waitHttp(`http://127.0.0.1:${mockPort}/calls`);
+  serverChild = spawn(process.execPath, ['workspace/lecture-audio/server.js'], {
+    env: {...process.env, PORT: String(appPort), OPENROUTER_BASE: `http://127.0.0.1:${mockPort}/api/v1`,
+      OPENROUTER_API_KEY: 'test-key', GROKBOT_PASSCODE: 'test-pass'}, stdio: 'ignore'});
+  await waitHttp(`http://127.0.0.1:${appPort}/api/health`);
+  const appUrl = `http://127.0.0.1:${appPort}/`;
+  await send('Page.navigate', { url: appUrl + '#T1' }); await sleep(1600);
+  await ev(`try { localStorage.removeItem('inn514-grokbot-pass'); } catch (e) {}`);
+  await send('Page.reload', { ignoreCache: true }); await sleep(1800);
+  const serverButtons = await ev(askVisibility);
+  check('server mode makes the class ask buttons visible',
+    serverButtons.count === DATA.lectures.T1.chapters.length && serverButtons.visible === serverButtons.count, JSON.stringify(serverButtons));
+  await ev(`document.querySelector('.ask-btn').click(); document.querySelector('.ask:not([hidden]) .ask-chips button').click()`);
+  await waitFor(`!document.querySelector('.ask-pass')?.hidden`);
+  const passFirst = await ev(`(() => { const p = document.querySelector('.ask:not([hidden])');
+    return {row: !p.querySelector('.ask-pass').hidden,
+      note: p.querySelector('.ask-note').textContent}; })()`);
+  check('the first server question asks for a passcode', passFirst.row, JSON.stringify(passFirst));
+  check('server mode shows its AI-voice honesty line',
+    passFirst.note === "Answers are written by a free AI model from this chapter's text and read aloud by an AI voice. Don't type personal details.");
+  await ev(`(() => { const row = document.querySelector('.ask-pass'); row.querySelector('input').value = 'wrong-pass';
+    row.querySelector('button').click(); })()`);
+  await waitFor(`document.querySelector('.ask-status')?.textContent.includes("That passcode didn't work.")`);
+  const wrong = await ev(`(() => ({status: document.querySelector('.ask-status')?.textContent || '',
+    row: !document.querySelector('.ask-pass').hidden, saved: localStorage.getItem('inn514-grokbot-pass')}))()`);
+  check('a wrong server passcode shows its error and is forgotten',
+    wrong.status.includes("That passcode didn't work.") && wrong.row && wrong.saved === null, JSON.stringify(wrong));
+  await ev(`(() => { const row = document.querySelector('.ask-pass'); row.querySelector('input').value = 'test-pass';
+    row.querySelector('button').click(); })()`);
+  let mockCalls = [];
+  for (let n = 0; n < 100; n++) {
+    mockCalls = await (await fetch(`http://127.0.0.1:${mockPort}/calls`)).json();
+    if (mockCalls.some((c) => c.path === '/api/v1/audio/speech')) break;
+    await sleep(100);
+  }
+  await waitFor(`document.querySelector('.ask-status')?.textContent.includes('Speaking')
+    || document.querySelector('.ask-text')?.textContent.includes('First sentence.')`);
+  check('the right passcode retries the question and reaches the answer model',
+    mockCalls.some((c) => c.path === '/api/v1/chat/completions'), JSON.stringify(mockCalls.map((c) => c.path)));
+  check('server mode calls /api/speak', mockCalls.some((c) => c.path === '/api/v1/audio/speech'), JSON.stringify(mockCalls.map((c) => c.path)));
+  const serverReady = await ev(`(() => ({saved: localStorage.getItem('inn514-grokbot-pass'),
+    status: document.querySelector('.ask-status')?.textContent || '', text: document.querySelector('.ask-text')?.textContent || '',
+    inner: innerWidth, scroll: document.documentElement.scrollWidth}))()`);
+  check('the server answer speaks or falls back to text and saves the passcode',
+    serverReady.saved === 'test-pass' && (serverReady.status.includes('Speaking') || serverReady.text.includes('First sentence.')),
+    JSON.stringify(serverReady));
+  check('the server ask panel has no horizontal scroll at 390 px', serverReady.scroll <= serverReady.inner, JSON.stringify(serverReady));
+  await ev(`document.querySelector('.ask:not([hidden])')?.scrollIntoView({ block: 'center' })`); await sleep(300);
+  const inView_server = await ev(`(() => { const p = document.querySelector('.ask:not([hidden])'); const r = p && p.getBoundingClientRect();
+    return {open: !!p, top: r ? Math.round(r.top) : null, bottom: r ? Math.round(r.bottom) : null, inner: innerHeight, y: scrollY, hash: location.hash}; })()`);
+  check('the open server ask panel is in view for its screenshot', inView_server.open && inView_server.top >= 0 && inView_server.top < inView_server.inner, JSON.stringify(inView_server));
+  await shot('phone-ask-server.png');
+  await ev(`document.querySelector('.ask-stop')?.click()`);
+  await stopChild(serverChild); serverChild = null;
+  await stopChild(mockChild); mockChild = null;
+
   check('no script errors', errors.length === 0, errors.slice(0, 3).join(' | '));
   ws.close();
 } catch (e) {
   console.log('[FAIL] harness error: ' + e.message); failures++;
 } finally {
+  await stopChild(serverChild);
+  await stopChild(mockChild);
   chrome.kill();
   console.log(failures ? `${failures} check(s) failed` : 'ALL PAGE CHECKS PASSED');
   process.exitCode = failures ? 1 : 0;
