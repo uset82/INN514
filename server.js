@@ -270,6 +270,8 @@ const server = http.createServer((req, res) => {
     return done(200, JSONH, JSON.stringify({
       ok: true,
       ask: !!(KEY && process.env.GROKBOT_PASSCODE),
+      // Whether each setting is present (never its value), so a missing one can be spotted from outside.
+      key: !!KEY, passcode: !!process.env.GROKBOT_PASSCODE,
       voices: { en: VOICE_EN, es: VOICE_ES },
     }));
   }
