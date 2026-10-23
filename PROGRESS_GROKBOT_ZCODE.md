@@ -40,14 +40,20 @@ Do the first unchecked task only, one task per conversation. Tick a box only whe
       - Canner sends MP3s as `application/octet-stream`. Chrome plays them; if iPhone Safari ever refuses, that is a Canner file-type setting.
       - Canner follows the device's light or dark setting, while claude.ai follows the Claude app's theme, so the two can look different.
 
-## Part A: the speaking orb (claude.ai link)
-- [ ] A1. CSS: `.ask-btn`, `.ask`, chips, input, status line, `.ask-text`, orb states, reduced motion (plan A.0, A.1)
-- [ ] A2. Orb SVG and its gradient definition, the per-chapter `.ask-btn` (hidden without `body.can-ask`), panel markup (plan A.0, A.1)
-- [ ] A3. Availability (`sampleFn`), `chapterContext`, chips and typed question, the call with the answer shown as text for now (plan A.2)
-- [ ] A4. Speech queue, sentence splitting, voices, language detection, Stop, pausing the player, text backup (plan A.2)
+## Part A and Part S: the speaking orb (claude.ai link and Canner) and the Canner Grokbot server
+Updated by Claude Code on 2026-10-23: the orb now has a claude mode and a server mode, and Canner runs `server.js` (plan Part A and Part S).
+- [ ] A1. CSS: `.ask-btn`, `.ask`, chips, input, passcode row, status line, `.ask-text`, orb states, reduced motion (plan A.0, A.1)
+- [ ] A2. Orb SVG and its gradient definition, the per-chapter `.ask-btn` (hidden without `body.can-ask`), panel markup with the passcode row hidden (plan A.0, A.1)
+- [ ] A3. `RULES` and `NO_QUOTE` on one line each, mode detection (`askMode`), `chapterContext`, chips and typed question, the claude-mode call with the answer shown as text for now (plan A.2)
+- [ ] A4. Device voice: speech queue, sentence splitting, voices, language detection, Stop, pausing the player, text backup (plan A.2)
 - [ ] A5. Error messages table, one panel at a time, follow-up history (6 turns), close and stop on route change (plan A.2)
-- [ ] A6. `check_page.mjs`: the mock pass and every A.3 check, `phone-ask.png` and `phone-ask-dark.png`, full run ending "ALL PAGE CHECKS PASSED", then `build_static.py` (plan A.3)
-- [ ] **STOP GATE G1:** student approved (after Claude Code's review, the claude.ai publish with the `sample` ability, the push for Canner, and the student's phone test)
+- [ ] S1. `package.json`, hand-written `package-lock.json`, `server.js` static serving: allowlist, MIME types, Range, robots, health stub (plan S1)
+- [ ] S2. `server.js`: data and RULES loading, passcode check, `/api/health`, `/api/ask` with model fallback (plan S2)
+- [ ] S3. `server.js`: `/api/speak`, voice choice by language, English fallback to Fish, per-IP and daily limits (plan S3)
+- [ ] S4. `scripts/mock_openrouter.mjs` and `scripts/test_server.mjs`; the run ends "ALL SERVER CHECKS PASSED" (plan S4)
+- [ ] A6. Server mode in the page: passcode row and storage, `askServer`, `/api/speak` playback in order, fallbacks, server honesty line (plan A.2)
+- [ ] A7. `check_page.mjs`: the claude mock pass and the server mode pass, `phone-ask.png`, `phone-ask-dark.png`, `phone-ask-server.png`, full run ending "ALL PAGE CHECKS PASSED", then `build_static.py` (plan A.3)
+- [ ] **STOP GATE G1:** student approved (after Claude Code's review, the claude.ai publish with the `sample` ability, the push, Canner on Node with the student's key and passcode set, Claude's server checks, and the student's phone tests in both places)
 
 ## Part B: one-command pack sync
 - [ ] B1. `scripts/sync_knowledge.py` (plan Part B)
