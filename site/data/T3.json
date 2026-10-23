@@ -1,0 +1,226 @@
+{
+ "id": "T3",
+ "title": "Lecture 3: Institutional work in the regional innovation systems of Hordaland and Rogaland",
+ "session": "Kursplan 2026, session 3 (25 September)",
+ "lecturer": "Arnt Fløysand",
+ "deck": "Forelesning 5 Fløysand Institusjonelt arbeid....pdf (H2025, 34 slides)",
+ "chapters": [
+  {
+   "n": 1,
+   "title": "Systems, places and institutions",
+   "slides": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "readings": "Fløysand et al. 2022, pp. 14, 15, 16, 19",
+   "paragraphs": [
+    "This lecture examines a detailed study of two neighbouring regions in Western Norway: Hordaland and Rogaland. Arnt Fløysand, who co-wrote the article on your reading list, asks a practical question. How do people in a region change the rules and habits of their industries when they need to build greener jobs?",
+    "The lecture starts by reminding us what systemic innovation means. Innovation does not happen in a vacuum. It is not an isolated discovery made inside a single company laboratory. Instead, it grows out of continuous interaction between many different organisations and social groups.",
+    "The slides review the territorial systems introduced in earlier lectures. Slide 4 points out that territorial systems can be national, regional, or global. In each case, researchers focus on geographical anchoring. This means examining how economic networks, cultural habits, and public institutions are rooted in a specific physical territory. National innovation systems, which we explored in Lecture 1, put state laws, funding agencies and national research programmes at the centre. Regional innovation systems, introduced in Lecture 2, zoom in on sub-national geography, regional cultures, and local supplier networks. Geography matters because physical closeness makes trust and daily learning easier. When firms, universities and regional officials meet often, they exchange tacit knowledge that cannot easily travel over long distances.",
+    "The article gives Hordaland as an example of how place shapes industry. On page 19, it describes fishery-related industries and, in the early 20th century, metal industries built on hydropower plants in the fjord landscape.",
+    "A regional innovation system is more than a collection of factories, docks and schools. It is also an institutional setup. Institutions shape how people think, what they reward, and how they cooperate with each other. The main reading for this lecture is the 2022 article by Fløysand and colleagues. On page 14, the authors explain that regions face urgent demands for green industrial restructuring. Yet old industrial ways tend to stick around. To understand why some regions move faster than others, we need to look beyond machines and patents. We have to examine institutional work."
+   ],
+   "checks": [
+    {
+     "q": "Why does geography matter in regional innovation systems?",
+     "a": "Physical closeness makes trust and daily learning easier, allowing actors to share tacit knowledge and build cooperative habits."
+    }
+   ],
+   "audio": "audio/T3-01.mp3",
+   "seconds": 163.8,
+   "words": 348
+  },
+  {
+   "n": 2,
+   "title": "What is institutional work?",
+   "slides": [
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+   ],
+   "readings": "Fløysand et al. 2022, pp. 15, 17; North 1990; Lawrence et al. 2011; Lawrence & Suddaby 2006",
+   "paragraphs": [
+    "To explain change, the lecture reviews other kinds of systems. These include global systems, entrepreneurial ecosystems, technological systems and sectoral systems. In each one, we find teams, tools and tasks. On slide 12, the lecture quotes van Alphen and colleagues from 2011. They remind us that technology cannot be understood in isolation from its socio-cultural system. Tools need teams of people who know how to build and operate them, and tasks that define why they matter.",
+    "Systems do more than provide resources and infrastructure. They also structure human action. They guide what people consider normal, acceptable, or risky. Scholars call these shared guidelines institutional logics. An institutional logic is a set of social beliefs and principles that directs what counts as legitimate practice.",
+    "This brings us to the core concept: institutions. The lecture adopts the classic definition from North, in 1990. Institutions are the formal and informal rules that organise social, political and economic relations. Formal rules are written down by governments: laws, regulations, and official policy targets. Informal rules are unwritten: shared habits, traditions, routines, and taken for granted ways of doing things in everyday business life.",
+    "If institutions are so powerful, can people ever change them? The lecture answers yes, through agency. Agency means the conscious capacity of actors to make choices and take deliberate action. When actors work purposefully to affect institutions, they perform what scholars call institutional work.",
+    "The lecture takes its definition from Lawrence and colleagues in 2011. On page 15 of the article, the authors quote it as physical and mental efforts aimed at affecting an institution or set of institutions. On page 17, they explain that institutional work has three faces. It can create new institutions, maintain existing ones, or disrupt old ones. Lawrence and Suddaby showed in 2006 that this work is not just about grand legal changes. Creating institutions involves building new routines of collaboration between organisations. Maintaining institutions involves policing standards and repeating established habits. Disrupting institutions involves undermining the legitimacy of outdated practices.",
+    "Here is an exam tip. In June 2025, the exam asked: what do you understand by institutional work? You can answer with Lawrence's definition and the three forms of work: creating, maintaining, and disrupting."
+   ],
+   "checks": [
+    {
+     "q": "What are institutions according to North (1990)?",
+     "a": "Formal and informal rules that organise social, political and economic relations."
+    },
+    {
+     "q": "What are the three forms of institutional work identified by Lawrence and colleagues?",
+     "a": "Creating new institutions, maintaining existing ones, and disrupting old ones."
+    }
+   ],
+   "audio": "audio/T3-02.mp3",
+   "seconds": 186.9,
+   "words": 374
+  },
+  {
+   "n": 3,
+   "title": "Two regions and the triple challenge",
+   "slides": [
+    16,
+    17,
+    18,
+    19
+   ],
+   "readings": "Fløysand et al. 2022, pp. 16, 17, 18; Maguire et al. 2004",
+   "paragraphs": [
+    "Now the lecture introduces the empirical puzzle. Hordaland and Rogaland sit next to each other on the southwest coast of Norway. Both grew wealthy from North Sea oil and gas over the past half century. Yet both regions now face what the lecture calls a triple challenge.",
+    "First, they must reduce their dependence on oil and gas by developing new green industries. Second, they must make their existing industries more environmentally friendly. Third, they must deal with path dependence, as described in evolutionary economic geography. Path dependence means that past industrial choices condition current possibilities, making green shifts harder to launch. High petroleum wages and specialized offshore engineering skills make other sectors struggle to attract talent and capital.",
+    "To see how the regions handle this challenge, Fløysand and colleagues study regional key actors across three main groups: research and development, business intermediaries, and industry leaders. Drawing on Maguire and colleagues from 2004, the lecture describes them as institutional entrepreneurs. These are actors who have an interest in institutional arrangements and leverage resources to protect or transform them.",
+    "On slide 18, the lecture emphasizes that the study focuses on informal rules. It examines emerging ways of doing things and new forms of interorganizational collaboration. The study investigates two main questions. First, how does the institutional work of regional key actors balance the maintenance, creation, and change of institutional entrepreneurship behaviour? Second, how is this institutional work legitimizing or delegitimizing green industrial restructuring? To legitimize means to make a new path seem natural, necessary, and worthy of public and private investment. To delegitimize means to treat it as unrealistic, unimportant, or a distraction from profitable business."
+   ],
+   "checks": [
+    {
+     "q": "What three challenges make up the triple challenge for Hordaland and Rogaland?",
+     "a": "Reducing oil dependence through new green sectors, greening existing industries, and dealing with path dependence."
+    },
+    {
+     "q": "What does it mean for institutional work to legitimize green restructuring?",
+     "a": "It makes green restructuring appear natural, necessary, and worthy of public and private investment."
+    }
+   ],
+   "audio": "audio/T3-03.mp3",
+   "seconds": 134.4,
+   "words": 282
+  },
+  {
+   "n": 4,
+   "title": "Industry, knowledge and support systems",
+   "slides": [
+    20,
+    21,
+    22,
+    23
+   ],
+   "readings": "Fløysand et al. 2022, pp. 18, 19, 20, 21, 24; Isaksen & Trippl 2014; Stuck et al. 2015",
+   "paragraphs": [
+    "To compare the two regions, the authors look at three sub systems: the industrial system, the knowledge system, and the support system. On page 18, the article describes how the authors gathered evidence. They screened policy documents, built regional industry models from employment data, and carried out 24 semi-structured interviews with key regional leaders.",
+    "The two regional profiles turn out to be quite different. To explain the contrast, the authors build on Isaksen and Trippl from 2014 and Stuck and colleagues from 2015. Hordaland has an organizationally thick and diversified regional innovation system with an interactive networking structure. A thick system has both a critical mass of active firms and a rich infrastructure of universities and research institutes. Being diversified means its firms operate across several distinct sectors: subsea engineering, maritime clean tech, seafood farming, media technology, and financial innovation.",
+    "Its knowledge system is mature and broad. Bergen established its university museum in 1825, the fishery directorate in 1900, the business school NHH in 1936, the seafood nutrition institute NIFES in 1947, and the University of Bergen. It also hosts the Institute of Marine Research and the Western Norway University of Applied Sciences. These organisations serve many sectors at once.",
+    "Rogaland, centred on Stavanger, has an organizationally thick and specialized system that is rather dirigiste. It is heavily concentrated around offshore petroleum. Its knowledge organisations are much younger and were built specifically to serve offshore oil and gas. For example, the petroleum directorate opened in 1972, the petroleum safety authority in 2004, and the University of Stavanger gained full university status in 2004. Almost all research and engineering in the region relates to the oil value chain.",
+    "Their support policies differ too. Hordaland pursued national cluster programmes with enthusiasm. The lecture calls Bergen a cluster Klondike. On page 24, the article says that five of Norway's fifteen national centres of expertise, and one of its three global centres, are in Hordaland. The slide lists the programmes: subsea technology, tourism, maritime clean tech, media, seafood innovation and finance innovation. Rogaland focused instead on smart specialisation, aiming to develop related branches directly from its dominant oil and gas sector."
+   ],
+   "checks": [
+    {
+     "q": "How do the knowledge systems of Hordaland and Rogaland differ in their origins?",
+     "a": "Hordaland has mature, broad organisations founded across two centuries for varied sectors. Rogaland has younger organisations established mainly after 1970 to serve petroleum."
+    },
+    {
+     "q": "What methods did the authors use to study the two regions?",
+     "a": "They screened policy documents, analysed employment and industry data, and conducted 24 semi-structured interviews with regional leaders (page 18)."
+    }
+   ],
+   "audio": "audio/T3-04.mp3",
+   "seconds": 179.2,
+   "words": 364
+  },
+  {
+   "n": 5,
+   "title": "Collective leadership versus individual leadership",
+   "slides": [
+    24,
+    25,
+    26,
+    27
+   ],
+   "readings": "Fløysand et al. 2022, pp. 21, 22, 23; Bækkelund 2021",
+   "paragraphs": [
+    "The fifth part examines how regional leaders behave. It compares change agency with reproductive agency. Change agency alters institutions to support new practices. Reproductive agency reproduces existing habits and preserves established structures. Nora Bækkelund's 2021 study shows that every economy needs both forms of agency. Stability keeps business predictable, while change allows adaptation. But when a region needs a green transition, the balance between them becomes critical.",
+    "In Hordaland, regional key actors developed change agency. They took cluster terminology and cluster practices into their everyday language. An R and D director quoted on slide 24 says that knowledge clusters have become paramount for interaction. An industry leader on slide 25 notes a major cultural shift: firms now care far more about cooperating across boundaries than they did before. The lecture calls this collective leadership.",
+    "In Rogaland, the study found reproductive agency. Daily practices still reflect what the authors call individual strategic leadership. This model links to the historical institutional entrepreneurship of former Stavanger mayor Arne Rettedal. After the North Sea oil and gas discoveries, Rettedal worked as a strong individual leader. He convinced Norwegian state bodies like Equinor and the petroleum directorate to choose Rogaland as their petroleum headquarters. He did the same with foreign multinationals like Phillips, Exxon, Shell, British Petroleum, Elf, Schlumberger and Halliburton.",
+    "That historic success created a lasting expectation. People in Rogaland still look for a strong individual leader to solve regional problems. But as the quotes on slide 26 reveal, local industry leaders feel that regional leadership is now fragmented. One leader noted that compared with ten to fifteen years ago, regional leadership was at its lowest level, with people busy making obstacles for each other rather than working collectively."
+   ],
+   "checks": [
+    {
+     "q": "What kind of leadership developed in Hordaland's cluster programmes?",
+     "a": "Collective leadership, characterized by cross-sector collaboration and shared cluster practices."
+    },
+    {
+     "q": "Why does Rogaland still look to individual strategic leadership?",
+     "a": "Because the region's oil path was created by strong individual leadership, particularly former mayor Arne Rettedal after the North Sea oil and gas discoveries (page 22)."
+    }
+   ],
+   "audio": "audio/T3-05.mp3",
+   "seconds": 141.7,
+   "words": 292
+  },
+  {
+   "n": 6,
+   "title": "Legitimating green crossover",
+   "slides": [
+    28,
+    29,
+    30
+   ],
+   "readings": "Fløysand et al. 2022, pp. 23, 24, 25",
+   "paragraphs": [
+    "The differences in leadership directly affected green industrial restructuring. When the oil price dropped sharply between 2014 and 2017, both regions felt the economic shock. But their institutional work produced very different results.",
+    "In Hordaland, collective leadership legitimized green restructuring. Cluster networks encouraged crossover programmes from the oil and gas industry to salmon farming. On slide 28, an intermediary notes that the cluster programme contributes to more collaboration and looks for opportunities for green solutions. The intermediary observed that across the entire cluster programme, all the regional clusters look for opportunities for green solutions. On slide 29, the lecture highlights how this crossover worked in practice. An intermediary stated on page 23 that while the oil market decreased, around forty to fifty traditional oil and gas firms found a new market in ocean farming. They developed technology for green and development concessions that looked like a crossover between traditional aquaculture and an oil installation. An industry leader on slide 28 cautioned that networks must demand doing things together rather than just talking, asking how to find clusters that create practical action.",
+    "In Rogaland, regional leaders also discussed green diversification. But the institutional work struggled against the pull of petroleum. Slide 30 highlights an intermediary's warning about what would happen if the oil price surged. The intermediary warned that a booming oil price would cause the industry to re-employ workers and reverse emerging restructuring processes, because high profitability would make it very difficult to start new industrial initiatives. An industry leader added that creating new regional industries was very difficult and required billions. As the authors note on page 25, the thick and specialized system risked bouncing back into its established petroleum path."
+   ],
+   "checks": [
+    {
+     "q": "What is crossover in industrial innovation?",
+     "a": "Applying skills, knowledge, and technologies from one sector, such as oil engineering, to another, such as ocean fish farming."
+    },
+    {
+     "q": "What was the intermediary's warning about a booming oil price in Rogaland?",
+     "a": "That high oil profits would lead the industry to re-employ workers and reverse emerging restructuring processes, making new initiatives hard to establish (slide 30)."
+    }
+   ],
+   "audio": "audio/T3-06.mp3",
+   "seconds": 132.8,
+   "words": 287
+  },
+  {
+   "n": 7,
+   "title": "How the study was done and what it means",
+   "slides": [
+    31,
+    32,
+    33,
+    34
+   ],
+   "readings": "Fløysand et al. 2022, pp. 18, 24, 25, 26; Martin & Sunley 2006; Cooke et al. 1998; Lawrence et al. 2011",
+   "paragraphs": [
+    "The lecture ends with a theoretical summary and an intriguing puzzle. To explain these findings, the authors combine three theoretical perspectives: evolutionary economic geography, regional innovation systems, and institutional work. Evolutionary economic geography, represented by Martin and Sunley from 2006, highlights path dependence, industrial branching and regional history. The regional innovation system perspective, drawing on Cooke and colleagues from 1998, shows how local firms, universities and support agencies interact. Institutional work, from Lawrence and colleagues in 2011, explains the day-to-day actions of regional actors who either shift or protect regional rules.",
+    "Combining these theories makes an important academic point. On slide 31, the lecture explains that a broad, practice-based approach informed by evolutionary economic geography is needed to study how regional key actors contribute, or fail to contribute, to changing regional institutions. Real people must invest physical and mental effort every day to reproduce old ways or legitimate new ones.",
+    "The study confirms that institutional work operates within context-specific systems. In Hordaland, an organizationally thick, diversified, and interactive networking system fostered collective leadership that actively legitimized green crossover. In Rogaland, an organizationally thick, specialized, and rather dirigiste system maintained individual leadership habits that delegitimized green restructuring.",
+    "Yet the lecture adds an observation and two open questions on slide 34. Even though institutional work in both regions aimed for a green shift, the oil and gas industry unintentionally continued to dominate regional business life. Why did that happen? The lecture asks two alternative questions. First, was this continuation driven by institutional work led by national key actors in the national innovation system, such as Equinor and national authorities, rather than regional actors? Second, was it driven by institutional work within global innovation systems?",
+    "Here is an exam tip. In December 2024, the exam asked how agency in innovation systems can promote or inhibit sustainable transformation. You can use Hordaland as an example of change agency promoting green crossover, and Rogaland as an example of reproductive agency inhibiting transformation."
+   ],
+   "checks": [
+    {
+     "q": "What three theoretical frameworks does the 2022 study combine?",
+     "a": "Evolutionary economic geography, regional innovation systems, and institutional work."
+    },
+    {
+     "q": "What two open questions does slide 34 ask about why oil and gas remained dominant?",
+     "a": "Whether it was driven by institutional work by national key actors like Equinor and national authorities, or by institutional work in global innovation systems."
+    }
+   ],
+   "audio": "audio/T3-07.mp3",
+   "seconds": 169.3,
+   "words": 338
+  }
+ ],
+ "seconds": 1108.1
+}

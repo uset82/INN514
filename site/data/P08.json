@@ -1,0 +1,173 @@
+{
+ "id": "P08",
+ "kind": "reading",
+ "title": "Reading 8: Entrepreneurial innovation: The importance of context",
+ "session": "Autio et al. 2014",
+ "lecturer": "Autio et al.",
+ "deck": "Research Policy 43(7)",
+ "authors": "Autio et al.",
+ "year": 2014,
+ "source": "Research Policy 43(7)",
+ "lectures": [
+  "T4"
+ ],
+ "chapters": [
+  {
+   "n": 1,
+   "title": "The paper in brief",
+   "slides": [],
+   "readings": "",
+   "pages": "the whole paper",
+   "paragraphs": [
+    "Autio, Kenney, Mustar, Siegel and Wright edited a special issue of Research Policy on entrepreneurial innovation, and this is their introduction to it. Their question is narrow and useful: not whether entrepreneurs innovate, but when and where they do, and what in the surrounding context decides the difference. The answer they build is a framework of contexts, a comparison of two literatures, and a research agenda.",
+    "They start from an awkward fact. Schumpeter's gales of creative destruction and Baumol's claim about national advantage both treat entrepreneurship and innovation as one thing. Policy has followed: small business research programmes, university spin-off schemes, innovation laws. Yet survey data show that fewer than 30 percent of new ventures report products new to their customers, so the majority are not innovative at all. Innovation is not entrepreneurship. What varies is the rate, and the rate varies enormously between countries and between regions inside them.",
+    "The gap they identify is symmetrical. Innovation systems research explains structures and institutions, but it studies them at the expense of agency, reduces innovation to patentable technology, and barely mentions entrepreneurship. Entrepreneurship research has the opposite shape: broad about what counts as innovation, centred on the individual or the team, bottom up, and largely blind to context. Table 1 sets the three positions side by side, and the authors' own position is the third column, entrepreneurial innovation.",
+    "Context, on their account, works in two ways. Selection effects decide who becomes an entrepreneur at all, through opportunity costs and social legitimacy. Strategic choice effects decide what those who enter then attempt, through what they judge desirable and feasible. Figure 1 puts six contexts around the entrepreneur: industry and technology, organization, institutions and policy, and social, with temporal and spatial dimensions overlaying them all. Their claim is that the interplay of these contexts is what makes different ecosystems produce different kinds of innovation.",
+    "The special issue illustrates the framework rather than testing it. Agarwal and Shah compare knowledge from prior employment, universities and users. Stuart and Liu show that publication earns rewards in a science-based firm, but only for scientists in leadership roles. Nelson follows one technology from Stanford into a start-up and finds the same people behaving differently in the two settings. Clarysse and colleagues find start-ups in Flanders whose knowledge network is concentrated, whose business network is missing, and whose public funding is disconnected from both. Garud and colleagues read innovation as narrative.",
+    "The agenda in Table 3 is honest about what is missing. We do not know how contexts shape the heuristics founders use under uncertainty, which ecosystems suit which technologies, or how ecosystems mature and decline. The policy section is the most practical part. Instruments are mapped onto each context, from German biotechnology programmes to French incubators to Taiwan's research institute. The authors end with a warning: because contexts interact, a context mix needs a policy mix, and evaluation has to become finer.",
+    "The paper's standing for the course is as a map rather than a finding. It is an editorial introduction, so it proposes rather than demonstrates, and its own evidence is other people's papers. What it gives Lecture 4 is the vocabulary: selection and strategic choice, the four contexts with time and space over them, and the argument that context regulates what founders see, choose and achieve. In our own reading, it helps with Question 1 of December 2024, on innovation systems, sustainable transformation, institutions and agency: it joins the systems view of institutions with the founder's agency, and it says policy should foster ecosystems in each context (page 1100). Here is an example of our own, not from the paper: a university that changes its spin-off rules alters the organizational context, and so who becomes a founder."
+   ],
+   "labels": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "checks": [
+    {
+     "q": "What is the paper's central claim about context?",
+     "a": "That context regulates what individuals and teams get to see, what choices they are likely to make, and what the outcomes of those choices are likely to be, through selection and strategic choice effects."
+    },
+    {
+     "q": "Why is the paper a framework rather than a finding?",
+     "a": "Because it introduces a special issue: it compares two literatures, proposes a framework of six contexts, situates other papers in it, and sets out a research agenda rather than testing hypotheses itself."
+    }
+   ],
+   "audio": "audio/P08-01.mp3",
+   "seconds": 279.3,
+   "words": 628
+  },
+  {
+   "n": 2,
+   "title": "The gap and the two literatures",
+   "slides": [],
+   "readings": "",
+   "pages": "1097–1099",
+   "paragraphs": [
+    "This is the introduction to a Research Policy special issue, by five authors from Imperial College, the University of California at Davis and at Berkeley, Mines ParisTech, Albany and Ghent. It opens with Schumpeter's gales of creative destruction and with Baumol's claim that entrepreneurial innovation is the true source of national competitive advantage. It lists the disruptive innovations Scherer attributed to entrepreneurial firms. Governments answered with programmes: small business innovation and technology transfer schemes in the United States, the Science Enterprise Challenge in the UK, an innovation law in France, and ProTon Europe. Innovation, the authors insist, is not entrepreneurship.",
+    "The data make the case less comfortable. On average fewer than 30 percent of new ventures report products new to their customers, so the majority are not innovative at all. Across countries the share of technology-based new ventures with a genuinely new product runs from under a tenth to nearly half. So the question is not whether entrepreneurs innovate but when and where they do. The authors then fault two literatures: innovation systems for leaving entrepreneurship out, and entrepreneurship research for leaving context out. Figure 1 sets out their framework, and the paper's structure follows from it.",
+    "The two literatures are then compared. Innovation systems is credited with showing that innovation is non-linear and embedded, but criticised for studying structure at the expense of agency, for reducing innovation to patentable technology, and for ignoring entrepreneurship. Entrepreneurship research goes the other way: it counts services, processes and informal property as innovation, and puts the individual or team at the centre. It works bottom up, and treats context as an afterthought. Yet context, they insist, decides what founders see, which choices look open, and how they turn out. Table 1 sets the three positions side by side."
+   ],
+   "labels": [
+    "Page 1097",
+    "Page 1098",
+    "Page 1099"
+   ],
+   "checks": [
+    {
+     "q": "Why do the authors say innovation is not the same as entrepreneurship?",
+     "a": "Because not all entrepreneurs innovate: on average fewer than 30 per cent of new ventures report products that are new to their customers, and most of the rest simply imitate."
+    },
+    {
+     "q": "What is each literature's blind spot?",
+     "a": "Innovation systems studies structure and ignores agency, micro-foundations and entrepreneurship; entrepreneurship research centres the individual and team and treats context as an afterthought."
+    }
+   ],
+   "audio": "audio/P08-02.mp3",
+   "seconds": 143.0,
+   "words": 309
+  },
+  {
+   "n": 3,
+   "title": "How context works, and the six contexts",
+   "slides": [],
+   "readings": "",
+   "pages": "1100–1102",
+   "paragraphs": [
+    "Ecosystems, the authors say, regulate the direction and quality of entrepreneurial innovation, so the main purpose of policy is to foster ecosystems in different contexts. Two mechanisms organise the framework: selection effects on entry, through opportunity costs and social legitimacy, and strategic choice effects after entry, through what founders judge desirable and feasible. Six contexts follow: industry and technology, organization, institutions and policy, and social, with temporal and spatial over them. Industry context matters most early in a life cycle, and organizational context covers the firm a founder came from.",
+    "Formal institutions cover property protection, entry regulation and the rule of law; informal ones cover culture, norms and peer influence. Social context is the network of founders, financiers, partners and customers. Temporal context matters because industries, firms and laws age, and successful founders reshape their region, as in Silicon Valley. Spatial context covers scale and founders' mobility. The special issue's papers follow: Agarwal and Shah expect academic and user founders to bring product innovations, employee founders both product and process ones, and Stuart and Liu find publication rewarded only for scientists in leadership roles.",
+    "Table 2 summarises the special issue in a grid: authors, research question, theory, data and method, findings. Six papers appear. Agarwal and Shah compare employee, academic and user knowledge sources in a theory paper. Stuart and Liu study publication rewards in one science-based firm, using nearly two thousand person-year observations between 2001 and 2008. Nelson follows a waveguide technology from Stanford into a start-up. Leyden, Link and Siegel write on social networks. Clarysse and colleagues track a hundred and thirty-eight start-ups in Flanders. Garud and colleagues bring narrative."
+   ],
+   "labels": [
+    "Page 1100",
+    "Page 1101",
+    "Page 1102"
+   ],
+   "checks": [
+    {
+     "q": "What separates selection effects from strategic choice effects?",
+     "a": "Selection effects work on entry, shaping who becomes an entrepreneur through opportunity costs and social legitimacy; strategic choice effects work after entry, shaping what founders judge desirable and feasible."
+    },
+    {
+     "q": "What are the four contexts, and what overlies them?",
+     "a": "Industry and technological, organizational, institutional and policy, and social contexts, overlaid by temporal and spatial dimensions."
+    }
+   ],
+   "audio": "audio/P08-03.mp3",
+   "seconds": 150.6,
+   "words": 287
+  },
+  {
+   "n": 4,
+   "title": "The papers in the issue and the research agenda",
+   "slides": [],
+   "readings": "",
+   "pages": "1103–1105",
+   "paragraphs": [
+    "Three papers close the summaries. Leyden, Link and Siegel model the entrepreneur as an agent acting under uncertainty in a social setting that can reduce it. Clarysse and colleagues find that the knowledge ecosystem around their start-ups in Flanders is concentrated, the business ecosystem is almost absent, and the public financial network is disconnected from both, which hurts output and survival. Garud and colleagues take a narrative view, in which founders constitute their innovations by telling stories, and regional conferences and state-sponsored expositions work as anchor events. The research agenda then opens.",
+    "Table 3 turns the agenda into questions, sorted by which part of the framework they touch. The headings run from organization and ownership through the ecosystem itself and policy to behaviour, innovation type and performance. Behaviour is the first strand. Entrepreneurs face pervasive uncertainty about market acceptance, resources and whether the technology works, so they judge by heuristics and justify themselves with narratives. We know little about how context shapes those heuristics. Innovation type is the second, since ICT, clean technology, biotechnology, health and scientific instruments may each need a different ecosystem.",
+    "The policy section is the practical payoff, and it maps instruments onto the contexts. Authorities can raise the quantity of entry through general measures, such as entrepreneurship education or easier registration, or target groups: women, immigrants, the unemployed, students, academics. They can also back growth with research support, export help or money to hire experienced managers. Germany built a biotechnology sector with a set of programmes. France changed the law in 1999 to let academics start firms, creating thirty university incubators, and the results fell short of expectations. Taiwan's industrial research institute is offered as a network success."
+   ],
+   "labels": [
+    "Page 1103",
+    "Page 1104",
+    "Page 1105"
+   ],
+   "checks": [
+    {
+     "q": "What does Clarysse and colleagues find in Flanders?",
+     "a": "The knowledge ecosystem is concentrated around a few central actors, the business ecosystem is almost non-existent, and the publicly backed financial network is disconnected from both, which harms innovative output and survival."
+    },
+    {
+     "q": "What does the French law of 1999 illustrate about policy?",
+     "a": "It changed the formal and organizational context, letting academics create firms and producing thirty university incubators, yet the results fell far below expectations."
+    }
+   ],
+   "audio": "audio/P08-04.mp3",
+   "seconds": 148.6,
+   "words": 299
+  },
+  {
+   "n": 5,
+   "title": "The conclusion and the reference list",
+   "slides": [],
+   "readings": "",
+   "pages": "1106–1108",
+   "paragraphs": [
+    "The policy section closes the argument. The SBIR programme, which funds feasibility, then proof of concept, then the move to market, has mostly positive evaluations, though some found distortions, and several countries copied it. Spatial policy follows: Japan's cluster project, France's competitiveness poles, and immigration rules, including a United States proposal for a start-up visa and the return of trained emigrants to Taiwan and China. The conclusion then names the point: a context mix needs a policy mix, which asks more of evaluation. The reference list begins.",
+    "These pages are the reference list."
+   ],
+   "labels": [
+    "Page 1106",
+    "Pages 1107-1108"
+   ],
+   "checks": [
+    {
+     "q": "What does the paper mean by needing a policy mix?",
+     "a": "Because the contexts are interdependent, fostering one aspect of entrepreneurial innovation needs a specific combination of instruments matched to a particular combination of contexts."
+    },
+    {
+     "q": "What is the paper's overall conclusion?",
+     "a": "That joining the innovation systems literature, which studies structures and institutions, with the entrepreneurship literature, which studies individuals and firms, through the contexts of entrepreneurial innovation, is the academic advance the field needs."
+    }
+   ],
+   "audio": "audio/P08-05.mp3",
+   "seconds": 55.7,
+   "words": 105
+  }
+ ],
+ "seconds": 777.2
+}

@@ -1,0 +1,7 @@
+cache/
+checks/*.png
+__pycache__/
+*.before-*
+.env
+.env.*
+*.key

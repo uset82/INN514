@@ -1,0 +1,27 @@
+[PASS] template has no all-caps labels
+[PASS] template has no "·"-joined meta strings
+[PASS] course route lists every lecture and marks the ready ones  {"stops":8,"ready":8,"h1":"Innovation systems and sustainable transformation"}
+  screenshot workspace/lecture-audio/checks/desktop-course.png
+[PASS] #T1 opens the lecture with all its chapters  {"stops":7,"sections":7,"h1":"Innovation as systemic and sustainable transformation"}
+  screenshot workspace/lecture-audio/checks/desktop-lecture.png
+[PASS] a chapter plays from its button  {"src":"T1-02.mp3","paused":false,"t":3.409157,"d":188.424}
+[PASS] paragraph highlight follows the audio  {"count":1,"inChapter":"ch-1"}
+[PASS] next chapter starts on its own  {"src":"T1-03.mp3","now":"2"}
+[PASS] finished chapter fills the route and is saved  {"done":true,"fill":67.984375,"saved":{"T1":[1]}}
+[PASS] speed button changes playback rate  rate 1.15
+[PASS] course route shows progress and a continue button  {"p":"0.14285714285714285","info":"20 minutes, 1 of 7 chapters heard","resume":true}
+[PASS] readings route lists every reading and marks the ready ones  {"stops":17,"ready":17}
+[PASS] #T1 links to its reading P01  {"hash":"#P01","h1":"The evolution of Norway's national innovation system"}
+[PASS] all 17 ready readings open with their chapters and page subheadings  []
+[PASS] a page link in T1 opens P01 at page 431  {"hash":"#P01","found":true,"top":16}
+[PASS] no horizontal scroll at phone width (course)  {"scroll":390,"inner":390}
+  screenshot workspace/lecture-audio/checks/phone-course.png
+  screenshot workspace/lecture-audio/checks/phone-course-dark.png
+[PASS] no horizontal scroll at phone width (lecture)  {"scroll":390,"inner":390}
+  screenshot workspace/lecture-audio/checks/phone-lecture.png
+  screenshot workspace/lecture-audio/checks/phone-lecture-dark.png
+[PASS] no horizontal scroll at phone width (reading)  {"scroll":390,"inner":390}
+  screenshot workspace/lecture-audio/checks/phone-reading.png
+  screenshot workspace/lecture-audio/checks/phone-reading-dark.png
+[PASS] no script errors
+ALL PAGE CHECKS PASSED

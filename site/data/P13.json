@@ -1,0 +1,179 @@
+{
+ "id": "P13",
+ "kind": "reading",
+ "title": "Reading 13: Value proposition as a framework for value cocreation in crowdfunding ecosystems",
+ "session": "Quero & Ventura 2019",
+ "lecturer": "Quero & Ventura",
+ "deck": "Marketing Theory 19(1)",
+ "authors": "Quero & Ventura",
+ "year": 2019,
+ "source": "Marketing Theory 19(1)",
+ "lectures": [
+  "B1"
+ ],
+ "chapters": [
+  {
+   "n": 1,
+   "title": "The paper in brief",
+   "slides": [],
+   "readings": "",
+   "pages": "the whole paper",
+   "paragraphs": [
+    "Quero and Ventura ask whether the ecosystem approach is needed to understand crowdfunding. Their own, broader definition (page 48) makes crowdfunding a business model in which actors cocreate value to carry one actor's proposal forward, by raising money and by other means. They place the argument in service-dominant logic. Their stated aim is to add to two of its foundational premises, FP 7 and FP 10, by showing that the ecosystem approach is required. Three propositions guide the study (page 48). Crowdfunding can be considered a service ecosystem; the Eight Co's model shows the eight ways value propositions are cocreated; and the value proposition approach is a useful tool for analysing cocreation at each level of the ecosystem.",
+    "The vocabulary comes from marketing theory. On page 51 the authors adapt Frow and Payne's five-step planning framework, replacing stakeholder with actor. Its steps are to identify actors, determine core values, facilitate dialogue, identify cocreation opportunities, and cocreate value propositions. On page 52 they adopt Frow and colleagues' definition of a value proposition: a mechanism that adjusts as actors negotiate how resources are shared inside a service ecosystem. On page 53 they assemble the Eight Co's model. Russo and Mele supply five categories, Quero and Ventura had added co-investment and co-consumption for crowdfunding, and Kumar's co-authorship makes eight. On page 55 the paper divides the ecosystem into three levels, following Chandler and Vargo: a micro level of direct exchange between two parties, a meso level where exchange runs through a third party, and a macro level of networks.",
+    "The evidence is a qualitative multiple case study of the two most representative Spanish platforms by funds raised: Verkami, for arts and design only, and Lánzanos, for all kinds of projects. The scope is the cultural sector. The authors followed five crowdfunding communities from January to April 2014 and interviewed both platform directors.",
+    "The two directors agreed on an eighth actor that the literature had not listed, public institutions. Both also agreed that crowdfunding can be considered an ecosystem, which supports the first proposition. Across the three levels the authors find eight forms of cocreation, framed as six value proposition metaphors, among them the promise, the proposal and the invitation to play. At the macro level, associations and public institutions bring institutionalisation, which the authors suggest could be a conflictual form of cocreation (page 58).",
+    "The authors offer a crowdfunding ecosystem model for arts managers. They say it provides not only a way of raising money but also a way of strengthening bonds with customers and other stakeholders, and that the results confirm their three propositions. They call the crowdfunding ecosystem a significant contribution to the theories of ecosystems (page 59). The sampling design could be improved by broadening the kinds of cultural project and by adding projects from other countries. Checking the model outside the cultural setting would also be interesting.",
+    "The companion lecture is the bonus lecture, The art of crowdfunding, which uses this paper in its chapter on value co-creation. There, slide 38 reproduces a figure credited to Quero and Ventura. The lecture sets the slide's circles against the paper's own list, noting two differences: the slide says co-financing where the paper says co-investment, and the slide adds co-production but not co-authoring. The lecture also records that crowdfunding was not on the December 2024 or the June 2025 exam. Its note on December 2024's Question 2, on how agency in innovation systems can promote or inhibit sustainable transformation, marks the crowdfunding example as one of ours rather than the lecturer's. The paper touches sustainability only in passing: it says the participatory model supports sustainability and continuous change (page 48), and it calls for research on how sustainable ecosystems emerge (page 60). What it can give such an answer is a precise cast of actors and a vocabulary for what passes between them."
+   ],
+   "labels": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "checks": [
+    {
+     "q": "What does the paper mean by a value proposition, and where does that definition come from?",
+     "a": "A mechanism that adjusts as actors negotiate how resources are shared inside a service ecosystem, a definition the authors adopt from Frow and colleagues on page 52."
+    },
+    {
+     "q": "Which actor did the study add to the literature's list, and what did the directors agree about the ecosystem?",
+     "a": "Public institutions. Both directors agreed that crowdfunding can be considered an ecosystem, which supports the first proposition."
+    }
+   ],
+   "audio": "audio/P13-01.mp3",
+   "seconds": 285.1,
+   "words": 647
+  },
+  {
+   "n": 2,
+   "title": "The aim, the three propositions and the actors of crowdfunding",
+   "slides": [],
+   "readings": "",
+   "pages": "47–50",
+   "paragraphs": [
+    "The article appears in Marketing Theory, and both authors, Quero and Ventura, work at the University of Malaga. The abstract gives the aim: to explore whether the ecosystem approach is required to understand the new service model of crowdfunding. It says the value proposition approach offers a different interpretation for each of the eight levels of value cocreation in a service ecosystem. The study compares the two most representative platforms in Spain, Verkami and Lánzanos, by the funds they raise, and the abstract itself names the sampling design as a weakness.",
+    "The introduction notes the turn in marketing towards value creation as interactive and networked; quoting Karpen and colleagues, superior value co-creation replaces superior value provision as the cornerstone of strategy. In crowdfunding, a new business model, actors work at the frontier between buying, selling and investing. Its participatory model, they add, supports sustainability and continuous change. Little is known about how actors' roles change, so three propositions follow: crowdfunding can be considered a service ecosystem; the Eight Co's model shows how value propositions are cocreated; and the value proposition approach is a useful tool at each level.",
+    "The page ties the propositions to service-dominant logic, naming FP 7 and FP 10 and Karpen and colleagues' idea of an individuated interaction capability. It reads crowdfunding as a new generation of service ecosystem, following Wieland and colleagues, and says the findings may travel to other business models. A map of the six sections follows. The section on the phenomenon begins here, with the literature's definitions: Ordiani and colleagues call crowdfunding an initiative that collects small and medium investments from a crowd, and Schwienbacher and Larralde describe it as financing by a group of individuals instead of professional parties.",
+    "Ramos sorts crowdfunding platforms into four kinds: equity, lending, rewards and donation. Market figures follow. Forbes, writing in 2012, divides the world market of 2014 into donations, loans, equity and rewards. In Spain, investment doubled in 2013, reaching 19.1 million euros. Belleflamme and colleagues then separate projects by what participants want, a product or a financial return. Ordiani and colleagues name three kinds of actor. The page closes on an actor the literature has not yet treated, the crowdfunding association, and on the lobbying role it takes as governments begin to legislate."
+   ],
+   "labels": [
+    "Page 47",
+    "Page 48",
+    "Page 49",
+    "Page 50"
+   ],
+   "checks": [
+    {
+     "q": "Which four kinds of platform does Ramos distinguish?",
+     "a": "Equity-based, lending-based, rewards-based and donation-based platforms."
+    },
+    {
+     "q": "Which actor does the paper say the literature has not yet treated, and what does it do?",
+     "a": "The crowdfunding association, which lobbies governments as they begin to regulate the market."
+    }
+   ],
+   "audio": "audio/P13-02.mp3",
+   "seconds": 184.9,
+   "words": 399
+  },
+  {
+   "n": 3,
+   "title": "The planning framework, the Eight Co's and the two Spanish platforms",
+   "slides": [],
+   "readings": "",
+   "pages": "51–54",
+   "paragraphs": [
+    "The page takes a five-step planning framework from Frow and Payne and rewrites it for crowdfunding, replacing stakeholder with actor. Four steps are set out here. First, identify the actors. Second, determine core values, which Gummesson calls balanced centricity. Third, facilitate dialogue and knowledge sharing, which Lusch and colleagues call a mega-competency. Fourth, identify opportunities for cocreation. The authors warn that the actors are likely to change as crowdfunding evolves. Each one stays only while it can offer and receive value. Table 1 lists the seven actors the literature recognises, with the sources for each.",
+    "The fifth step, the cocreation of value propositions, closes the framework. The authors compare the lists of cocreation categories already on offer. They adopt Frow and colleagues' definition of a value proposition, a mechanism for negotiating how resources are shared. The section that follows argues that cocreation is the basis of any value proposition. It quotes Vargo and Lusch on networks as the venue where value is created. Figure 1 draws the framework as a loop of five circles: identify actors, determine core values, facilitate dialogue and knowledge sharing, identify opportunities, and cocreate value propositions.",
+    "The page gathers definitions of value cocreation and then builds the model of eight categories that the rest of the paper uses. Russo and Mele's five categories are co-ideation, co-evaluation of ideas, co-design, co-test and co-launch. Quero and Ventura had already added co-investment and co-consumption for crowdfunding. Kumar's co-authorship makes an eighth, taken from research collaboration but applied here because actors switch roles easily. The methodology section opens: a qualitative case study, following Yin, limited to the cultural sector, with two platforms chosen by purposive sampling: Verkami, for arts and design only, and Lánzanos, for all kinds of projects.",
+    "The page carries Verkami's figures and the study's own numbers. Verkami accounts for 70% of cultural crowdfunding projects. It financed 953 projects in 2013, 61% more than the year before, and raised almost 5 million euros, 89% more. It had 122,000 financing customers, with a success rate of 70%. The method is described below the figure: a netnographic study of five communities over 4 months, following Kozinets, and semi-structured interviews with each platform director, coded in ATLAS.ti. Figure 2 shows the platforms and the communities feeding one case study."
+   ],
+   "labels": [
+    "Page 51",
+    "Page 52",
+    "Page 53",
+    "Page 54"
+   ],
+   "checks": [
+    {
+     "q": "What are the five steps of the framework, and what did the authors change in it?",
+     "a": "Identify the actors; determine core values; facilitate dialogue and knowledge sharing; identify value cocreation opportunities; cocreate value propositions. They replaced the framework's stakeholder with actor."
+    },
+    {
+     "q": "How was the Eight Co's model assembled?",
+     "a": "From Russo and Mele's Five Co's, two categories Quero and Ventura added for crowdfunding, co-investment and co-consumption, and Kumar's co-authorship."
+    }
+   ],
+   "audio": "audio/P13-03.mp3",
+   "seconds": 198.8,
+   "words": 399
+  },
+  {
+   "n": 4,
+   "title": "The results, the three levels and the discussion",
+   "slides": [],
+   "readings": "",
+   "pages": "55–59",
+   "paragraphs": [
+    "The results open by testing the literature's list against what the two directors said. Both added an actor the literature had missed, public institutions, and the Lánzanos director explained the need for regulation. Table 2 then gives each actor's actions and intentions, running from the creative core to public institutions. On the first proposition the directors were explicit: one said every actor is equally important, and the other agreed with the idea of an ecosystem. The page then sets up three levels, following Frow and colleagues' categories and Chandler and Vargo, and begins with the micro level.",
+    "At the micro level, the creative core seeks money from the platform or from financing customers and offers rewards. A film on Verkami asks 10 euros for a T-shirt and 800 for a credit in the film. On rewards-based platforms the dominant value proposition is the promise. Yet El Cosmonauta, the first crowdfunded film in Spain, received cameras, microphones and artists' services. The most common forms of cocreation here are co-evaluation, co-testing, co-investing and co-consumption, and the Lánzanos director says 40 to 50% of projects change during a campaign. Figure 3 places the eight actors across the three levels.",
+    "A second value proposition appears at the micro level, the proposal, though the Verkami director says cultural projects do not change much. The page then moves to the meso level, where exchange runs through a third party and the expert has a role. The value proposition here is an invitation to play, and the example is Heroquest 25, the rewards-based project that raised the most in Spain, at 680.037 euros, where the director says customers were collaborators. Figure 4 sets the metaphors against the three levels and lists the eight forms of cocreation at each.",
+    "The meso level closes with the second metaphor, building bridges, which does not always happen. The macro level is a network where dyads and triads work at once. Two new actors appear there: the associations, which lobby, and public institutions. Following Edvardsson and colleagues, platforms and their associations represent institutionalisation, and in Laamanen and Skalen's sense these relationships could be a conflictual form of cocreation. Two metaphors follow, the wild card and the journey to a destination, tied to what the directors said about equality and emotional links. The discussion opens: crowdfunding can be considered a service ecosystem.",
+    "The discussion tests the ecosystem claim against three conditions from Chandler and Vargo, Lusch and colleagues, and Frow and Payne: service offerings are coproduced, a service offering is exchanged, and value is cocreated. All three, the authors say, are present, and the approach can apply to other ecosystems. They call the crowdfunding ecosystem a significant contribution to the theories of ecosystems. Practitioners should find all the actors, specify the types of cocreation through the Eight Co's, and identify value proposition strategies. For scholars, the results confirm the three propositions, building on FP 7 and FP 10."
+   ],
+   "labels": [
+    "Page 55",
+    "Page 56",
+    "Page 57",
+    "Page 58",
+    "Page 59"
+   ],
+   "checks": [
+    {
+     "q": "How does the paper describe the micro and the meso levels?",
+     "a": "The micro level is a direct exchange between two parties, the classic dyad. The meso level is an indirect exchange through a triad, which gives the expert a role."
+    },
+    {
+     "q": "What three conditions does the paper say a network must meet to count as an ecosystem, and does crowdfunding meet them?",
+     "a": "Service offerings are coproduced, a service offering is exchanged, and value is cocreated. The paper says all three are present."
+    }
+   ],
+   "audio": "audio/P13-04.mp3",
+   "seconds": 228.7,
+   "words": 505
+  },
+  {
+   "n": 5,
+   "title": "The conclusion and the reference list",
+   "slides": [],
+   "readings": "",
+   "pages": "60–63",
+   "paragraphs": [
+    "The authors would like work on the kinds of value created, the practices behind them, and the factors behind the emergence of sustainable ecosystems. They say the sampling could be broadened to other kinds of cultural project and other countries, and that checking the model outside the cultural setting would be interesting. The conclusion restates the finding: the cultural crowdfunding context in Spain acts as a service ecosystem, where eight kinds of actor cocreate eight types of value, framed as six metaphors. The list of actors that follows names seven. The reference list begins on this page.",
+    "These three pages are the reference list. The last entry on page 63 is followed by short biographies of the two authors."
+   ],
+   "labels": [
+    "Page 60",
+    "Pages 61-63"
+   ],
+   "checks": [
+    {
+     "q": "What does the paper conclude, and what does it say about its sample?",
+     "a": "That the cultural crowdfunding context in Spain acts as a service ecosystem, where eight kinds of actor cocreate eight types of value. The authors say the sampling design could be improved by adding projects from other countries."
+    },
+    {
+     "q": "What follows the last reference entry on page 63?",
+     "a": "Short biographies of the two authors."
+    }
+   ],
+   "audio": "audio/P13-05.mp3",
+   "seconds": 57.5,
+   "words": 131
+  }
+ ],
+ "seconds": 955.0
+}

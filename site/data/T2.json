@@ -1,0 +1,255 @@
+{
+ "id": "T2",
+ "title": "Lecture 2: Regional innovation systems and sustainable transformation",
+ "session": "Kursplan 2026, session 2 (22 September)",
+ "lecturer": "Arnt Fløysand",
+ "deck": "Forlesning 2 Fløysand.pdf (H2025, 44 slides)",
+ "chapters": [
+  {
+   "n": 1,
+   "title": "Why geography matters",
+   "slides": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ],
+   "readings": "Fløysand et al. 2022; Schlaile et al. 2017; Fløysand & Jakobsen 2016",
+   "paragraphs": [
+    "The second lecture moves from the whole country down to the region. Its message fits in two words on the third slide: geography matters. Innovation systems can be national, regional or even global, and this lecture is about the regional level, with Western Norway as the case.",
+    "Three readings belong here. The main one is the article by Fløysand and colleagues from 2022 on institutional work and green restructuring in Hordaland and Rogaland. The second is the article by Schlaile and colleagues on giving innovation systems a direction, which you met in the first lecture. The third is a Norwegian book chapter by Fløysand and Jakobsen from 2016 on industrial development in Western Norway.",
+    "The lecture starts with a recap of the national level. Countries differ a lot in how well they innovate and grow. The lecture lists the reasons, taken from Trott's textbook. Countries differ in their labour, natural resources, capital and infrastructure. They differ in what their customers demand, and in their suppliers and related industries. They differ in research conditions, the STI side. And they differ in institutions, both informal ones, such as norms and ways of doing things, the DUI side, and formal ones, such as laws and regulations. So national innovation systems are about how a national context makes a difference to innovation as an interactive process. Norway's paradox from the first lecture is the example.",
+    "The recap ends with the teams, tools and tasks model and the three pillars of sustainability. Then comes a short class exercise. Which energy solutions could help sustainable transformation in Vestland county, and which tools, old or new, could move it towards economic, social and environmental sustainability? Take two minutes to jot down your own answer. The rest of the lecture gives you material to check it against."
+   ],
+   "checks": [
+    {
+     "q": "Name four kinds of national difference that shape innovation, according to the lecture.",
+     "a": "Labour, natural resources, capital and infrastructure; demand conditions; suppliers and related industries; research conditions; and institutions, both formal (laws, regulations) and informal (norms, ways of doing things)."
+    }
+   ],
+   "audio": "audio/T2-01.mp3",
+   "seconds": 132.5,
+   "words": 304
+  },
+  {
+   "n": 2,
+   "title": "The regional level",
+   "slides": [
+    10,
+    11,
+    12,
+    13
+   ],
+   "readings": "none new",
+   "paragraphs": [
+    "Why look at regions at all? Because conditions differ inside a country as well as between countries. The lecture says that firms are part of a region's material, social and cultural inventory. Regional conditions shape how firms innovate, and firms in turn shape the region.",
+    "The lecture says an innovating firm has to do three things. It has to build up unique knowledge inside its own organisation. It has to bring in extra knowledge from outside actors. And it has to live with regional conditions that can either stimulate or hold back its innovation.",
+    "Three kinds of regional condition matter most. The first is the natural resource base and the technical infrastructure. These are often sunk costs: money already spent on plants, harbours and pipelines that cannot easily be moved or recovered. The second is networks that stretch across the region. Researchers call the lively local exchange of news, gossip and know-how local buzz. The third is institutions anchored in the region. These include DUI learning and tacit knowledge, and also research that has been sharpened to fit the region's existing industries.",
+    "The lecture also introduces the founding father of this research. Philip Cooke started research on regional innovation systems in 1992. He was an adjunct professor at HVL from 2015 to 2024. He also founded the journal European Planning Studies, which the lecture names as a main source for this research, together with Regional Studies and Research Policy.",
+    "So what is a regional innovation system, or RIS? In the lecture's first, simple version, it is the infrastructure, network dynamics and institutions that support innovation in a region. Some of these are hard factors, such as knowledge organisations. Others are soft factors, such as networks, institutions and the tacit knowledge that flows through local buzz."
+   ],
+   "checks": [
+    {
+     "q": "Name the three kinds of regional condition that shape innovation.",
+     "a": "The natural resource base and technical infrastructure (sunk costs); networks across the region (local buzz); and institutions anchored in the region, such as DUI learning, tacit knowledge and research tailored to local industry."
+    }
+   ],
+   "audio": "audio/T2-02.mp3",
+   "seconds": 134.7,
+   "words": 300
+  },
+  {
+   "n": 3,
+   "title": "What a regional innovation system is made of",
+   "slides": [
+    14,
+    15
+   ],
+   "readings": "Fløysand et al. 2022",
+   "paragraphs": [
+    "The lecture admits that there are several definitions of a regional innovation system. But the basic one sees it as three subsystems that work together.",
+    "The first subsystem is firms and industries, which are often organised in clusters, together with the public sector. The second is knowledge organisations for research and education, such as universities, university colleges and research institutes. The third is support organisations, such as regional authorities, cluster organisations and incubators. An incubator is a place that helps new firms in their first years with space, advice and contacts.",
+    "Knowledge and learning flow in complex ways within and between these three subsystems. This happens in networks, and the networks follow institutions, meaning informal rules for how people behave and work together. And the subsystems are built up over time. The lecture calls this an evolutionary perspective, and it points to the article by Fløysand and colleagues on Rogaland and Hordaland as the example.",
+    "There is also a broad and a narrow way to draw the boundary. The broad approach covers the whole regional economy: all private and public firms, plus the wider set of organisations and institutions that support learning and innovation. The narrow approach, which the lecture credits to Asheim and Gertler from 2005, looks only at the interplay between research institutions, knowledge-intensive firms, technology transfer organisations and other support organisations.",
+    "Here is an exam tip. The June 2025 exam asked: what do you understand by a regional innovation system? The three subsystems, the flows of knowledge between them in networks, and the role of institutions give you a strong answer. Add one Western Norway example, which you will meet later in this lecture."
+   ],
+   "checks": [
+    {
+     "q": "What are the three subsystems of a regional innovation system?",
+     "a": "Firms and industries (often in clusters) plus the public sector; knowledge organisations for research and education; and support organisations such as regional authorities, cluster organisations and incubators."
+    },
+    {
+     "q": "What is the difference between the broad and the narrow RIS approach?",
+     "a": "The broad approach covers the whole regional economy and all the organisations and institutions supporting learning. The narrow approach covers only research institutions, knowledge-intensive firms, technology transfer and support organisations."
+    }
+   ],
+   "audio": "audio/T2-03.mp3",
+   "seconds": 126.1,
+   "words": 287
+  },
+  {
+   "n": 4,
+   "title": "Different kinds of regional innovation system",
+   "slides": [
+    16,
+    17
+   ],
+   "readings": "Fløysand et al. 2022, pp. 16, 19",
+   "paragraphs": [
+    "Regional innovation systems come in many forms, and researchers sort them in different ways. The lecture uses two typologies.",
+    "The first sorts regions by how they are connected. In a networked RIS, firms have strong links to regional research institutions, and regional policy works to strengthen innovation. The lecture asks, with a question mark, whether Hordaland fits here. In a dirigiste RIS, firms and research institutions are tied mainly into the national innovation system. Outside actors play a key role, and innovation tends to follow the linear, research-driven STI path. The lecture asks whether Rogaland fits here. In a grassroots RIS, firms innovate mainly by learning from each other in local networks, with less contact with research institutions.",
+    "The second typology sorts regions by how they are organised, and the article by Fløysand and colleagues uses it on page 16. An organisationally thick and diversified RIS has many firms in a varied mix of industries and clusters, and a critical mass of knowledge and support organisations. These are often big city regions, and the article places Hordaland here on page 19. An organisationally thick and specialised RIS also has many firms, but in only a few industries, often one dominant cluster, with knowledge and support organisations specialised to match. Rogaland, with its petroleum industry, is the example. An organisationally thin RIS has only a few innovative firms and few or weak knowledge and support organisations. These are often rural areas.",
+    "Why does the type matter? Because it shapes what kind of change is easy. A diversified region has more different pieces to combine into something new. A specialised region is very good at what it already does, which can make it harder to change course. Keep this contrast in mind for the end of the lecture."
+   ],
+   "checks": [
+    {
+     "q": "Name the three organisational types of RIS and give the course example for two of them.",
+     "a": "Organisationally thick and diversified (Hordaland), organisationally thick and specialised (Rogaland, petroleum), and organisationally thin (often rural regions)."
+    }
+   ],
+   "audio": "audio/T2-04.mp3",
+   "seconds": 137.5,
+   "words": 304
+  },
+  {
+   "n": 5,
+   "title": "Giving a region a direction",
+   "slides": [
+    18,
+    19,
+    21,
+    22,
+    23,
+    24
+   ],
+   "readings": "Schlaile et al. 2017, p. 1",
+   "paragraphs": [
+    "The lecture now brings back Schlaile and colleagues. Making room for innovation is not enough. Regional innovation systems, too, need a direction that helps solve the problems of society. On their first page, the authors call for more research on directionality, legitimacy and responsibility. The lecture adds an important point. Technical solutions alone will not reach the goals of sustainability. Innovation practice in networks, and the institutions around it, must change too. Is that unproblematic, the slide asks, and how can it be done?",
+    "Where does the push for green change come from? The lecture traces it from the global level down to the region. At the global level, there is a long line of agreements under the United Nations. It runs from the Brundtland report in 1987 and the Rio conference in 1992 to the Paris agreement in 2015, which gives every country obligations. The slide also lists the seventeen sustainable development goals, and the Glasgow climate conference, where countries had to strengthen their climate targets. The European Union adds its own strategies, research programmes and the European Green Deal from 2020. Norway is linked to EU policy through the EEA agreement. The slide notes that this picture was drawn before Trump's return in 2024.",
+    "New ideas about policy also travel. One is transformative or mission-oriented innovation policy. It tackles grand challenges through big efforts across sectors, active cooperation between state and business, and new kinds of partnership. The lecture quotes Mazzucato from 2021: it is not only about setting the rules of the game, but changing the game itself. The other idea is smart specialisation, developed in the EU. It builds on what a region is already good at, renewing existing industries and growing new, related ones. The lecture credits the idea of finding related opportunities to Foray, in 2015, and notes that it now also includes the sustainable development goals.",
+    "In Norway, the country has promised to cut emissions by at least 50 percent, and up to 55 percent, by 2030, compared with 1990. The Solberg government, from 2013 to 2021, mainly trusted the market, though it became more active because of climate pressure and the Covid crisis. The Støre government, from 2021, wants an active industrial policy and a bigger role for the state, municipalities and counties. Still, most policy is made nationally, and most funding tools are national, such as the Research Council, SIVA and Innovation Norway. Regional policy often only facilitates national initiatives, the lecture says, citing Uyarra and colleagues from 2020. So the lecture asks: how much room for action does Western Norway really have?"
+   ],
+   "checks": [
+    {
+     "q": "What is the difference between mission-oriented policy and smart specialisation?",
+     "a": "Mission-oriented policy tackles grand challenges by changing the game itself, with big cross-sector efforts. Smart specialisation builds on what a region is already good at, renewing existing industries and growing related ones."
+    },
+    {
+     "q": "Why might a region have limited room to steer its own green transformation in Norway?",
+     "a": "Because most industrial policy and most funding tools (the Research Council, SIVA, Innovation Norway) are national, and regional policy often only facilitates national initiatives."
+    }
+   ],
+   "audio": "audio/T2-05.mp3",
+   "seconds": 198.3,
+   "words": 439
+  },
+  {
+   "n": 6,
+   "title": "Western Norway's double challenge",
+   "slides": [
+    20,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+   ],
+   "readings": "none new",
+   "paragraphs": [
+    "Now the case. In 2021, Vestland county launched big plans for regional green restructuring, called Green Region Vestland. The lecture asks a sharp question: wishful thinking or convincing plans?",
+    "To answer it, you need to see how much the region depends on oil and gas. The lecture's figures, for Hordaland and Rogaland in 2015, are striking. Two thirds of Norway's oil and gas exports came from this region. The petroleum sector had a turnover of 515 billion kroner there. It employed about 60,000 full-time workers, counting both extraction and suppliers, which was about half of all petroleum jobs in Norway. Other big sectors are the maritime sector, with about 25,000 workers, and seafood, with about 7,000. The region is also a leader in hydropower, producing about 34 terawatt hours a year out of a national total of about 140.",
+    "A chart from the 2019 report on Western Norway adds that in 2017, oil and gas created 265 billion kroner of value in Norway, and 71 percent of it was created in Western Norway. Another slide shows where Vestland's emissions come from. Industry, oil and gas cause 42 percent, with the Mongstad refinery as the largest single source. Then come shipping at 21 percent, road traffic at 13 percent, energy supply at 8 percent and farming at 6 percent.",
+    "So the region faces what the lecture calls a double challenge. First, it must reduce its dependence on oil and gas by developing new green industries. Second, it must make its existing industries greener, for example through electrification, more renewable energy, hydrogen, and capturing and storing carbon dioxide.",
+    "How far has the first part come? The fall in the oil price in 2015 did reduce the dependence. The share of all employees working in petroleum fell from 17 to 11 percent in Hordaland, and from 36 to 29 percent in Rogaland, between 2014 and 2019. But then oil prices rose again, and the Covid rescue package from 2020 to 2022 helped keep investment on the continental shelf stable. So the trend is not one-way."
+   ],
+   "checks": [
+    {
+     "q": "What is Western Norway's double challenge?",
+     "a": "To reduce its dependence on oil and gas by developing new green industries, and to make its existing industries greener, for example through electrification, hydrogen and carbon capture and storage."
+    },
+    {
+     "q": "How did petroleum's share of employment change from 2014 to 2019?",
+     "a": "It fell from 17 to 11 percent in Hordaland and from 36 to 29 percent in Rogaland, after the 2015 oil price fall."
+    }
+   ],
+   "audio": "audio/T2-06.mp3",
+   "seconds": 159.7,
+   "words": 348
+  },
+  {
+   "n": 7,
+   "title": "Green paths in practice",
+   "slides": [
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39
+   ],
+   "readings": "none new",
+   "paragraphs": [
+    "The lecture then walks through real attempts at green change, sector by sector.",
+    "New industries come first. Wind power can supply electrification and more power production, but it carries an environmental risk of its own: the loss of nature in Norway. Building of new wind power on land has stopped. Battery production for the maritime sector is another new path.",
+    "Then the greening of existing industries. The maritime sector, with its shipyards, shipowners and suppliers, has a history in the ferry and offshore markets. It has used that experience to move into clean technology. The lecture says, citing Sjøtun from 2019, that the region is now seen as world-leading in building and running battery-powered ferries. Maritime battery technology is spreading to new markets, such as local cruise traffic, fishing vessels and well boats, and it cuts carbon emissions from shipping. This is a good example of DUI learning: experience from one market carried into the next.",
+    "In the energy sector, including oil and gas, a diagram shows two routes to hydrogen. Green hydrogen is made from water with electricity from wind, water or sun. Blue hydrogen is made from natural gas, and the carbon dioxide it releases is captured and stored under the seabed.",
+    "Seafood, mainly salmon farming, has serious environmental risks. Escaped farmed salmon change the genes of wild salmon. Salmon lice from fish farms raise the death rate of wild salmon, and disease and lice treatments kill many farmed fish too. Waste from the farms changes the seabed and its animal life near the farms. Responses include electrifying the farm sites and the boats that serve them. Another is reducing lice in the pens. In 2015, the Directorate of Fisheries handed out development licences for this: 24 projects with 104 licences, equal to about 90,000 tonnes of fish. The lecture cites research by Sjøtun, Fløysand and colleagues from 2022 on this case."
+   ],
+   "checks": [
+    {
+     "q": "Why are battery ferries a good example of regional path development?",
+     "a": "Because the maritime cluster used its experience from the ferry and offshore markets to develop battery technology, and is now spreading it to new markets such as cruise traffic, fishing vessels and well boats."
+    },
+    {
+     "q": "What is the difference between green and blue hydrogen in the lecture's diagram?",
+     "a": "Green hydrogen is made from water using renewable electricity; blue hydrogen is made from natural gas, with the carbon dioxide captured and stored."
+    }
+   ],
+   "audio": "audio/T2-07.mp3",
+   "seconds": 143.3,
+   "words": 320
+  },
+  {
+   "n": 8,
+   "title": "What the case shows",
+   "slides": [
+    40,
+    41,
+    42,
+    43,
+    44
+   ],
+   "readings": "Fløysand et al. 2022, pp. 15, 25; Fløysand & Jakobsen 2016, p. 324",
+   "paragraphs": [
+    "So is Western Norway transforming? The lecture's honest answer is: not in the deep sense. Remember Mazzucato's phrase about changing the game itself. The lecture says the Western Norway case is not mainly about that. It is about reducing the region's dependence on petroleum by growing new green industries, such as batteries, offshore wind and hydrogen. And it is, above all, about making existing industries greener through technology, such as electric ferries and gas-powered ships, electrification and carbon storage in petroleum, and new technology in seafood.",
+    "The summary slide explains why. There are many signs of path dependence. Most solutions are technical fixes inside existing industries. Path creation, meaning the growth of genuinely new industries, meets resistance from the region's material conditions: its established resource industries and their infrastructure. And the region's institutional and social conditions stay mostly unchanged.",
+    "The final slide gives the main reading's answer. Fløysand and colleagues argue that institutional work is needed for green restructuring. Institutional work means the efforts people make to change, keep or break the rules of the game. The next lecture explains it in detail. In Hordaland, the diversified region, the authors observe several new patterns of institutional work, including new guiding rules for how actors work together. They say this on page 25, and it helped make the green shift legitimate. In Rogaland, the specialised petroleum region, the efforts aim to broaden the region's industries. But on page 15 and again on page 25, the authors find strong signs that the deep-rooted logic of the oil and gas industry is bouncing back. So the green shift there risks being mainly talk.",
+    "The book chapter by Fløysand and Jakobsen adds a useful frame. On page 324, it describes regional renewal as the sum of processes at three levels. At the industry level, cluster dynamics matter. At the firm level, related variety matters, meaning firms whose knowledge is different but connected. At the individual level, entrepreneurship and a start-up culture matter.",
+    "The next lecture, by Nora Geirsdotter Bækkelund, turns to entrepreneurial ecosystems."
+   ],
+   "checks": [
+    {
+     "q": "How do Hordaland and Rogaland differ in the article by Fløysand and colleagues?",
+     "a": "In diversified Hordaland, new patterns of institutional work, including new guiding rules of interaction, helped legitimise green restructuring. In specialised Rogaland, the oil and gas logic is bouncing back, which delegitimises the green shift."
+    },
+    {
+     "q": "Why does the lecture say Western Norway's change is not 'changing the game itself'?",
+     "a": "Because it mostly reduces petroleum dependence through new green industries and greens existing industries through technology, while path dependence, material conditions and unchanged institutions limit deeper transformation."
+    }
+   ],
+   "audio": "audio/T2-08.mp3",
+   "seconds": 162.4,
+   "words": 345
+  }
+ ],
+ "seconds": 1194.5
+}

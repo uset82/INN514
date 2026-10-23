@@ -1,0 +1,213 @@
+{
+ "id": "P15",
+ "kind": "reading",
+ "title": "Reading 15: Bricolage versus breakthrough: distributed and embedded agency in technology entrepreneurship",
+ "session": "Garud & Karnøe 2003",
+ "lecturer": "Garud & Karnøe",
+ "deck": "Research Policy 32",
+ "authors": "Garud & Karnøe",
+ "year": 2003,
+ "source": "Research Policy 32",
+ "lectures": [
+  "T5"
+ ],
+ "chapters": [
+  {
+   "n": 1,
+   "title": "The paper in brief",
+   "slides": [],
+   "readings": "",
+   "pages": "the whole paper",
+   "paragraphs": [
+    "Most work on entrepreneurship puts agency in a few exceptional individuals, either because of the traits they possess or because they are heroic figures who overcome the odds. Garud and Karnøe argue instead that technology entrepreneurship is a process distributed across many actors. Their question is how one group of actors deploying modest resources could prevail over another group deploying far superior resources. Wind power is the case. American actors had money and scientific backing, while Danish actors had little of either, yet Danish firms became the world leaders in the market.",
+    "Two concepts carry the argument. Agency is distributed, meaning that the inputs shaping a technology come from actors in different domains, each with its own frame of reference (page 280). It is also embedded, because the accumulating path begins to enable and constrain the actors who built it (page 281). The authors then add a pair of labels. Bricolage, a term they take from Levi-Strauss, means resourcefulness and improvisation, and it describes the Danish approach of co-shaping a path through modest but steady gains (pages 278 and 279). Breakthrough means an attempt at dramatic outcomes, and it describes the American approach. Figure 2 on page 279 places the technological artifact at the centre, linked by embedding processes to regulation, evaluation, design and production, and use.",
+    "The evidence is a comparative historical account of the two paths. The authors trace the Danish one from Juul's design in the 1950s through Riisager, Jorgensen and Vestas. The American one runs from Jacobs's small machines and Putnam's giant turbine to the firms that entered after 1974. They follow the same four domains in each country and set the differences out in Table 1 on page 284.",
+    "The findings are stated as suggestions. The authors suggest that a high-tech breakthrough approach may carry inherent disadvantages, because it can stifle the micro-learning that mutual co-shaping needs. In the United States, actors designed for aerodynamic efficiency rather than long-term reliability, treated early failures as start-up difficulties, and replaced broken components instead of analysing them. In Denmark, actors learned from many installation sites, from the shop floor and from comparative tests, and scaled up in many small steps. The authors conclude that actors in the United States may have failed not despite but because of their pursuit of a breakthrough (page 296).",
+    "The contribution is the pair of concepts and the claim that agency is both distributed and embedded. The authors say the study offers additional insights into the potential weaknesses of a breakthrough approach. They also suggest that bricolage preserves emergent properties, and that it may be valuable where actors, artifacts and rules interact in complex, non-linear ways. Such processes may also help in fast-moving environments where competencies, preferences and rules emerge together, and for that, the authors add, actors need a diversity of linkages.",
+    "The paper is a core reading for Lecture 5, Agency and innovation systems in change, where it supplies the contrast between heroic and distributed agency and the two wind turbine cases. For the December 2024 exam, Question 2 asked how agency in innovation systems can promote or inhibit sustainable transformation. Here is an example of our own, not from the paper: the distinction lets you ask whether a green technology is pushed by a few planners or built through many small adjustments. The paper does not use the idea of sustainable transformation, and its nearest point is the account of Danish actors improving turbines step by step while American actors pursued a breakthrough."
+   ],
+   "labels": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "checks": [
+    {
+     "q": "What question does the paper ask?",
+     "a": "How a group of actors deploying modest resources could prevail over another group deploying far superior resources, in the emergence of wind turbines in Denmark and the United States."
+    },
+    {
+     "q": "What do the authors mean by bricolage?",
+     "a": "Resourcefulness and improvisation on the part of involved actors, and co-shaping of the emerging path through modest but steady gains."
+    }
+   ],
+   "audio": "audio/P15-01.mp3",
+   "seconds": 254.1,
+   "words": 589
+  },
+  {
+   "n": 2,
+   "title": "Why agency is distributed, and why it is embedded",
+   "slides": [],
+   "readings": "",
+   "pages": "277–281",
+   "paragraphs": [
+    "The paper opens by rejecting the idea that entrepreneurial agency belongs to a few heroic individuals. The authors note that the entrepreneurship literature usually credits success or failure to specific individuals. Against that, they argue that technology entrepreneurship is a larger process built on the efforts of many. The skills and resources that take an idea to commercial use have to be drawn from actors in several domains. They cite Hayek's point that each distributed actor holds incomplete and often contradictory knowledge. The abstract states the aim: agency is distributed, and also embedded.",
+    "Figure 1 traces global market shares from 1982 to 2000. The US share falls steeply to a small part by 1986, while the Danish share climbs to a large majority and later settles at about half. The authors ask how modestly resourced actors could prevail over far better funded rivals. Their answer: inputs from many actors generate a momentum that enables and constrains those actors. Vestas, the market leader, held 18% of the market. The authors call the Danish approach bricolage, after Levi-Strauss: resourcefulness and improvisation.",
+    "The authors set the two approaches against each other. Danish actors co-shaped the path and sought modest but steady gains, while American actors wanted dramatic outcomes and a design that would leap-frog the Danish initiative. A pioneer of the American path, Stoddard, is quoted admitting that they trusted their engineering tools too much. The paper then turns to theory. Work on the social construction of technological systems shows that a technology's emergence cannot be attributed to any one actor. Figure 2 shows the artifact at the centre, linked by embedding processes to regulation, evaluation, design and production, and use.",
+    "Each domain brings its own frame of reference. Producers act on their beliefs about design, users on the meanings they attach to a product, evaluators on tests and standards, and regulators on what will steer a technology. The set of actors is not stable, and involvement varies in depth. In cochlear implants, basic scientists were involved long before commercial developers. No extra data can remove the interpretive asymmetry between actors, so technology entrepreneurship is a collective creation. They then set out how involvement embeds: learning by doing, by using and by testing.",
+    "A path emerges where several learning processes meet, and it accumulates artifacts, tools, practices, rules and knowledge. Actors are shaped by the inputs they contributed, so entrepreneurship becomes what the authors call mindful deviation: deviate too far and others push back, deviate too little and nothing gathers momentum. Cochlear implants show that alternative paths are possible, with different designs, tests, users and rules. The summary states three facets: technology entrepreneurship creates rather than discovers, its actors are embedded, and the embedding differs by path. Denmark improved a low-tech approach; the US pursued a sophisticated high-tech one."
+   ],
+   "labels": [
+    "Page 277",
+    "Page 278",
+    "Page 279",
+    "Page 280",
+    "Page 281"
+   ],
+   "checks": [
+    {
+     "q": "What does distributed agency mean in this paper?",
+     "a": "That the inputs shaping a technology come from actors in different domains, each with its own frame of reference, so no single individual can be credited with its emergence."
+    },
+    {
+     "q": "Why is agency also described as embedded?",
+     "a": "Because the accumulating artifacts, tools, practices, rules and knowledge begin to enable and constrain the actors who generated them."
+    }
+   ],
+   "audio": "audio/P15-02.mp3",
+   "seconds": 229.4,
+   "words": 487
+  },
+  {
+   "n": 3,
+   "title": "Two wind turbine paths begin",
+   "slides": [],
+   "readings": "",
+   "pages": "282–285",
+   "paragraphs": [
+    "Riisager, a carpenter, rebuilt Juul's 1950s design with wood and lorry gears. Jorgensen, a mechanic, added an active yaw, and Vestas licensed the design in 1979. By 1980 there were nine other Danish firms besides Vestas, and the top three held 63% of the Danish market. Rather than design-intensive research, they used simple heuristics and trial and error, learning from each other at Windmeetings from 1976. Owner-users formed their association in 1978, and manufacturers built in a double brake system. The test station, set up that year, learned from the industry it served.",
+    "Each actor entered at a different moment: the energy crisis of 1974 brought in policy actors, investment losses brought in users, and the need for certification brought in the test station. Their inputs then enabled and constrained one another. The American path starts differently. Jacobs built small battery machines for farmers in the late 1920s, and Putnam built a giant grid-connected turbine between 1934 and 1945. Putnam's design shaped a top-down national programme, and that linear, breakthrough-minded approach spilled into the small firms. Stoddard rejected Juul's design as too simplistic. About 20 other firms became active between 1974 and 1986.",
+    "Table 1 compares the two paths across four groups of actors. For designers and producers it contrasts experience-based heuristics and reliability against engineering science and efficiency. For users it contrasts direct learning from many with indirect learning from few. For evaluators it contrasts co-development against selection. For regulators it contrasts strategic steering with opportunities created and abruptly closed. The page adds that the American Wind Energy Association's key purpose was to lobby Congress on emerging wind and renewable energy legislation, and that subsidies and tax credits produced California's wind gold rush. Section 4 names the two patterns bricolage and breakthrough.",
+    "Danish actors began from a low-tech design and scaled up in small steps, developing the product between them; American actors began high-tech and took large steps. Rosenberg's definition of technology, as knowledge of techniques and designs that work even when one cannot explain why, fits the early Danish firms. Each had skilled workers, technicians and a few practical engineers, who saw turbines as problems like agricultural machinery. Without aerodynamic theory they learned by redesigning components that failed, sometimes by throwing metal at the problem. The heavy, slow design unintentionally reduced design risk, because internal weight overshadowed aerodynamic loads."
+   ],
+   "labels": [
+    "Page 282",
+    "Page 283",
+    "Page 284",
+    "Page 285"
+   ],
+   "checks": [
+    {
+     "q": "How did the Danish and American paths begin differently?",
+     "a": "Denmark began from Juul's design, rebuilt with wood and lorry gears; the United States began from Jacobs's small battery machines and Putnam's giant grid-connected turbine."
+    },
+    {
+     "q": "What was the key purpose of the American Wind Energy Association?",
+     "a": "To lobby Congress on emerging wind and renewable energy legislation."
+    }
+   ],
+   "audio": "audio/P15-03.mp3",
+   "seconds": 201.7,
+   "words": 406
+  },
+  {
+   "n": 4,
+   "title": "Design, users and the test station: where the paths diverge",
+   "slides": [],
+   "readings": "",
+   "pages": "286–290",
+   "paragraphs": [
+    "Figure 3 shows Bonus in Denmark scaling up in many small steps and USWindpower in far fewer. American engineers worked from engineering science, following what the authors call a linear model of discovery. The Department of Energy's programme managers expected light, high-tech machines to leap-frog the sturdier Danish ones. Indeed, US engineers designed for aerodynamic efficiency rather than long-term reliability. Most adopted an aerospace framing, but much aerospace knowledge proved not only inapplicable to wind turbines but misleading, and it contributed to their low reliability.",
+    "Figure 4 contrasts the two pictures of the wind that American actors worked with: a steady wind model from 1975 and a turbulent one from 1985. Separating design from production fitted the mass production ethos and insulated designers from the field. Relations with suppliers were one-time, short-term contracts, and engineers were discouraged from talking to peers. Scale-ups jumped from 25-100 kW to 300 kW in one move, so firms met many novel problems at once and could not learn from them systematically. At USWindPower, new product development stood still between 1983 and 1987.",
+    "In Denmark turbines went to individuals and cooperatives, and do-it-yourself owners organised wind meetings several times a year. A few hundred machines were installed by the early 1980s, and their dispersal gave producers many places to learn. The owners' association won a fail-safe brake and, from 1980, published monthly reliability and performance figures. In the US, producers went for centralised wind farms in California instead. Ownership was separated from use, so feedback came back dampened and delayed. Danish firms then hit trouble in California around 1987, and two of the largest went bankrupt.",
+    "Reduced feedback hurt during California's boom and bust. New firms rushed in, and producers learnt little. Their aerospace framing left them blind to other possibilities, so they treated failures as start-up difficulties and replaced broken components instead of analysing them. Stoddard said the only feedback they got came from lawyers and lawsuits. Test centres, the authors add, generate common standards and knowledge. In Denmark the test station began in 1978 on the initiative of engineers, with a practical orientation, and the industry itself shaped its research agenda. In 1979 a government act made approval compulsory.",
+    "A government act added a subsidy for buyers covering 30% of a turbine's cost, with an approval system to stop the money being wasted. Firms had no choice but to deal with the test station, which did not yet know what the criteria should be. Its engineers worked with producers and users, and the criteria grew out of users' safety demands and the housing ministry's experience with structural stress. Between 1981 and 1984 the performance of 55 kW machines improved by more than 50%. In the US the laboratory never built such trust."
+   ],
+   "labels": [
+    "Page 286",
+    "Page 287",
+    "Page 288",
+    "Page 289",
+    "Page 290"
+   ],
+   "checks": [
+    {
+     "q": "Why did the aerospace framing hurt American turbines?",
+     "a": "Much aerospace knowledge proved not only inapplicable to wind turbines but misleading, and it contributed to their low reliability."
+    },
+    {
+     "q": "What did the Danish approval system require of firms?",
+     "a": "That their turbines be certified through the test station, with a subsidy of 30% of the cost paid to buyers."
+    }
+   ],
+   "audio": "audio/P15-04.mp3",
+   "seconds": 230.0,
+   "words": 481
+  },
+  {
+   "n": 5,
+   "title": "The test centre, the regulators, and the two approaches compared",
+   "slides": [],
+   "readings": "",
+   "pages": "291–295",
+   "paragraphs": [
+    "Figure 5 sets out the linear model that guided the American test centre. Research needs feed basic science and advanced components work, which build a technology base that is then handed to industry. The authors say this technology-push approach shaped how the laboratory's researchers dealt with firms. Both versions of the laboratory had research in their name but not testing, and it avoided systematic testing of commercial turbines. Instead it tried to push the industry towards a revolutionary design. In 1993 its head, Robert Thresher, said they were betting that the light, cost-effective turbine would win the race.",
+    "A Danish model came out every two years, while the American laboratory took two to three years to develop blades alone; one firm said it built its own rather than wait. Testing was patchy: reports came late, machines tested were small and old, and in 1992 the largest at the site was a 20 kW machine. After visiting the Danish test station in 1992, Thresher admitted the work at his own site had become irrelevant. Stoddard counted twelve of the 25 most important papers on turbine design as coming from the Danish station, against five from the American laboratory.",
+    "In Denmark a committee set up after the 1974 energy crisis concluded that wind power was viable. A second crisis in 1979 brought a 30% investment subsidy for certified turbines, later raised to 50%. Installations rose from 8 MW in 1984 to 25 MW in 1985. Regulators modulated growth, cutting direct investment subsidies in steps from 30% in 1979 to none in 1989. In the US, the state spent 486 million dollars on research between 1974 and 1992 without producing a viable turbine, while tax credits and PURPA did more.",
+    "The California boom ended abruptly. 12,000 turbines went in between 1981 and 1986, and the 1100 MW installed was 95% of the world total, but the incentive structure kept investors away from the machines. Vestas's managing director said most American investors never saw a turbine. When tax credits were not extended beyond 1985, firms went bankrupt and lawsuits multiplied. The authors call the policy on-off. Section 5 then sets the two approaches side by side: Danish producers scaled up a heavy, low-speed design while American producers aimed for a light, high-speed one.",
+    "Danish actors were hands-on with the technology and with each other, while in the US formal models stood between actors and artifacts, producing a hands-off quality. In Denmark the coupling of learning processes reinforced the path. Learning from many sites and from the shop floor fed the scale-ups, and comparative tests accumulated knowledge across firms. There were no grand plans; distributed actors created a virtuous learning circle. Boundaries blurred between design and production, planning and execution, rule making and rule following. In the US, mutual co-shaping was much weaker, and involvement was episodic."
+   ],
+   "labels": [
+    "Page 291",
+    "Page 292",
+    "Page 293",
+    "Page 294",
+    "Page 295"
+   ],
+   "checks": [
+    {
+     "q": "Why did the Danish test station matter for the industry?",
+     "a": "It tested machines of different vintages, and its criteria grew out of users' safety demands and the housing ministry's experience, so standards co-evolved with the technology."
+    },
+    {
+     "q": "How did the two countries' regulators behave differently?",
+     "a": "Denmark steered, adjusting subsidies in steps from 30% in 1979 to nothing in 1989, while the US created opportunities and then abruptly closed them."
+    }
+   ],
+   "audio": "audio/P15-05.mp3",
+   "seconds": 232.9,
+   "words": 494
+  },
+  {
+   "n": 6,
+   "title": "What the comparison shows, and the reference list",
+   "slides": [],
+   "readings": "",
+   "pages": "296–300",
+   "paragraphs": [
+    "The authors say their study offers insight into the potential weaknesses of a breakthrough approach. Such an approach can alienate those with vested interests, dampen the learning co-shaping needs, and leave firms without knowledge to recover. In the US, turbines kept failing. A new programme to design the best turbine repeated the old recipe, so a vicious circle set in. The conclusion restates the argument: agency is distributed and embedded, and a path accumulates artifacts, tools, practices, rules and knowledge. The authors suggest that American actors may have failed not despite but because of their pursuit of a breakthrough.",
+    "The acknowledgements begin by calling the work a fully collaborative project. They credit a grant from the Center for Interdisciplinary Studies in Technology Management in Denmark and feedback from conferences in Atlanta, Stanford and Helsinki. The authors thank named colleagues for their comments, and many people from the Danish and American wind turbine paths who helped them. The reference list then begins on the same page.",
+    "These pages are the reference list."
+   ],
+   "labels": [
+    "Page 296",
+    "Page 297",
+    "Pages 298-300"
+   ],
+   "checks": [
+    {
+     "q": "What do the authors conclude about the American pursuit of a breakthrough?",
+     "a": "That actors in the United States may have failed not despite but because of it, since it can stifle the micro-learning that mutual co-shaping needs."
+    }
+   ],
+   "audio": "audio/P15-06.mp3",
+   "seconds": 87.9,
+   "words": 187
+  }
+ ],
+ "seconds": 1236.0
+}

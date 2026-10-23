@@ -1,0 +1,51 @@
+[PASS] template has no all-caps labels
+[PASS] template has no "·"-joined meta strings
+[PASS] template has no "→" in link or button text
+[PASS] template names neither Claude nor Anthropic
+[PASS] an empty hash, #route and #home all show the front page  {"empty":"Innovation systems and sustainable transformation","route":"Innovation systems and sustainable transformation","home":"Innovation systems and sustainable transformation"}
+[PASS] the doors count the classes and the papers from the data  ["8 classes, 2 hours 47 minutes","17 papers, 4 hours 50 minutes"]
+  screenshot workspace/lecture-audio/checks/desktop-home.png
+[PASS] #classes lists every class in order and marks the ready ones  {"rows":8,"ready":8,"sessions":2,"teachers":8,"h1":"Classes"}
+[PASS] #classes has sessions 7 and 8 as quiet rows  sessions 2
+[PASS] every class row names its teacher  8 of 8
+  screenshot workspace/lecture-audio/checks/desktop-classes.png
+[PASS] #papers groups every paper under its class  {"rows":20,"ids":17,"ready":20,"groups":8,"h1":"Papers"}
+[PASS] #papers marks the ready papers  {"rows":20,"ids":17,"ready":20,"groups":8,"h1":"Papers"}
+  screenshot workspace/lecture-audio/checks/desktop-papers.png
+[PASS] #T1 opens the class with all its chapters  {"stops":7,"sections":7,"h1":"Innovation as systemic and sustainable transformation"}
+[PASS] a chapter plays from its button  {"src":"T1-02.mp3","paused":false,"t":3.33871,"d":188.424}
+[PASS] paragraph highlight follows the audio  {"count":1,"inChapter":"ch-1"}
+[PASS] next chapter starts on its own  {"src":"T1-03.mp3","now":"2"}
+[PASS] finished chapter fills the route and is saved  {"done":true,"fill":58.09375,"saved":{"T1":[1]}}
+[PASS] speed button changes playback rate  rate 1.15
+[PASS] the classes door shows progress and a continue button  {"p":"0.017241379310344827","info":"1 of 58 chapters heard","resume":true,"label":"Continue Class 1, chapter 3"}
+[PASS] the class row shows the same progress  {"p":"0.14285714285714285","info":"20 minutes, 1 of 7 chapters heard. 3 papers","meter":true}
+[PASS] #T1 links to its paper P01  {"hash":"#P01","h1":"The evolution of Norway's national innovation system"}
+[PASS] a paper has a breadcrumb back to Papers and a Where next block  {"crumbs":true,"next":true,"h2":"Where next"}
+[PASS] a class has a breadcrumb back to Classes and a Where next block  {"crumbs":true,"next":true}
+[PASS] the top bar stays at the top of a scrolled paper  {"top":0,"y":3000}
+[PASS] both top bar links stay visible  [{"href":"#classes","w":76,"top":6,"bottom":50},{"href":"#papers","w":70,"top":6,"bottom":50}]
+[PASS] the Papers link in the top bar opens the papers page  {"papers":true,"current":"page"}
+[PASS] the player title names what is playing and links to it  {"href":"#T1","text":"Class 1, chapter 3: Norway's innovation puzzle","tag":"A"}
+[PASS] the player title opens what is playing  {"hash":"#T1","h1":"Innovation as systemic and sustainable transformation"}
+[PASS] all 17 ready papers open with their chapters and page subheadings  []
+[PASS] a page link in T1 opens P01 at page 431  {"hash":"#P01","found":true,"top":72}
+  (every class is ready: the class not-ready check is skipped)
+  (every paper is ready: the paper not-ready check is skipped)
+[PASS] no horizontal scroll at phone width (home)  {"scroll":390,"inner":390}
+  screenshot workspace/lecture-audio/checks/phone-home.png
+  screenshot workspace/lecture-audio/checks/phone-home-dark.png
+[PASS] no horizontal scroll at phone width (classes)  {"scroll":390,"inner":390}
+  screenshot workspace/lecture-audio/checks/phone-classes.png
+  screenshot workspace/lecture-audio/checks/phone-classes-dark.png
+[PASS] no horizontal scroll at phone width (papers)  {"scroll":390,"inner":390}
+  screenshot workspace/lecture-audio/checks/phone-papers.png
+  screenshot workspace/lecture-audio/checks/phone-papers-dark.png
+[PASS] no horizontal scroll at phone width (lecture)  {"scroll":390,"inner":390}
+  screenshot workspace/lecture-audio/checks/phone-lecture.png
+  screenshot workspace/lecture-audio/checks/phone-lecture-dark.png
+[PASS] no horizontal scroll at phone width (reading)  {"scroll":390,"inner":390}
+  screenshot workspace/lecture-audio/checks/phone-reading.png
+  screenshot workspace/lecture-audio/checks/phone-reading-dark.png
+[PASS] no script errors
+ALL PAGE CHECKS PASSED

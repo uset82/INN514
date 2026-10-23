@@ -1,0 +1,245 @@
+{
+ "id": "P07",
+ "kind": "reading",
+ "title": "Reading 7: Entrepreneurial ecosystem elements",
+ "session": "Stam & van de Ven 2021",
+ "lecturer": "Stam & van de Ven",
+ "deck": "Small Business Economics 56",
+ "authors": "Stam & van de Ven",
+ "year": 2021,
+ "source": "Small Business Economics 56",
+ "lectures": [
+  "T4"
+ ],
+ "chapters": [
+  {
+   "n": 1,
+   "title": "The paper in brief",
+   "slides": [],
+   "readings": "",
+   "pages": "the whole paper",
+   "paragraphs": [
+    "The paper asks a question the ecosystem literature had left hanging: if regional context shapes entrepreneurship, how should that context be defined and measured, and does its quality show up in entrepreneurial output? Their answer has three parts: a definition, a ten-element model, and an index applied to the twelve Dutch provinces.",
+    "The authors date the turn to the 1980s and 1990s, when research moved away from the entrepreneurial personality and towards the community that a venture draws on. They then name three faults in the literature. It is tautological, because a successful ecosystem is inferred from the success it is meant to explain. It offers laundry lists of factors without reasoning about cause and effect. And it is vague about the level of analysis, since an ecosystem might be a city, a region or a country.",
+    "The definition follows. Entrepreneurial means the exploration, evaluation and exploitation of opportunities, though the authors resist narrowing it to high-growth start-ups. Ecosystem is taken from biology, through Tansley and Hawley, and keeps Hawley's three features: co-evolution, mutualistic interdependence and a complex nested system of diverse actors. An ecosystem begins when entrepreneurs pursue their own intentions, their paths cross, and cooperation and competition emerge. Coordination arrives sometimes through an ecosystem leader and sometimes through partisan mutual adjustment, which Lindblom defined as coordination without a coordinator.",
+    "The model has ten elements, drawn from van de Ven's infrastructure for entrepreneurship. Formal institutions, culture and networks make up the institutional arrangements. Physical infrastructure, finance, leadership, talent, knowledge, intermediate services and demand make up the resources. Proprietary functions, the firms commercialising innovations, become the output, measured as productive entrepreneurship in Baumol's sense. Three propositions hold the model together: the elements co-evolve, they explain the level of activity in a territory through upward causation, and activity feeds back into them through downward causation.",
+    "Measuring this for the Netherlands, the authors use one indicator per element, lag them one to three years behind the output, and proxy output with the share of high-growth firms. Each element is normalised to an average of one and the ten are summed, which puts an average province at ten. Utrecht reaches 12.42 and Drenthe 5.99. The correlations show three clusters, talent with new firms and business services, knowledge with leadership, and infrastructure with demand, while quality of government correlates negatively with everything else.",
+    "The results support the propositions, with a caveat the authors state themselves. The index explains between four-tenths and six-tenths of the variation in high-growth firms, which is a strong association rather than a causal demonstration, and their own feedback results suggest endogeneity. They call the tests indications of tendencies, not direct tests of causal mechanisms, and say the aim is to understand, not to predict (page 827).",
+    "The obvious test would regress output on the ten elements, and the authors refuse it. Substantively, an ecosystem is one system rather than ten independent causes. Statistically, the elements are so collinear that the coefficients would be meaningless. Instead they build an index, arguing that a complex system, in the sense of Simon and of Martin and Sunley, allows only limited functional decomposability.",
+    "The contribution is therefore a measurement instrument and a claim about method. The authors name the limits: twelve regions, three points in time, one country. In the course, Lecture 4 uses the paper for the roots and the elements of the ecosystem idea (pages 809, 810 and 813). In our own reading, it helps with Question 1 of December 2024, which asks what you understand by innovation systems, sustainable transformation, institutions and agency: the model sets institutions beside resources, and proposition 3 shows entrepreneurs feeding back into their own context. Here is an example of our own, not from the paper: a founder who sells a firm and becomes a local investor changes the finance element that the next founders draw on."
+   ],
+   "labels": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "checks": [
+    {
+     "q": "What is the paper's main methodological argument?",
+     "a": "That the ecosystem should not be decomposed into ten elements for regression, because it is one system and the elements are collinear, so an index is built instead."
+    },
+    {
+     "q": "How well does the index explain entrepreneurial output?",
+     "a": "It explains between 0.437 and 0.6245 of the variation in high-growth firms across the three years, which suggests upward causation but does not settle it."
+    }
+   ],
+   "audio": "audio/P07-01.mp3",
+   "seconds": 292.2,
+   "words": 647
+  },
+  {
+   "n": 2,
+   "title": "The concept, the definition and the model",
+   "slides": [],
+   "readings": "",
+   "pages": "809–812",
+   "paragraphs": [
+    "The paper opens with its abstract, which states the problem and the result together. The ecosystem idea is popular but loosely defined and measured, so the authors take a systems view of the context of entrepreneurship, build a measurement instrument, and compose an index for the Netherlands. They report that the prevalence of high-growth firms in a region is strongly related to the quality of its ecosystem, and that the elements are strongly interrelated. Stam is at Utrecht University and van de Ven at the University of Minnesota. The introduction repeats the gap, following Stam.",
+    "The literature section traces the idea's roots. The turn came in the 1980s and 1990s, away from personality-based research and towards a community perspective, and van de Ven argued in 1993 that no entrepreneur can command all the resources and institutions a venture needs. The authors call entrepreneurship a collective achievement. They then list empirical work, from Mack and Mayer on Phoenix to Spigel on Waterloo and Calgary, before naming the concept's problems. First, it is tautological. Second, it offers laundry lists of factors without reasoning about cause and effect.",
+    "The page finishes the critique and defines the term. The third problem is the level of analysis, since an ecosystem could be a city, a region or a country, and the authors settle on the region for most elements while laws work nationally. They then take the term apart. Entrepreneurial means the exploration, evaluation and exploitation of opportunities, though the approach often narrows it to high-growth start-ups, a claim the authors call too exclusive. Ecosystem is borrowed from biology, through Tansley's definition and Hawley's three features: co-evolution, mutualistic interdependence and a complex nested system of diverse organisations.",
+    "The definition continues and the model begins. The authors explain how an ecosystem starts: entrepreneurs pursue their own intentions, their paths intersect, and cooperation and competition emerge, sometimes through an ecosystem leader and sometimes through partisan mutual adjustment, which Lindblom defines as coordination without a coordinator. As numbers reach a critical mass, the network becomes a loosely coupled, partly hierarchical field, and loose coupling keeps it adaptable. Figure 1 is introduced here, with productive entrepreneurship as the output. The four components come from van de Ven's 1993 list."
+   ],
+   "labels": [
+    "Page 809",
+    "Page 810",
+    "Page 811",
+    "Page 812"
+   ],
+   "checks": [
+    {
+     "q": "What three problems do the authors identify in the ecosystem literature?",
+     "a": "It is tautological, it offers laundry lists of factors without reasoning about cause and effect, and it is unclear what the appropriate level of analysis is."
+    },
+    {
+     "q": "How do the authors define productive entrepreneurship, and whose definition do they use?",
+     "a": "As any entrepreneurial activity that contributes directly or indirectly to the net output of the economy or to the capacity to produce additional output, following Baumol."
+    }
+   ],
+   "audio": "audio/P07-02.mp3",
+   "seconds": 179.0,
+   "words": 387
+  },
+  {
+   "n": 3,
+   "title": "The ten elements and the three propositions",
+   "slides": [],
+   "readings": "",
+   "pages": "813–816",
+   "paragraphs": [
+    "The authors position their model against three earlier ones. Feld stressed interaction between players and access to resources, with government enabling in the background. Isenberg named six domains: policy, finance, culture, support, human capital and markets. The World Economic Forum proposed eight pillars covering resources, actors, formal and informal institutions, and access to customers. From these and from van de Ven's infrastructure for entrepreneurship, the authors build a model of ten elements. Institutions cover formal institutions, culture and networks; resources cover physical infrastructure, finance, leadership, talent, knowledge, intermediate services and demand.",
+    "Talent is perhaps the most important element, and the page separates it from knowledge. Human capital covers education and experience; knowledge covers science and technology, and Romer and Foray make the distinction. Talent creates and absorbs new knowledge, which is the absorptive capacity argument from Cohen and Levinthal. Intermediaries lower entry barriers and shorten time to market, and demand means money in the population to buy things. Table 1 then fixes each concept, construct and element, and the authors state three propositions: elements co-evolve, elements explain activity, activity feeds back.",
+    "Proposition three gets its examples here. Successful entrepreneurs become investors, role models, leaders and network builders, feeding back into finance, culture, leadership and networks. Section five then explains the method, calling the ten elements middle-level constructs between abstract concepts and measurable variables. Formal institutions follow North's rules of the game, measured through the Quality of Governance survey of 34,000 citizens in 172 European regions. Culture is read indirectly, from how common new firms are, and networks from the share of businesses collaborating on innovation.",
+    "Physical infrastructure is a composite of motorway and railway accessibility and the daily number of passenger flights reachable within a ninety-minute drive, using Spiekermann and Wegener's model on regional centroids and giving the most weight to population within four hours. Demand combines disposable income per capita with two measures of potential market demand. Leadership is measured by innovation project leaders, drawn from 2231 subsidised projects with at least two partners between 2010 and 2013, because Sotarauta finds rigorous regional studies sparse. Talent is the share of people aged 15 to 65 holding a higher education degree."
+   ],
+   "labels": [
+    "Page 813",
+    "Page 814",
+    "Page 815",
+    "Page 816"
+   ],
+   "checks": [
+    {
+     "q": "What are the ten elements?",
+     "a": "Formal institutions, culture, networks, physical infrastructure, finance, leadership, talent, knowledge, intermediate services and demand."
+    },
+    {
+     "q": "What separates upward from downward causation?",
+     "a": "Upward causation is structure affecting agency, the elements explaining levels of activity in a territory; downward causation is agency affecting structure, prior entrepreneurial activity feeding back into the elements."
+    }
+   ],
+   "audio": "audio/P07-03.mp3",
+   "seconds": 192.4,
+   "words": 378
+  },
+  {
+   "n": 4,
+   "title": "Measuring the elements and the output",
+   "slides": [],
+   "readings": "",
+   "pages": "817–820",
+   "paragraphs": [
+    "Finance is measured as venture capital for start-up and growth, taken from the private equity association's register of Dutch deals, and averaged over three lagged years because annual figures swing on a handful of deals. Knowledge is research and development spending as a share of gross domestic product. Intermediate services are the share of business service firms in the business population. All elements are lagged one to three years behind the output. Output itself is productive entrepreneurship, proxied by the share of high-growth firms, since unicorns would leave many regions at zero.",
+    "Table 2 is the measurement table, and it is worth reading as a list. Ten elements become ten variables: quality of government, new firms, accessibility, demand, innovation collaboration, project leaders, education, venture capital, research spending and business services. Each row names the construct, the indicator and the source. The sources are a mix: a governance survey, the Dutch census bureau, a European competitiveness index, an innovation survey, a consultancy and the private equity register. Accessibility and demand are both set relative to the European average.",
+    "The output measure is built by hand. The financial newspaper, with the chambers of commerce, counts independent firms whose turnover grew at least a fifth a year for three years. The funnel behind that number is severe. Two million firms are registered, most need not publish accounts, eleven thousand published them, and after the growth, profitability and quality tests under four hundred remained. Regions differ fifteen-fold in relative terms. The unit of analysis is the province, twelve in all, though the authors concede that borders are arbitrary.",
+    "Table 3 gives the means, minima, maxima and standard deviations for each element in three years, and the spread is wide: on most elements the top region scores more than double the bottom one. The correlations in Table 4 carry the argument. Education, new firms and business services move together; research spending and project leaders move together; accessibility and demand move together. Quality of government, oddly, correlates negatively with everything else. Figure 2 draws the same interdependence as a web. The authors read all this as support for proposition one."
+   ],
+   "labels": [
+    "Page 817",
+    "Page 818",
+    "Page 819",
+    "Page 820"
+   ],
+   "checks": [
+    {
+     "q": "Why does the paper reject unicorns as the output measure?",
+     "a": "Because high-growth firms are already rare, and counting only privately held start-ups valued over a billion dollars would leave many regions with zero output."
+    },
+    {
+     "q": "Why is the province the unit of analysis, and what is the objection?",
+     "a": "It is the NUTS 2 region in the Netherlands, twelve in all, but the authors accept that provincial borders are arbitrary and that a nested or polycentric view may fit better."
+    }
+   ],
+   "audio": "audio/P07-04.mp3",
+   "seconds": 173.5,
+   "words": 370
+  },
+  {
+   "n": 5,
+   "title": "The correlation table and the two figures",
+   "slides": [],
+   "readings": "",
+   "pages": "821–824",
+   "paragraphs": [
+    "Table 4 is the correlation matrix and the paper's first test of proposition 1. It correlates the ten elements, the index and high-growth firms with each other across 2009, 2012 and 2015. In the 2009 block, quality of government is negative against every other element, while education, venture capital and business services correlate strongly with one another, and the index correlates strongly with most elements.",
+    "The table continues with the 2012 block and the start of 2015. Several elements correlate very highly with their own earlier values, new firms at .987 between 2012 and 2015 for instance, which the authors later read as strong path dependence. Quality of government in 2012 again correlates negatively with most other elements, and high-growth firms in 2012 correlate positively with the index.",
+    "The table ends with the 2015 block and its key: two stars mark significance at the one per cent level, one star at five per cent, and the tests are two-tailed. In 2015 the index correlates strongly with business services and education, and high-growth firms correlate positively with the index and with most of the elements. Several values in the 2015 block are significant at the one per cent level.",
+    "Two figures close the section. Figure 2 redraws the matrix as a web: ten nodes, a solid line for a positive correlation, a dashed one for a negative. Every dashed line runs to quality of governance, so that node is the odd one out. Figure 3 puts the index on a bar chart for the twelve provinces under three ways of combining the elements, additive, multiplicative and logarithmic. The rankings agree. The levels do not, and the logarithmic version sends the weaker provinces well below zero, which is a warning about reading the index as an absolute score."
+   ],
+   "labels": [
+    "Page 821",
+    "Page 822",
+    "Page 823",
+    "Page 824"
+   ],
+   "checks": [
+    {
+     "q": "What does Figure 2 add to the correlation table?",
+     "a": "It shows the ten elements as nodes, with solid lines for positive and dashed lines for negative correlations, and every negative link running to quality of government."
+    },
+    {
+     "q": "What does Figure 3 show, and what is the caveat?",
+     "a": "The index value of each Dutch province in 2009 under three combining methods, which rank the provinces alike but differ sharply in level, the logarithmic version falling below zero."
+    }
+   ],
+   "audio": "audio/P07-05.mp3",
+   "seconds": 138.1,
+   "words": 313
+  },
+  {
+   "n": 6,
+   "title": "The index, the results and the discussion",
+   "slides": [],
+   "readings": "",
+   "pages": "825–828",
+   "paragraphs": [
+    "In Figure 2, solid lines mark positive correlations of at least 0.6 and dotted ones negative, and education and business services are the best connected. A principal component analysis finds one dominant dimension covering every element but formal institutions. Only business services relates consistently to later high-growth firms. For proposition 3, high-growth firms correlate positively with most later element values, though not in every period. The authors then refuse a regression of output on the ten elements: a complex system allows only limited functional decomposability, following Martin and Sunley.",
+    "The objection to regression has two halves. Substantively the ecosystem is one system, not a set of independent elements; statistically the elements are collinear, as Table 4 showed. So the authors build an index instead. Each element is normalised to an average of one, and the ten are added, which puts an average region at ten and gives a range from 12.42 in Utrecht down to 5.99 in Drenthe. A multiplicative version gives far more spread but seems to have insufficient external validity.",
+    "Z-scores, dropping an element and later years all leave the ranking much the same. Then the test: the index and high-growth firms correlate strongly, and a simple line through them explains between four-tenths and six-tenths of the variation, depending on the year. Endogeneity is plausible, they add, and their feedback results partly confirm it. The discussion says the aim is to understand, not to predict. It finds substantial evidence for proposition 1, with strong path dependence, evidence for proposition 2, and inconsistent evidence for proposition 3, and calls the tests indications of tendencies, not direct tests of causal mechanisms.",
+    "The systems section gives the argument its ancestry: Simon described complex systems as nearly decomposable into subsystems, and a systems approach looks at the performance of whole sets of elements. The index is offered as a quantitative complement to the case studies of Mack and Mayer and of Spigel. For the future the authors suggest Boolean comparative analysis, naming a fuzzy-set study of regions in the United States. Three implications follow. Context should not be treated as an exogenous control. Entrepreneurship is not confined to for-profit firms. And any single firm is one actor among many."
+   ],
+   "labels": [
+    "Page 825",
+    "Page 826",
+    "Page 827",
+    "Page 828"
+   ],
+   "checks": [
+    {
+     "q": "How much variation in high-growth firms does the index explain?",
+     "a": "Between 0.437 in 2009 and 0.6245 in 2012, with 0.5256 in 2015, which the authors read as support for upward causation while warning about endogeneity."
+    },
+    {
+     "q": "What three implications does the systems view have?",
+     "a": "Context must not be treated as an exogenous control, entrepreneurship is not confined to the for-profit sector, and any single firm is only one actor among many."
+    }
+   ],
+   "audio": "audio/P07-06.mp3",
+   "seconds": 177.2,
+   "words": 384
+  },
+  {
+   "n": 7,
+   "title": "Limitations and the reference list",
+   "slides": [],
+   "readings": "",
+   "pages": "829–832",
+   "paragraphs": [
+    "The limitations are stated plainly. The sample is small: twelve regions, three points in time, thirty-six observations, all in one country. The authors want the analysis repeated in city regions, larger European countries, the United States and China, and over much longer periods, because the high autocorrelations they found mean real change needs more time to show. They also concede that measurement must be local, since Dutch indicators may not travel. Elements can develop unevenly and become bottlenecks, and the process has a history of creative destruction.",
+    "These pages are the reference list."
+   ],
+   "labels": [
+    "Page 829",
+    "Pages 830-832"
+   ],
+   "checks": [
+    {
+     "q": "What does the paper say should be repeated, and where?",
+     "a": "The analysis should be repeated in other regions such as city regions in larger European countries, the United States or China, and over longer periods of preferably ten years or more."
+    },
+    {
+     "q": "Why do the authors want a longer time series?",
+     "a": "Because the high intertemporal autocorrelations they found mean short windows cannot reveal change, and because elements may develop unevenly and act as bottlenecks."
+    }
+   ],
+   "audio": "audio/P07-07.mp3",
+   "seconds": 53.6,
+   "words": 104
+  }
+ ],
+ "seconds": 1206.0
+}

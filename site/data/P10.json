@@ -1,0 +1,199 @@
+{
+ "id": "P10",
+ "kind": "reading",
+ "title": "Reading 10: CCS technological innovation system dynamics in Norway",
+ "session": "Steen et al. 2024",
+ "lecturer": "Steen et al.",
+ "deck": "International Journal of Greenhouse Gas Control 136",
+ "authors": "Steen et al.",
+ "year": 2024,
+ "source": "International Journal of Greenhouse Gas Control 136",
+ "lectures": [
+  "T6"
+ ],
+ "chapters": [
+  {
+   "n": 1,
+   "title": "The paper in brief",
+   "slides": [],
+   "readings": "",
+   "pages": "the whole paper",
+   "paragraphs": [
+    "Steen and colleagues ask what are the strengths and weaknesses of the carbon capture and storage innovation system in Norway. The question matters because CCS is vital to most net-zero scenarios and especially important in hard-to-abate sectors, such as energy-intensive processing industries and waste (page 1). Capture is technically possible, but key challenges persist: financing, low carbon prices, transport and storage infrastructure, insufficient regulation and policy, public acceptance, and legitimacy.",
+    "The authors work in the sustainability transitions field and use the technological innovation system, or TIS, framework (page 2). A TIS has three building blocks: actors, networks and institutions. Its performance is then read through functions, the processes that build and spread a technology. The paper uses eight, adapted from Bergek and colleagues and listed in Table 1 (page 3): knowledge development and diffusion, entrepreneurial experimentation, market formation, direction of search, resource mobilization, legitimation, development of positive externalities, and materialization. Materialization is the one the authors say has had little attention, and they add it because CCS depends on large physical infrastructure (page 2).",
+    "The design is mixed-methods with an emphasis on qualitative work (page 3). Nineteen semi-structured interviews were conducted from 2020 to 2022 with firms, public bodies, NGOs and interest organisations. Most were held online, then transcribed and coded in NVivo against the framework. Notes from a December 2021 workshop with the CaptureX advisory board added to the data, and tentative results were presented at a second workshop in September 2022 to validate the findings. Bibliometric and patent data support the knowledge function, and the appendices print the search strings, the comparison figures, the quotes and the interview guide.",
+    "The authors find that the system has grown quickly and still has systemic weaknesses (page 9). Knowledge development is considerable, but diffusion is limited because each project is customised and firms protect their intellectual property. Experimentation is rising across user sectors, yet much of it stays with amine capture. Market formation is rated weak: costs are high, the business case is unclear, and the emissions trading system does not yet justify investment. Resource mobilization is weak on people, with experts near retirement, and on capital beyond exploration. Materialization is weak because little has been built outside oil and gas, with Longship and Northern Lights as the exceptions. Legitimation, direction of search, experimentation, knowledge and externalities are rated intermediate. Overall, the authors say, momentum appears positive, not least because of the launch of large-scale projects, with Longship the most prominent, and the growing number of actors (page 10). Their most striking finding on legitimacy is that it rises as CCS moves from fossil energy into waste and process industry (page 9).",
+    "The authors' aims are mainly empirical: a current account of one national CCS system. They say the case also adds to the transitions literature by considering how political, sectoral and geographical context shape the system's dynamics, and by including materialization. They name three limits (page 11): other interviewees might have produced slightly different results; how the segments of the value chain interact needs more work; and CCS innovation is international, so a wider geographical lens would help.",
+    "The paper is a core reading for Lecture 6, Technological innovation systems and sustainable transformation, where it is the empirical case that follows Hekkert and colleagues' functions. For the June 2025 exam, Question 3 asked how technological innovation systems can be guided to promote sustainable transformation. The lecture answers with the framework: find the weak functions and aim policy at them. The paper supports this. Assessing strengths and weaknesses, it says, allows detailed policy recommendations (page 3), and it calls for a more comprehensive policy mix beyond Longship (page 10). Here is an example of our own, not from the paper: a technology can have strong research behind it and still stall because nobody has paid for the pipes that would carry its product away."
+   ],
+   "labels": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "checks": [
+    {
+     "q": "What question does the paper ask?",
+     "a": "What are the strengths and weaknesses of the CCS innovation system in Norway."
+    },
+    {
+     "q": "Which function do the authors add to the usual set, and why?",
+     "a": "Materialization, because CCS requires large-scale investment in physical infrastructure and the function has received limited attention."
+    }
+   ],
+   "audio": "audio/P10-01.mp3",
+   "seconds": 297.0,
+   "words": 649
+  },
+  {
+   "n": 2,
+   "title": "The question, the framework and the Norwegian setting",
+   "slides": [],
+   "readings": "",
+   "pages": "1–4",
+   "paragraphs": [
+    "The title page carries the abstract and the first lines of the introduction. CCS is presented as a key technology for cutting emissions in hard-to-abate sectors, such as energy-intensive processing industries and the waste sector. Capture is technically possible, yet challenges persist, and over the past decade the focus has turned from the energy sector to energy-intensive industry. There has been little social science research on CCS innovation dynamics, which the authors approach as socio-technical change, and most studies stay within one sector, such as oil and gas. Their finding: systemic weaknesses, yet a relatively positive momentum.",
+    "The authors use the TIS framework to ask what the strengths and weaknesses of the CCS innovation system in Norway are. Norway is chosen as a CCS frontrunner; the earlier TIS study of Norwegian CCS, by van Alphen and colleagues, is around 15 years old. Longship, one of the first full-scale value chains for land-based industry, is being finalised in 2024. The latest White Paper on energy says Norway can play an important role in developing CCS. Section 2 presents the TIS blocks, actors, networks and institutions, and cites Jacobsson and Bergek: structure alone does not predict performance.",
+    "The section closes by noting that earlier Norwegian studies covered only oil, gas and fossil energy, while CCS now spreads across sectors whose value-chain elements differ in maturity. Section 3 then sets out the method: a mixed-methods design with emphasis on qualitative work, 19 semi-structured interviews from 2020 to 2022 with firms, public actors, NGOs and interest organisations, mostly online, coded in NVivo. Workshop notes and feedback on tentative results helped validate the findings. The setting is the whole value chain, and Table 1 lists eight functions, from knowledge development to materialization.",
+    "The page traces the Norwegian record. Capture began at Sleipner in 1996 and Snøhvit in 2008, with the 1991 CO2 tax a key driver. The Mongstad full-scale project, launched in 2006, was cancelled in 2013 over cost uncertainty, though its test centre remains. Longship followed in 2020, with two capture sites and ship transport to a saline aquifer. The page then sets out the actors and networks. Informally, CCS meets no strong opposition and has broad political support; formally, the ETS is seen as insufficient, and rules on cross-border CO2 transfer are a bottleneck."
+   ],
+   "labels": [
+    "Page 1",
+    "Page 2",
+    "Page 3",
+    "Page 4"
+   ],
+   "checks": [
+    {
+     "q": "Why do the authors choose Norway as the case?",
+     "a": "Because Norway is considered a CCS frontrunner, and because the earlier TIS study of Norwegian CCS, by van Alphen and colleagues, is around 15 years old, so an update is due."
+    },
+    {
+     "q": "How was the interview material produced and coded?",
+     "a": "Through 19 semi-structured interviews from 2020 to 2022, mostly online, transcribed and coded in NVivo, with two workshops used to check the findings."
+    }
+   ],
+   "audio": "audio/P10-02.mp3",
+   "seconds": 188.3,
+   "words": 399
+  },
+  {
+   "n": 3,
+   "title": "Knowledge, experimentation, markets and the direction of search",
+   "slides": [],
+   "readings": "",
+   "pages": "5–7",
+   "paragraphs": [
+    "The first function, knowledge development and diffusion, is measured partly through publication. Table 2 puts SINTEF first with 247 publications and NTNU second with 213. Behind them come the universities of Bergen, Oslo and Stavanger and Equinor. Norwegian publishing rose from 15 papers in 2010 to 115 in 2022. On patenting, the authors report a stable regional picture, with Norway low in absolute terms but highest per head together with Denmark. The rest of the page traces how knowledge moved from oil and gas into power and then process industries, and why amine capture dominates.",
+    "The page ends the knowledge function with what practitioners still need: strategies for full value chains, smaller units, inland operation and lower energy use. Diffusion is held back because each project is customised and firms protect their intellectual property, an obstacle the authors also find in earlier research; the European ECCSEL platform is given as a counter-example. The second function, entrepreneurial experimentation, is then introduced: pilots and demonstrations are spreading across user sectors, and actor and technological complexity has grown. Two charts carry the publishing and patent numbers.",
+    "Both amine solutions chosen for Longship were developed and tested at TCM, operating since 2012, though one centre cannot meet every plant's needs. The state required early choice of suppliers to keep costs down, while picking two suppliers reflected its wish for variety: a policy dilemma. Market formation is growing from a low base: most plants worldwide serve enhanced oil recovery, costs remain a main challenge, and storage, not capture, is named as what made a value chain feasible. Direction of search has moved to cement, waste and other process industries."
+   ],
+   "labels": [
+    "Page 5",
+    "Page 6",
+    "Page 7"
+   ],
+   "checks": [
+    {
+     "q": "Why is knowledge diffusion limited in this field?",
+     "a": "Because CCS implementation is customised from project to project and actors protect their intellectual property, so learning is hard to transfer; the ECCSEL platform is given as a positive exception."
+    },
+    {
+     "q": "What policy dilemma does the state's role in Longship create?",
+     "a": "Balancing the cost of supporting testing and demonstration against the need to keep variety in capture technology, since the state required early selection of suppliers."
+    }
+   ],
+   "audio": "audio/P10-03.mp3",
+   "seconds": 136.5,
+   "words": 290
+  },
+  {
+   "n": 4,
+   "title": "Resources, legitimacy and the verdict on the functions",
+   "slides": [],
+   "readings": "",
+   "pages": "8–10",
+   "paragraphs": [
+    "Informants are slightly concerned about people: many experts are close to retirement, oil and gas engineers move across only partly, and start-ups struggle to hire. On money, green finance is plentiful for exploration, but investors want a revenue stream before funding deployment. Longship costs an estimated NOK 25.1 billion, two thirds from the state. The page also sets out CLIMIT, which gave about NOK 2.7 billion between 2005 and 2022. Legitimacy then opens: informants describe it as fluctuating, though Norway stands out for high acceptance.",
+    "Legitimacy gets the most space. The authors report that CCS gained acceptance as it moved from oil and gas to waste and process industry, and that all informants see it as necessary for cement and waste-to-energy. Costs remain a legitimacy problem, and informants ask for more full-scale projects and stronger political will. Positive externalities are present, with specialised suppliers in every segment, though learning across projects is limited because plants are unique. Materialization is limited beyond oil and gas. Table 3 rates market formation, resource mobilization and materialization weak, the rest intermediate.",
+    "Compared with van Alphen and colleagues' earlier study, the authors rate knowledge development and legitimation intermediate where it found them relatively strong, while direction of search and experimentation have strengthened. Market formation and resources were weak in both. Context shapes the dynamics: attention after the Paris agreement, petroleum actors still central to transport and storage, offshore storage facing less opposition, and lack of power supply halting some projects. The conclusions then note that announced projects multiply while investment lags, and that support beyond Longship is not yet enough for investment decisions."
+   ],
+   "labels": [
+    "Page 8",
+    "Page 9",
+    "Page 10"
+   ],
+   "checks": [
+    {
+     "q": "Which functions does Table 3 rate as weak?",
+     "a": "Market formation, resource mobilization and materialization; the other five are rated intermediate."
+    },
+    {
+     "q": "How does this assessment differ from van Alphen and colleagues' earlier study?",
+     "a": "They rated knowledge development and legitimation relatively strong where this paper rates them intermediate; direction of search and experimentation have strengthened since; market formation and resource mobilization were weak in both."
+    }
+   ],
+   "audio": "audio/P10-04.mp3",
+   "seconds": 137.2,
+   "words": 284
+  },
+  {
+   "n": 5,
+   "title": "Conclusions, limitations and the appendices",
+   "slides": [],
+   "readings": "",
+   "pages": "11–13",
+   "paragraphs": [
+    "The conclusions close with what would make CCS feasible: concerted efforts from policy, societal pressure and demand for low-carbon products. The authors then state three limitations. Other interviewees might have produced slightly different results, though they hold the assessment to be robust. How dynamics differ across value-chain segments needs more work. And CCS innovation is international, so a wider geographical view would help. After the funding statement, Appendix 1 lists the organisations interviewed and Appendix 2 begins the search strings.",
+    "Appendix 2 gives the search strings: publications from Scopus with the terms carbon capture or carbon storage for 2010 to 2022, and three patent steps covering capture, transport and storage. Appendix 3 adds two comparison figures, indexed publishing for the North Sea countries and patents per million inhabitants, the first built on three-year moving averages. Appendix 4 then begins the table of verbatim interview quotes, arranged by function, starting with knowledge development and diffusion.",
+    "The quote table continues through the functions, printed verbatim and grouped by function. A public body explains that it cannot share what it learns because the details are business secrets. A technology user says a plant has to test capture on its own flue gas rather than at a shared centre. A storage provider points to the economics of scale at an injection site. A cluster describes how carbon capture fluctuated, with peaks and troughs, and is now widely recognised as a tool."
+   ],
+   "labels": [
+    "Page 11",
+    "Page 12",
+    "Page 13"
+   ],
+   "checks": [
+    {
+     "q": "What three limitations do the authors name?",
+     "a": "That other interviewees might have led to slightly different results, that dynamics across value-chain segments need more study, and that CCS innovation is international rather than national."
+    },
+    {
+     "q": "What does Appendix 4 add, and what does Appendix 3 show?",
+     "a": "Appendix 4 collects verbatim interview quotes by function; Appendix 3 compares publishing and patenting across North Sea countries."
+    }
+   ],
+   "audio": "audio/P10-05.mp3",
+   "seconds": 116.9,
+   "words": 250
+  },
+  {
+   "n": 6,
+   "title": "The interview guide and the reference list",
+   "slides": [],
+   "readings": "",
+   "pages": "14–16",
+   "paragraphs": [
+    "The page closes Appendix 4 with three more quotes: petroleum firms bring offshore experience, too few projects reach the ground, and Norway's permanent storage may be the game changer. Appendix 5 then prints the generic interview guide, adapted to each informant: purpose of the study, the informant, the organisation, motivations and direction of search, technology and knowledge, experimentation, market formation, money and people, legitimacy, and closing questions. The reference list begins at the foot of the page.",
+    "These pages are the reference list."
+   ],
+   "labels": [
+    "Page 14",
+    "Pages 15-16"
+   ],
+   "checks": [
+    {
+     "q": "What does the generic interview guide in Appendix 5 cover?",
+     "a": "The study's purpose, the informant, the organisation, motivations and direction of search, technology and knowledge, experimentation, market formation, money and people, legitimacy, and closing questions."
+    }
+   ],
+   "audio": "audio/P10-06.mp3",
+   "seconds": 49.0,
+   "words": 96
+  }
+ ],
+ "seconds": 924.9
+}

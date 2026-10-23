@@ -1,0 +1,193 @@
+{
+ "id": "P05",
+ "kind": "reading",
+ "title": "Reading 5: Business development in Western Norway: adaptability and regional renewal (in Norwegian)",
+ "session": "Fløysand & Jakobsen 2016",
+ "lecturer": "Fløysand & Jakobsen",
+ "deck": "Book chapter in Region og regionalisering, Novus Forlag",
+ "authors": "Fløysand & Jakobsen",
+ "year": 2016,
+ "source": "Book chapter in Region og regionalisering, Novus Forlag",
+ "lectures": [
+  "T2"
+ ],
+ "chapters": [
+  {
+   "n": 1,
+   "title": "The paper in brief",
+   "slides": [],
+   "readings": "",
+   "pages": "the whole paper",
+   "paragraphs": [
+    "This book chapter examines business development and regional renewal in Western Norway from an evolutionary economic perspective. The authors analyze how industrial restructuring operates across geographical scales, from regional systems to individual firms and entrepreneurs (page 323). They argue that internationalisation and related variety decide how far a region renews, and ask whether such conditions can be traced in Western Norway (pages 323, 324). Western Norway encompasses the four counties of Rogaland, Hordaland, Sogn and Fjordane, and Møre and Romsdal. Its economy concentrates ocean industries: petroleum, maritime transport and seafood. Falling oil prices in 2015 and 2016 made the question urgent (page 324).",
+    "The authors ground their analysis in evolutionary economic geography. In this field, regional renewal is treated as the phenomenon to be explained rather than the explanation (page 325). They define regional innovation systems, citing Cooke and colleagues, as interacting subsystems of knowledge infrastructure and commercial exploitation (page 326). Knowledge flows within clusters generate local buzz through tacit knowledge and geographical proximity, citing Bathelt and Glückler (page 326). They review Porter's diamond and Malmberg and Power's criteria for true clusters (pages 326, 327). To explain industrial paths, the authors adopt the four trajectories of path exhaustion, path extension, path renewal, and path creation (page 328). At the firm level, they use related variety and cross-industry innovation (pages 329, 330).",
+    "The study uses a multi-scale empirical approach rather than a single quantitative indicator (page 330). At the industry level, they examine the region's place in the national cluster programme (page 333). At the regional level, they draw on employment data from Statistics Norway between 1970 and 2010. They also examine an index of related variety across 89 Norwegian economic regions (pages 331, 337). At the actor level, they analyze an interview with two generations of leadership at Ulstein Group (pages 340, 341).",
+    "The authors show that Western Norway kept a high share of secondary-sector jobs: its share of national secondary employment rose from 24 percent in 1970 to 33 percent in 2010 (pages 331, 332). The region hosts two of Norway's three Global Centres of Expertise in maritime and subsea engineering, alongside five Norwegian Centres of Expertise (page 333). While mature clusters such as subsea and shipping primarily exhibit path extension, newer initiatives in green maritime technology, media, and culinary niches represent regional path creation (pages 333, 335). Ten of eighteen western economic areas score above the national median for related variety, which gives more potential to connect related industries (page 337). Initiatives such as microalgae farming at Mongstad would, if they succeed, be path creation built on related variety, and Ulstein's thruster, inspired by an aircraft's nose wheel, shows such borrowing in practice (pages 337, 342).",
+    "The chapter shows that regional renewal is a multi-scale process where path extension and path creation co-exist. The authors conclude that Western Norway's structure and entrepreneurial practice do support breaks from old paths (page 343). Because the field has no stringent method for studying renewal across scales, they use a geographically scaled study (page 330). The Ulstein conversation came from a cluster study and was not designed for this question (page 340). It is also hard to say whether cluster policy, international capital, related variety or entrepreneurial culture is the main driver (page 343).",
+    "This reading belongs to Lecture 2, Regional innovation systems and sustainable transformation. The lecture uses page 324 to structure regional renewal across three levels: cluster dynamics at the industry level, related variety at the firm level, and entrepreneurship at the individual level. In our own reading, it helps with Question 2 of the June 2025 exam, which asks in what way a regional innovation system can promote or inhibit industrial restructuring. Here is an example of our own, not from the paper: an answer can contrast specialised clusters, which may lock a region into path extension, with related variety, which can open cross-industry innovation and green path creation."
+   ],
+   "labels": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "checks": [
+    {
+     "q": "What three levels constitute regional renewal in the framework on page 324?",
+     "a": "Regional renewal is the sum of processes at the industry level through cluster dynamics, the firm level through related variety, and the individual level through entrepreneurship."
+    }
+   ],
+   "audio": "audio/P05-01.mp3",
+   "seconds": 340.3,
+   "words": 656
+  },
+  {
+   "n": 2,
+   "title": "Concepts and theories of regional renewal",
+   "slides": [],
+   "readings": "",
+   "pages": "323–327",
+   "paragraphs": [
+    "This introductory page frames business restructuring and regional renewal in Western Norway from an evolutionary economic perspective, as a continuous process that both influences and is influenced by regional conditions. The authors argue that taking part in internationalisation and having related variety are decisive for the degree of regional renewal. Western Norway here means four counties: Rogaland, Hordaland, Sogn and Fjordane, and Møre and Romsdal. It concentrates petroleum, seafood and the maritime sector, is often called the gold coast, and one indicator of its strength is its many projects in the national cluster programme.",
+    "Admission to the national cluster programme recognises the innovation potential of established industries, but specialisation can also breed continuity and, at worst, stagnation. To avoid that, the literature points to related industries, international networks (global pipelines) and an entrepreneurial culture based on tacit knowledge (local buzz). The authors ask whether such conditions can be traced in Western Norway, a question made urgent by falling oil prices in 2015 and 2016. Regional renewal, they propose, is the sum of processes at the industry level (cluster dynamics), the firm level (related variety) and the individual level (entrepreneurship).",
+    "The authors distinguish between creative destruction caused by internal factors and restructuring triggered by external crises. While regional innovation systems literature often treats regional characteristics as the explanatory factor, or explanans, evolutionary economic geography adopts regional development as the explanandum, the phenomenon to be explained. The primary objective is understanding how regional economic landscapes evolve over time. Within this field, regional renewal represents an empirical reality where stagnation and growth can occur simultaneously within the same region. Consequently, regional renewal reflects where a regional business community positions itself along an analytical axis between continuity and change.",
+    "The authors trace concepts of continuity and change. In the 1990s, Cooke and colleagues introduced regional innovation systems, emphasizing interactive innovation between regional actors and institutions. Such systems contain two main subsystems: knowledge infrastructure producing codified knowledge, and commercial exploitation producing tacit, experience-based knowledge. Tacit knowledge exchange generates local buzz, drawing on geographical, social, and cultural proximity. Regional systems often encompass business clusters. Turning to cluster theory, the authors introduce Porter's diamond model, which explains international competitiveness through four regional conditions: factor conditions such as skilled labor and infrastructure, and domestic demand conditions regarding customer sophistication.",
+    "The authors examine the remaining components of Porter's diamond: related and supporting industries providing competitive inputs, and firm rivalry driving innovation. Moving to regional clusters, Porter emphasized geographic concentrations of firms and supporting institutions. The authors also review Malmberg and Power's definition of true clusters, which requires four criteria. First, multiple firms must share related industries or technologies within a bounded region. Second, firms must actively interact through flows of goods, ideas, and knowledge. Third, actors must recognize a common identity and engage in joint action. Fourth, the cluster must demonstrate commercial success and competitiveness."
+   ],
+   "labels": [
+    "Page 323",
+    "Page 324",
+    "Page 325",
+    "Page 326",
+    "Page 327"
+   ],
+   "checks": [
+    {
+     "q": "What are the two subsystems of a regional innovation system described on page 326?",
+     "a": "A regional innovation system comprises a knowledge infrastructure producing codified knowledge and an exploitation subsystem of firms and clusters producing tacit knowledge."
+    }
+   ],
+   "audio": "audio/P05-02.mp3",
+   "seconds": 257.6,
+   "words": 494
+  },
+  {
+   "n": 3,
+   "title": "Industrial paths, related variety and regional structure",
+   "slides": [],
+   "readings": "",
+   "pages": "328–332",
+   "paragraphs": [
+    "Cluster theory highlights knowledge spillovers through geographic proximity as a key asset for high-cost economies. However, clusters also require external connections through pipelines to prevent negative path dependency, balancing local buzz with global pipelines. The authors examine path dependency and lock-in, where routines and institutionalized practices hinder necessary adaptation. They outline four path development trajectories from evolutionary geography: path exhaustion, involving industrial decline; path extension, representing continuation of existing activities; path renewal, denoting modernization and upgrading; and path creation, referring to the establishment of entirely new industrial sectors.",
+    "The authors explain that new industrial paths often emerge close to existing regional capabilities, using established knowledge in novel ways through co-evolution. Moving to the firm level, related variety is essential for regional renewal. When regional industries share cognitive proximity, workers displaced during economic shocks can transition into related firms, while enterprises can diversify into adjacent markets. This dynamic stimulates cross-industry innovation, where firms apply insights from external sectors to develop new products and target diverse customer segments.",
+    "The literature assumes that cross-industry innovation is more common in regions with related variety, and stresses networks at different scales. Summarizing the literature, the authors observe that evolutionary economic geography lacks a standardized methodology to operationalize multi-scale relational renewal. Measuring regional renewal requires looking beyond aggregate material shifts in industrial employment. A comprehensive assessment must investigate how firms organize across network scales, generate and share knowledge, access international channels, and foster entrepreneurship. The authors therefore structure their empirical analysis of Western Norway across three levels: industry clusters, firm-level variety and global pipelines, and individual entrepreneurial culture.",
+    "The authors examine the evolution of Western Norway's maritime economy. During the twentieth century, employment shifted from primary to secondary and tertiary sectors. Early industrialization was driven by hydroelectric power, fish processing, and shipbuilding. From the 1970s, petroleum discoveries stimulated offshore suppliers, while aquaculture expanded in the 1980s. This history combined path creation in oil, gas, and fish farming with path renewal in maritime transport. Between 1970 and 2010, total secondary employment declined nationally while expanding in Western Norway, where roughly 24 percent of national industrial workers lived in 1970.",
+    "The authors report that Western Norway's share of national secondary-sector employment increased from 24 percent in 1970 to 33 percent in 2010, shown in Figure 2. Figure 1 illustrates that secondary employment remained higher in Western Norway than nationally, stabilizing around 24 percent compared to 20 percent nationwide. Primary employment fell to between 3 and 4 percent, while services expanded to over 70 percent. Figure 2 shows Western Norway accounting for roughly 30 percent of primary jobs and 24 percent of service jobs. Petroleum extraction and offshore supply constitute the leading secondary industry."
+   ],
+   "labels": [
+    "Page 328",
+    "Page 329",
+    "Page 330",
+    "Page 331",
+    "Page 332"
+   ],
+   "checks": [
+    {
+     "q": "How did Western Norway's share of national secondary-sector employment change between 1970 and 2010?",
+     "a": "Western Norway's share of national secondary employment rose from 24 percent in 1970 to 33 percent in 2010."
+    }
+   ],
+   "audio": "audio/P05-03.mp3",
+   "seconds": 249.1,
+   "words": 464
+  },
+  {
+   "n": 4,
+   "title": "Cluster programmes, path creation and related variety",
+   "slides": [],
+   "readings": "",
+   "pages": "333–337",
+   "paragraphs": [
+    "Major oil companies run offices and offshore fields from the region. In the national cluster programme, the region secured two of Norway's three Global Centres of Expertise: GCE Subsea and GCE Blue Maritime. It also hosts five Norwegian Centres of Expertise in tourism, seafood, media, clean maritime technology, and culinary industries. The maritime cluster and the subsea cluster, which focuses on operations and maintenance, gained NCE status in 2006 and GCE status in 2014 and 2015. The authors interpret Blue Maritime, Subsea, Seafood, and Tourism as examples of path extension, where established industrial trajectories are expanded through continuity-bearing path dependency.",
+    "Figure 3 maps the geographical distribution of seventeen advanced clusters in the Norwegian cluster programme. Western Norway hosts seven of these initiatives: Blue Maritime, Tourism, Subsea, Seafood, Media, Maritime CleanTech, and Culinology. The remaining clusters are located across eastern, southern, and central Norway. Alongside reinforcing established paths, the cluster programme explicitly aims to foster industrial renewal. Consequently, cluster initiatives combine elements of continuity with significant path renewal across the regional economy.",
+    "While mature maritime and seafood clusters pursue cross-industry innovation, three clusters represent regional path creation. NCE Maritime CleanTech unites shipyards, equipment suppliers, renewable energy providers, and research organizations to pioneer low-emission maritime transport. NCE Media emerged in Bergen following the launch of television broadcaster TV2 in 1990, generating visual technology spin-offs like Vizrt. NCE Culinology, in the south of the region, shifted traditional agriculture toward high-value, locally sourced food products, responding to evolving culinary demand and international influences. Both media and food clusters illustrate path creation that diversified the regional economy.",
+    "The authors acknowledge criticism that cluster policies can be overly narrow, focusing on specialized supply chains while neglecting broader renewal dynamics. For example, NCE Subsea concentrated heavily on aftermarket maintenance, risking lock-in if market conditions change. Falling petroleum prices highlighted the danger of excessive oil dependency, underscoring the need for regional differentiation. The authors outline three dimensions of adaptability to examine next: related variety and cross-industry linkages in section 4.1, international pipelines in section 4.2, and local entrepreneurial culture in section 4.3.",
+    "Figure 4 maps related variety across Norway's 89 economic regions. Ten of eighteen western areas score above the national median, among them Bergen, Ålesund, Stavanger and Sandnes, and Jæren, while single-industry towns such as Odda and Høyanger show unrelated variety. Where variety is related, industries can more easily be connected. Several initiatives try to use regional knowledge in new ways and, if they succeed, will be path creation. One is a microalgae pilot at Mongstad, built by the University of Bergen and partners, using CO2 from oil and gas activity to grow fish feed."
+   ],
+   "labels": [
+    "Page 333",
+    "Page 334",
+    "Page 335",
+    "Page 336",
+    "Page 337"
+   ],
+   "checks": [
+    {
+     "q": "Which three cluster initiatives in Western Norway represent path creation on page 335?",
+     "a": "NCE Maritime CleanTech, NCE Media, and NCE Culinology represent regional path creation."
+    }
+   ],
+   "audio": "audio/P05-04.mp3",
+   "seconds": 247.5,
+   "words": 457
+  },
+  {
+   "n": 5,
+   "title": "Pipelines, entrepreneurship and cross-industry innovation",
+   "slides": [],
+   "readings": "",
+   "pages": "338–342",
+   "paragraphs": [
+    "Figure 4 displays a horizontal bar chart ranking Norway's 89 economic regions by their related variety score. Metropolitan and diversified areas in eastern Norway and Bergen occupy the highest positions. Western Norway exhibits substantial internal divergence. Larger coastal urban centers and diversified maritime districts attain elevated scores, whereas specialized single-industry communities rank in the lower half of the distribution. This ranking demonstrates that potential for cross-industry collaboration varies considerably across western districts.",
+    "The authors discuss emerging cross-industry opportunities. Beyond microalgae, industrial initiatives explore seaweed cultivation for food, feed, and cosmetics, drawing on practices in Asia. Another frontier is seabed mining for seafloor minerals including copper, gold, nickel, and cobalt, providing new markets for offshore petroleum suppliers during downscaling. In section 4.2, the authors highlight international pipelines. Leading clusters like GCE Blue Maritime and GCE Subsea balance intense local knowledge exchange with global connections, preventing insular stagnation and maintaining competitive capabilities.",
+    "The authors explain that global pipelines operate when domestic cluster firms establish subsidiaries abroad and multinational companies invest locally. External knowledge spillovers stimulate innovation, while local buzz strengthens trust and absorption capacity. Section 4.3 draws on a conversation with Idar Ulstein and Gunvor Ulstein of Ulstein Group in Ulsteinvik, held in a cluster study rather than designed for this question, though the authors call it a strategically chosen case. Gunvor Ulstein emphasizes that regional entrepreneurship is driven by persistent curiosity, compelling founders to build larger, more powerful vessels for fishing, towing offshore platforms, and deploying heavy anchors.",
+    "Idar Ulstein explains that local business development frequently originated when capable employees disagreed with existing practices and founded independent workshops, citing a former shipyard blacksmith who manufactured harpoons. Global pipelines, Idar Ulstein stresses, were established early: a trip abroad in 1974 was followed in 1975 by the firm's first sales office in Singapore, alongside Hydro, and at most the firm was present in nearly thirty places worldwide. Furthermore, regional collaboration fostered a true cluster through the local workshop association, guided by the principle of cooperating whenever possible and competing when necessary.",
+    "Idar Ulstein recounts reading economic and technical journals for ideas, and a banker's advice to visit fairs outside shipping. For example, observing the nose wheel of an airplane at Oslo airport inspired Ulstein engineers to design a retractable 360-degree swing-up azimuth thruster. In their conclusion, the authors summarize that regional renewal in Western Norway reflects both continuity and change. The region's strong cluster presence can be read as an indication of adaptability, but many of its clusters follow historically established industrial paths."
+   ],
+   "labels": [
+    "Page 338",
+    "Page 339",
+    "Page 340",
+    "Page 341",
+    "Page 342"
+   ],
+   "checks": [
+    {
+     "q": "What cross-industry inspiration led to Ulstein's retractable swing-up thruster on page 342?",
+     "a": "Idar Ulstein was inspired by the nose wheel of an airplane at Oslo airport, prompting engineers to design a 360-degree retractable thruster."
+    }
+   ],
+   "audio": "audio/P05-05.mp3",
+   "seconds": 228.4,
+   "words": 437
+  },
+  {
+   "n": 6,
+   "title": "Conclusions and the reference list",
+   "slides": [],
+   "readings": "",
+   "pages": "343–346",
+   "paragraphs": [
+    "Breaking established paths, the theories say, depends on whether industrial structure and entrepreneurial practice encourage it, and for Western Norway this seems to be the case. Western Norway combines heavy industrial traditions with continuous adaptation enabled by local buzz and global pipelines. The authors acknowledge that it remains difficult to determine whether cluster policy, international capital, related variety, or entrepreneurial culture is the primary driver of this system. Concluding the text, Idar Ulstein affirms that business leaders must actively welcome change and exploit emerging challenges as new commercial opportunities. The reference list begins on this page.",
+    "These pages are the reference list."
+   ],
+   "labels": [
+    "Page 343",
+    "Pages 344-346"
+   ],
+   "checks": [
+    {
+     "q": "What conclusion do the authors draw on page 343 about the ultimate driver of regional renewal?",
+     "a": "The authors conclude it is difficult to determine whether cluster policy, international capital, related variety, or entrepreneurial culture is the primary driver."
+    }
+   ],
+   "audio": "audio/P05-06.mp3",
+   "seconds": 60.2,
+   "words": 113
+  }
+ ],
+ "seconds": 1383.1
+}

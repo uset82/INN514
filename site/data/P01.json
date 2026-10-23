@@ -1,0 +1,173 @@
+{
+ "id": "P01",
+ "kind": "reading",
+ "title": "Reading 1: The evolution of Norway's national innovation system",
+ "session": "Fagerberg, Mowery & Verspagen 2009",
+ "lecturer": "Fagerberg, Mowery & Verspagen",
+ "deck": "Science and Public Policy 36(6)",
+ "authors": "Fagerberg, Mowery & Verspagen",
+ "year": 2009,
+ "source": "Science and Public Policy 36(6)",
+ "lectures": [
+  "T1"
+ ],
+ "chapters": [
+  {
+   "n": 1,
+   "title": "The paper in brief",
+   "slides": [],
+   "readings": "",
+   "pages": "the whole paper",
+   "paragraphs": [
+    "This paper studies how science, technology and innovation policy evolved together with the industrial structure of Norway, a small, open, resource-based economy. Norway combines high growth in productivity and income with comparatively low investment in research and development. The authors ask how that is possible. Previous work on national innovation systems, they note, gave little attention to institutions and politics, perhaps because it often examined snapshots at one point in time.",
+    "The paper relies on several key concepts. On page 431, the authors adopt a broad definition of a national innovation system, tracing the concept to Freeman, Lundvall and Nelson. This broad view includes all learning and innovation activities across the economy, not only universities and research departments. The reason is that much learning happens outside organizations created for innovation. On the same page they introduce path dependency, citing Arthur: historical processes favour some solutions while constraining others. On page 433, they extend this to institutions, citing North's description of institutions as \"rules of the game\". These are costly to establish but make economic interaction much easier once adopted. On page 434, they discuss Dutch disease, where currency appreciation after resource discoveries brings de-industrialization. On page 437, they use absorptive capacity, from Cohen and Levinthal: the ability to identify, absorb and exploit new knowledge. On page 440, they describe localized search, following Nelson and Winter.",
+    "The method combines an evolutionary framework with historical analysis and comparative statistics. Long-term trends come from the GGDC Total Economy Data Base and Statistics Norway. Present-day comparisons use OECD and Eurostat data, including the Community Innovation Survey. The authors also adjust these measures for differences in industrial specialization.",
+    "The findings start with research spending. Norway's low research intensity is partly explained by its specialization in resource-based sectors. Once industrial structure is accounted for, Norwegian firms perform as much business research as firms in the same sectors abroad in five of six country comparisons. Sweden is the exception. Innovation survey data show Norwegian firms scoring high on cooperation in innovation and on interaction with customers. Norway, like its Nordic neighbours, also has a highly educated population and high computer adoption. The authors read these indicators as an important strength in knowledge diffusion and cooperation. They also show that the post-war modernizers failed to make Norway a high-tech leader, but the competences they built produced payoffs in oil and gas.",
+    "The paper contributes an evolutionary account of how industries, institutions and politics co-evolve. The authors also name what they cannot pursue here. One question is what Norway's income would have been without oil and gas. Another is which social, cultural and political features lie behind the system's adaptability, which they leave to future research. They end with a warning against complacency. Rapid growth from offshore oil and gas is approaching its end, and so is the era of cheap hydroelectric power. Raising the share of all firms active in innovation is, they argue, a natural target for policy.",
+    "This reading belongs to Lecture 1: Innovation as systemic and sustainable transformation. There it explains the Norwegian paradox and why innovation is better understood as an interactive system. The broad definition of an innovation system, and the role of institutions, connect to the December 2024 exam. Its Question 1 asks what you understand by innovation system, sustainable transformation, agency and institutions. The June 2025 exam's Question 2 asks in what way a regional innovation system can promote or inhibit industrial restructuring. Here is an example of our own, not from the paper: an established system can support renewal by adapting its engineering skills to new energy, or slow it if resources stay locked in old production. The paper's nearest point is that competences built for post-war computing later produced payoffs in the oil and gas industry."
+   ],
+   "labels": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "checks": [
+    {
+     "q": "What is the Norwegian paradox examined in this paper?",
+     "a": "Norway combines high income and productivity growth with comparatively low spending on research and development."
+    },
+    {
+     "q": "Why do the authors use a broad rather than narrow definition of an innovation system?",
+     "a": "Because much learning and innovation happens outside universities and research departments, across the whole economy."
+    }
+   ],
+   "audio": "audio/P01-01.mp3",
+   "seconds": 296.9,
+   "words": 633
+  },
+  {
+   "n": 2,
+   "title": "The national innovation system and theoretical perspectives",
+   "slides": [],
+   "readings": "",
+   "pages": "431–434",
+   "paragraphs": [
+    "The authors introduce their analysis of the co-evolution of policy and industrial structure in Norway. They trace the national innovation system concept to Freeman (1987), Lundvall (1992) and Nelson (1993). The authors argue that national systems develop as historical, co-evolutionary processes between firms and public research infrastructure, generating path dependencies. They choose a broad definition of the innovation system rather than a narrow one focused only on laboratories and universities. This choice matters because economic benefits come primarily from applying knowledge to production.",
+    "Page 432 explains that broad perspectives are vital for small countries whose domestic research is dwarfed by global knowledge pools. Much innovation occurs outside specialized organizations. The authors outline evolutionary theory based on variety creation, adaptation, selection and retention. Citing Pavitt and Malerba, they observe that industries differ sharply in how they innovate. While biotechnology relies heavily on codified science and patents, industries such as shipbuilding and construction rely on in-house learning and interaction with customers. The relationship between sectoral and national systems is therefore co-evolutionary.",
+    "Page 433 examines path dependency in institutions and politics. Citing North, the authors explain that institutions, the \"rules of the game\", are costly to establish but bring scale advantages once adopted, so they can be sources of path dependency in their own right. Turning to comparative history, they cite Maddison: in 1870 Norway's gross domestic product per capita was only three-quarters of the Western European average, and by 2001 it was one quarter higher. This happened despite a small population of 4.6 million, low population density and no major high-technology firms.",
+    "Page 434 explains how offshore petroleum exploitation transformed Norway after the 1960s and 1970s. Unlike the Netherlands, where energy exports brought Dutch disease and manufacturing decline, Norway used supportive policies to build domestic suppliers in shipbuilding, engineering and services. Figure 1 shows Norwegian economic growth and crude oil and natural gas production from 1950 to 2007. Oil rents explain roughly half of Norway's income advantage over Western Europe. Meanwhile, traditional resource sectors based on hydroelectric power, mining and the sea remain vital regional employers."
+   ],
+   "labels": [
+    "Page 431",
+    "Page 432",
+    "Page 433",
+    "Page 434"
+   ],
+   "checks": [
+    {
+     "q": "Why do the authors prefer a broad definition of an innovation system?",
+     "a": "Because economic gains come from applying knowledge across all sectors, not just creating new technologies in laboratories."
+    },
+    {
+     "q": "How did Norway's experience with oil discoveries differ from the Dutch disease?",
+     "a": "Norwegian public policy helped domestic manufacturing and engineering firms supply the petroleum sector instead of suffering de-industrialization."
+    }
+   ],
+   "audio": "audio/P01-02.mp3",
+   "seconds": 189.3,
+   "words": 361
+  },
+  {
+   "n": 3,
+   "title": "Norway in comparative perspective and the innovation paradox",
+   "slides": [],
+   "readings": "",
+   "pages": "435–438",
+   "paragraphs": [
+    "Page 435 examines Norway's pattern of specialization. Figure 2 shows the five leading areas of Norwegian specialization in 2002: oil, gas and mining, fish, ships and oil rigs, water transport, and basic metals. Norway pioneered fish-farming and adapted shipbuilding to offshore energy. Annual labor productivity growth has averaged over 2.5% since 1975. Yet research spending stands at 1.6% of gross domestic product, in the lower half of European comparisons. The authors ask whether this low research intensity reflects Norway's distinctive sectoral specialization.",
+    "Page 436 compares business research spending across Europe using actual and structurally adjusted figures. In Figure 4, the authors reweight Norwegian research spending by the industrial structures of partner countries. The results show that in five of six comparisons, Norwegian firms perform as much business research as foreign firms in the same sectors. Only Sweden, one of the world's most research-intensive economies, remains ahead. Figure 3 shows research spending as a percentage of gross domestic product in 2004, confirming that government funding accounts for a comparatively large share in Norway.",
+    "Page 437 turns to the Community Innovation Survey. Figure 5 shows that Norway's share of innovative firms is lower than in other high-income countries of Northern Europe, particularly Sweden and Germany. Unlike research spending, this gap does not appear to depend on industrial structure. However, Norwegian firms score high on cooperation in innovation and on interaction with customers. Drawing on Cohen and Levinthal, the authors measure absorptive capacity through education and technology adoption. Norway and its Nordic neighbours have high shares of tertiary graduates and the highest European rates of personal computer adoption.",
+    "Page 438 synthesizes the paradox of the contemporary Norwegian innovation system. Figures 6 and 7 show that Norwegian firms rank near the top in collaborative arrangements and customer interaction. The authors conclude that an important strength of Norway's system lies in knowledge diffusion and cooperation in innovation, qualities missed by conventional indicators. While productivity and income growth have been strong since 1970, recorded research spending and innovation shares remain modest. To resolve these contradictory indicators, the authors introduce a historical analysis of how Norwegian sectors, institutions and policies co-evolved over time."
+   ],
+   "labels": [
+    "Page 435",
+    "Page 436",
+    "Page 437",
+    "Page 438"
+   ],
+   "checks": [
+    {
+     "q": "What happens when Norwegian business research spending is adjusted for industrial structure?",
+     "a": "In five out of six comparisons with European countries, Norwegian firms perform as much research as foreign firms in the same sectors."
+    },
+    {
+     "q": "What important strength of the Norwegian innovation system do standard research indicators miss?",
+     "a": "Strong performance in knowledge diffusion, collaborative innovation arrangements, and close interaction with customers."
+    }
+   ],
+   "audio": "audio/P01-03.mp3",
+   "seconds": 192.7,
+   "words": 374
+  },
+  {
+   "n": 4,
+   "title": "Historical co-evolution of sectors and policies",
+   "slides": [],
+   "readings": "",
+   "pages": "439–441",
+   "paragraphs": [
+    "Page 439 traces three distinct industrial development paths identified by Wicken. The earliest was a small-scale decentralized path dominated by small firms investing little in formal research. Beginning in the late 19th century, a large-scale centralized path expanded through capital-intensive electrochemical and electrometallurgical industries powered by hydroelectricity. After the Second World War, policy-makers known as modernizers promoted a knowledge-intensive network-based path centered on information technology. These three paths coexisted rather than replacing one another, creating a diverse ecology of innovation systems illustrated by aluminium, fish-farming and information technology.",
+    "Norway founded its technical university in 1910, nearly a century after Sweden. Firms relied on localized search, drawing on other firms and research institutes, and invested in their own research only when that failed. Box 1 describes the post-war modernizers, with the industrial research council and the defence research establishment, both founded in 1946, at their centre. Their programmes produced inventions such as the SIMULA language and the GSM system. In the 1980s the decline of minicomputers, a more liberal policy stance, deregulation and global competition undermined the strategy, but its competences produced payoffs in oil and gas.",
+    "Page 441 illustrates major innovations achieved without large corporate research laboratories. Hydroelectric development grew from new combinations by entrepreneurs such as Sam Eyde, offshore petroleum created CONDEEP concrete platforms, and fish-farming mastered disease control. The authors stress that institutions and politics shaped these trajectories. The outcome of interwar political struggles sustained small decentralized firms, giving Norwegian aquaculture a heterogeneous mix of family farms alongside large firms, unlike Scotland where large corporations dominate. Furthermore, early 20th century concession laws governing waterfalls provided the regulatory model for national control of offshore oil and gas decades later."
+   ],
+   "labels": [
+    "Page 439",
+    "Page 440",
+    "Page 441"
+   ],
+   "checks": [
+    {
+     "q": "What happened to the technical competences built up by the modernizers in computer technology?",
+     "a": "Although commercial mass-market computer production failed in Norway, the capabilities transferred into the expanding offshore petroleum sector."
+    },
+    {
+     "q": "How did early regulations on hydroelectric power affect Norwegian offshore oil?",
+     "a": "The early concession laws created a legal precedent for national control that guided petroleum regulation decades later."
+    }
+   ],
+   "audio": "audio/P01-04.mp3",
+   "seconds": 156.9,
+   "words": 294
+  },
+  {
+   "n": 5,
+   "title": "Conclusions and the reference list",
+   "slides": [],
+   "readings": "",
+   "pages": "442–444",
+   "paragraphs": [
+    "Page 442 revisits the paradox through three themes: innovation, path dependency and policy. The system's adaptability appears to be one of the important factors behind Norway's success. Path dependency kept innovation in resource-based sectors that stayed dynamic, and it is, the authors argue, as much a political and institutional phenomenon as an economic one. The authors warn against complacency: rapid growth from offshore oil and gas is approaching its end, and so is cheap hydroelectricity. Raising the share of all firms active in innovation is a natural target for policy.",
+    "Page 443 completes the endnotes before the reference list begins. Note 9 compares Norway's research intensity with other resource-abundant economies like Australia and Canada. Note 11 contrasts Norway with Sweden, citing Katzenstein. Note 12 cites Niosi describing the Norwegian innovation system as diffusion-oriented. Note 14 discusses the government white paper on innovation from 2008, and Note 15 warns that the share of Norwegian firms reporting active innovation declined in the early 2000s. The reference list begins halfway down the page.",
+    "This page is the reference list."
+   ],
+   "labels": [
+    "Page 442",
+    "Page 443",
+    "Page 444"
+   ],
+   "checks": [
+    {
+     "q": "Why do the authors argue against complacency regarding Norway's economic future?",
+     "a": "Because rapid growth from offshore petroleum is ending and cheap hydroelectric power has concluded, requiring broader innovation across all firms."
+    }
+   ],
+   "audio": "audio/P01-05.mp3",
+   "seconds": 97.4,
+   "words": 189
+  }
+ ],
+ "seconds": 933.2
+}

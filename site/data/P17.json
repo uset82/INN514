@@ -1,0 +1,215 @@
+{
+ "id": "P17",
+ "kind": "reading",
+ "title": "Reading 17: Expanding analyses of path creation: interconnections between territory and technology",
+ "session": "Njøs et al. 2020",
+ "lecturer": "Njøs et al.",
+ "deck": "Economic Geography 96(3)",
+ "authors": "Njøs et al.",
+ "year": 2020,
+ "source": "Economic Geography 96(3)",
+ "lectures": [
+  "T8"
+ ],
+ "chapters": [
+  {
+   "n": 1,
+   "title": "The paper in brief",
+   "slides": [],
+   "readings": "",
+   "pages": "the whole paper",
+   "paragraphs": [
+    "Njøs, Sjøtun, Jakobsen and Fløysand ask how evolutionary economic geography explains the emergence of new industries, and how the technological innovation system literature can inform its analyses of path creation (page 267). Their starting point is that evolutionary economic geography explains regional development through territorial capabilities, such as knowledge sharing, support structures and industrial policy. They argue it says little about technology itself. Territorial dynamics or technological characteristics alone do not explain path creation. What matters is how the two connect, and how that connection plays out in time and space (page 266).",
+    "The paper defines path creation as the emergence of new development trajectories in a region. It follows MacKinnon and colleagues, who tie this to new industrial sectors, products, techniques or forms of organisation (page 268). It adopts Martin's three phases: preformation, path creation and path development. It then reviews four topics in the EEG literature: regional capabilities, multiscalar dynamics, actors and agency, and policy (page 268). From the technological innovation system literature it takes the seven functions. It uses three of them, guidance of the search, market formation and legitimation, because EEG already covers the other four (page 271). Together these give seven analytical dimensions (Table 1, page 272).",
+    "The design is a comparative case study of two green technologies linked to southwestern Norway: carbon capture and storage, and maritime battery technology (page 274). The CCS case rests on fourteen interviews in 2018–19 and the battery case on twenty-three interviews from 2012–18, with fifteen further interviews with regional stakeholders, plus documents, media and conferences. The region is defined as Hordaland and Rogaland (page 274). The two technologies sit in the same region but in different phases of development (page 273), so an EEG reading would expect them to be similarly influenced (page 274).",
+    "The battery case ends in green path creation (page 282). Regional firms had world-leading competence in power electronics and battery integration, and global battery development in the car industry supplied the technology. Regional actors lobbied, the cluster NCE Maritime CleanTech set a direction, and public procurement created a market. About seventy ferry lines were expected to use battery or hybrid technology by 2022. The CCS case remains in preformation (page 281). The region has petroleum and subsea expertise and hosts Technology Centre Mongstad. But there are few dedicated CCS firms, development runs top-down from national policy, there is no market, and commercial actors have few incentives. The authors stress that new infrastructure alone may not be enough, as the moon landing project and the test centre suggest (page 279).",
+    "The contribution is a framework that gives technology explanatory weight in path creation, and an argument that the regional level can matter less than EEG expects, as the CCS case shows (page 283). They name three directions for further work: the interplay between the seven dimensions, which dimensions matter when and where, and whether green path creation differs from the emergence of traditional industries (page 284). They also note that narratives, which they observe in the battery case, have been studied by neither literature (page 283).",
+    "The paper is the reading for Lecture 9, the course's summary and exam-preparation session, which takes from page 266 the point that neither territory nor technology alone explains path creation, and from page 268 the definition of path creation. For the June 2025 exam, Question 2 asked in what way a regional innovation system can promote or inhibit industrial restructuring. In our own reading, the two cases fit that question: batteries were promoted by procurement, a cluster and regional agency, while CCS was held back by cost, missing markets and a top-down process. Here is an example of our own, not from the paper: a region can have the skills for a new industry and still wait years for a market that only public buying can create."
+   ],
+   "labels": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "checks": [
+    {
+     "q": "What do the authors say explains path creation?",
+     "a": "Not territorial dynamics or technological characteristics alone, but the interconnections between them, and how those play out in time and space."
+    },
+    {
+     "q": "Which three TIS functions do the authors add to the EEG dimensions?",
+     "a": "Guidance of the search, market formation and legitimation."
+    }
+   ],
+   "audio": "audio/P17-01.mp3",
+   "seconds": 309.7,
+   "words": 644
+  },
+  {
+   "n": 2,
+   "title": "The argument, the EEG gap and the definition of path creation",
+   "slides": [],
+   "readings": "",
+   "pages": "cover, 266–268",
+   "paragraphs": [
+    "The publisher's sheet gives the citation: Economic Geography 96(3), 266–288, published online 3 July 2020.",
+    "The title page gives the four authors, all at the Mohn Centre for Innovation and Regional Development at Western Norway University of Applied Sciences in Bergen, the keywords, and the abstract. The abstract states the gap: evolutionary economic geography has paid little attention to technological characteristics when explaining new industries. Building on technological innovation systems, the article develops a framework for interconnections between territorial dynamics and technological characteristics. It applies the framework to two green technologies in southwestern Norway, carbon capture and storage and maritime battery technology. Its claim is that neither alone explains path creation.",
+    "The introduction sets out the departure point. Evolutionary economic geography explains regional development through territorial capabilities, such as knowledge sharing, support structures and industrial policy. The authors argue that it lacks clarity about technology and its link to industry development, and that it has paid far less attention to green industrial development, quoting Grillitsch and Hansen on EEG being in principle agnostic about the greenness of industries. Two research questions follow: how EEG explains new industries, and how the TIS literature can inform EEG-inspired analyses of path creation.",
+    "The introduction ends with the plan: build a framework, apply it to CCS and maritime battery technology in southwestern Norway, then conclude. The theoretical background adopts MacKinnon and colleagues' definition of path creation as the emergence of new development trajectories based on new sectors, products, techniques or forms of organisation. The authors note that this is less radical than definitions that stress novelty to the world. They then use Martin's three phases, preformation, path creation and path development, and identify four EEG topics: regional capabilities, multiscalar dynamics, agency, and policy."
+   ],
+   "labels": [
+    "Cover",
+    "Page 266",
+    "Page 267",
+    "Page 268"
+   ],
+   "checks": [
+    {
+     "q": "What gap in evolutionary economic geography does the paper identify?",
+     "a": "That it has paid little attention to technological characteristics when explaining new industries, and little attention to green industrial development."
+    },
+    {
+     "q": "How do the authors define path creation, and whose definition do they use?",
+     "a": "Following MacKinnon and colleagues: the emergence of new development trajectories in a region based on new industrial sectors, products, techniques or forms of organisation."
+    }
+   ],
+   "audio": "audio/P17-02.mp3",
+   "seconds": 158.9,
+   "words": 309
+  },
+  {
+   "n": 3,
+   "title": "Regional capabilities, agency and policy, and what TIS adds",
+   "slides": [],
+   "readings": "",
+   "pages": "269–272",
+   "paragraphs": [
+    "The page reviews the first two topics and opens the third. On regional capabilities, it reports Corradini's study of green technology entry across 900 NUTS3 regions in fifteen European countries, which finds green path creation more likely where regional capabilities fit. The authors add that relatedness struggles to explain how novelty arrives. On multiscalar dynamics, they cite Essletzbichler on UK renewable energy, who argues the industry cannot be understood without the national scale. On agency, they note that firm and nonfirm actors both matter.",
+    "The page finishes the review with policy. It uses Garud and Karnøe's distinction between bricolage, which builds competence across many actors through incremental steps, and breakthrough, which concentrates resources on few large players. The authors then set out two criticisms of EEG: its policy advice encourages innovation in general rather than green innovation, and technology is treated as an output, read off regional capabilities, rather than as part of the system. They close by introducing the TIS approach.",
+    "The page defines TIS, quoting Markard and Truffer, and lists the seven functions from Hekkert and colleagues: entrepreneurship, knowledge development, knowledge diffusion, guidance of the search, market formation, resource mobilization, and legitimacy. It argues that TIS takes technological characteristics and materiality seriously, and that its focus on green technologies brings explicit policy advice. The authors then say which functions EEG already covers, entrepreneurship, knowledge development, knowledge diffusion and resources, and which three it lacks: guidance of the search, market formation and legitimation.",
+    "The page works through the three functions TIS adds. Guidance of the search is about activities that make wants visible to technology users, and about how one technology attracts investment over others. On market formation, the authors quote Martin and colleagues: EEG has left demand largely unconsidered. New technologies struggle against embedded ones, so early markets need nursing through protected space or tax regimes. Legitimation is about overcoming resistance from existing industries, through advocacy coalitions, and about acceptance varying between places. Table 1 combines the four EEG dimensions with the three TIS ones."
+   ],
+   "labels": [
+    "Page 269",
+    "Page 270",
+    "Page 271",
+    "Page 272"
+   ],
+   "checks": [
+    {
+     "q": "Which three TIS functions do the authors say EEG lacks?",
+     "a": "Guidance of the search, market formation and legitimation."
+    },
+    {
+     "q": "What distinguishes bricolage from breakthrough as a policy approach?",
+     "a": "Bricolage builds competence across many actors in incremental steps, while breakthrough concentrates resources on few large players."
+    }
+   ],
+   "audio": "audio/P17-03.mp3",
+   "seconds": 178.0,
+   "words": 356
+  },
+  {
+   "n": 4,
+   "title": "The method, the region and the two technologies",
+   "slides": [],
+   "readings": "",
+   "pages": "273–276",
+   "paragraphs": [
+    "The page explains that the seven dimensions are dynamically interconnected. One can influence others, some pairs may matter more, and some may block a new industry. Following Martin, the authors argue that different dimensions matter in different phases and places, and they quote Binz and Truffer on territories and technologies coming together differently in different contexts. They also cite Steen and Hansen on offshore wind in Norway, where territorial dynamics became a barrier. The methodology section then begins, choosing two technologies in different phases.",
+    "The method follows George and Bennett on case studies as a detailed examination of a historical episode. Because EEG stresses regional dynamics, the authors note, two technologies in the same region should be similarly influenced. The CCS case rests on fourteen interviews in 2018–19, mostly with informants outside the region. The battery case rests on twenty-three interviews from 2012–18, mainly in the region, plus conference and workshop data. Fifteen regional stakeholders were also interviewed. The region is Hordaland, with 505,000 inhabitants, and Rogaland, with 473,000.",
+    "The page defines CCS and gives the case for it. The European Commission, the IEA and the IPCC see CCS as central to the Paris Agreement. The IEA is cited for the claim that CCS must deliver around 14 percent of the emission cuts, which means more than 2,500 large facilities by 2040. As of 2018, eighteen facilities operate, five are under construction and twenty are in development; together they will capture and store about forty million tons a year. Figure 1 maps Norway, with the studied region in grey.",
+    "The page defines maritime battery technology and its drivers: battery development in the car industry, a 50 percent rise in electric vehicle sales from 2016 to 2017, and cell producers in Asia whose scale cut lithium-ion prices. Around three hundred battery ships now sail or are being built, up from almost none in 2009–10. The CCS case opens: the region has petroleum and subsea expertise and hosts Technology Centre Mongstad, which cost the state about 7.4 billion kroner. Yet TCM has sparked surprisingly little commercial activity, which the authors explain by national-level processes and technological characteristics."
+   ],
+   "labels": [
+    "Page 273",
+    "Page 274",
+    "Page 275",
+    "Page 276"
+   ],
+   "checks": [
+    {
+     "q": "How many interviews support each case?",
+     "a": "Fourteen for CCS in 2018–19 and twenty-three for maritime battery technology in 2012–18, plus fifteen with regional stakeholders."
+    },
+    {
+     "q": "What does Figure 1 show?",
+     "a": "A map of Norway with the studied region in grey, marking Bergen and Stavanger in the southwest and Oslo as the capital."
+    }
+   ],
+   "audio": "audio/P17-04.mp3",
+   "seconds": 182.4,
+   "words": 373
+  },
+  {
+   "n": 5,
+   "title": "The CCS case and the battery case",
+   "slides": [],
+   "readings": "",
+   "pages": "277–280",
+   "paragraphs": [
+    "Sleipner and Snøhvit inject about 1.7 million tons a year. In 2007 Prime Minister Stoltenberg called CCS Norway's moon landing, but full-scale plans at Mongstad were abandoned in 2013, and the Paris Agreement later renewed interest. The authors find few dedicated CCS companies or path advocates in the region: CCS is a matter of supraregional circumstances. Gassnova, the Research Council and the FME centres have funded research for years, so the national strategy resembles a breakthrough strategy. TCM and the oil companies give the search clear guidance, but the search for cost-efficient CCS lacks momentum.",
+    "The planned full-scale project would capture CO2 at two industrial sites in eastern Norway, store it near a gas processing facility in the southwest, and inject it under the North Sea. It would capture about 800,000 tons a year, at an estimated 7–12.6 billion kroner, with a funding decision expected in 2020–21. Informants see strong legitimation for CCS in Norway and few critics of the technology itself, but the public is sceptical about cost, and companies are waiting for the decision. There is no market, and commercial actors have few incentives.",
+    "The page closes the CCS case: as the moon landing project and TCM show, new infrastructure alone may not be enough for green path creation. Favourable territorial dynamics are not sufficient, and the technology's characteristics are important for explaining the situation. The battery case then opens. Strong regional capabilities, with world-leading competence in power electronics and battery integration, have led to green path creation. Battery development came from the global car industry, but bottom-up action by regional actors anchored it in the region, where Corvus has opened its main battery factory.",
+    "The page shows how the battery path was built. The cluster NCE Maritime CleanTech was set up in 2011 and, informants say, linked global technology to regional capabilities through demonstration projects and lobbying, including for green public procurement. Enova funded projects, the NOx Fund gave firms an alternative to emission taxes, and road authorities demanded low- or zero-emission ferries. The authors call this mix a bricolage approach. Guidance came from procurement rules and IMO regulations, and Equinor's charter demanded batteries."
+   ],
+   "labels": [
+    "Page 277",
+    "Page 278",
+    "Page 279",
+    "Page 280"
+   ],
+   "checks": [
+    {
+     "q": "Why do the authors say CCS has not become a path in the region?",
+     "a": "Because the technology is expensive, there are few dedicated actors and few incentives, there is no market, and development depends on national and supraregional processes."
+    },
+    {
+     "q": "How did public procurement help create the battery market?",
+     "a": "Low- or zero-emission requirements in ferry tenders shifted ferries from diesel to batteries, creating a market that many newcomers entered."
+    }
+   ],
+   "audio": "audio/P17-05.mp3",
+   "seconds": 180.0,
+   "words": 374
+  },
+  {
+   "n": 6,
+   "title": "The comparison, the discussion and the reference list",
+   "slides": [],
+   "readings": "",
+   "pages": "281–288",
+   "paragraphs": [
+    "Table 2 sets the two cases side by side across the seven dimensions. Battery technology is strong on regional capabilities, driven by global technological development and national policy, with a proactive regional response, a bricolage policy mix, guidance from mature technology and regulations, confidence in the solution, and new markets, ending in green path creation. CCS has strong petroleum and subsea competence, top-down processes, a reactive region with few dedicated actors, a breakthrough strategy, actors awaiting a decision, few opponents but cost resistance, and no market: preformation.",
+    "The page finishes the battery case. Public procurement shifted ferries from diesel to batteries and created a market many newcomers entered; by 2022 about seventy ferry lines are expected to use battery or hybrid technology, mostly in western Norway. The market is spreading to offshore supply and short sea shipping, and Corvus won a contract for battery packs on four cruise ships in the fjords. The authors conclude that battery technology is green path creation, explained by interconnections between territory and technology. The discussion then begins.",
+    "For CCS, the discussion finds technology arriving top-down with weak commercial demand. Policy must support infrastructure and a market, and relying on top-down initiatives is unlikely to be enough. For batteries, strong regional competence and a risk-taking culture met global battery development, with regional actors lobbying on procurement and the cluster setting direction. Narratives also seem to support the battery path, a topic neither literature has studied. The authors conclude that the regional level can be less influential than EEG leads us to expect: for CCS, technology-specific explanations appear crucially important.",
+    "The page ends the discussion with future research: the interplay between the seven dimensions, which dimensions matter when and where, and whether green path creation differs from the emergence of traditional industries. The authors say such work should refine EEG's apparatus rather than add empirical accounts, and they describe the article itself as an early attempt at that. The reference list then begins at the foot of the page.",
+    "These pages are the reference list."
+   ],
+   "labels": [
+    "Page 281",
+    "Page 282",
+    "Page 283",
+    "Page 284",
+    "Pages 285-288"
+   ],
+   "checks": [
+    {
+     "q": "What outcome does Table 2 give each case?",
+     "a": "Green path creation for maritime battery technology and preformation for CCS."
+    },
+    {
+     "q": "What future research do the authors call for?",
+     "a": "Work on the interplay between the seven dimensions, on which dimensions matter when and where, and on whether green path creation differs from the emergence of traditional industries."
+    }
+   ],
+   "audio": "audio/P17-06.mp3",
+   "seconds": 172.3,
+   "words": 359
+  }
+ ],
+ "seconds": 1181.3
+}

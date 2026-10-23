@@ -1,0 +1,289 @@
+{
+ "id": "T6",
+ "title": "Lecture 6: Technological innovation systems",
+ "session": "Kursplan 2026, session 6 (20 October)",
+ "lecturer": "Rune Njøs (guest lecture, H2025; Kelvin Ivankovic in Kursplan 2026)",
+ "deck": "Forelesning 4 Njøs.pdf (H2025, 43 slides)",
+ "chapters": [
+  {
+   "n": 1,
+   "title": "What technology development is really about",
+   "slides": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "readings": "none new",
+   "paragraphs": [
+    "This lecture introduces technological innovation systems, often shortened to TIS. In Kursplan 2026, Kelvin Ivankovic teaches this session. These slides come from the 2025 guest lecture by Rune Njøs, who holds a PhD and works at Digdir.",
+    "Slide 2 outlines the agenda. The lecture begins with theoretical foundations on sociotechnical systems and the TIS framework from Hekkert and colleagues in 2007. It then explores an academic case on carbon capture and storage in Norway from Steen and colleagues in 2024. Next, it examines a practical case on digital identity wallets from public administration. It concludes with an overall summary.",
+    "On slide 3, the lecturer highlights four core lessons:",
+    "First, technology development is not only about technical devices.",
+    "Second, technology is socially constructed, meaning that narratives about technology are shaped by society.",
+    "Third, technological innovation systems provide an analytical tool to study this connection.",
+    "Fourth, understanding the interplay between technology and society demands interdisciplinary cooperation across engineering and the social sciences.",
+    "Slide 4 marks the start of part one on background concepts.",
+    "Slide 5 opens with a question posed by economist Richard Nelson in 1974: \"If we can land a man on the moon, why can't we solve the problems of the ghetto?\" Nelson pointed out a sharp contrast. Society could achieve an astonishing technical feat, yet struggled to resolve chronic urban poverty.",
+    "Slide 6 asks whether landing on the moon was merely a technical problem. It quotes President John F. Kennedy's famous speech. Kennedy declared that we choose to go to the moon not because it is easy, but because it is hard. That goal served to organize and measure the best of our energies and skills. In general terms, not the slide's own words, reaching the moon also took political will, public agencies working together, large budgets and public support. The engineering was only one part of it.",
+    "Slide 7 asks whether society can solve a problem simply by deciding to do so. The slide quotes Jelley from 2020 on wind and solar resources, noting that each has the potential to provide all the energy the world needs, solar many times over. If abundant clean energy resources already exist, why is the world still dependent on fossil fuels? Technology cannot be separated from the institutions, economic habits, and physical infrastructure built around existing energy sources."
+   ],
+   "checks": [
+    {
+     "q": "Why does the lecture quote Richard Nelson's 1974 question about the moon landing?",
+     "a": "To show that technology development is not just technical; solving complex societal problems requires social organisation, political will, and institutional alignment (slides 5 and 6)."
+    },
+    {
+     "q": "What are the two empirical cases examined in this lecture?",
+     "a": "Carbon capture and storage from the academic literature (Steen et al. 2024) and the digital identity wallet from public administration practice (slide 2)."
+    }
+   ],
+   "audio": "audio/T6-01.mp3",
+   "seconds": 181.1,
+   "words": 394
+  },
+  {
+   "n": 2,
+   "title": "Energy technologies and path dependence",
+   "slides": [
+    8,
+    9,
+    10,
+    11
+   ],
+   "readings": "Steen et al. 2024, p. 2",
+   "paragraphs": [
+    "Slide 8 presents a historical timeline of energy technologies, contributed by Geoffrey Gilpin from Western Norway University of Applied Sciences in Sogndal. The timeline reveals a surprising pattern. Many technologies that we view as modern alternatives were invented over a century ago:",
+    "Commercial natural gas began in the United Kingdom around 1785. The battery was invented in Italy in 1800. Ethanol was used in early internal combustion engines in the 1820s. The fuel cell was developed in the United Kingdom in 1838. James Young refined oil in the United Kingdom in 1847. France saw a commercial tidal power plant in 1866. The United States opened a commercial hydroelectric station in 1882.",
+    "Wind and solar power also have deep roots. James Blyth built the first electricity-generating wind turbine in the United Kingdom in 1887. The first patented photovoltaic solar cell appeared in the United States in 1888, followed by commercial solar collectors in the late 1800s and space applications in the 1950s. Italy developed the first geothermal plant in 1904, turning commercial in 1911. The United States opened the first nuclear power station in 1951.",
+    "Why did fossil fuels dominate when alternatives existed so early? Slide 9 illustrates the answer using a diagram of personal transportation, alongside pictures of an early vintage car and a modern electric car, such as a Tesla. The physical vehicle forms only one part of the configuration. That vehicle relies on oil refineries, petrol stations, road networks, traffic laws, car taxes, repair shops, and cultural ideas of freedom. Replacing petrol cars with electric vehicles requires changing all these interconnected parts, not just swapping an engine.",
+    "Slide 10 addresses path dependence. Steen and colleagues state on page 2 that sustainability transitions are typically hindered by path dependencies and various technological, economic, political, and institutional barriers. The slide also quotes Hanson and colleagues from 2011. Ensuring technology is actually adopted and used is at least as great a challenge as developing new energy sources.",
+    "Slide 11 shows the Clean Energy Technology Guide poster from the International Energy Agency alongside an offshore oil platform. The poster maps hundreds of supply, demand, and storage technologies, illustrating the sheer complexity of transforming established energy systems."
+   ],
+   "checks": [
+    {
+     "q": "What does the historical timeline on slide 8 show about clean energy technologies?",
+     "a": "Many clean energy technologies, including wind turbines, solar cells, fuel cells, and electric batteries, were first invented in the 19th century, yet remained marginal for decades."
+    },
+    {
+     "q": "What is a sociotechnical configuration according to slide 9?",
+     "a": "A broader system where a physical machine is embedded in fuel infrastructure, road networks, regulations, repair services, user habits, and cultural meanings."
+    }
+   ],
+   "audio": "audio/T6-02.mp3",
+   "seconds": 181.9,
+   "words": 371
+  },
+  {
+   "n": 3,
+   "title": "What is a technological innovation system?",
+   "slides": [
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "readings": "Hekkert et al. 2007, pp. 413, 415, 421, 422, 423, 424, 425",
+   "paragraphs": [
+    "Slide 12 defines a technological innovation system. Quoting Carlsson and Stankiewicz from 1991, as cited on slide 12, a TIS is a network of actors interacting in a specific technological field under a particular institutional infrastructure to generate, diffuse, and utilize a technology.",
+    "The structure of a TIS consists of three main elements:",
+    "First, actors: commercial firms, public authorities, universities, research institutes, banks, and non-governmental organisations, as van Alphen and colleagues explain on slide 12.",
+    "Second, networks: the links between actors, and between actors and institutions.",
+    "Third, institutions: formal laws, regulations, and policy targets, as well as informal norms and cultural habits.",
+    "Slide 13 emphasizes the core lesson: a technology cannot be understood in isolation from the social system in which it operates.",
+    "Slide 14 explains the sociotechnical view of technology development. Quoting Hanson and colleagues from 2011, as cited on slide 14, developing technology is a process that brings together firms, knowledge bodies, financial organisations, and public agencies. Technical performance alone does not determine success. A TIS serves as an analytical tool to identify system weaknesses, such as lack of research funding, poor market incentives, or negative public perceptions.",
+    "To evaluate these dynamics, the lecture introduces the functional approach. On slide 15, seven system functions surround an electric vehicle icon:",
+    "First is entrepreneurial activities, covering commercial experiments that test new concepts and reduce uncertainty (Hekkert et al. 2007, page 421).",
+    "Second is knowledge development, which includes research, patents, and practical learning (page 422).",
+    "Third is knowledge diffusion through networks, sharing knowledge through partnerships, conferences, and collaborative projects (page 423).",
+    "Fourth is guidance of the search, setting clear roadmaps, visions, and regulatory expectations that direct attention toward the technology (page 423).",
+    "Fifth is market formation, creating protected market niches through tax exemptions, public procurement, or subsidies (page 424).",
+    "Sixth is resource mobilisation, providing financial investments and skilled labour (page 425).",
+    "Seventh is creation of legitimacy, overcoming political and social resistance to establish social acceptance (page 425).",
+    "Slide 16 shows the energy technology guide poster again."
+   ],
+   "checks": [
+    {
+     "q": "Name the three structural elements of a technological innovation system on slide 12.",
+     "a": "Actors (firms, universities, public agencies), networks (links between actors), and institutions (laws, regulations, norms)."
+    },
+    {
+     "q": "What are the seven TIS functions formulated by Hekkert and colleagues (2007)?",
+     "a": "Entrepreneurial activities, knowledge development, knowledge diffusion through networks, guidance of the search, market formation, resource mobilisation, and creation of legitimacy."
+    }
+   ],
+   "audio": "audio/T6-03.mp3",
+   "seconds": 192.5,
+   "words": 343
+  },
+  {
+   "n": 4,
+   "title": "Carbon capture and storage: the Norwegian case",
+   "slides": [
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "readings": "Steen et al. 2024, pp. 1, 2, 7",
+   "paragraphs": [
+    "Slide 17 marks the start of part two, examining carbon capture and storage, commonly known as CCS.",
+    "Slide 18 explains why CCS matters. CCS captures carbon dioxide from industrial exhaust and stores it underground, preventing emissions from reaching the atmosphere. Global studies suggest CCS is focal for meeting Paris Agreement goals, accounting for roughly 14 percent of needed cumulative emission reductions and requiring about 2500 large facilities worldwide. In 2018, only about 40 million tons of carbon dioxide were stored annually worldwide.",
+    "Norway became a pioneer in CCS. In 1991, Norway introduced an offshore carbon dioxide tax, motivating oil companies to reinject carbon offshore. This led to storage at the Sleipner gas field in 1996 and at Snøhvit in 2008. In 2005, the Norwegian Prime Minister announced plans for full-scale capture at Mongstad, famously labelling the project Norway's moon landing.",
+    "A technology test centre opened at Mongstad costing approximately 7.6 billion Norwegian kroner. Research was supported through FME programs, spending around 200 million kroner annually, while state enterprise Gassnova pursued a breakthrough policy strategy. In 2013, the planned full-scale capture facility at Mongstad was abandoned, ending the original moon landing project, although the test facility is still in operation. In 2024, Norway launched Longship, a demonstration chain capturing carbon at domestic cement and waste plants and transporting it to seabed storage via the Northern Lights project.",
+    "Slide 19 examines the structural components:",
+    "Actors include technology users, equipment suppliers, universities like NTNU, research bodies like SINTEF, energy firms such as Equinor and Aker, government agencies, and environmental groups.",
+    "Networks are regional, national and international. Many are linked to research and to industry clusters, and the Northern Lights project is important.",
+    "Institutions feature broad political support and little resistance to CCS in Norway, with more resistance in some other countries. Norwegian regulations allow carbon dioxide storage, but receiving carbon dioxide from other countries is not yet possible.",
+    "Slides 20 and 21 analyze the initial system functions from Steen and colleagues in 2024:",
+    "For knowledge development and diffusion on slide 20, Norway maintains strong research activity, but diffusion is limited because capture setups are often customized and patent-protected. Knowledge has broadened from petroleum into gas power, and recently into heavy process industries.",
+    "For entrepreneurial experimentation on slide 21, testing has expanded at Technology Centre Mongstad. On page 7, Steen and colleagues identify an important policy dilemma: balancing the high costs of supporting testing and demonstration while simultaneously ensuring variety in capture technologies.",
+    "For market formation on slide 21, commercial markets for industrial carbon storage remain immature because capture is expensive and carbon prices remain insufficient without state subsidies (page 7)."
+   ],
+   "checks": [
+    {
+     "q": "Why did Norway introduce carbon storage at the Sleipner field in 1996?",
+     "a": "Norway introduced an offshore carbon dioxide tax in 1991, giving operators an economic incentive to capture and reinject carbon dioxide into seabed formations (slide 18)."
+    },
+    {
+     "q": "What policy dilemma regarding technology testing do Steen and colleagues (2024) identify on page 7?",
+     "a": "The challenge of balancing the high public cost of testing and demonstration with the need to maintain variety across different capture technologies."
+    }
+   ],
+   "audio": "audio/T6-04.mp3",
+   "seconds": 225.5,
+   "words": 446
+  },
+  {
+   "n": 5,
+   "title": "Assessing the CCS system: strengths and systemic weaknesses",
+   "slides": [
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28
+   ],
+   "readings": "Steen et al. 2024, pp. 7, 8, 9; Hekkert et al. 2007, pp. 413, 415",
+   "paragraphs": [
+    "Slide 22 examines two further functions: direction of the search and resource provision.",
+    "Direction of the search has shifted from power plants toward hard-to-abate process industries, such as cement manufacturing and waste incineration, where chemical processes generate unavoidable emissions.",
+    "Resource provision presents mixed results. Research grants are accessible, but private commercial capital is difficult to attract without viable business models. Implementing CCS at scale is capital-intensive; the Longship project alone represents about 25 billion kroner. Qualified human talent is also a potential bottleneck.",
+    "Slide 23 addresses legitimation. Acceptance of CCS has varied over time and between places. Norway shows relatively high acceptance, even after the long and bumpy national history of CCS, while CCS is more disputed in some other countries. Leading environmental organisations in Norway have supported CCS. On page 9 of Steen and colleagues, informants emphasize that reaching climate targets requires a broad toolbox, making CCS indispensable for heavy industry. However, informants also highlight the need for stronger political will to shape viable commercial markets.",
+    "Slide 24 covers positive externalities and materialization. Experienced engineering firms are present across the value chain, though customized project designs limit cross-project learning. Materialization was long restricted to petroleum operations. Longship creates the first shared transport and subsea storage infrastructure, but further pipeline networks will require substantial capital and social approval.",
+    "Slide 25 displays Table 3 from Steen and colleagues in 2024, on page 9. The table rates three functions as weak: market formation, resource provision, and materialization. The remaining five functions are rated as intermediate.",
+    "Slide 26 presents the central finding from Steen and colleagues on page 9. Overall developments for Norwegian CCS have been positive since 2020. However, the system still suffers from weaknesses in market formation, securing resources, and materialization, reflecting the immaturity of the technology.",
+    "Slide 27 shows an article by Njøs, Sjøtun, Jakobsen, and Fløysand from 2020 in Economic Geography, studying path creation by connecting technological innovation systems with regional geography in Western Norway.",
+    "Slide 28 concludes part two. A TIS framework provides a sociotechnical lens to evaluate drivers and barriers, pinpoint specific bottlenecks, guide targeted policy, and compare clean technologies."
+   ],
+   "checks": [
+    {
+     "q": "Which three functions in the Norwegian CCS system are rated as weak in Table 3 of Steen and colleagues (2024)?",
+     "a": "Market formation, resource mobilisation, and materialisation (slide 25, page 9)."
+    },
+    {
+     "q": "Why has the direction of search for CCS shifted toward cement and waste incineration?",
+     "a": "Because those heavy process industries generate chemical process emissions that cannot be eliminated solely through renewable electricity (slide 22; Steen et al. 2024, p. 9)."
+    }
+   ],
+   "audio": "audio/T6-05.mp3",
+   "seconds": 192.7,
+   "words": 363
+  },
+  {
+   "n": 6,
+   "title": "Digital identity wallets: common solutions in the public sector",
+   "slides": [
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36
+   ],
+   "readings": "none new",
+   "paragraphs": [
+    "Slide 29 opens part three of the lecture, turning from energy technology to a public administration case: the digital identity wallet.",
+    "Slide 30 introduces Digdir, the national agency for public digitalisation. The slide gives Digdir four aims: promoting coordination for an efficient public sector; leading innovative use of data and artificial intelligence; ensuring secure access to digital services; and solving complex societal challenges together.",
+    "Slide 31 shows Digdir's organisation across Norway. The agency employs 459 people as of August 2025 across three offices: 95 in Brønnøysund, 159 in Leikanger, and 205 in Oslo.",
+    "Slide 32 explains common solutions in public administration. In public administration, common needs are solved through shared digital platforms. These components are developed once, managed centrally, and reused across municipalities and government agencies, simplifying citizen access to services.",
+    "Slide 33 provides a link to the digital wallet project on the public collaboration portal.",
+    "Slide 34 sets out the goal: offering a digital identity wallet to all citizens by 2030. Digdir's vision involves four objectives: securing societal value; anchoring legal and technical choices in European Union standards; safeguarding Norwegian interests in technical standards and rules; and actively involving public bodies and market actors.",
+    "Slide 35 outlines the digital wallet for citizens. Its common requirements are:",
+    "First, a harmonised solution and a harmonised business model in all countries.",
+    "Second, one digital wallet app on the phone, holding attested proofs. The slide's picture shows a national eID, a driving licence, a diploma, insurance, travel and payment.",
+    "Third, compulsory acceptance in most sectors, including banking. Big platforms such as Amazon, Google and Facebook must accept the wallet too.",
+    "Fourth, user control, which the picture shows as selective disclosure: the user shares only the proofs a service provider needs. Here is an example of our own, not from the lecture: a person could prove that they are old enough to buy something without showing their name or address.",
+    "Slide 36 turns to digital wallets for businesses, which Digdir and the Brønnøysund registers work on together. The aims are simpler and more efficient processes for business, secure and controlled data sharing, more competitiveness and innovation, and trust and security in digital processes."
+   ],
+   "checks": [
+    {
+     "q": "What is the primary purpose of public common solutions on slide 32?",
+     "a": "To solve shared administrative needs once, manage them centrally, and reuse them across public agencies to simplify citizen access."
+    },
+    {
+     "q": "What does selective disclosure allow a citizen to do with a digital wallet on slide 35?",
+     "a": "It allows citizens to prove specific attributes, such as legal age, without sharing unnecessary personal details like their full name, address, or national identity number."
+    }
+   ],
+   "audio": "audio/T6-06.mp3",
+   "seconds": 182.6,
+   "words": 370
+  },
+  {
+   "n": 7,
+   "title": "Governing technological transitions and exam tips",
+   "slides": [
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43
+   ],
+   "readings": "Hekkert et al. 2007, pp. 413, 415; Steen et al. 2024, pp. 1, 2",
+   "paragraphs": [
+    "Slide 37 illustrates the European Digital Identity reference framework, abbreviated as the ARF. The diagram maps structural roles within the wallet system: users, wallet applications, qualified attribute providers, authentic data sources, relying parties, and supervisory bodies.",
+    "Slide 38 shows how Digdir organises its work on the European eIDAS regulation, under the normal management dialogue with its ministry. A project owner and a project office lead three subprojects. The first assesses selected measures in the action plan for the national eID strategy. The second works in the European eIDAS groups and brings the regulation into Norwegian law. The third prepares the rollout, through testing, information and guidance. Expert, user and stakeholder forums sit alongside the project.",
+    "Slide 39 highlights broad social benefits: digital identity for all citizens, streamlined public services, strengthened privacy, smooth cross-border interaction, and new commercial opportunities.",
+    "Slide 40 applies the TIS functions to the digital wallet, mostly as open questions:",
+    "Entrepreneurial activity: is there commercial interest in building the ecosystem and its services? The slide notes this is not the first wallet.",
+    "Knowledge development: knowledge of technology, regulation, business models, organisation, universal design, public administration and coordination.",
+    "Knowledge diffusion: networks across public, private and voluntary actors, countries and markets.",
+    "Direction: the European Union regulation, privacy, the union taking on the big platforms, and its four pillars.",
+    "Resource mobilisation: public and private cooperation, and paying for the phase of use, not only for issuing wallets.",
+    "Market formation: how can a market be created, and is there interest in developing services?",
+    "Legitimacy: how can use be secured, given questions of acceptance, fear that big brother is watching, and public money?",
+    "Slide 41 summarises the lecture. Technology development is not only about technology, and technology is also socially constructed. The wallet brings many choices, shaped by European rules on privacy and on systems working together, in one of the most digitalised societies in the world. Every TIS category matters for introducing it. The work calls for understanding whole systems, coordinating, and working outside one's own core field. Technology has both hard and soft sides.",
+    "Slide 42 shows a figure of path dependence from Sydow and colleagues, from 2009. In phase one, there is a wide range of options. After a critical juncture, phase two begins: an emerging path appears, and the range of available options narrows. At lock-in, phase three begins, and the path runs straight on, with almost no other options left. Here is a lesson of our own from the figure, not from the lecture: it is easier to shape a technology while its path is still forming than after lock-in.",
+    "Slide 43 shows Digdir's closing contact information, listing offices in Brønnøysund, Leikanger, and Oslo.",
+    "Here is an exam tip. In December 2024, Question 3 asked: \"how technologies in innovation systems can promote or inhibit sustainable transformation\". In June 2025, Question 3 asked: \"how technological innovation systems can be guided to promote sustainable transformation\".",
+    "You can structure your answer using the seven TIS functions from Hekkert and colleagues (2007) and the insights from Steen and colleagues (2024). Technologies promote transformation when strong knowledge development, clear guidance of the search, and entrepreneurial experimentation generate momentum. However, transformation is inhibited when systemic weaknesses emerge, such as immature market formation, inadequate resources, or resistance from locked-in sociotechnical configurations. To guide a TIS, find the weak functions and aim policy at them."
+   ],
+   "checks": [
+    {
+     "q": "How does the Sydow et al. (2009) model on slide 42 explain path dependence?",
+     "a": "It shows development moving from open options in Phase 1, through a critical juncture into narrowing choices in Phase 2, leading to lock-in in Phase 3."
+    },
+    {
+     "q": "How can policymakers use the TIS functional framework to guide sustainable transformation?",
+     "a": "By identifying which of the seven functions are weak (such as market formation or resource provision) and implementing targeted policy measures to unblock them (Hekkert et al. 2007; Steen et al. 2024)."
+    }
+   ],
+   "audio": "audio/T6-07.mp3",
+   "seconds": 283.9,
+   "words": 567
+  }
+ ],
+ "seconds": 1440.2
+}

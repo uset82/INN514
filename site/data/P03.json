@@ -1,0 +1,176 @@
+{
+ "id": "P03",
+ "kind": "reading",
+ "title": "Reading 3: Institutional work, regional key actors, and green industrial restructuring",
+ "session": "Fløysand et al. 2022",
+ "lecturer": "Fløysand et al.",
+ "deck": "Norsk Geografisk Tidsskrift – Norwegian Journal of Geography 76(1)",
+ "authors": "Fløysand et al.",
+ "year": 2022,
+ "source": "Norsk Geografisk Tidsskrift – Norwegian Journal of Geography 76(1)",
+ "lectures": [
+  "T2",
+  "T3"
+ ],
+ "chapters": [
+  {
+   "n": 1,
+   "title": "The paper in brief",
+   "slides": [],
+   "readings": "",
+   "pages": "the whole paper",
+   "paragraphs": [
+    "This paper investigates how regional key actors use institutional work to enable or constrain green industrial restructuring in petroleum-dependent regional innovation systems. The cases are Hordaland and Rogaland, two adjacent regions in Western Norway (page 15). While evolutionary economic geography has studied agency in regional path development, it struggles to explain recursive dynamics between actors and institutions. Changing strong path dependency requires altering institutions, but regional trajectories carry cemented institutional logics that resist change.",
+    "The authors combine evolutionary economic geography with institutional work. On page 15, they define institutional work, citing Lawrence and colleagues, as physical and mental efforts aimed at affecting an institution or set of institutions. On page 16, they define institutions, citing North, as formal and informal rules, and a regional innovation system, citing Cooke, as interacting subsystems of knowledge generation and exploitation. Systems can be diversified or specialized, following Isaksen and Trippl, and interactive networking or dirigiste, following Stuck and colleagues. On pages 15 and 18, they define institutional logics as practice patterns and social prescriptions directing legitimate practice, following Thornton and Almandoz. On page 17, they adopt Bækkelund's distinction between change agency and reproductive agency.",
+    "The study uses a mixed-methods design. The authors modelled related variety from 2004 to 2016 across regional employment data using Shannon's entropy measure, following Frenken and colleagues. They also interviewed 24 regional key stakeholders, adding names by snowball sampling. Adding earlier sector studies, the research draws on 35 face-to-face interviews, applying the principle of saturation, following Bowen.",
+    "The main finding is that despite shared positive visions for green restructuring, institutional work and institutional logics legitimize a green shift in Hordaland and delegitimize it in Rogaland. In Hordaland, which hosts a thick, diversified and interactive networking system, regional actors exercised change agency through collective leadership. They built on reproductive agency that supported clustering. Hordaland now hosts five of Norway's fifteen National Centres of Expertise and one of its three Global Centres (page 24), and networking across clusters produced projects such as AquaCloud. When oil prices fell and salmon prices rose in 2014–2017, a crossover programme was set up, and an intermediary says forty to fifty oil and gas firms now also supply ocean fish farming (page 23). In Rogaland, a thick, specialized and dirigiste system reinforced reproductive agency rooted in historical individual strategic leadership, linked to former Stavanger mayor Arne Rettedal. Stakeholders describe a recurring lock-in cycle: when oil prices recover after a recession, low costs bring high profit margins, and the petroleum sector bounces back (page 24).",
+    "The paper challenges studies that explain restructuring as the outcome of intended, successful agency: institutional work can also lead to continuation. Work aimed at a green shift can unintentionally sustain oil and gas (page 25). A thick, diversified system is a potential advantage, not a sufficient precondition. As limits, the regions differ in industrial history, with maritime and salmon farming more prevalent in Hordaland (page 25), and more dialogue with interviewees might have increased validity (page 19).",
+    "This reading belongs to Lecture 2: Regional innovation systems and sustainable transformation, and Lecture 3: Institutional work in the regional innovation systems of Hordaland and Rogaland. The two lectures link it to Question 1 of the June 2025 exam, on regional innovation systems, institutional work and sustainability. In our own reading, it also helps with Question 2 of that exam, on how a regional innovation system can promote or inhibit industrial restructuring. Here is an example of our own, not from the paper: an established regional system can support industrial restructuring when diverse sectors collaborate across clusters to share clean technologies. However, it can also hinder change when high earnings in a dominant extractive industry pull resources back into traditional production. The paper's nearest real points are the oil and gas firms in Hordaland that now also supply fish farming, and Rogaland's cycle in which recovering oil prices bring high margins back to petroleum."
+   ],
+   "labels": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "checks": [
+    {
+     "q": "What is the main finding regarding how institutional work affects green restructuring in Hordaland and Rogaland?",
+     "a": "Despite shared positive visions, institutional work and institutional logics legitimize green restructuring in Hordaland through collective leadership and cross-clustering, while delegitimizing it in Rogaland, where individual leadership and a petroleum sector that bounces back as oil prices recover keep the region in oil and gas."
+    },
+    {
+     "q": "How do the authors define institutional work citing Lawrence and colleagues?",
+     "a": "Physical and mental efforts aimed at affecting an institution or set of institutions, including maintaining, creating, changing, or disrupting them."
+    }
+   ],
+   "audio": "audio/P03-01.mp3",
+   "seconds": 313.0,
+   "words": 654
+  },
+  {
+   "n": 2,
+   "title": "Introduction, regional innovation systems and institutional work",
+   "slides": [],
+   "readings": "",
+   "pages": "cover, 14–17",
+   "paragraphs": [
+    "This page is the publisher's cover sheet with journal details and digital identifiers.",
+    "The authors introduce their study of regional key actors and green industrial restructuring in petroleum-dependent regions. While evolutionary economic geography has examined agency in regional path development, it struggles to account for the dynamic interplay between agency and institutions across regional contexts. Cortinovis and colleagues argue that scholars should investigate how actors engage in collective action to mobilize knowledge, resources and public opinion to create or adapt institutions. The authors respond by combining evolutionary economic geography with institutional work, comparing Hordaland and Rogaland in Western Norway.",
+    "The authors define institutional work, following Lawrence and colleagues, as physical and mental efforts aimed at affecting institutions. Evolutionary economic geography holds that regional development follows path-dependent trajectories that are hard to alter. Drawing on Maguire and colleagues, the authors study institutional entrepreneurship and ask two questions: how institutional work balances maintaining, creating and changing institutional entrepreneurship behaviour, and how it legitimizes or delegitimizes green industrial restructuring. They preview the answer: collective-oriented work in diversified Hordaland legitimizes a green shift, while individual-oriented work in petroleum-specialized Rogaland delegitimizes it.",
+    "The authors define a regional innovation system, citing Cooke, as interacting subsystems of knowledge generation and exploitation; following Stuck and colleagues, these are knowledge infrastructure, industry and governance. Systems are thick or thin, following Asheim and colleagues; diversified or specialized, following Isaksen and Trippl; and interactive networking, grassroots or dirigiste, following Stuck and colleagues. Related variety, following Boschma and Frenken, gives learning opportunities across related sectors. Citing North, institutions are formal and informal rules. Institutional entrepreneurship, from Maguire and colleagues and DiMaggio, means leveraging resources to create or transform institutions.",
+    "Institutional entrepreneurship is criticized for treating change as the work of heroic individuals, whereas institutional work also includes taken-for-granted practices and can maintain, create, change or disrupt institutions, following Lawrence and colleagues. Green industrial restructuring is defined, through UNEP, as change that reduces carbon emissions and pollution, improves energy and resource efficiency, and prevents loss of biodiversity. Grillitsch and Sotarauta name three forms of change agency. For specialized regions, Grillitsch and Hansen see greening existing industries and green diversification as the most realistic strategy. Following Bækkelund, agency divides into change agency and reproductive agency."
+   ],
+   "labels": [
+    "Cover",
+    "Page 14",
+    "Page 15",
+    "Page 16",
+    "Page 17"
+   ],
+   "checks": [
+    {
+     "q": "How does institutional work differ from institutional entrepreneurship according to page 17?",
+     "a": "Institutional entrepreneurship risks focusing on heroic individuals and special skills, whereas institutional work includes taken-for-granted practices and can maintain, create, change or disrupt institutions."
+    },
+    {
+     "q": "What two research questions do the authors pose on page 15?",
+     "a": "How regional institutional work balances maintaining, creating and changing institutional entrepreneurship behaviour, and how this institutional work legitimizes or delegitimizes green industrial restructuring."
+    }
+   ],
+   "audio": "audio/P03-02.mp3",
+   "seconds": 209.6,
+   "words": 389
+  },
+  {
+   "n": 3,
+   "title": "Materials, methods and regional innovation system structures",
+   "slides": [],
+   "readings": "",
+   "pages": "18–21",
+   "paragraphs": [
+    "Page 18 connects institutional work with institutional logics and presents the research methods. Institutional logics are practice patterns of behaviour and social prescriptions directing legitimate practice, following Thornton and Almandoz. Combining institutional work and evolutionary economic geography shows how actors maintain, create or change institutions within regional structures. The authors used a mixed-methods design. They modelled related variety using Shannon's entropy measure on five-digit and two-digit 2002 NACE codes, following Frenken and colleagues. From a list of about 40 stakeholders, they conducted 24 semi-structured interviews with regional key actors, using snowball sampling.",
+    "The authors applied the principle of saturation, following Bowen, and draw on 35 face-to-face interviews of 30 to 90 minutes, including earlier studies of greening in seafood, petroleum and maritime sectors. More systematic dialogue with interviewees, they note, might have increased validity. Both regions host major resource industries but differ in structure; in 2019, Hordaland had 524,495 residents and Rogaland 475,654. Bergen, once a Hanseatic trading post, built trade, shipbuilding and fisheries. Hydropower-based metallurgy followed in the early twentieth century, and fjord tourism brings over 300 cruise dockings a year.",
+    "Page 20 compares the knowledge and industrial systems of both regions. Bergen hosts the Directorate of Fishery from 1900, the Norwegian School of Economics from 1936, the University of Bergen and Western Norway University of Applied Sciences, supporting a thick and diversified system. Rogaland shifted toward offshore petroleum after oil discoveries in 1969. Equinor was placed in Stavanger in 1972, followed by the Norwegian Petroleum Directorate. Table 1 shows that non-renewable energy accounted for 12 percent of person years in Hordaland, but double that share in Rogaland. Figure 1 shows higher related variety in Hordaland than Rogaland.",
+    "National cluster programmes, run by Innovation Norway, Siva and the Research Council of Norway, include Arena, the NCE programme from 2006 and Global Centres of Expertise from 2014. In Hordaland, six cluster projects became Centres of Expertise, from NCE Subsea in 2006, now GCE Ocean Technology, to NCE Finance Innovation in 2017. Leaders took cluster terminology into everyday language, creating a cluster Klondike. The authors read this as change agency at first, then reproductive agency extending existing paths, yet it also triggered deeper change."
+   ],
+   "labels": [
+    "Page 18",
+    "Page 19",
+    "Page 20",
+    "Page 21"
+   ],
+   "checks": [
+    {
+     "q": "How did the economic profiles of Hordaland and Rogaland differ in Table 1 on page 20?",
+     "a": "Non-renewable energy represented 12 percent of person years in Hordaland but double that share in Rogaland."
+    },
+    {
+     "q": "Which organisations manage the national cluster programme mentioned on page 21?",
+     "a": "Innovation Norway, Siva, and the Research Council of Norway."
+    }
+   ],
+   "audio": "audio/P03-03.mp3",
+   "seconds": 205.6,
+   "words": 380
+  },
+  {
+   "n": 4,
+   "title": "Institutional work, cluster dynamics and green restructuring",
+   "slides": [],
+   "readings": "",
+   "pages": "22–25",
+   "paragraphs": [
+    "That deeper change came, somewhat unexpectedly, through networking across clusters: AquaCloud drew on finance and media expertise for aquaculture digitization, opening the way for change agency. Rogaland instead pursued smart specialization through Arena projects such as the Norwegian Smart Care Cluster and Stiim Aqua Cluster, but most of these, if not always intentionally, supported continued petroleum dependence. Institutional work there is anchored in individual strategic leadership. This is a legacy of former Stavanger mayor Arne Rettedal, who worked to convince Equinor, state agencies and multinational companies to base their Norwegian petroleum headquarters in Rogaland.",
+    "Greening appears in salmon farming, where environmental problems led to green production licences. As oil prices fell and salmon prices rose in 2014–2017, an intensive crossover programme was set up in Hordaland. An intermediary says forty to fifty oil and gas firms now also supply ocean fish farming. NCE Maritime CleanTech has become world leading in maritime battery technology, which is reaching new markets, such as Corvus Energy's battery packs for cruise ships. Yet stakeholders voice contradictions; an industry leader warns that networks risk becoming talk without action.",
+    "Page 24 analyzes lock-in dynamics in Rogaland and begins the discussion. In Rogaland, 50 years of petroleum dominance and high wages drain talent from other industries. When oil prices recover after a recession, lowered costs yield high profit margins that pull capital and labour back into petroleum. An intermediary warned that a booming oil price reverses emerging restructuring processes. The discussion highlights that Hordaland's thick and diversified system fostered collective leadership that legitimized green restructuring, backed by five of the country's fifteen NCEs and one of three GCEs in Hordaland.",
+    "Rogaland's thick, specialized and rather dirigiste system shows individual leadership delegitimizing green restructuring, reducing greening to a mainly discursive process. The regions also differ in industrial history, so a thick, diversified system is a potential advantage but not a sufficient precondition. In Hordaland, change agency builds on reproductive agency around clustering; in Rogaland, change agency targets renewal of existing industries. The conclusions note a striking observation: institutional work aimed at a green shift can unintentionally sustain oil and gas. This challenges studies that explain restructuring as the outcome of intended, successful agency."
+   ],
+   "labels": [
+    "Page 22",
+    "Page 23",
+    "Page 24",
+    "Page 25"
+   ],
+   "checks": [
+    {
+     "q": "Why did an intermediary in Rogaland consider a booming oil price dangerous on page 24?",
+     "a": "High profits and recovering petroleum markets lead the industry to re-employ workers and reverse emerging restructuring processes."
+    },
+    {
+     "q": "How did oil and gas suppliers in Hordaland respond to oil price drops between 2014 and 2017 on page 23?",
+     "a": "As oil prices fell and salmon prices rose, an intensive crossover programme was set up, and around forty to fifty oil and gas firms now also supply ocean fish farming."
+    }
+   ],
+   "audio": "audio/P03-04.mp3",
+   "seconds": 189.5,
+   "words": 381
+  },
+  {
+   "n": 5,
+   "title": "Conclusions and the reference list",
+   "slides": [],
+   "readings": "",
+   "pages": "26–28",
+   "paragraphs": [
+    "The conclusions end with an implication: change and reproductive agency can have different contents in different regions. Reproductive agency can sustain emerging greening efforts, but it becomes a barrier when tied to historically developed logics in an already specialized system that lacks the conditions to reorient them. After the acknowledgements, which thank the Regional Research Fund of Western Norway, the reference list begins.",
+    "These pages are the rest of the reference list."
+   ],
+   "labels": [
+    "Page 26",
+    "Pages 27-28"
+   ],
+   "checks": [
+    {
+     "q": "When does reproductive agency become a barrier to greening according to the conclusions on page 26?",
+     "a": "When it is too strongly linked to historically developed institutional logics that support an already specialized or overspecialized system lacking the conditions to reorient those logics."
+    }
+   ],
+   "audio": "audio/P03-05.mp3",
+   "seconds": 40.4,
+   "words": 83
+  }
+ ],
+ "seconds": 958.1
+}

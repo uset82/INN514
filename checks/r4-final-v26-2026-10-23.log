@@ -1,0 +1,72 @@
+== check_reading.py, all 17 readings
+P01: PASS
+P02: PASS
+P03: PASS
+P04: PASS
+P05: PASS
+P06: PASS
+P07: PASS
+P08: PASS
+P09: PASS
+P10: PASS
+P11: PASS
+P12: PASS
+P13: PASS
+P14: PASS
+P15: PASS
+P16: PASS
+P17: PASS
+== check_style.py and check_sources.py, all 8 lectures
+T1: style PASS
+T1: sources PASS
+T2: style PASS
+T2: sources PASS
+T3: style PASS
+T3: sources PASS
+T4: style PASS
+T4: sources PASS
+T5: style PASS
+T5: sources PASS
+T6: style PASS
+T6: sources PASS
+T8: style PASS
+T8: sources PASS
+B1: style PASS
+B1: sources PASS
+== data, cache keys, durations, published sizes (version 26)
+T1: 7 chapters, 19.9 min, text matches data: True, audio from current text: True, durations match: True, published sizes match: True
+T2: 8 chapters, 19.9 min, text matches data: True, audio from current text: True, durations match: True, published sizes match: True
+T3: 7 chapters, 18.5 min, text matches data: True, audio from current text: True, durations match: True, published sizes match: True
+T4: 7 chapters, 21.6 min, text matches data: True, audio from current text: True, durations match: True, published sizes match: True
+T5: 7 chapters, 20.9 min, text matches data: True, audio from current text: True, durations match: True, published sizes match: True
+T6: 7 chapters, 24.0 min, text matches data: True, audio from current text: True, durations match: True, published sizes match: True
+T8: 7 chapters, 23.1 min, text matches data: True, audio from current text: True, durations match: True, published sizes match: True
+B1: 8 chapters, 19.2 min, text matches data: True, audio from current text: True, durations match: True, published sizes match: True
+P01: 5 chapters, 15.6 min, text matches data: True, audio from current text: True, durations match: True, published sizes match: True
+P02: 5 chapters, 15.6 min, text matches data: True, audio from current text: True, durations match: True, published sizes match: True
+P03: 5 chapters, 16.0 min, text matches data: True, audio from current text: True, durations match: True, published sizes match: True
+P04: 5 chapters, 12.9 min, text matches data: True, audio from current text: True, durations match: True, published sizes match: True
+P05: 6 chapters, 23.0 min, text matches data: True, audio from current text: True, durations match: True, published sizes match: True
+P06: 6 chapters, 16.6 min, text matches data: True, audio from current text: True, durations match: True, published sizes match: True
+P07: 7 chapters, 20.1 min, text matches data: True, audio from current text: True, durations match: True, published sizes match: True
+P08: 5 chapters, 13.0 min, text matches data: True, audio from current text: True, durations match: True, published sizes match: True
+P09: 6 chapters, 18.1 min, text matches data: True, audio from current text: True, durations match: True, published sizes match: True
+P10: 6 chapters, 15.4 min, text matches data: True, audio from current text: True, durations match: True, published sizes match: True
+P11: 7 chapters, 21.5 min, text matches data: True, audio from current text: True, durations match: True, published sizes match: True
+P12: 5 chapters, 16.2 min, text matches data: True, audio from current text: True, durations match: True, published sizes match: True
+P13: 5 chapters, 15.9 min, text matches data: True, audio from current text: True, durations match: True, published sizes match: True
+P14: 5 chapters, 13.0 min, text matches data: True, audio from current text: True, durations match: True, published sizes match: True
+P15: 6 chapters, 20.6 min, text matches data: True, audio from current text: True, durations match: True, published sizes match: True
+P16: 6 chapters, 16.7 min, text matches data: True, audio from current text: True, durations match: True, published sizes match: True
+P17: 6 chapters, 19.7 min, text matches data: True, audio from current text: True, durations match: True, published sizes match: True
+TOTAL: 154 mp3 files, 457.0 min (7.62 h), 164.6 MB
+stray files on disk: none; missing: none; not published: none; published but unused: none
+PROBLEMS: none
+exit 0
+== guards
+GUARDS OK: 11 files match GUARDS.sha256
+== published index.html (version 26) vs local build
+3
+== page checks
+18
+ALL PAGE CHECKS PASSED

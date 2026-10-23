@@ -1,0 +1,203 @@
+{
+ "id": "P16",
+ "kind": "reading",
+ "title": "Reading 16: Paving the way for new regional industrial paths: actors and modes of change in Scania's games industry",
+ "session": "Miörner & Trippl 2017",
+ "lecturer": "Miörner & Trippl",
+ "deck": "European Planning Studies 25(3)",
+ "authors": "Miörner & Trippl",
+ "year": 2017,
+ "source": "European Planning Studies 25(3)",
+ "lectures": [
+  "T5"
+ ],
+ "chapters": [
+  {
+   "n": 1,
+   "title": "The paper in brief",
+   "slides": [],
+   "readings": "",
+   "pages": "the whole paper",
+   "paragraphs": [
+    "Regions do not start new industries on empty ground. The authors begin from work showing that new industrial paths grow out of what a region already has: its firms, its universities, its support agencies and its rules. That work describes a regional environment as either enabling or constraining for a new industry. Miörner and Trippl argue that this picture is too static. Their question is how a constraining environment can be turned into an enabling one, and what role key actors play in that change (page 482).",
+    "The central concept is the regional environment, which includes not only pre-existing industrial structures but also the organizational and institutional support arrangements built up over time (page 481). Their second concept is a set of modes of change. Layering adds new elements to the support structure, such as a new policy instrument or a new organization. Adaptation changes or reorients existing institutions and organizations. Novel application uses existing structures in new, and possibly unforeseen, ways (pages 486-487). The authors link each mode to the power an actor holds, and they adopt Sotarauta and Mustikkamäki's three forms of power: interpretative, network and institutional (page 486).",
+    "The evidence is a case study of the digital games industry in Scania, the southernmost county of Sweden, where the industry is clustered in Malmö (pages 481, 488). The authors combine document studies with 13 in-depth interviews of 60 to 90 minutes, carried out between October and December 2015. Seven interviews were with founders and chief executives of firms, two with the public sector, one with the education system and three with industry experts. Interviewees were found by snowballing (page 488).",
+    "The findings are stated as suggestions. The authors suggest that a more enabling environment for the digital games industry came about through multi-scalar processes and through combinations of modes of change used by a few key individuals (page 481). They follow three new elements in the regional support structure: the Nordic Game Conference, the Game Assembly and Game City (page 490). A small number of people created each, drawing on resources and knowledge from other places and levels (pages 491-493). The authors also find that an actor's degree of power shaped which mode that actor used. Actors with a high degree of power can engage in layering. Actors without it can only adapt existing elements or use them in new ways (page 494).",
+    "The contribution is the typology and the dynamic view of the regional environment. The authors also stress that the key actors in their case were \"by no means\" heroic individuals, and that change relied on bringing other actors in (page 494). The findings rest on one case, and the authors do not claim that they can be generalized to other regions and paths (page 495). They also say there is no inherent hierarchy between the modes: a novel application of existing structures could be as beneficial as adding new ones (page 495).",
+    "The paper is a core reading for Lecture 5, Agency and innovation systems in change, where it supplies the Scania games industry case. The lecture uses page 491 to show one actor exercising several kinds of agency at once. This is the private entrepreneur who ran the Nordic Game Programme and helped create the conference. For the June 2025 exam, Question 2 asked in what way a regional innovation system can promote or inhibit industrial restructuring, with examples. The paper speaks to both halves, listing what held the new industry back in Scania (pages 489-490) and how a few actors changed the support structure (pages 490-493). Here is an example of our own, not from the paper: a region can fund advice centres for manufacturing and still leave a new software industry without anyone who understands its business."
+   ],
+   "labels": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "checks": [
+    {
+     "q": "What two questions does the paper set out to answer?",
+     "a": "How a regional environment can be turned into one that enables new industrial path development, and by what modes key actors change that environment."
+    },
+    {
+     "q": "What three modes of change does the paper distinguish?",
+     "a": "Layering, which adds new elements to the support structure; adaptation, which changes or reorients existing institutions and organizations; and novel application, which uses existing structures in new ways."
+    }
+   ],
+   "audio": "audio/P16-01.mp3",
+   "seconds": 282.6,
+   "words": 631
+  },
+  {
+   "n": 2,
+   "title": "Why a constraining region can be turned into an enabling one",
+   "slides": [],
+   "readings": "",
+   "pages": "cover, 481–484",
+   "paragraphs": [
+    "This is the publisher's cover sheet: the article's title, authors and journal details, with the note that it was published online on 22 July 2016.",
+    "Work on regional environments has shown how pre-existing industrial structures, knowledge organizations, support structures and institutional configurations enable or constrain new path development. The authors call that view too static, and ask how a constraining environment can be turned into an enabling one. They offer a typology of modes key actors use to manipulate support structures, and apply it to the digital games industry in Scania. The introduction adds that path creation is no longer explained only by shocks and chance. The environment also holds support arrangements built up over time, not only industrial structures.",
+    "The authors argue that calling an environment enabling or constraining leaves the relationship static. New paths often need a major reconfiguration of support structures, and the role of actors of change is poorly understood. The literature has concentrated on private actors forming firms, and only recently on public actors. The authors set two questions: how a regional environment can be turned into one that enables new path development, and by what modes key actors change it. They also ask how the power an actor holds relates to the mode used. The page ends by outlining the paper.",
+    "The authors review work that has moved past the older account of path creation as a product of shocks and accidents. Neffke and colleagues said new paths do not start from scratch but are rooted in a region's historical economic structure, and Martin stressed inherited resources and skills. The regional innovation system literature adds networks and support structures. Isaksen and Trippl classify such systems by organizational thickness and specialization. Thick and diversified systems are described as excellent ground for new industries, yet even these may hold constraining factors.",
+    "Constraints, the authors argue, can sit in the private sector, the public support structure or the institutional setting. Capital providers may lack experience of the new industry, so seed funding is hard to find. Public support may be adapted to existing industries, and education may be too generic, leaving a skills mismatch. Networking between firms may go unsupported. Institutions change slowly, political lock-in can favour established players, and competing paths take the policy attention. Little is known about how actors make an environment enabling, so the authors turn to Simmie, for whom knowledgeable agents create new pathways."
+   ],
+   "labels": [
+    "Cover",
+    "Page 481",
+    "Page 482",
+    "Page 483",
+    "Page 484"
+   ],
+   "checks": [
+    {
+     "q": "What did Neffke and colleagues mean when they said new paths do not start from scratch?",
+     "a": "That new paths are strongly rooted in the historical economic structure of a region, rather than beginning on empty ground."
+    },
+    {
+     "q": "Where can constraining factors sit, according to the authors?",
+     "a": "In the private sector, in the public support structure and in the institutional setting of the regional innovation system."
+    }
+   ],
+   "audio": "audio/P16-02.mp3",
+   "seconds": 193.8,
+   "words": 424
+  },
+  {
+   "n": 3,
+   "title": "Key actors, three forms of power and three modes of change",
+   "slides": [],
+   "readings": "",
+   "pages": "485–487",
+   "paragraphs": [
+    "The authors summarise several strands of work. Simmie's agents can be inventors or innovators, and they must overcome the economic selection environment, technological paradigms, institutional hysteresis and technological regimes. Simmie and colleagues later applied the framework to wind energy in Great Britain and Germany. Dawley shows regional and non-regional actors shaping Scotland's wind industry, and Sydow and colleagues show actors in a Berlin-Brandenburg optics cluster planning deliberately for positive lock-in. DiMaggio introduced institutional entrepreneurs; Battilana and colleagues call them change agents. Sotarauta and Mustikkamäki then distinguish three forms of power.",
+    "Following Sotarauta and Mustikkamäki, the authors set out three forms of power. Interpretative power is the ability to create a new vocabulary and lead sense making. Network power is the ability to remove obstacles to communication, information flows and collaboration. Institutional power is the power to act, decide, create formal institutions and direct resources. Weik separates institutional entrepreneurs who create, remove or change institutions. Policy entrepreneurs invest their own resources to seek future returns by changing policy. The typology of modes departs from Mahoney and Thelen's work on institutional change, as Martin applied it to regions.",
+    "The page explains the three modes. Layering adds new elements, and is most likely from actors with a high degree of power, such as public actors creating policy instruments. Adaptation changes or reorients existing institutions and organizations, and is used by actors who lack the power to create new ones. Novel application changes the impact of existing elements by using them in new and possibly unforeseen ways, which needs interpretative power and knowledge more than institutional power. Table 1 sets this out in three rows: high power and layering, medium power and adaptation, low power and novel application."
+   ],
+   "labels": [
+    "Page 485",
+    "Page 486",
+    "Page 487"
+   ],
+   "checks": [
+    {
+     "q": "What three forms of power do Sotarauta and Mustikkamäki distinguish?",
+     "a": "Interpretative power, the ability to create a new vocabulary and lead sense making; network power, the ability to remove obstacles to communication and collaboration; and institutional power, the power to act, decide, create formal institutions and direct resources."
+    },
+    {
+     "q": "Which mode of change does Table 1 link to a low degree of power?",
+     "a": "Novel application: using existing elements in new and possibly unforeseen ways."
+    }
+   ],
+   "audio": "audio/P16-03.mp3",
+   "seconds": 150.0,
+   "words": 303
+  },
+  {
+   "n": 4,
+   "title": "Scania's games industry, and what held it back",
+   "slides": [],
+   "readings": "",
+   "pages": "488–490",
+   "paragraphs": [
+    "Scania, the authors explain, is the southernmost county of Sweden, with an organizationally thick and diversified regional innovation system, strong universities and more than 100 intermediary organizations. Policy actors have accepted a need to consolidate this system, and are reluctant to expand public support into new areas. The study uses document studies and 13 in-depth interviews of 60 to 90 minutes, held between October and December 2015: seven with founders and chief executives, two with the public sector, one with education and three with industry experts. The industry has about 40 firms and 600 to 700 employees, clustered in Malmö.",
+    "Many of Scania's leading games firms began in neighbouring Blekinge in the late 1990s, helped by an incubator branch for games and by local education. In the early 2000s several moved to Malmö to find senior developers and to attract talent from abroad. The authors then name three constraints. Higher education was too academic and badly matched to the industry's needs. Customized public initiatives for networking, projects and start-up services were lacking; the MINC incubator had not reached game developers. And there was a lack of both private and public support for start-ups, with private venture capital scarce.",
+    "Some interviewees said business support bodies did not understand the industry: ALMI found it hard to judge firms, because games are made as single projects and young developers lack a record. Policy actors, reluctant to add support bodies in a region that had many, pointed firms to structures built for the new media industry; interviewees rejected this, citing cultural differences. Nor was the industry seen as serious business. The authors then introduce three new elements: the Nordic Game Conference, the Game Assembly and Game City. Several key actors were outsiders or returnees who brought competences from elsewhere."
+   ],
+   "labels": [
+    "Page 488",
+    "Page 489",
+    "Page 490"
+   ],
+   "checks": [
+    {
+     "q": "How many interviews did the study rest on, and with whom?",
+     "a": "Thirteen in-depth interviews: seven with founders and chief executives of firms, two with the public sector, one with the education system and three with industry experts."
+    },
+    {
+     "q": "What three constraints did the authors identify in Scania's support structure?",
+     "a": "Higher education badly matched to the industry's needs; a lack of customized public initiatives for networking, projects and start-up services; and a lack of both private and public support for start-ups."
+    }
+   ],
+   "audio": "audio/P16-04.mp3",
+   "seconds": 142.9,
+   "words": 311
+  },
+  {
+   "n": 5,
+   "title": "Three new elements: the conference, the school and the cluster",
+   "slides": [],
+   "readings": "",
+   "pages": "491–493",
+   "paragraphs": [
+    "The Nordic Game Conference is an annual conference in Malmö and among the largest in Europe. It gives firms networking opportunities and markets Scania as a game development region, helping recruitment and funding. Its creation was layering, preceded by an adaptation at a higher scale: it began as a way of spreading results from the Nordic Game Programme. A private entrepreneur in Malmö administered that programme, with high interpretative power at the Nordic level but little institutional power in the region. Later funding from the City of Malmö and Region Skåne therefore came through a novel application of existing structures.",
+    "Funding for the conference did not lead to new regional structures. The Game Assembly, founded in 2008, is an advanced vocational training school that supplies junior talent. More than 70 employees of Massive Entertainment have trained there. Its creation was layering at the regional level, helped by adaptation and novel application elsewhere. Representatives of Massive approached a firm that runs vocational schools across Sweden. Study plans were written with one of Massive's lead programmers, and the national agency for higher vocational education approved them. A private entrepreneur with knowledge from Blekinge and high interpretative and network power made the approach.",
+    "Game City began as an attempt to adapt Media Evolution, which refused customized activities for games. One of the founders of Massive Entertainment, a board member of Media Evolution, then formed Game City with other key actors as an independent cluster organization, a case of layering. Region Skåne was reluctant to fund another cluster body, so in spring 2015 Game City applied with Media Evolution to a programme on youth unemployment and won funding, a novel application. Key individuals also worked on public opinion. All three cases, the authors say, show a few key actors using a mix of modes."
+   ],
+   "labels": [
+    "Page 491",
+    "Page 492",
+    "Page 493"
+   ],
+   "checks": [
+    {
+     "q": "Which mode of change created the Nordic Game Conference, and what came before it?",
+     "a": "Layering, preceded by an adaptation of the Nordic Game Programme at a higher spatial scale, after which the conference was funded through a novel application of existing regional structures."
+    },
+    {
+     "q": "How did Game City win funding when Region Skåne was reluctant to fund another cluster organization?",
+     "a": "It applied together with Media Evolution to a programme on youth unemployment and was granted public funding, a novel application of existing structures."
+    }
+   ],
+   "audio": "audio/P16-05.mp3",
+   "seconds": 140.6,
+   "words": 318
+  },
+  {
+   "n": 6,
+   "title": "Conclusions and the reference list",
+   "slides": [],
+   "readings": "",
+   "pages": "494–497",
+   "paragraphs": [
+    "The authors say the paper moves past a simple enabling or constraining label. They offer the three modes, borrowed from work on institutional change. Power shapes which one is used: high power allows layering, and actors without it can only adapt existing elements or use them in new ways. In Scania the constraints reflect path dependencies in higher education and policy, and little knowledge of the new industry. The authors add that their key actors were by no means heroic individuals. The changes relied on bringing other actors in, and change is often a collective endeavour.",
+    "The authors extend the argument in several ways. Change is multi-dimensional, and in Scania the key actors came mainly from the private sector. Actors lacking regional power turned to other scales. There is no inherent hierarchy between the modes, since a novel application could be as beneficial as layering. Three questions are left for future research: how actors navigate scales, how the modes interrelate with knowledge and power, and how other parts of the regional environment change. The findings rest on one case and are not claimed to be generalizable.",
+    "These pages are the reference list."
+   ],
+   "labels": [
+    "Page 494",
+    "Page 495",
+    "Pages 496-497"
+   ],
+   "checks": [
+    {
+     "q": "What limit do the authors state about their findings?",
+     "a": "That the findings are based on one case, so the authors do not claim that they are generalizable to other growth paths and regions."
+    }
+   ],
+   "audio": "audio/P16-06.mp3",
+   "seconds": 94.6,
+   "words": 205
+  }
+ ],
+ "seconds": 1004.5
+}

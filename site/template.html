@@ -1,0 +1,821 @@
+<meta charset="utf-8">
+<title>INN514 Course Companion</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&display=swap">
+<style>
+/* A quiet reading site: warm ivory page, a bookish serif for headings and reading,
+   a small sans for the interface, one clay accent. Two doors on the front page are
+   the only bold element; everything else is hairlines, space and one reading sheet. */
+:root {
+  --bg: #FAF9F5;            /* page */
+  --surface: #FFFFFF;       /* reading sheet, doors, player */
+  --surface-2: #F0EEE6;     /* hover, current chapter, chips, meter track */
+  --ink: #141413;           /* text */
+  --ink-2: #3D3D3A;         /* lede, bylines */
+  --muted: #6B6A63;         /* meta, numbers */
+  --line: #E5E2D8;          /* hairlines, borders, route line */
+  --clay: #D06B4A;          /* fills only: progress, marks, active underline */
+  --clay-ink: #B4532E;      /* links, focus ring */
+  --on-clay: #FFFFFF;       /* text on the primary button */
+  --btn: #B4532E;           /* primary and play button */
+  --btn-hover: #9E4627;
+  --glow: #F6E7DF;          /* paragraph being read */
+  --glow-ink: #141413;
+  --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans: "Hanken Grotesk", "Segoe UI", system-ui, sans-serif;
+  --s-1: .8125rem; --s0: 1rem; --s1: 1.25rem; --s2: 1.5625rem; --s3: 1.9375rem; --s4: 2.4375rem;
+  --sp-1: .25rem; --sp-2: .5rem; --sp-3: .75rem; --sp-4: 1rem; --sp-5: 1.5rem; --sp-6: 2rem; --sp-7: 3rem; --sp-8: 4rem;
+  --r-sm: 8px; --r-md: 12px; --r-lg: 16px;
+  --header-h: 3.5rem;
+  --player-h: 8.75rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #262624; --surface: #30302E; --surface-2: #3A3936; --ink: #F2F0E8; --ink-2: #D9D6CC;
+    --muted: #A6A39A; --line: #45443F; --clay: #D97757; --clay-ink: #E08A6B; --on-clay: #1F1E1D;
+    --btn: #D97757; --btn-hover: #E08A6B; --glow: #4A3529; --glow-ink: #F8EDE6; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #262624; --surface: #30302E; --surface-2: #3A3936; --ink: #F2F0E8; --ink-2: #D9D6CC;
+  --muted: #A6A39A; --line: #45443F; --clay: #D97757; --clay-ink: #E08A6B; --on-clay: #1F1E1D;
+  --btn: #D97757; --btn-hover: #E08A6B; --glow: #4A3529; --glow-ink: #F8EDE6; color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: var(--sans); font-size: var(--s0); font-weight: 400; line-height: 1.5;
+  padding-bottom: calc(var(--player-h) + env(safe-area-inset-bottom, 0px) + var(--sp-5));
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3 { margin: 0; font-family: var(--serif); font-weight: 500; }
+p, dl, dt, dd, ul, ol { margin: 0; }
+ul, ol { padding: 0; }
+button { font: inherit; color: inherit; }
+a { color: var(--clay-ink); text-underline-offset: 2px; }
+svg { display: block; }
+:focus-visible { outline: 2px solid var(--clay-ink); outline-offset: 2px; border-radius: 6px; }
+.wrap {
+  max-width: 1080px; margin-inline: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.skip {
+  position: fixed; top: var(--sp-2); left: var(--sp-4); z-index: 20;
+  transform: translateY(-300%); background: var(--surface); color: var(--ink);
+  border: 1px solid var(--line); border-radius: var(--r-md);
+  padding: var(--sp-3) var(--sp-4); font-weight: 500; text-decoration: none;
+}
+.skip:focus { transform: none; }
+
+/* Top bar: always there, so a way back is always one tap away */
+.topbar {
+  position: sticky; top: 0; z-index: 6; height: var(--header-h);
+  background: var(--bg);
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+.topbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-4); height: 100%; }
+.brand { font-family: var(--sans); font-size: .9375rem; font-weight: 600; letter-spacing: -.01em;
+  color: var(--ink); text-decoration: none; }
+.brand span { font-weight: 400; color: var(--muted); }
+.mainnav { display: flex; gap: var(--sp-1); }
+.mainnav a { position: relative; display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0 var(--sp-3);
+  border-radius: var(--r-sm); color: var(--muted); font-size: .9375rem; font-weight: 500;
+  text-decoration: none; transition: background-color .15s; }
+.mainnav a:hover { background: var(--surface-2); color: var(--ink); }
+.mainnav a[aria-current="page"] { color: var(--ink); }
+/* A straight underline: an inset shadow would follow the link's rounded corners. */
+.mainnav a[aria-current="page"]::after { content: ""; position: absolute; left: var(--sp-3); right: var(--sp-3);
+  bottom: 0; height: 2px; border-radius: 1px; background: var(--clay); }
+
+/* Page heads: Classes, Papers, a class, a paper */
+.page-head { display: grid; gap: var(--sp-3); max-width: 44rem; padding-block: var(--sp-6) var(--sp-5); }
+.page-head h1 { font-size: clamp(1.75rem, 1.2rem + 2.4vw, 2.4375rem); line-height: 1.12; text-wrap: balance; }
+.lede { font-family: var(--serif); font-size: 1.25rem; font-weight: 400; line-height: 1.55;
+  color: var(--ink-2); max-width: 34em; }
+
+/* Front page */
+.home-hero { display: grid; gap: var(--sp-5); max-width: 44rem; padding-block: var(--sp-7) var(--sp-6); }
+.home-hero .intro { display: grid; gap: var(--sp-2); }
+.home-hero h1 { font-size: clamp(2.25rem, 1.4rem + 3.6vw, 3.25rem); font-weight: 500; line-height: 1.08;
+  letter-spacing: -.015em; text-wrap: balance; max-width: 13em; }
+.when-line { color: var(--muted); font-size: .9375rem; font-weight: 500; }
+.resume-row { display: grid; gap: var(--sp-2); justify-items: start; }
+.primary { display: inline-flex; align-items: center; gap: var(--sp-2); min-height: 2.75rem;
+  padding: .55rem 1.15rem; border: 0; border-radius: 999px; background: var(--btn); color: var(--on-clay);
+  font-family: var(--sans); font-size: .9375rem; font-weight: 500; cursor: pointer; transition: background-color .15s; }
+.primary:hover { background: var(--btn-hover); }
+.primary svg { width: 1rem; height: 1rem; fill: currentColor; }
+.resume-line { color: var(--muted); font-family: var(--serif); font-size: 1.0625rem; line-height: 1.5; }
+
+/* The two doors: the one bold element */
+.doors { display: grid; gap: var(--sp-4); }
+@media (min-width: 720px) { .doors { grid-template-columns: 1fr 1fr; gap: var(--sp-5); } }
+.door { display: grid; gap: var(--sp-3); align-content: start; color: var(--ink); text-decoration: none;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg);
+  padding: var(--sp-5); transition: border-color .15s; }
+.door:hover { border-color: var(--clay); }
+.door h2 { font-size: var(--s3); font-weight: 500; line-height: 1.1; }
+.door p { font-family: var(--serif); font-size: 1.0625rem; line-height: 1.55; color: var(--ink-2); }
+.door .stats { color: var(--muted); font-family: var(--sans); font-size: var(--s-1);
+  font-variant-numeric: tabular-nums; }
+.door .more { color: var(--clay-ink); font-size: .9375rem; font-weight: 500; text-decoration: underline;
+  text-underline-offset: 3px; }
+.door:hover .more { text-decoration-thickness: 2px; }
+.meter { display: block; height: 4px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+.meter::after { content: ""; display: block; height: 100%; width: calc(var(--p, 0) * 100%);
+  background: var(--clay); border-radius: 999px; transition: width .4s ease; }
+
+/* Front page sections */
+.home-section { display: grid; gap: var(--sp-4); max-width: 44rem; margin-top: var(--sp-7); }
+@media (min-width: 720px) { .home-section { margin-top: var(--sp-8); } }
+.home-section h2, .next h2 { font-size: var(--s2); font-weight: 500; line-height: 1.2; }
+.home-section h2.small { font-size: var(--s0); }
+.about-text { font-family: var(--serif); font-size: 1.125rem; line-height: 1.7; max-width: 65ch; }
+.howto { display: grid; gap: var(--sp-4); }
+.howto > div { display: grid; gap: var(--sp-1); }
+.howto dt { font-family: var(--sans); font-size: var(--s0); font-weight: 600; }
+.howto dd { font-family: var(--serif); font-size: 1.0625rem; line-height: 1.6; color: var(--ink-2); }
+.note { color: var(--muted); font-size: var(--s-1); line-height: 1.45; max-width: 62ch; }
+
+/* Class and paper lists: one row each, a hairline between, the whole row the link */
+.list { list-style: none; }
+.row { position: relative; display: grid; grid-template-columns: 3rem minmax(0, 1fr); column-gap: var(--sp-3);
+  padding: .9rem .75rem; border-radius: var(--r-md); transition: background-color .15s; }
+/* The hairline is its own element, so the row's rounded hover corners do not bend it. */
+.row + .row::before { content: ""; position: absolute; top: 0; left: .75rem; right: .75rem; height: 1px;
+  background: var(--line); }
+.row:hover { background: var(--surface-2); }
+.row .num { font-family: var(--serif); font-size: var(--s2); font-weight: 500; line-height: 1.15;
+  color: var(--muted); font-variant-numeric: tabular-nums; }
+.row-title { display: block; font-family: var(--serif); font-size: var(--s1); font-weight: 500; line-height: 1.25;
+  color: var(--ink); text-decoration: none; text-wrap: balance; }
+a.row-title::after { content: ""; position: absolute; inset: 0; border-radius: var(--r-md); }
+a.row-title:hover { text-decoration: underline; text-underline-offset: 3px; }
+.row-teacher { color: var(--ink-2); font-size: .9375rem; line-height: 1.45; margin-top: var(--sp-1); }
+.row-note { color: var(--muted); font-size: var(--s-1); line-height: 1.45; margin-top: var(--sp-1); max-width: 42em; }
+.row .meta { color: var(--muted); font-size: var(--s-1); line-height: 1.45; font-variant-numeric: tabular-nums;
+  margin-top: var(--sp-1); }
+.row .meter { height: 3px; max-width: 12rem; margin-top: var(--sp-2); display: none; }
+.row.heard .meter { display: block; }
+.row.soon .num, .row.soon .row-title { color: var(--muted); }
+.row.session { cursor: default; }
+.row.session .num, .row.session .row-title { color: var(--muted); }
+.row.session:hover { background: none; }
+.row .go { color: var(--clay-ink); font-size: var(--s-1); font-weight: 500; text-decoration: underline;
+  text-underline-offset: 2px; }
+
+/* Papers: the same rows, with the paper number in the first column */
+.list.papers .row { grid-template-columns: 4.75rem minmax(0, 1fr); }
+.paper-no { padding-top: .2rem; color: var(--muted); font-family: var(--sans); font-size: var(--s-1);
+  font-weight: 500; font-variant-numeric: tabular-nums; }
+.list.papers .row-title { font-size: 1.125rem; }
+
+/* Papers page: one group per class */
+.group + .group { margin-top: var(--sp-7); }
+.group h2 { font-family: var(--sans); font-size: var(--s0); font-weight: 600; line-height: 1.4; }
+.group h2 a { color: var(--ink); text-decoration: none; }
+.group h2 a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.group-teacher { color: var(--muted); font-size: var(--s-1); margin-top: var(--sp-1); }
+.group .list { margin-top: var(--sp-2); }
+
+/* Breadcrumb */
+.crumbs { display: flex; align-items: center; gap: var(--sp-2); padding-block: var(--sp-4) 0;
+  font-size: var(--s-1); font-weight: 500; }
+.crumbs a { color: var(--clay-ink); text-decoration: none; }
+.crumbs a:hover { text-decoration: underline; }
+.crumbs .sep, .crumbs span { color: var(--muted); }
+
+/* A class or a paper: the header lines */
+.lec-head { display: grid; gap: var(--sp-3); max-width: 44rem; padding-block: var(--sp-4) var(--sp-6); }
+.lec-head h1 { font-size: clamp(1.75rem, 1.2rem + 2.4vw, 2.4375rem); line-height: 1.12; text-wrap: balance; }
+.when { color: var(--muted); font-size: var(--s-1); line-height: 1.45; font-variant-numeric: tabular-nums; }
+.when a { color: var(--clay-ink); text-decoration: none; }
+.when a:hover { text-decoration: underline; }
+.by { color: var(--ink-2); font-size: .9375rem; line-height: 1.55; }
+.by a { color: var(--clay-ink); }
+.lec-head .primary { justify-self: start; margin-top: var(--sp-2); }
+.src a { color: var(--clay-ink); }
+.pg { margin: var(--sp-5) 0 var(--sp-2); font-family: var(--sans); font-size: var(--s-1); font-weight: 600;
+  color: var(--clay-ink); font-variant-numeric: tabular-nums; scroll-margin-top: calc(var(--header-h) + 1rem); }
+.src + .listen + .pg { margin-top: var(--sp-1); }
+
+/* A class or a paper: chapters beside one reading sheet */
+.lec-body { display: grid; gap: var(--sp-6); }
+@media (min-width: 860px) {
+  .lec-body { grid-template-columns: 17rem minmax(0, 1fr); align-items: start; }
+  .side { position: sticky; top: calc(var(--header-h) + var(--sp-4));
+    max-height: calc(100vh - var(--header-h) - var(--player-h) - 2rem); overflow: auto; }
+}
+.side h2 { font-family: var(--sans); font-size: var(--s-1); font-weight: 600; color: var(--muted);
+  margin-bottom: var(--sp-2); padding-inline: .6rem; }
+/* The chapter route: one line, a mark per chapter, the clay fill as you listen */
+.route { list-style: none; }
+.stop { position: relative; display: grid; grid-template-columns: 1.25rem minmax(0, 1fr);
+  column-gap: var(--sp-2); }
+.chapters .stop { grid-template-columns: 1.25rem minmax(0, 1fr); column-gap: var(--sp-2); }
+.chapters .stop::before { content: ""; position: absolute; left: .625rem; top: 0; bottom: 0; width: 1px;
+  background: var(--line); transform: translateX(-.5px); }
+.chapters .stop:first-child::before { top: 1.5rem; }
+.chapters .stop:last-child::before { bottom: calc(100% - 1.5rem); }
+/* The fill runs from this chapter's mark (centre 1.475rem down) to the next chapter's mark. */
+.chapters .fill { position: absolute; left: calc(.625rem - 2px); top: 1.475rem; width: 4px; border-radius: 999px;
+  height: calc(var(--p, 0) * 100%); background: var(--clay); transition: height .4s ease; }
+.chapters .stop:last-child .fill { display: none; }
+.mark { grid-column: 1; grid-row: 1; justify-self: center; margin-top: 1.1rem; width: .75rem; height: .75rem;
+  border-radius: 50%; background: var(--bg); border: 2px solid var(--muted); position: relative; z-index: 1; }
+.stop.done .mark { background: var(--clay); border-color: var(--clay); }
+.stop.now .mark { background: var(--clay); border-color: var(--ink); }
+.chapters .body { grid-column: 2; display: grid; grid-template-columns: 1.25rem minmax(0, 1fr) auto;
+  column-gap: var(--sp-2); align-items: baseline; width: 100%; min-height: 2.75rem; text-align: left;
+  padding: .55rem .6rem; border: 0; border-radius: var(--r-md); background: none; cursor: pointer;
+  transition: background-color .15s; }
+.chapters .body:hover, .chapters .now .body { background: var(--surface-2); }
+.chapters .num { color: var(--muted); font-size: var(--s-1); font-weight: 500; font-variant-numeric: tabular-nums; }
+.chapters .title { min-width: 0; font-size: .9375rem; line-height: 1.35; }
+.chapters .now .title { font-weight: 600; }
+.chapters .dur { color: var(--muted); font-size: var(--s-1); font-variant-numeric: tabular-nums; }
+
+.sheet { min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg);
+  padding: var(--sp-6) clamp(1rem, 4.5vw, 2.75rem); }
+.chapter { scroll-margin-top: calc(var(--header-h) + 1rem); }
+.chapter + .chapter { margin-top: var(--sp-6); padding-top: var(--sp-6); border-top: 1px solid var(--line); }
+.chapter h2 { display: flex; gap: var(--sp-3); align-items: baseline; margin-bottom: var(--sp-2);
+  font-size: var(--s2); font-weight: 600; line-height: 1.15; text-wrap: balance; }
+.chno { color: var(--clay-ink); font-variant-numeric: tabular-nums; }
+.src { color: var(--muted); font-size: var(--s-1); line-height: 1.45; margin-bottom: var(--sp-3); }
+.listen { display: inline-flex; align-items: center; gap: var(--sp-2); min-height: 2.75rem;
+  margin-bottom: var(--sp-4); padding: .4rem 1rem; border: 1px solid var(--line); border-radius: 999px;
+  background: transparent; color: var(--ink); font-size: var(--s-1); font-weight: 500; cursor: pointer;
+  transition: background-color .15s; }
+.listen svg { width: .8rem; height: .8rem; fill: var(--clay-ink); }
+.listen:hover { background: var(--surface-2); }
+.prose { font-family: var(--serif); font-size: 1.125rem; line-height: 1.7; max-width: 65ch;
+  margin: 0 -.45rem var(--sp-4); padding: .1rem .45rem; border-radius: var(--r-sm);
+  transition: background-color .25s; }
+.prose.now { background: var(--glow); color: var(--glow-ink); }
+details.check { margin-top: var(--sp-5); border: 1px solid var(--line); border-radius: var(--r-md);
+  padding: var(--sp-3) var(--sp-4); }
+details.check > summary { cursor: pointer; color: var(--clay-ink); font-size: .9375rem; font-weight: 500; }
+.qa { display: grid; gap: var(--sp-4); margin-top: var(--sp-3); }
+.qa .q { font-size: .9375rem; font-weight: 600; }
+.qa details summary { cursor: pointer; color: var(--muted); font-size: var(--s-1); }
+.qa details p { margin-top: var(--sp-2); font-family: var(--serif); font-size: 1.0625rem; line-height: 1.6;
+  max-width: 62ch; }
+
+/* Where next */
+.next { display: grid; gap: var(--sp-4); max-width: 44rem; margin-top: var(--sp-7); }
+.next ul { list-style: none; display: grid; gap: var(--sp-3); }
+.next li { display: grid; gap: var(--sp-1); }
+.next .label { color: var(--muted); font-size: var(--s-1); line-height: 1.45; }
+.next a { font-size: .9375rem; font-weight: 500; line-height: 1.5; }
+.next .links { font-size: .9375rem; font-weight: 500; line-height: 1.5; }
+
+.soon-note { max-width: 44rem; background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r-lg); padding: var(--sp-5); color: var(--muted); }
+
+/* Player, docked at the bottom; its title leads back to what is playing */
+.player { position: fixed; left: 0; right: 0; bottom: 0; z-index: 7; background: var(--surface);
+  border-top: 1px solid var(--line);
+  padding-bottom: calc(var(--sp-2) + env(safe-area-inset-bottom, 0px));
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.player .in { max-width: 1080px; margin-inline: auto; display: grid; gap: var(--sp-2); padding-top: var(--sp-2); }
+.row1 { display: flex; align-items: center; gap: var(--sp-2); min-width: 0; }
+.now-title { flex: 1; min-width: 0; display: block; color: var(--ink); font-size: .9375rem; font-weight: 500;
+  text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.now-title:hover { text-decoration: underline; text-underline-offset: 3px; }
+.chip { flex: none; height: 2rem; padding: 0 .7rem; border: 1px solid var(--line); border-radius: 999px;
+  background: none; color: var(--ink); font-size: var(--s-1); font-weight: 500; cursor: pointer;
+  transition: background-color .15s; }
+.chip:hover { background: var(--surface-2); }
+.chip.rate { font-variant-numeric: tabular-nums; }
+.chip.follow[aria-pressed="true"] { background: var(--surface-2); }
+.bar { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--sp-2); align-items: center;
+  color: var(--muted); font-size: var(--s-1); font-variant-numeric: tabular-nums; }
+.bar input { width: 100%; accent-color: var(--clay-ink); }
+.controls { display: flex; align-items: center; justify-content: center; gap: clamp(.4rem, 3vw, 1.25rem); }
+.controls button { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border: 0;
+  border-radius: 999px; background: none; color: var(--ink); cursor: pointer; }
+.controls button svg { width: 1.4rem; height: 1.4rem; fill: currentColor; }
+.controls .play { width: 3.25rem; height: 3.25rem; background: var(--btn); color: var(--on-clay);
+  transition: background-color .15s; }
+.controls .play:hover { background: var(--btn-hover); }
+.controls .play svg { width: 1.5rem; height: 1.5rem; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+
+<a class="skip" href="#view">Skip to content</a>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#home">INN514 <span>Companion</span></a>
+    <nav class="mainnav" aria-label="Main">
+      <a href="#classes" data-nav="classes">Classes</a>
+      <a href="#papers" data-nav="papers">Papers</a>
+    </nav>
+  </div>
+</header>
+<main id="view" class="wrap" tabindex="-1"></main>
+
+<div class="player" role="region" aria-label="Audio player">
+  <div class="in">
+    <div class="row1">
+      <a class="now-title" id="nowTitle" href="#home">Choose a class or paper to listen</a>
+      <button class="chip follow" id="follow" aria-pressed="true" title="Scroll the text along with the audio">Follow</button>
+      <button class="chip rate" id="rate" aria-label="Playback speed">1×</button>
+    </div>
+    <div class="bar">
+      <span id="tCur">0:00</span>
+      <input id="seek" type="range" min="0" max="1000" value="0" aria-label="Position in chapter">
+      <span id="tDur">0:00</span>
+    </div>
+    <div class="controls">
+      <button id="prev" aria-label="Previous chapter"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg></button>
+      <button id="back" aria-label="Back 15 seconds"><svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7a6 6 0 1 1-6 6H4a8 8 0 1 0 8-8z"/><text x="12" y="16.5" font-size="6.5" text-anchor="middle" font-family="Arial" font-weight="700">15</text></svg></button>
+      <button class="play" id="play" aria-label="Play"><svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7z"/></svg></button>
+      <button id="fwd" aria-label="Forward 30 seconds"><svg viewBox="0 0 24 24"><path d="M12 5V1l5 5-5 5V7a6 6 0 1 0 6 6h2a8 8 0 1 1-8-8z"/><text x="12" y="16.5" font-size="6.5" text-anchor="middle" font-family="Arial" font-weight="700">30</text></svg></button>
+      <button id="next" aria-label="Next chapter"><svg viewBox="0 0 24 24"><path d="M16 6h2v12h-2zM6 18l8.5-6L6 6z"/></svg></button>
+    </div>
+  </div>
+  <audio id="audio" preload="metadata"></audio>
+</div>
+
+<script>
+const DATA = /*DATA*/;
+const $ = (id) => document.getElementById(id);
+const audio = $("audio");
+const view = $("view");
+const RATES = [1, 1.15, 1.3, 0.9];
+const PLAY = '<path d="M8 5v14l11-7z"/>', PAUSE = '<path d="M7 5h4v14H7zm6 0h4v14h-4z"/>';
+const PLAY_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
+
+let store = {};
+try { store = JSON.parse(localStorage.getItem("inn514-companion") || "{}") || {}; } catch (e) { store = {}; }
+if (!store.done || typeof store.done !== "object") store.done = {};
+const save = () => { try { localStorage.setItem("inn514-companion", JSON.stringify(store)); } catch (e) {} };
+
+let pl = null, plIdx = -1, viewId = null, follow = true;
+let rateIdx = Math.max(0, RATES.indexOf(store.rate || 1));
+audio.playbackRate = RATES[rateIdx];
+
+const READINGS = DATA.readings || [];
+const cat = (id) => DATA.catalog.find((c) => c.id === id);
+const rcat = (id) => READINGS.find((r) => r.id === id);
+const entry = (id) => cat(id) || rcat(id);
+const isReading = (id) => !!rcat(id);
+let pendingPage = null;          // a page of a reading to scroll to after the route changes
+const fmt = (s) => { s = Math.max(0, Math.round(s || 0)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); };
+const mins = (s) => Math.round(s / 60) + " minutes";
+const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const smooth = () => (matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth");
+const doneSet = (id) => new Set(store.done[id] || []);
+/* One name everywhere: "Class 9", "Bonus class", "Paper 14". */
+const className = (c) => (rcat(c.id) ? "Paper " + c.num : c.num === "Bonus" ? "Bonus class" : "Class " + c.num);
+/* Durations in words: "2 hours 47 minutes", "50 minutes". */
+const long = (s) => {
+  const m = Math.round((s || 0) / 60), h = Math.floor(m / 60), r = m % 60;
+  return h ? (r ? `${h} hours ${r} minutes` : `${h} hours`) : `${r} minutes`;
+};
+const totals = (ids) => ids.reduce((t, id) => {
+  const L = DATA.lectures[id];
+  if (L) { t.secs += L.seconds; t.chapters += L.chapters.length; t.heard += Math.min(doneSet(id).size, L.chapters.length); }
+  return t;
+}, { secs: 0, chapters: 0, heard: 0 });
+/* "Fagerberg et al. 2009, pp. 437, 438; Schlaile et al. 2017" -> each part that names a course
+   reading links to it, and to its first page when the part gives one. */
+function linkReadings(text) {
+  return text.split(/;\s*/).map((part) => {
+    const r = READINGS.find((x) => part.includes(x.surname) && part.includes(String(x.year)));
+    if (!r) return esc(part);
+    const m = part.slice(part.indexOf(String(r.year)) + 4).match(/pp?\.\s*(\d+)/);
+    return `<a href="#${r.id}"${m ? ` data-page="${m[1]}"` : ""}>${esc(part)}</a>`;
+  }).join("; ");
+}
+const slideText = (sl) => {
+  if (!sl.length) return "";
+  const runs = []; let a = sl[0], b = sl[0];
+  for (const x of sl.slice(1)) { if (x === b + 1) b = x; else { runs.push([a, b]); a = b = x; } }
+  runs.push([a, b]);
+  return (sl.length > 1 ? "Slides " : "Slide ") + runs.map(([x, y]) => (x === y ? x : x + "–" + y)).join(", ");
+};
+
+function markDone(id, i) {
+  const s = doneSet(id);
+  if (s.has(i)) return;
+  s.add(i); store.done[id] = [...s].sort((a, b) => a - b); save(); refreshProgress();
+}
+
+/* ---------- the three list views ---------- */
+function classInfo(c) {
+  const L = DATA.lectures[c.id];
+  if (!L) return "In preparation";
+  const n = doneSet(c.id).size, total = L.chapters.length, papers = c.readings.length;
+  return mins(L.seconds) + (n ? `, ${n} of ${total} chapters heard` : `, ${total} chapters`)
+    + (papers ? `. ${papers} ${papers === 1 ? "paper" : "papers"}` : "");
+}
+function paperInfo(r) {
+  const L = DATA.lectures[r.id];
+  if (!L) return "In preparation";
+  const n = doneSet(r.id).size, total = L.chapters.length;
+  return mins(L.seconds) + (n ? `, ${n} of ${total} chapters heard` : `, ${total} chapters`);
+}
+function classRow(c) {
+  return `
+      <li class="row ${c.ready ? "ready" : "soon"}" data-id="${c.id}">
+        <span class="num">${c.num === "Bonus" ? "+" : esc(c.num)}</span>
+        <div>
+          ${c.ready ? `<a class="row-title" href="#${c.id}">${esc(c.title)}</a>` : `<span class="row-title">${esc(c.title)}</span>`}
+          <p class="row-teacher">${esc(c.teacher)}. ${esc(c.when)}</p>
+          <p class="meta" data-info="${c.id}">${esc(classInfo(c))}</p>
+          ${c.note ? `<p class="row-note">${esc(c.note)}</p>` : ""}
+          <span class="meter" aria-hidden="true"></span>
+        </div>
+      </li>`;
+}
+function sessionRow(s) {
+  return `
+      <li class="row session" data-session="${esc(s.num)}">
+        <span class="num">${esc(s.num)}</span>
+        <div>
+          <p class="row-title">${esc(s.title)}</p>
+          <p class="row-teacher">${esc(s.teacher)}. ${esc(s.when)}</p>
+          <p class="meta">No slides. <a class="go" href="#papers">Go to the papers</a></p>
+        </div>
+      </li>`;
+}
+function paperRow(r) {
+  const others = r.lectures.slice(1).map((lid) => cat(lid)).filter(Boolean);
+  return `
+          <li class="row ${r.ready ? "ready" : "soon"}" data-id="${r.id}">
+            <span class="paper-no">${esc(className(r))}</span>
+            <div>
+              ${r.ready ? `<a class="row-title" href="#${r.id}">${esc(r.title)}</a>` : `<span class="row-title">${esc(r.title)}</span>`}
+              <p class="meta">${esc(r.cite)}</p>
+              <p class="meta" data-info="${r.id}">${esc(paperInfo(r))}</p>
+              ${others.length ? `<p class="meta">Also for ${others.map((c) => "class " + esc(c.num)).join(" and ")}</p>` : ""}
+              <span class="meter" aria-hidden="true"></span>
+            </div>
+          </li>`;
+}
+function renderHome() {
+  viewId = null;
+  const pos = store.pos && DATA.lectures[store.pos.lecture] ? store.pos : null;
+  const resumeHtml = pos ? (() => {
+    const c = entry(pos.lecture), ch = DATA.lectures[pos.lecture].chapters[pos.chapter];
+    return `<div class="resume-row">
+        <button class="primary" id="resumeBtn">${PLAY_SVG}Continue ${esc(className(c))}, chapter ${ch.n}</button>
+        <p class="resume-line">${esc(ch.title)}</p>
+      </div>`;
+  })() : "";
+  const ct = totals(DATA.catalog.map((c) => c.id));
+  const pt = totals(READINGS.map((r) => r.id));
+  const pct = (t) => (t.chapters ? t.heard / t.chapters : 0);
+  const heard = (t) => (t.heard ? `${t.heard} of ${t.chapters} chapters heard` : "No chapters heard yet");
+  view.innerHTML = `
+    <section class="home-hero">
+      <div class="intro">
+        <h1>Innovation systems and sustainable transformation</h1>
+        <p class="when-line">INN514, autumn 2026</p>
+      </div>
+      <p class="lede">Every class of the course explained in plain English, and every paper on the reading list summarised page by page. Listen on the way, read at your desk, and check yourself after each chapter.</p>
+      ${resumeHtml}
+    </section>
+    <div class="doors">
+      <a class="door" href="#classes" data-door="classes" style="--p:${pct(ct)}">
+        <h2>Classes</h2>
+        <p>The lectures in Kursplan order, each with its teacher and the papers that go with it.</p>
+        <p class="stats">${DATA.catalog.length} classes, ${long(ct.secs)}</p>
+        <span class="meter" aria-hidden="true"></span>
+        <p class="stats" data-door-info>${heard(ct)}</p>
+        <span class="more">See the classes</span>
+      </a>
+      <a class="door" href="#papers" data-door="papers" style="--p:${pct(pt)}">
+        <h2>Papers</h2>
+        <p>All ${READINGS.length} papers, each with a short account of the whole paper and a summary of every page.</p>
+        <p class="stats">${READINGS.length} papers, ${long(pt.secs)}</p>
+        <span class="meter" aria-hidden="true"></span>
+        <p class="stats" data-door-info>${heard(pt)}</p>
+        <span class="more">See the papers</span>
+      </a>
+    </div>
+    <section class="home-section">
+      <h2>What the course is about</h2>
+      <p class="about-text">INN514 asks how innovation happens in systems rather than inside single firms, and how those systems can support a sustainable transformation. The classes move from national and regional innovation systems, through institutional work, entrepreneurial ecosystems and agency, to technological innovation systems, and end with a summary before the exam. Sessions 7 and 8 go through the papers, and the course ends with a written exam. A bonus class on crowdfunding comes from the 2025 course.</p>
+    </section>
+    <section class="home-section">
+      <h2>How to use this site</h2>
+      <dl class="howto">
+        <div><dt>Listen</dt><dd>Press play on any chapter. The player stays at the bottom while you move around the site, and its title takes you back to what is playing. The speed button changes the pace.</dd></div>
+        <div><dt>Read</dt><dd>The paragraph being read is highlighted. Turn off Follow if you want to scroll on your own.</dd></div>
+        <div><dt>Check yourself</dt><dd>Each chapter ends with a question or two. The answer stays hidden until you open it.</dd></div>
+        <div><dt>Your progress</dt><dd>Chapters you have heard are marked, and saved in this browser only.</dd></div>
+      </dl>
+    </section>
+    <section class="home-section">
+      <h2 class="small">About these summaries</h2>
+      <p class="note">Each class summary was written in English from the teacher's slides (the 2025 decks) and the papers, and its page numbers were checked against the PDFs. Each paper is summarised page by page from the paper itself, under its own page numbers. Examples of our own are marked as ours. The voice is Microsoft's neural voice Ryan. Use this alongside the papers, not instead of them.</p>
+    </section>`;
+  if (pos) $("resumeBtn").onclick = () => { location.hash = pos.lecture; resume(pos); };
+  refreshProgress();
+}
+
+function renderClasses() {
+  viewId = null;
+  // Kursplan order: the classes and the two paper sessions share one sequence.
+  const items = DATA.catalog.map((c) => ({ n: c.num === "Bonus" ? 99 : +c.num, c }))
+    .concat((DATA.sessions || []).map((s) => ({ n: +s.num, s })))
+    .sort((a, b) => a.n - b.n);
+  view.innerHTML = `
+    <div class="page-head">
+      <h1>Classes</h1>
+      <p class="lede">The lectures in Kursplan order, with the teacher and the papers for each one. Sessions 7 and 8 have no slides: they go through the papers.</p>
+    </div>
+    <ol class="list classes">${items.map((it) => (it.c ? classRow(it.c) : sessionRow(it.s))).join("")}</ol>`;
+  refreshProgress();
+}
+
+function renderPapers() {
+  viewId = null;
+  const groups = DATA.catalog.map((c) => ({ c, ids: c.readings })).filter((g) => g.ids.length);
+  view.innerHTML = `
+    <div class="page-head">
+      <h1>Papers</h1>
+      <p class="lede">All ${READINGS.length} papers, under the class they go with. Each starts with the paper in brief, then a short summary of every page. A paper that goes with more than one class is listed under each.</p>
+    </div>
+    ${groups.map(({ c, ids }) => `
+      <section class="group" data-class="${c.id}">
+        <h2><a href="#${c.id}">${esc(className(c))}. ${esc(c.title)}</a></h2>
+        <p class="group-teacher">${esc(c.teacher)}</p>
+        <ol class="list papers">${ids.map((rid) => paperRow(rcat(rid))).join("")}</ol>
+      </section>`).join("")}`;
+  refreshProgress();
+}
+
+/* ---------- lecture view ---------- */
+const pageId = (label) => "page-" + String(label).toLowerCase().replace(/^pages?\s+/, "").split(/[–-]/)[0].trim();
+const pagesText = (p) => (p === "the whole paper" ? "The whole paper" : (/[–,]/.test(p) ? "Pages " : "Page ") + p);
+
+/* "class 5", "the bonus class": the class name inside a sentence. */
+const classWord = (c) => (c.num === "Bonus" ? "the bonus class" : "class " + c.num);
+const classLinks = (ids) => {
+  const parts = ids.map((lid) => cat(lid)).filter(Boolean).map((c) => `<a href="#${c.id}">${esc(classWord(c))}</a>`);
+  return parts.length > 1 ? parts.slice(0, -1).join(", ") + " and " + parts[parts.length - 1] : parts.join("");
+};
+
+function renderLecture(id) {
+  viewId = id;
+  const reading = isReading(id);
+  const c = entry(id), L = DATA.lectures[id];
+  const crumbs = `<nav class="crumbs" aria-label="Breadcrumb"><a href="#${reading ? "papers" : "classes"}">${reading ? "Papers" : "Classes"}</a> <span class="sep" aria-hidden="true">/</span> <span aria-current="page">${esc(className(c))}</span></nav>`;
+  // B1's "when" already opens with the class name, so it is not repeated.
+  const whenText = reading ? `${esc(className(c))}. For ${classLinks(c.lectures)}.`
+    : c.when.startsWith(className(c)) ? esc(c.when) : `${esc(className(c))}. ${esc(c.when)}`;
+  const papersLine = !reading && c.readings && c.readings.length
+    ? `<p class="by">Papers for this class: ${c.readings.map(rcat).filter(Boolean)
+        .map((r) => `<a href="#${r.id}">${esc(className(r))} (${esc(r.cite)})</a>`).join(", ")}</p>` : "";
+  if (!L) {
+    view.innerHTML = `${crumbs}
+      <header class="lec-head">
+        <p class="when">${whenText}</p>
+        <h1>${esc(c.title)}</h1>
+        ${reading ? `<p class="by">${esc(c.authors)} (${c.year}). ${esc(c.source)}.</p>`
+          : `<p class="by">${esc(c.teacher)}</p>${papersLine}`}
+      </header>
+      <div class="soon-note">${reading
+        ? "The page-by-page summary and audio for this paper are in preparation."
+        : "The summary and audio for this class are in preparation."}</div>`;
+    return;
+  }
+  const pos = store.pos && store.pos.lecture === id ? store.pos : null;
+  const byHtml = reading
+    ? `<p class="by">${esc(c.authors)} (${c.year}). ${esc(c.source)}. ${L.chapters.length} chapters, ${long(L.seconds)}.</p>`
+    : `<p class="by">${esc(c.teacher)}, from the H2025 slides. ${L.chapters.length} chapters, ${long(L.seconds)}.</p>${c.note ? `<p class="by">${esc(c.note)}</p>` : ""}${papersLine}`;
+  const srcHtml = (ch) => reading
+    ? `${esc(pagesText(ch.pages))}. ${fmt(ch.seconds)} of audio.`
+    : `${esc(slideText(ch.slides))}.${ch.readings && !/^none/i.test(ch.readings) ? " Readings: " + linkReadings(ch.readings) + "." : ""} ${fmt(ch.seconds)} of audio.`;
+  const parasHtml = (ch) => ch.paragraphs.map((p, k) => {
+    const label = ch.labels && ch.labels[k];
+    return `${label ? `<h3 class="pg" id="${pageId(label)}">${esc(label)}</h3>` : ""}<p class="prose" data-k="${k}">${esc(p)}</p>`;
+  }).join("");
+  view.innerHTML = `
+    ${crumbs}
+    <header class="lec-head">
+      <p class="when">${whenText}</p>
+      <h1>${esc(c.title)}</h1>
+      ${byHtml}
+      <button class="primary" id="startBtn">${PLAY_SVG}${pos ? "Continue chapter " + L.chapters[pos.chapter].n : "Listen from the start"}</button>
+    </header>
+    <div class="lec-body">
+      <nav class="side" aria-label="Chapters">
+        <h2>Chapters</h2>
+        <ol class="route chapters">${L.chapters.map((ch, i) => `
+        <li class="stop" data-i="${i}">
+          <span class="fill" aria-hidden="true"></span><span class="mark" aria-hidden="true"></span>
+          <button class="body" data-i="${i}"><span class="num">${ch.n}</span><span class="title">${esc(ch.title)}</span><span class="dur">${fmt(ch.seconds)}</span></button>
+        </li>`).join("")}
+        </ol>
+      </nav>
+      <article class="sheet">${L.chapters.map((ch, i) => `
+        <section class="chapter" id="ch-${i}">
+          <h2><span class="chno">${ch.n}</span><span>${esc(ch.title)}</span></h2>
+          <p class="src">${srcHtml(ch)}</p>
+          <button class="listen" data-i="${i}">${PLAY_SVG}Listen to this chapter</button>
+          ${parasHtml(ch)}
+          ${ch.checks.length ? `<details class="check"><summary>Check yourself (${ch.checks.length})</summary><div class="qa">${ch.checks.map((q) => `
+            <div><p class="q">${esc(q.q)}</p><details><summary>Show answer</summary><p>${esc(q.a)}</p></details></div>`).join("")}</div></details>` : ""}
+        </section>`).join("")}
+      </article>
+    </div>
+    ${whereNext(c, reading)}`;
+  $("startBtn").onclick = () => (pos ? resume(pos) : play(id, 0, true));
+  view.querySelectorAll(".chapters .body, .listen").forEach((b) => (b.onclick = () => play(id, +b.dataset.i, true)));
+  refreshProgress();
+}
+
+/* Where next: the way on from a class or a paper. */
+function whereNext(c, reading) {
+  const items = [];
+  if (reading) {
+    const first = cat(c.lectures[0]);
+    const others = first ? (first.readings || []).map(rcat).filter((r) => r && r.id !== c.id && r.ready) : [];
+    if (others.length) items.push(`<li><span class="label">Other papers for ${esc(classWord(first))}:</span> <span class="links">${others
+      .map((r) => `<a href="#${r.id}">${esc(className(r))}, ${esc(r.title)}</a>`).join(", ")}</span></li>`);
+    if (first) items.push(`<li><a href="#${first.id}">${esc(className(first))}: ${esc(first.title)}</a></li>`);
+    const rp = READINGS.filter((r) => r.ready);
+    const nxt = rp[rp.findIndex((r) => r.id === c.id) + 1];
+    if (nxt) items.push(`<li><span class="label">Next paper:</span> <a href="#${nxt.id}">${esc(className(nxt))}, ${esc(nxt.title)}</a></li>`);
+    items.push(`<li><a href="#papers">All papers</a></li>`);
+  } else {
+    const papers = (c.readings || []).map(rcat).filter((r) => r && r.ready);
+    if (papers.length) items.push(`<li><span class="label">Papers for this class:</span> <span class="links">${papers
+      .map((r) => `<a href="#${r.id}">${esc(className(r))}, ${esc(r.title)}</a>`).join(", ")}</span></li>`);
+    const rc = DATA.catalog.filter((x) => x.ready);
+    const i = rc.findIndex((x) => x.id === c.id);
+    const nxt = rc[i + 1], back = !nxt && rc.length > 1 ? rc[0] : null;
+    if (nxt) items.push(`<li><span class="label">Next class:</span> <a href="#${nxt.id}">${esc(className(nxt))}, ${esc(nxt.title)}</a></li>`);
+    else if (back) items.push(`<li><span class="label">Back to the first class:</span> <a href="#${back.id}">${esc(className(back))}, ${esc(back.title)}</a></li>`);
+    items.push(`<li><a href="#classes">All classes</a></li>`);
+  }
+  return `<section class="next" aria-labelledby="next-h"><h2 id="next-h">Where next</h2><ul>${items.join("")}</ul></section>`;
+}
+
+function refreshProgress() {
+  view.querySelectorAll(".row[data-id]").forEach((li) => {
+    const id = li.dataset.id, L = DATA.lectures[id];
+    if (!L) return;
+    const frac = doneSet(id).size / L.chapters.length;
+    li.style.setProperty("--p", frac);
+    li.classList.toggle("heard", frac > 0);
+    const info = li.querySelector("[data-info]");
+    if (info) info.textContent = rcat(id) ? paperInfo(rcat(id)) : classInfo(cat(id));
+  });
+  view.querySelectorAll(".door").forEach((d) => {
+    const t = totals(d.dataset.door === "classes" ? DATA.catalog.map((c) => c.id) : READINGS.map((r) => r.id));
+    d.style.setProperty("--p", t.chapters ? t.heard / t.chapters : 0);
+    const info = d.querySelector("[data-door-info]");
+    if (info) info.textContent = t.heard ? `${t.heard} of ${t.chapters} chapters heard` : "No chapters heard yet";
+  });
+  if (viewId) {
+    const s = doneSet(viewId);
+    view.querySelectorAll(".chapters .stop").forEach((li) => {
+      const i = +li.dataset.i;
+      li.style.setProperty("--p", s.has(i) ? 1 : 0);
+      li.classList.toggle("done", s.has(i));
+      const now = !!pl && pl.id === viewId && i === plIdx;
+      li.classList.toggle("now", now);
+      li.querySelector(".body").toggleAttribute("aria-current", now);
+    });
+  }
+}
+
+/* ---------- player ---------- */
+function paragraphStarts(ch) {
+  const titleWords = ("Chapter " + ch.n + ". " + ch.title).split(/\s+/).length;
+  // A reading's page summaries are spoken after their label ("Page 431."), so count it too.
+  const words = ch.paragraphs.map((p, k) => p.split(/\s+/).length + (ch.labels && ch.labels[k] ? ch.labels[k].split(/\s+/).length : 0));
+  const total = titleWords + words.reduce((a, b) => a + b, 0);
+  let acc = titleWords;
+  return words.map((w) => { const s = acc / total; acc += w; return s; });
+}
+function loadChapter(id, i, startAt) {
+  const L = DATA.lectures[id];
+  if (!L) return;
+  pl = L; plIdx = Math.max(0, Math.min(i, L.chapters.length - 1));
+  const ch = L.chapters[plIdx];
+  ch._starts = ch._starts || paragraphStarts(ch);
+  audio.src = ch.audio;
+  audio.dataset.startAt = startAt || 0;
+  $("nowTitle").href = "#" + id;
+  $("nowTitle").textContent = `${className(entry(id))}, chapter ${ch.n}: ${ch.title}`;
+  markParagraph(-1);
+  refreshProgress();
+  if ("mediaSession" in navigator) {
+    try { navigator.mediaSession.metadata = new MediaMetadata({ title: `${ch.n}. ${ch.title}`, artist: "INN514 Course Companion", album: L.title }); } catch (e) {}
+  }
+}
+function play(id, i, scroll) {
+  loadChapter(id, i, 0);
+  audio.play().catch(() => {});
+  if (scroll && viewId === id) { const el = $("ch-" + plIdx); if (el) el.scrollIntoView({ behavior: smooth(), block: "start" }); }
+}
+function resume(pos) {
+  loadChapter(pos.lecture, pos.chapter, pos.time);
+  audio.play().catch(() => {});
+}
+
+let lastPara = -1;
+function markParagraph(k) {
+  if (k === lastPara) return;
+  lastPara = k;
+  view.querySelectorAll("p.prose.now").forEach((p) => p.classList.remove("now"));
+  if (k < 0 || !pl || viewId !== pl.id) return;
+  const p = view.querySelector(`#ch-${plIdx} p.prose[data-k="${k}"]`);
+  if (!p) return;
+  p.classList.add("now");
+  if (follow && !audio.paused) p.scrollIntoView({ behavior: smooth(), block: "center" });
+}
+
+audio.addEventListener("loadedmetadata", () => {
+  const t = +audio.dataset.startAt || 0;
+  if (t > 0 && t < audio.duration - 2) audio.currentTime = t;
+  audio.playbackRate = RATES[rateIdx];
+  $("tDur").textContent = fmt(audio.duration);
+});
+let seeking = false;
+audio.addEventListener("timeupdate", () => {
+  const d = audio.duration || 1, t = audio.currentTime;
+  $("tCur").textContent = fmt(t);
+  if (!seeking) $("seek").value = Math.round((t / d) * 1000);
+  if (!pl) return;
+  const ch = pl.chapters[plIdx];
+  if (ch && ch._starts) { const f = t / d; let k = -1; ch._starts.forEach((s, idx) => { if (f >= s) k = idx; }); markParagraph(k); }
+  if (audio.duration && t / d >= 0.9) markDone(pl.id, plIdx);
+  store.pos = { lecture: pl.id, chapter: plIdx, time: Math.floor(t) }; save();
+});
+audio.addEventListener("play", () => ($("playIcon").innerHTML = PAUSE));
+audio.addEventListener("pause", () => ($("playIcon").innerHTML = PLAY));
+audio.addEventListener("ended", () => {
+  if (!pl) return;
+  markDone(pl.id, plIdx);
+  if (plIdx < pl.chapters.length - 1) play(pl.id, plIdx + 1, false);
+  else { $("playIcon").innerHTML = PLAY; markParagraph(-1); }
+});
+$("seek").addEventListener("input", () => { seeking = true; $("tCur").textContent = fmt((audio.duration || 0) * $("seek").value / 1000); });
+$("seek").addEventListener("change", () => { if (audio.duration) audio.currentTime = audio.duration * $("seek").value / 1000; seeking = false; });
+$("play").onclick = () => {
+  if (!pl) { const first = viewId && DATA.lectures[viewId] ? viewId : DATA.catalog.find((c) => c.ready).id; return play(first, 0, true); }
+  audio.paused ? audio.play().catch(() => {}) : audio.pause();
+};
+$("back").onclick = () => { audio.currentTime = Math.max(0, audio.currentTime - 15); };
+$("fwd").onclick = () => { audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 30); };
+$("prev").onclick = () => { if (!pl) return; if (audio.currentTime > 5) audio.currentTime = 0; else if (plIdx > 0) play(pl.id, plIdx - 1, true); };
+$("next").onclick = () => { if (pl && plIdx < pl.chapters.length - 1) play(pl.id, plIdx + 1, true); };
+$("rate").onclick = () => {
+  rateIdx = (rateIdx + 1) % RATES.length; audio.playbackRate = RATES[rateIdx];
+  $("rate").textContent = RATES[rateIdx] + "×"; store.rate = RATES[rateIdx]; save();
+};
+$("rate").textContent = RATES[rateIdx] + "×";
+$("follow").onclick = () => { follow = !follow; $("follow").setAttribute("aria-pressed", String(follow)); };
+if ("mediaSession" in navigator) {
+  const h = (a, f) => { try { navigator.mediaSession.setActionHandler(a, f); } catch (e) {} };
+  h("play", () => audio.play()); h("pause", () => audio.pause());
+  h("seekbackward", () => $("back").onclick()); h("seekforward", () => $("fwd").onclick());
+  h("previoustrack", () => $("prev").onclick()); h("nexttrack", () => $("next").onclick());
+}
+
+/* ---------- routing: #home, #classes, #papers, a class id (#T1) or a paper id (#P01) ---------- */
+function setNav(id) {
+  const onClasses = id === "classes" || !!cat(id);
+  const onPapers = id === "papers" || !!rcat(id);
+  document.querySelectorAll(".mainnav a").forEach((a) => {
+    const on = (a.dataset.nav === "classes" && onClasses) || (a.dataset.nav === "papers" && onPapers);
+    if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+  });
+}
+function route() {
+  const id = location.hash.slice(1);
+  if (id === "classes") renderClasses();
+  else if (id === "papers") renderPapers();
+  else if (entry(id)) renderLecture(id);
+  else renderHome();               // "", "home", "route" and anything unknown
+  setNav(id);
+  const target = pendingPage && document.getElementById("page-" + pendingPage);
+  pendingPage = null;
+  if (target) target.scrollIntoView({ block: "start" }); else window.scrollTo(0, 0);
+}
+// The skip link moves focus into the view without touching the hash, which is the route.
+document.querySelector(".skip").addEventListener("click", (e) => {
+  e.preventDefault(); view.focus(); view.scrollIntoView({ behavior: smooth(), block: "start" });
+});
+// A link to a page of a reading ("pp. 437") opens the reading and scrolls to that page.
+view.addEventListener("click", (e) => { const a = e.target.closest("a[data-page]"); if (a) pendingPage = a.dataset.page; });
+window.addEventListener("hashchange", route);
+if (store.pos && DATA.lectures[store.pos.lecture]) loadChapter(store.pos.lecture, store.pos.chapter, store.pos.time);
+route();
+</script>

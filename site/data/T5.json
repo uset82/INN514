@@ -1,0 +1,258 @@
+{
+ "id": "T5",
+ "title": "Lecture 5: Agency and changing innovation systems",
+ "session": "Kursplan 2026, session 5 (29 September)",
+ "lecturer": "Nora Geirsdotter Bækkelund",
+ "deck": "Forelesning 6 System og aktørskap H2025.pdf (H2025, 22 slides)",
+ "chapters": [
+  {
+   "n": 1,
+   "title": "The limits of systems and the return of agency",
+   "slides": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "readings": "Garud & Karnøe 2003, p. 277; Bækkelund 2021, p. 757; Miörner & Trippl 2017, p. 481",
+   "paragraphs": [
+    "This fifth lecture explores the human side of economic transformation: agency. In earlier lectures, we looked at innovation systems as collections of organisations, institutions and networks. Here, Nora Geirsdotter Bækkelund asks a basic question. How do real people act within established systems, and how can human choices change those systems over time?",
+    "The lecture begins on slide 2 by examining the strengths and weaknesses of the innovation system perspective. The approach has three major advantages. First, it shows that innovation is an interactive process rather than something that happens inside a single company. Second, it gives policymakers a tool to promote innovation in a country, region, city or industry. Third, it provides an overview of actors, components and connections, helping public authorities improve existing innovation infrastructure.",
+    "Yet the perspective also has three notable weaknesses. First, it does not explain how innovation systems or regional advantages arise in the first place. Second, it offers a static picture of how systems function rather than a dynamic explanation of change. Third, it suffers from a chicken-and-egg problem.",
+    "Slide 3 presents these chicken-and-egg questions directly. National and regional innovation systems usually share the same specialisation as their existing industries. How, then, can genuinely new specialisations emerge? Is an innovation system the result of existing industrial strengths, or the cause of them? And can an established innovation system help build entirely new industries?",
+    "Slide 4 introduces the three core articles that address these questions:",
+    "Garud and Karnøe, in 2003, compare how the wind energy industry developed in Denmark and the United States, as set out on page 277 of their article. Their theoretical focus contrasts a science-focused, top-down approach with a bottom-up approach that leaves room for distributed initiative.",
+    "Bækkelund, in 2021, studies how new industries develop in small places with limited economic preconditions, examining tourism in three villages in Western Norway, Flåm, Odda and Sogndal, as explained on page 757 of the article. This lecture concentrates on Flåm. Bækkelund's theoretical focus is on the interplay between different types of agency and how agency changes over time.",
+    "Miörner and Trippl, in 2017, investigate the digital games industry in Scania in southern Sweden, as introduced on page 481 of their article. Their theoretical focus is on how actors navigate existing structures when building a new industry that does not fit established regional patterns.",
+    "Slide 5 links these debates to fundamental social science questions: the relationship between individual action and social structure, and the relationship between stability and change."
+   ],
+   "checks": [
+    {
+     "q": "Name two advantages and two disadvantages of the innovation system perspective from slide 2.",
+     "a": "Advantages: shows innovation is interactive; serves as a policy tool; maps components to improve infrastructure. Disadvantages: does not explain origins; provides a static view; suffers from a chicken-and-egg problem."
+    },
+    {
+     "q": "What empirical cases do the three core articles examine?",
+     "a": "Wind energy in Denmark versus the USA (Garud & Karnøe 2003), tourism development in Flåm, Odda and Sogndal, of which the lecture uses Flåm (Bækkelund 2021), and the video games industry in Scania (Miörner & Trippl 2017)."
+    }
+   ],
+   "audio": "audio/T5-01.mp3",
+   "seconds": 201.7,
+   "words": 423
+  },
+  {
+   "n": 2,
+   "title": "What is agency? Embeddedness, networks and positions",
+   "slides": [
+    6,
+    7
+   ],
+   "readings": "Bækkelund 2021, p. 758",
+   "paragraphs": [
+    "Slide 6 introduces the central concept of the lecture: agency. The slide defines agency, quoting Gregory and colleagues from 2009, as the ability of people to act and have an effect.",
+    "Slide 7 emphasizes that agency is a relational phenomenon. Human action never occurs in isolation. The slide quotes Grillitsch and Sotarauta from 2020: agency depends on, and is conditioned by, agents' positions in society.",
+    "The slide also quotes Bækkelund from page 758 of the 2021 article. Drawing on Weik and Battilana, Bækkelund writes that even when one or a few agents work for a specific change, they depend on others to change practices and gain access to resources. Therefore, an actor's social network is an integral part of that actor's agency.",
+    "Slide 7 outlines four key insights about relational agency:",
+    "First, actors build up their networks and social positions over time. Social embeddedness does not happen overnight.",
+    "Second, both too little and too much embeddedness can hinder change agency, as Battilana argued in 2006. Actors who have no local connections lack the trust and credibility needed to mobilize others. But actors who are too deeply embedded in existing structures may become blind to new opportunities or bound by established routines.",
+    "Third, maintaining broad networks and knowing people across different sectors gives actors access to diverse perspectives and resources. This social position allows them to serve as bridges between isolated groups.",
+    "Fourth, an actor's position in society determines their ability to influence others and coordinate collective action."
+   ],
+   "checks": [
+    {
+     "q": "How does the lecture define agency on slide 6?",
+     "a": "The ability of people to act and have an effect (Gregory et al. 2009)."
+    },
+    {
+     "q": "Why can both too little and too much social embeddedness hinder change agency, according to slide 7?",
+     "a": "Too little embeddedness leaves actors without trust and resources; too much embeddedness locks actors into existing routines and loyalties (Battilana 2006)."
+    }
+   ],
+   "audio": "audio/T5-02.mp3",
+   "seconds": 120.7,
+   "words": 256
+  },
+  {
+   "n": 3,
+   "title": "Heroic versus distributed agency: wind turbines in Denmark and the USA",
+   "slides": [
+    8,
+    9,
+    10
+   ],
+   "readings": "Garud & Karnøe 2003, pp. 277, 279, 282, 285, 289, 295",
+   "paragraphs": [
+    "Slide 8 contrasts two different perspectives on human agency: heroic agency versus distributed agency.",
+    "The heroic perspective focuses on the single individual, rational planning, and direct control. It assumes that a visionary entrepreneur or planner can foresee the future and implement a master plan.",
+    "The distributed perspective, by contrast, sees agency as shared across multiple actors, emergent over time, and deeply relational. Change happens through ongoing interaction among many contributors rather than through a single command.",
+    "Slide 9 explores distributed agency through Garud and Karnøe's 2003 comparative study of wind power in Denmark and the United States, introduced on page 277. On page 279, Figure 2 diagrams the distributed agents involved in building a technological path. The technological artifact sits at the centre, connected by mutual embedding processes to four distinct domains: regulation, evaluation, design and production, and use.",
+    "On page 295, Garud and Karnøe explain that the Danish wind power path was a process of co-shaping between actors and artifacts. Learning blurred the traditional boundaries between design and production, planning and execution, and rule making and rule following. Danish actors did not focus on dramatic technological leaps. Instead, they built up competencies step by step. On page 285, the authors describe where this started. Early Danish firms had skilled workers and practical engineers from the machine industry. They saw wind turbines as similar to the agricultural machinery they had built before. Lacking theory on turbine aerodynamics, they learned by deploying components, seeing them fail, and redesigning them. The path was emergent, adapting to unfolding challenges and gradually improving turbine functionality.",
+    "Slide 10 analyses these two national experiences from an innovation system perspective:",
+    "Denmark developed what the slide calls a balanced innovation system. The Danish system grew largely from the bottom up. Users and producers played a central role, and they were involved in developing regulations. On page 282, the article gives an example: a law requiring certification of turbines brought engineers at the production sites into closer contact with the Danish test station.",
+    "The United States, by contrast, made a more top-down attempt at innovation. It made large investments in research-based innovation, which the slide calls a top-heavy innovation system. On page 289, the authors describe one result. When American turbines ran into problems, firms replaced the failed components but did not take the time to analyse the problems and redesign their turbines."
+   ],
+   "checks": [
+    {
+     "q": "What is the difference between heroic agency and distributed agency?",
+     "a": "Heroic agency assumes an isolated individual with rational planning and direct control. Distributed agency sees action as emergent, relational, and shared across multiple actors."
+    },
+    {
+     "q": "How did the Danish and American wind turbine innovation systems differ on slide 10?",
+     "a": "Denmark developed a balanced, bottom-up system where users and producers helped develop regulations; the United States made a top-down attempt with large investments in research-based innovation, a top-heavy system (slide 10; Garud & Karnøe 2003)."
+    }
+   ],
+   "audio": "audio/T5-03.mp3",
+   "seconds": 198.0,
+   "words": 407
+  },
+  {
+   "n": 4,
+   "title": "The trinity of change agency: entrepreneurs, institutions and places",
+   "slides": [
+    11,
+    12,
+    13
+   ],
+   "readings": "Miörner & Trippl 2017, pp. 481, 491; Bækkelund 2021, pp. 757, 759, 764",
+   "paragraphs": [
+    "Slide 11 opens a debate: who exercises agency in an innovation system? Does it matter who exercises agency, or does it matter most what they actually do?",
+    "To clarify what actors do, slide 12 introduces the trinity of change agency, formulated by Grillitsch and Sotarauta in 2020 for new regional industrial path development:",
+    "The first type is Schumpeterian entrepreneurship. This is classic commercial entrepreneurship. Individual actors establish new innovative firms, or existing firms pursue radical diversification into new markets.",
+    "The second type is institutional entrepreneurship. This involves deliberate action to create brand-new institutions or to alter existing rules, regulations and cultural norms.",
+    "The third type is place-based leadership. This consists of efforts to bring together diverse regional actors, formulate shared goals, and coordinate action toward those goals.",
+    "Slide 13 addresses who exercises these three forms of agency. Different actors often take on distinct roles:",
+    "Firms and commercial entrepreneurs typically exercise Schumpeterian agency.",
+    "Politicians, public organisations, individual citizens and businesses can all engage in institutional entrepreneurship.",
+    "Politicians, non-governmental organisations, private citizens, firms and entrepreneurs can all exercise place-based leadership.",
+    "Slide 13 emphasizes that the same person or organisation can exercise multiple types of agency at the same time. The slide gives two examples from the syllabus:",
+    "In the Scania digital games industry, the slide names one entrepreneur as the driving force behind the Nordic Game Programme. On page 491 of their 2017 article, Miörner and Trippl describe him as the private contractor in Malmö who administered the programme. The slide classifies his actions as Schumpeterian and institutional entrepreneurship, and partly place-based leadership. That classification is the lecturer's, applying the course's typology to their case; the article itself does not use these terms.",
+    "In the Flåm tourism case, the slide says the local mayor exercised place-based leadership and Schumpeterian entrepreneurship by establishing a municipal company, with institutional entrepreneurship as part of the process. On page 764, Bækkelund describes how the mayor enacted strong change agency after the railway's closure was announced. The municipality and the local bank then bought the railway and the hotel, so the same parties were involved in institutional as well as Schumpeterian entrepreneurship."
+   ],
+   "checks": [
+    {
+     "q": "Name the three types of change agency in the framework by Grillitsch and Sotarauta (2020).",
+     "a": "Schumpeterian entrepreneurship (new firms or diversification), institutional entrepreneurship (changing rules), and place-based leadership (mobilizing actors around shared goals)."
+    },
+    {
+     "q": "How do the Scania games industry and the Flåm case show that one actor can combine multiple types of agency?",
+     "a": "In Scania, the slide classifies the entrepreneur behind the Nordic Game Programme as combining Schumpeterian and institutional entrepreneurship and partly place-based leadership; in Flåm, the mayor combined place-based leadership, Schumpeterian entrepreneurship and institutional entrepreneurship (slide 13; Bækkelund, page 764)."
+    }
+   ],
+   "audio": "audio/T5-04.mp3",
+   "seconds": 184.3,
+   "words": 366
+  },
+  {
+   "n": 5,
+   "title": "How agency meets structure: critical junctures and opportunity spaces",
+   "slides": [
+    14,
+    15,
+    16
+   ],
+   "readings": "Bækkelund 2021, pp. 759, 760",
+   "paragraphs": [
+    "Slide 14 illustrates how the three types of agency connect to structural elements, drawing on a 2024 model by Frimanslund and Bækkelund.",
+    "Schumpeterian entrepreneurship connects to materiality and the physical structure of business and industry.",
+    "Institutional entrepreneurship connects to institutions, visions, and shared narratives.",
+    "Place-based leadership connects to social structures, interpersonal relationships, networks, and finding a common direction.",
+    "Slide 15 turns to actor-structure interaction, drawing on Archer's 2010 work. Agency is always exercised within existing structures. Yet purposeful agency can alter those structures over time. Once changed, the new structures become the structural conditions that shape future action.",
+    "Slide 16 examines the time dimension of agency in economic development, focusing on the specific situation.",
+    "First, drawing on Emirbayer and Mische, the slide explains that when actors face problematic situations requiring imagination and judgment, they gain a reflective distance from routine patterns, enabling conscious choice and purposeful action.",
+    "Second, the slide quotes Capoccia and Kelemen from 2007 on critical junctures: relatively short periods of time during which there is a substantially heightened probability that agents' choices will affect outcomes of interest.",
+    "Third, it references Kurikka and colleagues from 2023 on regional opportunity spaces. An opportunity space can be absolute or perceived. It depends on the real conditions in the region, relationships across geographic levels, and how local actors perceive their situation.",
+    "The slide summarizes this situational dynamic in a simple formula: crisis equals danger plus a turning point."
+   ],
+   "checks": [
+    {
+     "q": "How do the three types of agency connect to structural elements in Frimanslund and Bækkelund's 2024 model?",
+     "a": "Schumpeterian entrepreneurship connects to materiality and business structures; institutional entrepreneurship connects to institutions, visions, and narratives; place-based leadership connects to social structures, networks, and shared direction."
+    },
+    {
+     "q": "What is a critical juncture according to Capoccia and Kelemen (2007)?",
+     "a": "A relatively short period of time during which there is a substantially heightened probability that agents' choices will affect the outcome of interest (slide 16)."
+    }
+   ],
+   "audio": "audio/T5-05.mp3",
+   "seconds": 126.1,
+   "words": 248
+  },
+  {
+   "n": 6,
+   "title": "Change agency versus reproductive agency: the Flåm railway",
+   "slides": [
+    17,
+    18,
+    19,
+    20
+   ],
+   "readings": "Bækkelund 2021, pp. 759, 760, 764",
+   "paragraphs": [
+    "Slide 17 examines the evolutionary dimension of agency over time. Building a new industry or transforming an innovation system takes decades. Development is not only about disruption; it requires sustained daily effort involving both change agency and reproductive agency.",
+    "The slide presents a contrast table from Bækkelund's 2021 article, on page 759:",
+    "Under reproductive agency, we find replicative entrepreneurship, institutional work aimed at maintaining rules, and place-based maintenance leadership.",
+    "Under change agency, we find Schumpeterian entrepreneurship, institutional entrepreneurship aimed at altering rules, and place-based change leadership.",
+    "On page 760, Bækkelund's model outlines four phases of path evolution: preformation, critical juncture, path creation, and path development. Path development can lead either to a stable state dominated by reproductive agency, or to a dynamic process that balances change agency and reproductive agency.",
+    "Slide 18 details the timeline of tourism development in Flåm from Bækkelund's research:",
+    "In 1941, the Flåm railway opened.",
+    "In the 1990s, early warnings emerged that the railway line might be closed down.",
+    "In 1994, a local project began to develop the railway as a tourism product.",
+    "In 1997, the state railway company, NSB, announced the closure of the line. The mayor of Aurland attempted to persuade regional railway managers in Vestland, but failed. The municipality hired a consultant to develop a plan for the railway as a tourism product, and presented it to NSB's central management. NSB agreed to participate on two conditions: Aurland municipality had to purchase the railway infrastructure and pay NSB for operations, and the municipality had to build a cruise terminal in Flåm.",
+    "Around 2000, the municipality secured investment capital from the state enterprise Siva instead of private investors.",
+    "The 2000s saw rapid growth in mass tourism. In 2005, the neighbouring Nærøyfjord received UNESCO world heritage status. By 2014 and 2015, local protests arose against the negative impacts of cruise tourism. In 2018, the Norwegian parliament proposed a zero-emission requirement for cruise ships in world heritage fjords starting in 2026, as noted on page 764 of the article.",
+    "Slide 19 tracks how agency shifted across these development phases:",
+    "In the preformation phase, the mayor exercised place-based change leadership, gathering local actors around tourism development.",
+    "During path creation, sparked by the critical juncture of the railway closure, the municipality exercised Schumpeterian entrepreneurship by establishing a municipal company. The mayor exercised place-based change leadership to secure votes in the municipal council and bring in NSB. Local actors exercised institutional entrepreneurship by reframing the identity of Flåm and the role of the municipality.",
+    "In the path development phase, the municipal company expanded operations through replicative entrepreneurship, while private tourism spinoffs multiplied. The municipality exercised place-based leadership in the UNESCO application, while business actors engaged in institutional work to defend cruise tourism.",
+    "In further development, replicative entrepreneurship brought zero-emission vessels and electric cars. Place-based maintenance leadership took the form of dialogue meetings between the tourism industry and residents, and local cooperation to find step-by-step solutions. Local critics exercised institutional entrepreneurship by protesting cruise pollution and demanding stricter regulation, while established tourism actors carried out institutional work to lobby against the strict zero-emission mandate.",
+    "Slide 20 highlights multi-level dynamics. Non-local factors, including national railway budgets, growing global tourism, UNESCO designations, and national environmental laws, continuously reshaped the local opportunity space."
+   ],
+   "checks": [
+    {
+     "q": "What are the three forms of reproductive agency in Bækkelund's 2021 model on page 759?",
+     "a": "Replicative entrepreneurship, institutional work (maintaining rules), and place-based maintenance leadership."
+    },
+    {
+     "q": "What two conditions did NSB set in 1997 before agreeing to keep the Flåm railway open?",
+     "a": "Aurland municipality had to buy the railway infrastructure and pay NSB for operations, and the municipality had to build a cruise terminal (slide 18)."
+    }
+   ],
+   "audio": "audio/T5-06.mp3",
+   "seconds": 283.2,
+   "words": 550
+  },
+  {
+   "n": 7,
+   "title": "Can innovation systems change themselves?",
+   "slides": [
+    21,
+    22
+   ],
+   "readings": "Bækkelund 2021, p. 757; Garud & Karnøe 2003, p. 277; Miörner & Trippl 2017, p. 481",
+   "paragraphs": [
+    "Slide 21 brings together the lecture's core themes, asking whether innovation systems can transform themselves.",
+    "Innovation systems are part of existing structures. Yet system actors can also drive change in two main ways: by building new industries or by changing the innovation system itself.",
+    "Alternatively, actors can work outside established systems. They can develop informal networks that eventually force changes in the established system, or they can build an entirely new system alongside the old one.",
+    "The slide asks whether established industries without an innovation system are more rigid. It leaves students with a final question for reflection: innovation systems are usually linked to existing industries and structures, but they can serve both as tools for change and as sources of rigidity. What determines which role they play?",
+    "Slide 22 lists the core references for the lecture, covering agency, critical junctures, opportunity spaces, and path evolution.",
+    "Here is an exam tip. In December 2024, the exam asked two related questions: Question 1 asked what you understand by an innovation system, sustainable transformation, agency, and institutions. Question 2 asked how agency in innovation systems can promote or inhibit sustainable transformation.",
+    "You can answer using the distinction between change agency and reproductive agency from Bækkelund's 2021 article. Change agency promotes transformation when actors start new firms, alter rules, and coordinate local action around a new path. The early Flåm restructuring shows all three. The Danish wind case shows how distributed agency built a new technology path. Reproductive agency can inhibit transformation when actors use institutional work to defend established, polluting routines, as seen in the defence of conventional cruise tourism. But reproductive agency is also necessary to maintain standards and scale up green solutions once a new path is created."
+   ],
+   "checks": [
+    {
+     "q": "How can actors drive change when an existing innovation system is rigid, according to slide 21?",
+     "a": "They can build new industries within the system, change the system itself, or work outside established structures to force institutional change or create a new system."
+    },
+    {
+     "q": "In the December 2024 exam questions, how can agency both promote and inhibit sustainable transformation?",
+     "a": "Change agency promotes transformation by introducing new combinations, changing institutions, and mobilizing networks; reproductive agency can inhibit transformation by defending established routines, but is also needed to stabilize new solutions over time."
+    }
+   ],
+   "audio": "audio/T5-07.mp3",
+   "seconds": 139.8,
+   "words": 295
+  }
+ ],
+ "seconds": 1253.8
+}

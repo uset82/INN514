@@ -1,0 +1,175 @@
+{
+ "id": "P12",
+ "kind": "reading",
+ "title": "Reading 12: The relational forms of cultural-creative crowdfunding: a typology of practices through mapping platforms in Europe and Latin America",
+ "session": "Demattos Guimarães, Maehle & Bonet 2024",
+ "lecturer": "Demattos Guimarães, Maehle & Bonet",
+ "deck": "Poetics 105",
+ "authors": "Demattos Guimarães, Maehle & Bonet",
+ "year": 2024,
+ "source": "Poetics 105",
+ "lectures": [
+  "B1"
+ ],
+ "chapters": [
+  {
+   "n": 1,
+   "title": "The paper in brief",
+   "slides": [],
+   "readings": "",
+   "pages": "the whole paper",
+   "paragraphs": [
+    "The paper asks how cultural-creative crowdfunding has evolved and which models and channels platforms have developed under that umbrella. It matters because the literature is embryonic: the sectoral side of crowdfunding is under-explored, and that there is a gap in understanding and defining cultural-creative platforms (page 2). Their aim is a broader typology of CCCF practices. Their main assumption is that CCCF is a set of diverse practices under the wider crowdfunding umbrella (page 3).",
+    "On page 2, CCCF is financing projects in the culture sector and its cultural-creative industries by asking a crowd for contributions through online platforms. On page 4 the authors take four cultural policy paradigms from Bonet and Négrier: excellence, cultural democratization, cultural democracy and the cultural or creative economy. They place CCCF where all four meet, as a provocation about digitalization and platformization, not a claim that crowdfunding should lead cultural policy. The puzzle has three points. Does the sector lack an expanded understanding and a mindset shift? Are all platform models being explored? And do generalist and specialised platforms need a clearer distinction?",
+    "The method is inductive. The authors combine tracking and trawling, a digital method from Whiting and Prichard, with two Delphi panels. They met in Gdansk and Bloomington in 2023, with about ten and fifteen participants (page 6). They coded each platform on six dimensions: country, geographical scope, business model, focus, institutional structure and foundation year (page 8). The database holds 89 platforms, 79 European and 10 Latin American (page 8).",
+    "Table 1 shows 67 of the 89 platforms founded between 2009 and 2015. It shows 51 with a hybrid business model against 38 with a single one, and 35 for-profit, 29 on a partnership spectrum and 20 non-profit (page 9). Each panel reached consensus, but the two differed (page 8). The cultural economists treated crowdfunding as an external tool and understood it more narrowly, while the alternative finance experts argued over specialised and generalist platforms. Both discussions, the authors say, validate the puzzle (pages 8 and 10). In Latin America no platform serves a single sector, and all have a national scope except Idea.me, which is regional. European platforms are more often regional (page 12). The main output, Figure 3, is a typology running from institutional structure to practices such as Crowd Store, producer agents, subscription as alternative income, art market investment, white-label co-financing and collective mobilisation (pages 11 and 12). A strict clustering proved ineffective, so the typology is a diagram, and the mapping confirms the main assumption (page 12).",
+    "The authors call the typology their main contribution, and say it speaks to cultural economics, media studies and cultural policy research (page 13). They name two limits. The study relies on what platforms display, and that information is inconsistent (page 8). The choice of two expert fields may also miss the broader perspective of cultural studies (page 6). The mapping leaves out US platforms such as Kickstarter, and the authors invite a similar North American study (page 10).",
+    "The paper is the reading for the bonus lecture, The art of crowdfunding. The lecture uses pages 8 and 10 for the count of 89 platforms and for the two ways of sorting them, by institutional structure and by relational form of practice. It notes that crowdfunding was not on the December 2024 or the June 2025 exam. Our Bonus lecture page suggests, as an example of our own rather than the lecturer's, that crowdfunding communities could be one form of agency for Question 2 of December 2024. The paper's nearest point, on page 13, is that cultural policy can benefit from taking agency in shaping CCCF. Here is an example of our own, not from the paper or the lecture. A funding channel that lets many small backers decide together which cultural projects go ahead can be read as agency that moves resources away from established gatekeepers."
+   ],
+   "labels": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "checks": [
+    {
+     "q": "How many platforms did the study map, and on which dimensions did it code them?",
+     "a": "89, coded on country, geographical scope, business model, focus, institutional structure and foundation year."
+    },
+    {
+     "q": "What are the three points of the CCCF puzzle?",
+     "a": "Whether the sector lacks an expanded understanding and a mindset shift, whether all platform models are being explored, and whether generalist and specialised platforms need a clearer distinction."
+    }
+   ],
+   "audio": "audio/P12-01.mp3",
+   "seconds": 300.0,
+   "words": 652
+  },
+  {
+   "n": 2,
+   "title": "The gap, the CCCF concept, the platforms and the policy paradigms",
+   "slides": [],
+   "readings": "",
+   "pages": "1–4",
+   "paragraphs": [
+    "This article in Poetics maps crowdfunding platforms for cultural and creative projects across Europe and Latin America to build a typology of cultural-creative crowdfunding, or CCCF. Demattos Guimarães and Maehle work at HVL Business School in Bergen, and Bonet at the University of Barcelona. The abstract says the practice is not new, since busking and patronage are old, but the platform as intermediary is. It combines tracking and trawling, Delphi panels and categoric analysis, and claims to be among the first CCCF typologies. The introduction names ArtistShare, launched by artists in 2003, as one of the first platforms.",
+    "The introduction sets out the gap: the sectoral side of crowdfunding is under-explored, with a gap in understanding and defining cultural-creative platforms and their relational forms. Institutional structure is the network of components that makes a particular arrangement; structural-relational dynamics is the interplay between that structure and the relations among the people in it. Section 2 defines CCCF as financing projects in the culture sector and its cultural-creative industries by asking a crowd for contributions through online platforms. Platforms follow two logics: investment, with equity and lending, and non-investment, with reward and donation.",
+    "Hundreds of platforms are active, split between generalists and those dedicated to one sector. Following Lacan and Desmet, a platform should be more than an intermediary: a place of social connection, which matters in a sector built on collective work. Cicchiello et al. found that few European platforms specialise in culture and that success is higher on generalist platforms. Siciliano warns that under platformization both intermediaries and producers appear subordinate to infrastructure. Crowdfunding, in Dalla Chiesa's words, is a chameleon tool. Accordingly, the authors assume that CCCF is a set of diverse practices under the wider crowdfunding umbrella.",
+    "Section 2.2 sets out the sector. The authors describe a diverse, horizontal market with unique and intangible characteristics, held together by relational structures of connectedness and interplay. Following Bonet and Négrier, they present four cultural policy paradigms that emerged at different times and now coexist: excellence, cultural democratization, cultural democracy, and the cultural or creative economy. Where they overlap sit excellence for all, the star system and the prosumer. The authors place CCCF at the centre of all four as a provocation, stressing that the centrality is about digitalization and platformization, not a claim that crowdfunding should lead cultural policy."
+   ],
+   "labels": [
+    "Page 1",
+    "Page 2",
+    "Page 3",
+    "Page 4"
+   ],
+   "checks": [
+    {
+     "q": "What are the four cultural policy paradigms the authors take from Bonet and Négrier?",
+     "a": "Excellence, cultural democratization, cultural democracy, and the cultural or creative economy."
+    },
+    {
+     "q": "What do the authors say the central place of CCCF in that diagram means?",
+     "a": "They call it a provocation and stress that the centrality is about digitalization and platformization, not a claim that crowdfunding should lead cultural policy."
+    }
+   ],
+   "audio": "audio/P12-02.mp3",
+   "seconds": 194.3,
+   "words": 410
+  },
+  {
+   "n": 3,
+   "title": "The puzzle, the two Delphi panels and the platform database",
+   "slides": [],
+   "readings": "",
+   "pages": "5–8",
+   "paragraphs": [
+    "The section turns to the CCCF puzzle. They note a conflict: artists do not always see themselves as entrepreneurs, and the tension between commercial and artistic values helps explain why cultural campaigns are mostly reward- and donation-based. Following Hoffmann et al., they call this mix artrepreneurship. Earlier work usually studies one platform, or success rates and business models. They draw three questions: whether the sector lacks an expanded understanding and a mindset shift, whether all platform models are being explored, and whether generalist and specialised platforms need a clearer distinction. Figure 1 shows the four circles meeting at CCCF.",
+    "The puzzle ends with the sector's old problems: demand uncertainty, information asymmetry, and the split between excellence and popular commercial work. Cultural campaigns usually draw most contributions from the creator's own network, which the authors link to the Bourdieusian account of distinction and habitus. The method is inductive: tracking and trawling plus two Delphi panels, used to validate the puzzle. Choosing crowdfunding and cultural economics experts, they admit, may miss the wider view of cultural studies. The panels met in Gdansk on 31 May 2023, with about ten participants, and in Bloomington on 27 June 2023, with about fifteen.",
+    "Figure 2 draws the research design as a loop from the puzzle to the typology. Section 3.2 explains the database. For Europe the authors started from a portal on crowdfunding in the cultural and creative industries and checked it against the CrowdSpace site. They visited over 160 platform websites native to Europe, so Kickstarter and other American platforms are out; for Latin America there was no list, so they built one by searching and snowballing. From August to November 2023 they examined around 200 websites and excluded more than 50, mostly broken sites or blogs with no funding mechanism.",
+    "The final database holds 89 platforms, 79 European and 10 Latin American, mostly Brazilian. The authors admit they rely on what platforms display, which is inconsistent. They coded six dimensions: native country, geographical scope, business models, focus, institutional structure and foundation year. In the findings, each Delphi panel reached consensus, but the two differed. The cultural economists saw crowdfunding as just an external tool, understood narrowly as reward or donation. Their reasoning about artists' choices, the authors say, partly validates the puzzle, since agents lack a nuanced grasp of CCCF's forms. The finance experts debated specialised against generalist platforms."
+   ],
+   "labels": [
+    "Page 5",
+    "Page 6",
+    "Page 7",
+    "Page 8"
+   ],
+   "checks": [
+    {
+     "q": "How did the two Delphi panels differ?",
+     "a": "Each reached consensus internally, but the cultural economists saw crowdfunding narrowly, as an external tool, while the alternative finance experts debated specialised against generalist platforms."
+    },
+    {
+     "q": "How many platforms are in the final database, and how are they split between the two regions?",
+     "a": "89 in all, 79 European and 10 Latin American."
+    }
+   ],
+   "audio": "audio/P12-03.mp3",
+   "seconds": 198.7,
+   "words": 416
+  },
+  {
+   "n": 4,
+   "title": "What the mapping found: the table, the panels and Figure 3",
+   "slides": [],
+   "readings": "",
+   "pages": "9–12",
+   "paragraphs": [
+    "Table 1 ties each part of the puzzle to a dimension and counts the platforms. By period, 10 platforms started before 2009, 67 between 2009 and 2015, and 8 after 2015. By business model, 38 are pure and 51 hybrid; among the pure ones, 12 are donation, 12 reward or pre-order, 6 subscription and 8 other. By institutional structure, 20 are non-profit, 29 sit on a partnership spectrum and 35 are for-profit. By focus, 27 are specialised, 4 culture-specialised, 18 cultural-industry generalists, 15 socio-generalists and 21 generalists. By scope, 5 are local, 34 regional, 24 national and 26 global.",
+    "The finance experts saw great potential that the culture sector has not fully explored, and both panels agreed a puzzle exists. The mapping shows a volatile market. It began with ArtistShare, a blueprint for later platforms. The text says eight platforms launched before 2009 and ten after 2015, the reverse of Table 1, and more disappeared. More than 57 per cent are hybrid, most often reward with donation. Six are subscription only; the authors suggest that subscription, usually counted as donation, gives creators alternative income. Ten offer investment logic, such as Kanvas.ai, and twelve allow match-funding.",
+    "Of the institutional structures, 29 platforms are public-private partnerships, 35 are for-profit, living on fees or a share of sales, and 20 are non-profit. For-profit streams include CrowdPublisher, in publishing, music and games, and Crowd Store, crowdfunding as market test and pre-sale. Non-profit cases include the municipal Tilburgvoorcultuur and the Catalan-supported Axeta. On focus, 27 platforms specialise, mostly in music and publishing, and 21 are generalist. Figure 3, the main output, shows the 89 platforms in the three structures and branches into practices, from Crowd Store and producer agents to subscription income, art market investment, white-label co-financing and collective mobilisation.",
+    "No strong link appears between focus and institutional structure, so the puzzle persists. Latin America has no single-sector platform; its platforms are national, except the regional Idea.me, and their pattern could indicate an ecosystem built on collaboration. European platforms are more often regional, such as Wemakeit, and some from the UK reach globally. The authors say this confirms their main assumption: CCCF is a set of diverse practices. Since a strict clustering proved ineffective, Section 4.3 presents the typology visually, with practices such as producer agents, Crowd Store, subscription, art market and collective mobilisation."
+   ],
+   "labels": [
+    "Page 9",
+    "Page 10",
+    "Page 11",
+    "Page 12"
+   ],
+   "checks": [
+    {
+     "q": "What three institutional structures does the paper distinguish, and how many platforms fall in each?",
+     "a": "Non-profit with 20, a partnership spectrum with 29, and for-profit with 35."
+    },
+    {
+     "q": "How do Latin American and European platforms differ in geographical scope?",
+     "a": "Latin American platforms are national except Idea.me, which is regional; European platforms are more often regional, and some from the UK reach globally."
+    }
+   ],
+   "audio": "audio/P12-04.mp3",
+   "seconds": 213.3,
+   "words": 410
+  },
+  {
+   "n": 5,
+   "title": "The discussion, the conclusions and the reference list",
+   "slides": [],
+   "readings": "",
+   "pages": "13–15",
+   "paragraphs": [
+    "The section ends by arguing that a clear systematisation of these relational forms can help CCCF join the culture sector's funding ecosystem. The authors say they go beyond crowdfunding as a single function of raising money, and name the puzzle's three tensions: commercial against aesthetic or moral values, donation against investment or income, and broad audience against niche preferences. They claim contributions to cultural economics, media studies and cultural policy research. Cultural policy, they add, can benefit from taking agency in shaping CCCF's development, and they recommend a closer look at match-funding.",
+    "The page gives the competing-interest declaration and a note on the supplementary material, then the reference list begins.",
+    "This page continues the reference list."
+   ],
+   "labels": [
+    "Page 13",
+    "Page 14",
+    "Page 15"
+   ],
+   "checks": [
+    {
+     "q": "What three tensions does the paper say the puzzle contains, and what does it recommend policy look at?",
+     "a": "Commercial against aesthetic or moral values, donation against investment or income, and broad audience against niche preferences; it recommends a closer look at match-funding."
+    }
+   ],
+   "audio": "audio/P12-05.mp3",
+   "seconds": 64.6,
+   "words": 132
+  }
+ ],
+ "seconds": 970.9
+}

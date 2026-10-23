@@ -1,0 +1,23 @@
+== check_reading.py, all 17 readings
+P01: PASS P02: PASS P03: PASS P04: PASS P05: PASS P06: PASS P07: PASS P08: PASS P09: PASS P10: PASS P11: PASS P12: PASS P13: PASS P14: PASS P15: PASS P16: PASS P17: PASS 
+== check_style.py and check_sources.py, all 8 lectures
+T1 style PASS, sources PASS
+T2 style PASS, sources PASS
+T3 style PASS, sources PASS
+T4 style PASS, sources PASS
+T5 style PASS, sources PASS
+T6 style PASS, sources PASS
+T8 style PASS, sources PASS
+B1 style PASS, sources PASS
+== data, cache keys, durations, published sizes (version 27)
+TOTAL: 154 mp3 files, 457.1 min (7.62 h), 164.6 MB
+stray files on disk: none; missing: none; not published: none; published but unused: none
+PROBLEMS: none
+exit 0
+== guards
+GUARDS OK: 11 files match GUARDS.sha256
+== published index.html (version 27) vs local build: differing lines
+3
+== page checks
+18
+ALL PAGE CHECKS PASSED
