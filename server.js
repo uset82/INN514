@@ -285,6 +285,7 @@ const server = http.createServer((req, res) => {
       seen: Object.keys(process.env).filter((k) => /openrouter|grokbot/i.test(k)).map((k) => JSON.stringify(k)).sort(),
       // How the host runs the app (names and NODE_ENV only), to tell a production deploy from a preview.
       runtime: { nodeEnv: process.env.NODE_ENV || null, dotenvFile: DOTENV,
+        cannerEnv: process.env.CANNER_ENV || null, branch: process.env.CANNER_BRANCH || null, url: process.env.CANNER_URL || null,
         host: Object.keys(process.env).filter((k) => /^CANNER/i.test(k)).sort(), envCount: Object.keys(process.env).length },
       voices: { en: VOICE_EN, es: VOICE_ES },
     }));
