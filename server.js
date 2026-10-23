@@ -5,7 +5,16 @@ const path = require("node:path");
 const crypto = require("node:crypto");
 
 const ROOT = __dirname;
-const AUDIO = /^\/site\/audio\/([A-Z0-9]+-\d{2}\.mp3)$/;
+/* Some hosts deliver settings as a .env file next to the app instead of in the environment.
+   Read only our own settings from it, and never override one the environment already has. */
+const DOTENV = fs.existsSync(path.join(ROOT, ".env"));
+if (DOTENV) {
+  for (const line of fs.readFileSync(path.join(ROOT, ".env"), "utf8").split(/\r?\n/)) {
+    const m = /^\s*(?:export\s+)?((?:OPENROUTER|GROKBOT)_[A-Z0-9_]+)\s*=\s*(.*?)\s*$/.exec(line);
+    if (m && process.env[m[1]] === undefined) process.env[m[1]] = m[2].replace(/^(["'])(.*)\1$/, "$2");
+  }
+}
+const AUDIO =/^\/site\/audio\/([A-Z0-9]+-\d{2}\.mp3)$/;
 const PLAIN = { "Content-Type": "text/plain; charset=utf-8" };
 const JSONH = { "Content-Type": "application/json" };
 
@@ -274,6 +283,9 @@ const server = http.createServer((req, res) => {
       key: !!KEY, passcode: !!process.env.GROKBOT_PASSCODE,
       // The NAMES (never the values) of settings that look like ours, to catch a typo or a stray space.
       seen: Object.keys(process.env).filter((k) => /openrouter|grokbot/i.test(k)).map((k) => JSON.stringify(k)).sort(),
+      // How the host runs the app (names and NODE_ENV only), to tell a production deploy from a preview.
+      runtime: { nodeEnv: process.env.NODE_ENV || null, dotenvFile: DOTENV,
+        host: Object.keys(process.env).filter((k) => /^CANNER/i.test(k)).sort(), envCount: Object.keys(process.env).length },
       voices: { en: VOICE_EN, es: VOICE_ES },
     }));
   }
