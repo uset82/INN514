@@ -251,6 +251,53 @@ The only addition to `renderLecture` is the button and panel markup per chapter,
    - a wrong passcode shows "That passcode didn't work.";
    - the server mode screenshot is `phone-ask-server.png`;
    - both child processes are stopped at the end, even after a failure.
+4. **Theme switch pass** (file load, desktop):
+   - on `#home`, read the body's background colour;
+   - click `#themeBtn`: `document.documentElement.dataset.theme` becomes the opposite of the starting theme, the body background changes, the button's `aria-label` names the other theme, and `localStorage["inn514-theme"]` equals the new value;
+   - reload the same address: the attribute is still set;
+   - click again: everything returns to the starting theme;
+   - at 390 px, the top bar fits (the existing no-horizontal-scroll checks cover every view).
+
+### A.4 The light/dark switch (top bar; the claude.ai link and Canner)
+
+Added at the student's request on 2026-10-23. Without a stored choice, the page keeps following the device setting, as now.
+
+- **Markup:** in `header.topbar`, right after `nav.mainnav`:
+  ```html
+  <button class="theme-btn" id="themeBtn" type="button" aria-label="Switch to dark theme" title="Switch to dark theme">
+    <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+  </button>
+  ```
+- **CSS (tokens only):**
+  - the button: `.theme-btn { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border: 0; border-radius: var(--r-sm); background: none; color: var(--muted); cursor: pointer; }`, with `.theme-btn:hover { background: var(--surface-2); color: var(--ink); }`;
+  - the icons: `.theme-btn svg { width: 1.25rem; height: 1.25rem; }`, `.i-moon { fill: currentColor; }`, `.i-sun { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }`;
+  - which icon shows: the moon (offering dark) when the page is light, and the sun when it is dark. Set by a class on the button, `.theme-btn.is-dark .i-moon { display: none; }` and `.theme-btn:not(.is-dark) .i-sun { display: none; }`.
+  - **Phone:** if the 390 px check finds the top bar too wide, add `@media (max-width: 420px) { .brand span { display: none; } }`. That hides only the word "Companion".
+- **Code** (one small section, `/* ---------- theme switch ---------- */`, placed before the first render):
+  ```js
+  const THEME_KEY = "inn514-theme";
+  const darkQuery = matchMedia("(prefers-color-scheme: dark)");
+  const effectiveTheme = () => {
+    const t = document.documentElement.dataset.theme;
+    return t === "light" || t === "dark" ? t : (darkQuery.matches ? "dark" : "light");
+  };
+  try { const saved = localStorage.getItem(THEME_KEY); if (saved === "light" || saved === "dark") document.documentElement.dataset.theme = saved; } catch (e) {}
+  function showThemeButton() {
+    const dark = effectiveTheme() === "dark", label = dark ? "Switch to light theme" : "Switch to dark theme";
+    const b = $("themeBtn"); b.classList.toggle("is-dark", dark); b.setAttribute("aria-label", label); b.title = label;
+  }
+  $("themeBtn").onclick = () => {
+    const next = effectiveTheme() === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = next;
+    try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+    showThemeButton();
+  };
+  darkQuery.addEventListener("change", showThemeButton);
+  showThemeButton();
+  ```
+- **The claude.ai link:** the Claude app may set the page's theme attribute itself when you change the app's theme. Whichever changed last wins, and a tap on the switch always applies.
+- **Never** change the colour tokens, and never use another localStorage key.
 
 ---
 
@@ -456,7 +503,8 @@ The executor runs only the default mode (no flags).
 | S3 | `server.js`: `/api/speak`, voice choice, English fallback, per-IP and daily limits |
 | S4 | `scripts/mock_openrouter.mjs` + `scripts/test_server.mjs`, all checks PASS |
 | A6 | Server mode in the page: passcode row and storage, `askServer`, `/api/speak` playback in order, fallbacks, the server honesty line |
-| A7 | `check_page.mjs`: the claude mock pass and the server mode pass from A.3, screenshots, full run (ALL PAGE CHECKS PASSED), then `build_static.py` |
+| A6b | The light/dark switch in the top bar (plan A.4) |
+| A7 | `check_page.mjs`: the claude mock pass, the server mode pass and the theme switch pass from A.3, screenshots, full run (ALL PAGE CHECKS PASSED), then `build_static.py` |
 | G1 | **STOP GATE G1** |
 | B1 | `sync_knowledge.py` |
 | B2 | Its default run, which must report "pack unchanged" |
