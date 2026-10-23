@@ -272,6 +272,8 @@ const server = http.createServer((req, res) => {
       ask: !!(KEY && process.env.GROKBOT_PASSCODE),
       // Whether each setting is present (never its value), so a missing one can be spotted from outside.
       key: !!KEY, passcode: !!process.env.GROKBOT_PASSCODE,
+      // The NAMES (never the values) of settings that look like ours, to catch a typo or a stray space.
+      seen: Object.keys(process.env).filter((k) => /openrouter|grokbot/i.test(k)).map((k) => JSON.stringify(k)).sort(),
       voices: { en: VOICE_EN, es: VOICE_ES },
     }));
   }

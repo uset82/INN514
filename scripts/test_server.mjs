@@ -300,6 +300,8 @@ async function run() {
     check(healthResponse.status === 200 && health?.ask === true, "health reports ask: true",
       `status ${healthResponse.status}`);
     check(health?.key === true && health?.passcode === true, "health reports that the key and the passcode are present");
+    check(Array.isArray(health?.seen) && health.seen.includes('"OPENROUTER_API_KEY"') && health.seen.includes('"GROKBOT_PASSCODE"'),
+      "health lists the setting names it sees (names only)");
 
     const validAsk = { id: "T4", chapter: 2, question: "What is upward causation?", history: [] };
     const noPass = await postJson(serverPort, "/api/ask", validAsk);

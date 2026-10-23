@@ -10,6 +10,7 @@ PASS blocked path /%2e%2e/index.html
 PASS blocked path /site/audio/../index.html
 PASS health reports ask: true
 PASS health reports that the key and the passcode are present
+PASS health lists the setting names it sees (names only)
 PASS ask without a passcode returns 401
 PASS ask with a wrong passcode returns 401
 PASS valid T4 ask returns the mock answer
