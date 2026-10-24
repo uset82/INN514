@@ -566,11 +566,8 @@ try {
   await ev(`document.querySelector('.ask-input').value = 'What is upward causation?';
     document.querySelector('.ask-send').click()`);
   await waitFor(`!document.querySelector('.ask-pass').hidden`);
-  const passFirst = await ev(`(() => ({row: !document.querySelector('.ask-pass').hidden,
-    note: document.querySelector('.ask-note').textContent}))()`);
+  const passFirst = await ev(`(() => ({row: !document.querySelector('.ask-pass').hidden}))()`);
   check('the first server question asks for a passcode', passFirst.row, JSON.stringify(passFirst));
-  check('server mode shows its AI-voice honesty line',
-    passFirst.note === "Answers are written by a free AI model from this chapter's text and read aloud by an AI voice. Don't type personal details.");
   await ev(`(() => { const row = document.querySelector('.ask-pass'); row.querySelector('input').value = 'test-pass';
     row.querySelector('button').click(); })()`);
   let mockCalls = [];

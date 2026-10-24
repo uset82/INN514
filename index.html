@@ -456,7 +456,6 @@ body.can-ask .howto > .gb-only { display: grid; }
       <p class="gb-words"></p>
       <p class="gb-src"></p>
       <p class="ask-status" aria-live="polite"></p>
-      <p class="ask-note"></p>
     </div>
   </section>
 </div>
@@ -1162,8 +1161,6 @@ function gbRender(ctx) {
   input.placeholder = chapter ? "Ask about this chapter…" : "Ask about any class or paper…";
   input.setAttribute("aria-label", input.placeholder);
   gb.querySelector(".ask-chips").hidden = !chapter;
-  gb.querySelector(".ask-note").textContent = askMode === "server"
-    ? (chapter ? SERVER_ASK_NOTE : COURSE_SERVER_NOTE) : (chapter ? DEVICE_ASK_NOTE : COURSE_DEVICE_NOTE);
   if (!gb.querySelector(".gb-bubble").hidden) gbPlace();
 }
 function caption(panel, text) {         // the words appear part by part as they are spoken
