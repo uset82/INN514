@@ -48,7 +48,7 @@ YOU MUST NOT:
 AFTER THE TASK:
 - Template tasks (A1 to A6): run build_site.py and paste its first line.
 - Server tasks: S1 to S3, check that `node workspace/lecture-audio/server.js` starts and answers / (stop it afterwards); S4 and later, run test_server.mjs and paste its last lines (it must end "ALL SERVER CHECKS PASSED").
-- Part H: H2, H3 and H5, run build_site.py and paste its first line; H4, run test_server.mjs as above; H1 and H6, run build_site.py, then check_page.mjs until the log ends "ALL PAGE CHECKS PASSED" (H6 also opens phone-home-chat*.png and then runs build_static.py).
+- Part H: H2 to H6 and H8, run build_site.py and paste its first line; H7, run test_server.mjs as above; H1 and H9, run build_site.py, then check_page.mjs until the log ends "ALL PAGE CHECKS PASSED" (H9 also opens phone-grokbot.png, phone-grokbot-dark.png and desktop-grokbot.png, fixes what looks wrong, and then runs build_static.py).
 - A7: run check_page.mjs, open every new screenshot it saves (phone-ask*.png and the others), fix what looks wrong, run again until the log ends "ALL PAGE CHECKS PASSED", then run build_static.py.
 - Tick the task's box in PROGRESS_GROKBOT_ZCODE.md and paste the evidence under it: the commands you ran and their output (or the last lines), and the files you changed.
 - Report to me in English: what you changed, the evidence, and any wording you added. Then STOP.

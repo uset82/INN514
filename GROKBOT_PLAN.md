@@ -120,7 +120,7 @@ All three answer from the **same course text**.
   - The heading is "Ask about any chapter".
   - The text is "Grokbot, the orb on every chapter, answers your questions out loud from that chapter's text. Open a class or a paper and tap **Ask about this chapter**."
   - Once detection has finished (`body.ask-checked`), and only if asking is unavailable, a muted line says "Asking isn't switched on in this copy of the site yet." It never flickers on the claude.ai link.
-  - **Part H** turns this card into the course chat; its heading and text change there.
+  - **Replaced on 2026-10-24:** Part H swaps the per-chapter panels and this card for Grokbot, the floating avatar. A.0 to A.3 describe what G1 shipped.
 - **No branding:** never write "Claude", "Anthropic" or "xAI" in the template; `check_page.mjs` tests for it.
 
 ### A.1 The orb (a new design of your own; tokens only)
@@ -464,42 +464,442 @@ The executor runs only the default mode (no flags).
 
 ---
 
-## Part H: the front-page course chat (added 2026-10-24; both sites)
+## Part H: Grokbot, the floating avatar (rewritten 2026-10-24; both sites, every page)
 
-The student asked for Grokbot on the front page to be a real chatbot. You ask anything about the course; Grokbot finds the right class or paper chapter, answers out loud, and says where the answer comes from. The chapter orbs stay exactly as they are.
+The student found the per-chapter panels and the front-page card "horrible". They asked for **just the Grok avatar**: one character floating over the site, like the old Windows XP paperclip assistant, that you can drag anywhere and ask a question.
+
+- **Removed:** every per-chapter "Ask about this chapter" button and panel, and the front-page greeting card, with their markup, CSS and checks.
+- **Kept:** every speech, passcode, error and server path that works today, and `/api/ask`.
+- **Added:** course-wide answers (pick the chapters, then answer) and `/api/course`.
+
+**The student's decisions (2026-10-24):**
+- **On a class or paper page,** Grokbot answers from that chapter first: the one playing, or else the one on screen. A "Whole course" switch searches everything. On every other route it searches the whole course.
+- **The bubble shows the words as they are spoken,** with the source underneath.
+
+**The look:**
+- Grokbot keeps **the site's own orb**: the light gradient body, rim, glow and two tilted rounded eyes, the same geometry as the old `ORB_SVG`.
+- Only the **motion** comes from the watch avatar (`D:/Proyectos/watch/grok-watch/docs/mockup.html`, function `draw`). The watch's own orb design is not used, because the site is public.
 
 ### H.0 What you see
 
-The greeting card (`section.greet`, A.0) becomes the chat. The card, its 56px orb (44px on phones) and its phone layout stay; only its inside changes:
-
 ```
-( orb )  Ask Grokbot about the course
-         Ask anything about the classes or the papers. Grokbot finds the right chapter and
-         answers out loud. You can also open any chapter and tap Ask about this chapter.
-         [Enter the passcode to ask questions] [••••••] (OK)     ← server mode only, until a passcode works
-         [ Ask about any class or paper…                ] (Ask)
-         Thinking…  /  Speaking…  (Stop)                        ← status line, aria-live="polite"
-         From Class 4, chapter 3: <title>; Paper 7, chapter 3: <title>    ← links to #T4 and #P07
-         <honesty line for the mode>
-         Asking isn't switched on in this copy of the site yet.  ← only when asking is off (A.0)
+                     ┌────────────────────────────────────────────────────┐
+                     │ About Class 4, chapter 3: <title>   (Whole course) (×)
+                     │ Hi, I'm Grokbot. Ask me about this chapter and I'll answer out loud.
+                     │ You can drag me anywhere on the page.          ← until the first drag
+                     │ [Enter the passcode to ask questions] [••••] (OK)   ← server mode only
+                     │ [Explain this simply] [Give me an example] …   ← chapter mode only
+                     │ [ Ask about this chapter…                ] (Ask)
+                     │ <the answer's words, part by part as it is spoken>
+                     │ From Paper 7, chapter 3: <title>               ← course mode, links
+                     │ Thinking…  /  Speaking…  (Stop)
+                     │ <honesty line>
+                     └──────────────────────────────────────▽─────────────┘
+                                                        ( •  • )  ← the orb, 72px (56px on phones)
 ```
 
-- **Copy** (verbatim):
-  - heading: "Ask Grokbot about the course"
-  - text: "Ask anything about the classes or the papers. Grokbot finds the right chapter and answers out loud. You can also open any chapter and tap **Ask about this chapter**."
-  - input placeholder and `aria-label`: "Ask about any class or paper…"
-  - button: "Ask"
-  - sources line: "From " + the links joined with "; ". Each link's text is `<Class 4 | Paper 7 | Bonus class>, chapter <n>: <chapter title>` and its `href` is `#<id>`.
-  - honesty lines: `COURSE_DEVICE_NOTE` (claude mode) and `COURSE_SERVER_NOTE` (server mode), H.1.
-- **When asking is off** (`body:not(.can-ask)`): the passcode row, the form, the status, the sources and the honesty line are all hidden. The rest of the card shows as before, including the "Asking isn't switched on…" line under `body.ask-checked:not(.can-ask)`.
-- **Each question stands alone:** no history, no chips.
-- **Speech and fallbacks** are the chapter panel's:
-  - claude mode: the device voice, sentence by sentence;
-  - server mode: `/api/speak` (Fish or Deepgram), then the device voice, then text;
-  - Stop; the lecture player pauses; a route change (including tapping a source link) stops speech.
-- **Text backup:** the same `p.ask-text` with "This device has no voice, so here is the answer as text."
+**The orb:**
+- `#grokbot` sits in the page body right after the player, outside `#view`, so it never re-renders on a route change.
+- It shows only under `body.can-ask`. Where asking is off (a plain file, say), there is no Grokbot and no "off" message.
+- **First position:** bottom right, 16px from the right edge, just above the player when the player shows (8px gap), or 16px from the bottom when it doesn't.
+- **Dragging** works with mouse and touch (`touch-action: none` on the orb).
+  - A pointer that moves more than 6px is a drag; anything less is a tap.
+  - The orb stays inside the viewport: 16px from the left and right edges, 8px below the top bar, and 8px above the player.
+  - It saves its place as `inn514-grokbot-pos` in `localStorage`, with try/catch on every read and write. It is clamped again on resize and whenever the player starts or stops playing.
+- **A tap** opens or closes the bubble and makes Grokbot hop happily for 1 second.
+- **Keyboard:** the orb is `<button aria-label="Ask Grokbot" aria-expanded="false|true">`.
+  - Enter or Space toggles the bubble (the button's own click).
+  - While the orb has focus, the arrow keys move it 16px, or 64px with Shift, and save the place.
+  - Escape closes the bubble and puts focus back on the orb.
 
-### H.1 How it answers: pick, then answer
+**The bubble:**
+- `section.gb-bubble`, `role="dialog"`, `aria-label="Grokbot"`. It is a speech bubble in the site's tokens, with a tail pointing at the orb.
+- **Placement:** above the orb when there is room, else below. It is aligned to the orb's side of the screen and kept 16px inside the viewport.
+- **Size:** `min(22rem, 100vw - 32px)` wide, full width minus 16px each side on phones (≤520px), and at most `min(70vh, 32rem)` tall, with its inside scrolling.
+- **Closing:** it stays open when you tap elsewhere. It closes with its × button, Escape, a tap on the orb, or a route change. A route change also stops speech; the orb stays.
+
+**Context:**
+- **Chapter mode:** on a class or paper route, unless the bubble has been switched to "Whole course".
+  - The chapter is the one playing, if the player has this lecture loaded and is not paused.
+  - Otherwise it is the last `section.chapter` whose top is above 40% of the viewport height, or chapter 0 if none is.
+  - It is worked out when the bubble opens and again before every question.
+- **Course mode:** every other route, or after "Whole course".
+- **The switch:** "Whole course" switches the open bubble to course mode, and "This chapter" switches back. The switch shows only on class and paper routes, and a route change resets it to chapter mode.
+- **Memory:** a chapter conversation keeps its last 6 turns, as today. It is cleared when the chapter or mode changes and when the bubble closes. Course questions stand alone.
+
+**Words:**
+- Each spoken part is added to `.gb-words` when it starts playing. In claude mode a part is a sentence. In server mode it is the first sentence, then the rest.
+- The words clear at each new question.
+- With no voice at all, the whole answer appears, after the line "This device has no voice, so the answer is only written."
+
+**Front page:**
+- The greeting card goes.
+- "How to use this site" gets one more item, shown only under `body.can-ask` (`class="gb-only"`): **Ask**, "Tap Grokbot, the round face in the corner, and ask a question. It answers out loud and in writing, and says where the answer comes from. Drag it anywhere it's in the way."
+
+**Copy** (verbatim):
+
+| Where | Chapter mode | Course mode |
+|---|---|---|
+| `.gb-head` | `className(c) + ", chapter " + ch.n + ": " + ch.title`, with "About " in front | "About the whole course" |
+| `.gb-switch` | "Whole course" | "This chapter" (only on class and paper routes; hidden elsewhere) |
+| `.gb-hello` (shown while `.gb-words` is empty) | "Hi, I'm Grokbot. Ask me about this chapter and I'll answer out loud." | "Hi, I'm Grokbot. Ask me anything about the classes or the papers. I'll answer out loud and say where it comes from." |
+| `.ask-input` placeholder and `aria-label` | "Ask about this chapter…" | "Ask about any class or paper…" |
+| `.ask-note` | `SERVER_ASK_NOTE` or `DEVICE_ASK_NOTE` | `COURSE_SERVER_NOTE` or `COURSE_DEVICE_NOTE` |
+
+- **`.gb-hint`,** shown until the first drag or keyboard move (`inn514-grokbot-moved` in `localStorage`): "You can drag me anywhere on the page."
+- **`.gb-close`:** the text "×" and `aria-label="Close"`.
+- **The sources line, `.gb-src`:** "From " + links joined with "; ". Each link's text is `<Class 4 | Paper 7 | Bonus class>, chapter <n>: <chapter title>`, and its `href` is `#<id>`.
+
+**Markup** (static, in the body right after the player; the chip labels are today's):
+
+```html
+<div id="grokbot">
+  <button class="gb-orb" type="button" aria-label="Ask Grokbot" aria-expanded="false"><canvas class="orb" aria-hidden="true"></canvas></button>
+  <section class="gb-bubble" role="dialog" aria-label="Grokbot" tabindex="-1" hidden>
+    <div class="gb-inner">
+      <div class="gb-top">
+        <p class="gb-head"></p>
+        <button class="gb-switch" type="button"></button>
+        <button class="gb-close" type="button" aria-label="Close">×</button>
+      </div>
+      <p class="gb-hello"></p>
+      <p class="gb-hint">You can drag me anywhere on the page.</p>
+      <div class="ask-pass" hidden>
+        <label for="gb-pass">Enter the passcode to ask questions</label>
+        <input id="gb-pass" type="password" autocomplete="off">
+        <button type="button">OK</button>
+      </div>
+      <div class="ask-chips">
+        <button type="button">Explain this simply</button>
+        <button type="button">Give me an example</button>
+        <button type="button">What could the exam ask?</button>
+        <button type="button">Key terms</button>
+      </div>
+      <div class="ask-form">
+        <input class="ask-input" type="text">
+        <button class="ask-send" type="button">Ask</button>
+      </div>
+      <p class="gb-words"></p>
+      <p class="gb-src"></p>
+      <p class="ask-status" aria-live="polite"></p>
+      <p class="ask-note"></p>
+    </div>
+  </section>
+</div>
+```
+
+**CSS** (tokens only; no new colours, no all caps):
+- **The orb:**
+  - `#grokbot { position: fixed; z-index: 8; display: none; }` and `body.can-ask #grokbot { display: block; }`. `left` and `top` come from JS. No `transform` on `#grokbot`: the bubble inside it is `position: fixed`.
+  - `.gb-orb`: no border, no background, no padding, `touch-action: none`, `cursor: grab` (`grabbing` while dragging), and a visible focus ring (`outline: 2px solid var(--clay-ink); outline-offset: 2px; border-radius: 50%`).
+  - `canvas.orb` keeps today's `.orb` glow (`filter: drop-shadow(...)`).
+- **The bubble:**
+  - `.gb-bubble { position: fixed; z-index: 9; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: 0 6px 24px color-mix(in srgb, var(--ink) 14%, transparent); }`. This shadow and the orb's glow are the site's only two shadows.
+  - `.gb-inner { max-height: min(70vh, 32rem); overflow-y: auto; padding: var(--sp-4); display: grid; gap: var(--sp-3); }`
+  - **The tail** is `.gb-bubble::after`: a 14px square in `var(--surface)` with a `var(--line)` border on two sides, rotated 45°, at `left: calc(var(--tail) - 7px)`. It sits `bottom: -8px` when `[data-side="above"]` and `top: -8px` (turned the other way) when `[data-side="below"]`.
+- **Inside the bubble:**
+  - `.gb-top` is a flex row: the head grows (`var(--sans)`, `var(--s-1)`, weight 600). `.gb-switch` is a small pill like `.chip`. `.gb-close` is a 2rem round icon button.
+  - `.gb-hello` uses `var(--serif)` and `var(--ink-2)`. `.gb-hint` and `.ask-note` use `var(--s-1)` and `var(--muted)`.
+  - `.gb-words` uses `var(--serif)` at 1.0625rem, `line-height: 1.6`, `white-space: pre-line`, `max-height: 12rem` and `overflow-y: auto`. It is hidden while empty (`:empty`), and so is `.gb-src`.
+  - Keep today's `.ask-pass`, `.ask-chips`, `.ask-form` and `.ask-status` styles.
+- **Phones (`max-width: 520px`):** the orb is 56px (`gbSize()`), and the bubble width comes from `gbPlace`.
+- **Reduced motion:** no CSS animation on the orb at all; the canvas handles it (H.1).
+
+**Remove:**
+- the per-chapter `.ask-btn` and `section.ask` from `renderLecture`, and their wiring line;
+- the `.greet` section from `renderHome`;
+- their CSS: `.ask-btn`, `.ask` (panel layout), `.greet*`, `.orb .eye`, `.orb-defs`, `.orb-stop-*`, `.orb.thinking`, `.orb.pulse`, `@keyframes orb-breathe` and its reduced-motion lines;
+- the hidden `<svg class="orb-defs">`, `ORB_SVG`, `startBlink`, `blinkTimer`, `askToggle` and `closeAsk`.
+
+`stopAsk` and `serverSetBusy` may keep toggling the `thinking` and `pulse` classes: with the CSS gone, they do nothing.
+
+### H.1 The avatar: drawing and motion (canvas)
+
+Port this exactly (the motion maths is the watch mockup's; the body and eyes are the site's):
+
+```js
+/* Grokbot's face: the site's orb, moved by the watch avatar's formulas. */
+const GB_EYES = [{ x: -0.25, y: -0.04, tilt: 8 }, { x: 0.25, y: -0.04, tilt: -8 }];   // the old ORB_SVG eyes, in units of R
+const GB_EYE_W = 0.19, GB_EYE_H = 0.385;
+function gbHash(k) { let h = (k * 2654435761) >>> 0; h ^= h >>> 13; return (h % 1000) / 1000; }
+function gbSmooth(e0, e1, x) { const t = Math.min(1, Math.max(0, (x - e0) / (e1 - e0))); return t * t * (3 - 2 * t); }
+function gbBlink(t, period) {
+  const k = Math.floor(t / period), at = k * period + 1 + gbHash(k + 7) * (period - 2), d = t - at;
+  return d >= 0 && d < 0.12 ? 0.1 : 1;
+}
+function gbLevel(t) { return Math.min(1, Math.abs(Math.sin(t * 7.1) * Math.sin(t * 2.3)) * 0.9 + 0.1); }
+let gbCol = null;                 // the face's colours for the current theme
+function gbColors() {
+  const cs = getComputedStyle(document.documentElement), dark = effectiveTheme() === "dark";
+  gbCol = { a: dark ? "#F2F0E8" : "#FFFFFF", b: dark ? "#C9C6BC" : "#F0EEE6",
+            rim: cs.getPropertyValue("--line").trim(), accent: cs.getPropertyValue("--clay").trim() };
+}
+function gbDraw(ctx, size, mode, t) {
+  let scale = 1, ox = 0, oy = 0, gx = 0, gy = 0, eyeH = 1;
+  const rings = [], dots = [], level = gbLevel(t);
+  if (mode === "idle" || mode === "happy") {
+    scale = 1 + 0.015 * Math.sin(2 * Math.PI * t / 4); eyeH *= gbBlink(t, 5);
+    const ph = t % 9, g = gbSmooth(0, 0.25, ph) * (1 - gbSmooth(1.2, 1.45, ph)); gx = -0.10 * g; gy = 0.06 * g;
+  }
+  if (mode === "happy") { oy = -0.08 * Math.abs(Math.sin(2 * Math.PI * 2 * t)); eyeH *= 0.45; }
+  if (mode === "thinking") {
+    gx = -0.05 + 0.06 * Math.sin(2 * Math.PI * t / 2.5); gy = -0.10; eyeH *= gbBlink(t, 2.5);
+    for (let k = 0; k < 3; k++) {
+      const ang = 2 * Math.PI * t / 1.6 + k * 2 * Math.PI / 3;
+      dots.push({ x: 1.22 * Math.cos(ang), y: 1.22 * Math.sin(ang), r: 0.065 });
+    }
+  }
+  if (mode === "speaking") { scale = 1 + 0.06 * level; gx = -0.12; gy = 0.04; eyeH *= 0.70 + 0.30 * (1 - level); rings.push({ r: 1.10, hw: 0.02, a: 0.30 * level }); }
+  if (mode === "error") { const mt = t % 2.5; ox = 0.07 * Math.sin(2 * Math.PI * 5 * mt) * Math.exp(-2 * mt); gy = 0.08; eyeH *= 0.25; }
+  const R = 0.34 * size, Rs = R * scale, cx = size / 2 + ox * R, cy = size / 2 + oy * R;
+  ctx.clearRect(0, 0, size, size);
+  for (const r of rings) {
+    ctx.globalAlpha = Math.max(0, r.a); ctx.strokeStyle = gbCol.accent; ctx.lineWidth = 2 * r.hw * R;
+    ctx.beginPath(); ctx.arc(cx, cy, r.r * R, 0, 2 * Math.PI); ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = gbCol.accent;
+  for (const d of dots) { ctx.beginPath(); ctx.arc(cx + d.x * R, cy + d.y * R, d.r * R, 0, 2 * Math.PI); ctx.fill(); }
+  const body = ctx.createRadialGradient(cx, cy, 0, cx, cy, Rs);
+  body.addColorStop(0, gbCol.a); body.addColorStop(1, gbCol.b);
+  ctx.fillStyle = body; ctx.beginPath(); ctx.arc(cx, cy, Rs, 0, 2 * Math.PI); ctx.fill();
+  ctx.strokeStyle = gbCol.rim; ctx.lineWidth = 1.5; ctx.stroke();
+  ctx.fillStyle = "#1F1E1D";        // the body is light in both themes, so the eyes stay dark in both
+  for (const e of GB_EYES) {
+    const w = GB_EYE_W * Rs, h = Math.max(0.5, GB_EYE_H * eyeH * Rs);
+    ctx.save(); ctx.translate(cx + (e.x + gx) * Rs, cy + (e.y + gy) * Rs); ctx.rotate(e.tilt * Math.PI / 180);
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(-w / 2, -h / 2, w, h, w / 2); else ctx.rect(-w / 2, -h / 2, w, h);   // older browsers: square eyes
+    ctx.fill(); ctx.restore();
+  }
+}
+```
+
+**The loop:**
+
+```js
+let gbRaf = 0, gbHappyUntil = 0, gbErrorUntil = 0;
+const gbReduce = matchMedia("(prefers-reduced-motion: reduce)");
+function gbMode(now) {
+  const busy = gb._ask && gb._ask.busy;
+  if (now < gbHappyUntil) return "happy";
+  if (now < gbErrorUntil) return "error";
+  if (busy === "Thinking…") return "thinking";
+  if (busy === "Speaking…") return "speaking";
+  return "idle";
+}
+function gbFrame(now) {
+  gbRaf = 0;
+  const cv = gb.querySelector("canvas.orb"), s = gbSize(), dpr = window.devicePixelRatio || 1;
+  if (cv.width !== Math.round(s * dpr)) { cv.width = cv.height = Math.round(s * dpr); cv.style.width = cv.style.height = s + "px"; }
+  const ctx = cv.getContext("2d");
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  if (gbReduce.matches) { gbDraw(ctx, s, "idle", 0); return; }      // one still frame: open eyes, no motion
+  gbDraw(ctx, s, gbMode(now), now / 1000 + 2);
+  if (!document.hidden && document.body.classList.contains("can-ask")) gbRaf = requestAnimationFrame(gbFrame);
+}
+function gbKick() { if (!gbRaf) gbRaf = requestAnimationFrame(gbFrame); }
+```
+
+- **Call `gbKick()` from:**
+  - the detection IIFE, after it sets `can-ask`;
+  - `visibilitychange`, when the page becomes visible;
+  - `gbReduce`'s `change`;
+  - a theme change, after `gbColors()`. A theme change is a `MutationObserver` on `document.documentElement`'s `data-theme`, plus `darkQuery`'s `change`.
+  - Under reduced motion, these redraws are the only drawing.
+- **Set the error and happy times:**
+  - `claudeError` and `serverError` set `gbErrorUntil = performance.now() + 2500` (one line each);
+  - a tap on the orb sets `gbHappyUntil = performance.now() + 1000`.
+
+### H.2 Moving it and opening the bubble
+
+```js
+const GB_POS_KEY = "inn514-grokbot-pos", GB_MOVED_KEY = "inn514-grokbot-moved";
+const gb = $("grokbot");          // the panel the ask helpers use: it holds the .orb and every .ask-* element
+let gbPos = null;                 // the orb's top-left corner, in CSS px
+let gbCtx = null;                 // the context the bubble shows: { mode: "chapter", id, i } or { mode: "course" }
+let gbCourse = false;             // "Whole course" chosen on this route
+gb._ask = { hist: [], first: true, ctl: null, busy: "", pending: null };
+function gbSize() { return matchMedia("(max-width: 520px)").matches ? 56 : 72; }
+function gbBounds() {
+  const top = document.querySelector(".topbar").getBoundingClientRect().bottom + 8;
+  const p = document.querySelector(".player").getBoundingClientRect();
+  const bottom = (p.height > 0 ? Math.min(innerHeight, p.top) : innerHeight) - 8;
+  return { top, bottom };
+}
+function gbClamp(pos) {
+  const s = gbSize(), b = gbBounds();
+  return { x: Math.min(Math.max(16, pos.x), innerWidth - s - 16), y: Math.min(Math.max(b.top, pos.y), b.bottom - s) };
+}
+function gbMoveTo(pos) {
+  gbPos = gbClamp(pos);
+  gb.style.left = gbPos.x + "px"; gb.style.top = gbPos.y + "px";
+  if (!gb.querySelector(".gb-bubble").hidden) gbPlace();
+}
+function gbSave() {
+  try { localStorage.setItem(GB_POS_KEY, JSON.stringify(gbPos)); localStorage.setItem(GB_MOVED_KEY, "1"); } catch (e) {}
+  gb.querySelector(".gb-hint").hidden = true;
+}
+function gbStart() {
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(GB_POS_KEY) || "null"); } catch (e) {}
+  const s = gbSize();
+  gbMoveTo(saved && Number.isFinite(saved.x) && Number.isFinite(saved.y) ? saved : { x: innerWidth - s - 16, y: gbBounds().bottom - s });
+  try { gb.querySelector(".gb-hint").hidden = localStorage.getItem(GB_MOVED_KEY) === "1"; } catch (e) {}
+}
+```
+
+- **Wiring** (once, at the end of the script):
+  - `gbStart()` and `gbColors()`;
+  - `addEventListener("resize", () => gbMoveTo(gbPos))`;
+  - `audio.addEventListener("play"…)` and `("pause"…)` also call `gbMoveTo(gbPos)`, because the player's height can change.
+- **Drag:** on the orb button.
+
+```js
+const gbOrb = gb.querySelector(".gb-orb");
+let gbDragged = false;
+gbOrb.addEventListener("pointerdown", (e) => {
+  if (e.button !== 0) return;
+  const sx = e.clientX, sy = e.clientY, start = { ...gbPos };
+  let dragging = false;
+  gbOrb.setPointerCapture(e.pointerId);
+  const move = (ev) => {
+    const dx = ev.clientX - sx, dy = ev.clientY - sy;
+    if (!dragging && Math.hypot(dx, dy) > 6) { dragging = true; gbOrb.classList.add("dragging"); }
+    if (dragging) gbMoveTo({ x: start.x + dx, y: start.y + dy });
+  };
+  const end = () => {
+    gbOrb.removeEventListener("pointermove", move); gbOrb.removeEventListener("pointerup", end); gbOrb.removeEventListener("pointercancel", end);
+    gbOrb.classList.remove("dragging");
+    if (dragging) { gbSave(); gbDragged = true; }       // the click that follows a drag is not a tap
+  };
+  gbOrb.addEventListener("pointermove", move); gbOrb.addEventListener("pointerup", end); gbOrb.addEventListener("pointercancel", end);
+});
+gbOrb.addEventListener("click", () => {
+  if (gbDragged) { gbDragged = false; return; }
+  gbHappyUntil = performance.now() + 1000; gbKick();
+  if (gb.querySelector(".gb-bubble").hidden) gbOpen(); else gbClose();
+});
+gbOrb.addEventListener("keydown", (e) => {
+  const step = e.shiftKey ? 64 : 16;
+  const d = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] }[e.key];
+  if (!d) return;
+  e.preventDefault(); gbMoveTo({ x: gbPos.x + d[0], y: gbPos.y + d[1] }); gbSave();
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !gb.querySelector(".gb-bubble").hidden) { gbClose(); gbOrb.focus(); }
+});
+```
+
+- **Placing the bubble:**
+
+```js
+function gbPlace() {
+  const b = gb.querySelector(".gb-bubble"), s = gbSize(), gap = 12;
+  const w = innerWidth <= 520 ? innerWidth - 32 : Math.min(352, innerWidth - 32);   // 352px = 22rem
+  b.style.width = w + "px";
+  const h = b.offsetHeight, above = gbPos.y - gap - h >= 16;
+  const top = above ? gbPos.y - gap - h : Math.min(gbPos.y + s + gap, innerHeight - h - 16);
+  const mid = gbPos.x + s / 2;
+  const left = Math.min(Math.max(16, mid > innerWidth / 2 ? gbPos.x + s - w : gbPos.x), innerWidth - w - 16);
+  b.style.left = left + "px"; b.style.top = Math.max(16, top) + "px";
+  b.dataset.side = above ? "above" : "below";
+  b.style.setProperty("--tail", Math.min(Math.max(20, mid - left), w - 20) + "px");
+}
+```
+
+- **Opening and closing:**
+
+```js
+function gbOpen() {
+  const b = gb.querySelector(".gb-bubble");
+  b.hidden = false; gbOrb.setAttribute("aria-expanded", "true");
+  openAsk = gb;                   // askServer reads the open panel
+  gbRender(gbContext());
+  gbPlace();
+  // A mouse goes straight to typing; on a touch screen the keyboard waits until the student taps the input.
+  gb.querySelector(matchMedia("(pointer: fine)").matches ? ".ask-input" : ".gb-bubble").focus({ preventScroll: true });
+}
+function gbClose() {
+  stopAsk(gb);
+  gb.querySelector(".gb-bubble").hidden = true; gbOrb.setAttribute("aria-expanded", "false");
+  gb._ask = { hist: [], first: true, ctl: null, busy: "", pending: null };   // work still running sees a new state and stops
+  gbCtx = null; gbCourse = false;
+  if (openAsk === gb) openAsk = null;
+}
+window.addEventListener("hashchange", () => { gbClose(); });     // replaces today's closeAsk(openAsk) line
+```
+
+`gbClose` on a route change also resets "Whole course".
+
+### H.3 Context, rendering and asking
+
+```js
+function gbChapterInView(id) {
+  if (pl === DATA.lectures[id] && !audio.paused) return plIdx;
+  let i = 0;
+  document.querySelectorAll("#view section.chapter").forEach((s, k) => { if (s.getBoundingClientRect().top < innerHeight * 0.4) i = k; });
+  return i;
+}
+function gbContext() {
+  if (viewId && DATA.lectures[viewId] && !gbCourse) return { mode: "chapter", id: viewId, i: gbChapterInView(viewId) };
+  return { mode: "course" };
+}
+const gbSame = (a, b) => !!a && !!b && a.mode === b.mode && a.id === b.id && a.i === b.i;
+function gbRender(ctx) {
+  if (!gbSame(ctx, gbCtx)) {        // a new chapter or mode starts a new conversation
+    stopAsk(gb);
+    gb._ask = { hist: [], first: true, ctl: null, busy: "", pending: null };
+    gb.querySelector(".gb-words").textContent = ""; gb.querySelector(".gb-src").textContent = "";
+  }
+  gbCtx = ctx;
+  const chapter = ctx.mode === "chapter", onLecture = !!(viewId && DATA.lectures[viewId]);
+  const head = gb.querySelector(".gb-head"), sw = gb.querySelector(".gb-switch"), input = gb.querySelector(".ask-input");
+  if (chapter) {
+    const c = entry(ctx.id), ch = DATA.lectures[ctx.id].chapters[ctx.i];
+    head.textContent = "About " + className(c) + ", chapter " + ch.n + ": " + ch.title;
+  } else head.textContent = "About the whole course";
+  sw.hidden = !onLecture; sw.textContent = chapter ? "Whole course" : "This chapter";
+  gb.querySelector(".gb-hello").textContent = chapter
+    ? "Hi, I'm Grokbot. Ask me about this chapter and I'll answer out loud."
+    : "Hi, I'm Grokbot. Ask me anything about the classes or the papers. I'll answer out loud and say where it comes from.";
+  gb.querySelector(".gb-hello").hidden = !!gb.querySelector(".gb-words").textContent;
+  input.placeholder = chapter ? "Ask about this chapter…" : "Ask about any class or paper…";
+  input.setAttribute("aria-label", input.placeholder);
+  gb.querySelector(".ask-chips").hidden = !chapter;
+  gb.querySelector(".ask-note").textContent = askMode === "server"
+    ? (chapter ? SERVER_ASK_NOTE : COURSE_SERVER_NOTE) : (chapter ? DEVICE_ASK_NOTE : COURSE_DEVICE_NOTE);
+  if (!gb.querySelector(".gb-bubble").hidden) gbPlace();
+}
+function caption(panel, text) {         // the words appear part by part as they are spoken
+  const w = panel.querySelector(".gb-words");
+  w.textContent += (w.textContent ? " " : "") + text.trim();
+  w.scrollTop = w.scrollHeight;
+  panel.querySelector(".gb-hello").hidden = true;
+}
+function gbAsk(question, isChip) {
+  const ctx = gbContext();
+  gbRender(ctx);
+  gb.querySelector(".gb-words").textContent = ""; gb.querySelector(".gb-src").textContent = "";
+  if (ctx.mode === "chapter") askSend(ctx.id, ctx.i, gb, question, isChip);
+  else askCourse(gb, question);
+}
+```
+
+- **Wiring** (once):
+  - the chips: `gb.querySelectorAll(".ask-chips button").forEach((b, k) => (b.onclick = () => gbAsk(CHIPS[k][1], true)))`;
+  - the typed question: Ask, or Enter in `.ask-input`, calls `gbAsk(q, false)` and clears the input;
+  - `.gb-switch`: `gbCourse = !gbCourse; gbRender(gbContext());`;
+  - `.gb-close`: `gbClose(); gbOrb.focus();`;
+  - `wirePass(gb, (p) => (p.course ? askCourse(gb, p.question) : askSend(p.id, p.i, gb, p.question, p.isChip)))`.
+- **Captions,** the only edits inside code moved in H1:
+  - in `streamClaudeAnswer`'s `drain`, both `speakSentence` calls pass `() => { onstart(); caption(panel, s); }`, where `s` is the sentence being queued;
+  - in `speakServerAnswer`, call `caption(panel, part)` just before `await playOrbBlob(...)`;
+  - in `serverDevicePart`, the `onStart` also calls `caption(panel, text)`.
+  - The two no-voice paths (`show` in `streamClaudeAnswer` and `serverShowText`) set `.gb-words` to "This device has no voice, so the answer is only written.\n" + the answer. They no longer create `.ask-text`.
+- **`askCourse`** follows the earlier steps, except the first step goes (the bubble is already the open panel), and the server-mode pending question is `st.pending = { question, course: true }`.
+
+### H.4 Course mode: pick, then answer
 
 1. **Pick.** The model gets `PICK_RULES`, the course index, then "Question: " and the question. It replies with a JSON array of at most 2 `{"id": "T4", "chapter": 3}` objects, or `[]`.
    - `chapter` is the chapter's `n` (1-based, as shown in the index), never the array index.
@@ -533,7 +933,7 @@ const COURSE_DEVICE_NOTE = "Answers are written by AI from the course companion'
 - The answer: `askUpstream([{ role: "user", content: <COURSE_RULES + blocks> }, { role: "user", content: question }])`.
 - Replies: `200 {"text": "…", "sources": [{"id": "T4", "chapter": 3}]}`; `200 {"text": NOT_COVERED_EN or NOT_COVERED_ES, "sources": []}` with no second call; an upstream failure in either step gives 429 or 502, exactly as `/api/ask`.
 
-### H.2 Code shape (reuse; never copy a function)
+### H.5 Code shape (reuse; never copy a function)
 
 **H1 is a refactor with no change in behaviour.** In `site/template.html`:
 
@@ -575,66 +975,35 @@ async function speakServerAnswer(panel, text, lang, ctl) { const st = panel._ask
 function wirePass(panel, resend) { /* … */ }   // askToggle: wirePass(panel, (p) => askSend(p.id, p.i, panel, p.question, p.isChip));
 ```
 
-One more H1 change, the only edit inside moved code: in `streamClaudeAnswer`'s `show` and in `serverShowText`, replace `panel.insertBefore(t, status)` (and `panel.insertBefore(t, panel.querySelector(".ask-status"))`) with `status.before(t)`. For a chapter panel the text lands in the same place; in the greet card the status sits inside `.greet-body`, where `insertBefore` on the section would throw.
+One more H1 change, the only edit inside moved code: in `streamClaudeAnswer`'s `show` and in `serverShowText`, replace `panel.insertBefore(t, status)` (and `panel.insertBefore(t, panel.querySelector(".ask-status"))`) with `status.before(t)`. The text lands in the same place, and the code no longer depends on the status being a direct child of the panel. (H5 later replaces both no-voice paths with `.gb-words`.)
 
-**H2 to H5** add, in `site/template.html`:
+**Course-mode helpers** (in `site/template.html`):
 
 ```js
-function courseIndex() { /* H.1 index lines from DATA.catalog then READINGS, joined with "\n" */ }
-function cleanPicks(arr) { /* H.1 cleaning rules; returns [{ id, chapter }] */ }
+function courseIndex() { /* H.4 index lines from DATA.catalog then READINGS, joined with "\n" */ }
+function cleanPicks(arr) { /* H.4 cleaning rules; returns [{ id, chapter }] */ }
 function chapterIndexOf(id, n) { return DATA.lectures[id].chapters.findIndex((ch) => ch.n === n); }
-function courseNote() {
-  const n = document.querySelector(".greet .ask-note");
-  if (n) n.textContent = askMode === "server" ? COURSE_SERVER_NOTE : COURSE_DEVICE_NOTE;
-}
-function showSources(panel, picks) { /* fills p.greet-src: "From " + links joined with "; "; empties it for [] */ }
-function wireCourse(panel) {   // called at the end of renderHome with the greet section
-  panel._ask = { hist: [], first: true, ctl: null, busy: "", pending: null };
-  const input = panel.querySelector(".ask-input");
-  const typed = () => { const q = input.value.trim(); if (q) { input.value = ""; askCourse(panel, q); } };
-  panel.querySelector(".ask-send").onclick = typed;
-  input.onkeydown = (e) => { if (e.key === "Enter") typed(); };
-  wirePass(panel, (p) => askCourse(panel, p.question));
-  courseNote();
-}
-async function askCourse(panel, question) { /* H3 claude mode, H5 server mode; below */ }
+function showSources(panel, picks) { /* fills .gb-src: "From " + links joined with "; "; empties it for [] */ }
+async function askCourse(panel, question) { /* the steps below */ }
 ```
 
 **`askCourse`, step by step:**
-1. `if (openAsk && openAsk !== panel) closeAsk(openAsk); openAsk = panel; startBlink(panel);` so that a route change stops it, as for a chapter panel.
-2. Server mode with no passcode: set `st.pending = { question }`, show the passcode row, focus it, and return (as `askSendServer` does).
-3. Stop anything running (`st.ctl` abort, `speechSynthesis.cancel()`, `orbAudio.pause()`), make a new `AbortController`, set `st.ctl`, clear the sources line, and `serverSetBusy(panel, "Thinking…")`.
-4. **Claude mode:** the pick with `sampleFn.json`. On an error: return if aborted, else `serverClearBusy(panel)` and `claudeError(panel, e)`. If `cleanPicks` is empty: `serverClearBusy(panel)`, then `streamClaudeAnswer` is not called, and the not-covered sentence is spoken with `voiceFor(lang)` and `speakSentence` (text backup if there is no voice). Otherwise `showSources`, then `streamClaudeAnswer(panel, turns, lang, false, null)`.
-5. **Server mode:** `fetch("/api/course", …)` with `signal: ctl.signal`. Not ok: throw an error carrying `status`, and send it to `serverError(panel, e)` (401 also shows the passcode row again). On success: `showSources(panel, out.sources)`, then `await speakServerAnswer(panel, out.text, lang, ctl)`; for `sources: []` the server's not-covered text is spoken the same way.
-6. After every `await`: return if `ctl.signal.aborted` or `panel._ask !== st`.
+1. **Server mode with no passcode:** set `st.pending = { question, course: true }`, show the passcode row, focus it, and return, as `askSendServer` does.
+2. **Start fresh:**
+   - stop anything running: abort `st.ctl`, call `speechSynthesis.cancel()` and `orbAudio.pause()`;
+   - make a new `AbortController` and set it as `st.ctl`;
+   - call `serverSetBusy(panel, "Thinking…")`.
+3. **Claude mode:**
+   - Pick with `sampleFn.json`. On an error, return if aborted, else call `serverClearBusy(panel)` and `claudeError(panel, e)`.
+   - **If `cleanPicks` is empty:** call `serverClearBusy(panel)` and don't call `streamClaudeAnswer`. Speak the not-covered sentence with `voiceFor(lang)` and `speakSentence`, whose `onStart` calls `caption`. With no voice, write it into `.gb-words` after the no-voice line.
+   - **Otherwise:** call `showSources`, then `streamClaudeAnswer(panel, turns, lang, false, null)`.
+4. **Server mode:**
+   - `fetch("/api/course", …)` with `signal: ctl.signal`.
+   - If the reply isn't ok, throw an error carrying `status` and send it to `serverError(panel, e)`. A 401 shows the passcode row again.
+   - On success: `showSources(panel, out.sources)`, then `await speakServerAnswer(panel, out.text, lang, ctl)`. For `sources: []`, the server's not-covered text is spoken the same way.
+5. **After every `await`:** return if `ctl.signal.aborted` or `panel._ask !== st`.
 
-**The greet section's new markup** (H2), inside `.greet-body` after the text paragraph, using the chapter panel's classes so the helpers work unchanged:
-
-```html
-<div class="ask-pass" hidden>
-  <label for="ask-pass-course">Enter the passcode to ask questions</label>
-  <input id="ask-pass-course" type="password" autocomplete="off">
-  <button type="button">OK</button>
-</div>
-<div class="ask-form">
-  <input class="ask-input" type="text" placeholder="Ask about any class or paper…" aria-label="Ask about any class or paper">
-  <button class="ask-send" type="button">Ask</button>
-</div>
-<p class="ask-status" aria-live="polite"></p>
-<p class="greet-src"></p>
-<p class="ask-note"></p>
-<p class="greet-off">Asking isn't switched on in this copy of the site yet.</p>
-```
-
-- **CSS (H2):**
-  - `.greet .ask-pass, .greet .ask-form, .greet .ask-status, .greet .greet-src, .greet .ask-note` show only under `body.can-ask`, with `margin-top: var(--sp-3)` on the form. Keep `.ask-pass[hidden]` working.
-  - `.greet-src` uses `var(--s-1)` and `var(--muted)`; its links use the site's normal link style; it is hidden while empty (`:empty`).
-  - On phones (≤520px), `.greet-body` is already `display: contents`, so each new row needs `grid-column: 1 / -1`.
-  - `p.ask-text` inside the greet uses the panel's existing `.ask-text` style.
-  - No new colours, no shadows, no all caps.
-- **Mode detection:** the detection IIFE calls `courseNote()` after it sets `can-ask`, because the front page can render before detection finishes.
-
-**In `server.js` (H4):**
+**In `server.js` (H7):**
 
 ```js
 // Startup: read PICK_RULES, COURSE_RULES, NOT_COVERED_EN and NOT_COVERED_ES like RULES; if any is
@@ -656,16 +1025,16 @@ function limitsOk(req, kind, cost = 1) {
 
 `/api/course` sits next to `/api/ask` and reuses `readBody`, `bad()` and the reply shapes of `/api/ask`.
 
-### H.3 Tests
+### H.6 Tests
 
-**`scripts/mock_openrouter.mjs` (H4).** A chat call whose first message starts with "You choose where" is a pick:
+**`scripts/mock_openrouter.mjs` (H7).** A chat call whose first message starts with "You choose where" is a pick:
 - if that message contains "nothing-matches", it replies `[]`;
 - if it contains "unknown-pick", it replies `Here you go: [{"id": "T99", "chapter": 1}, {"id": "T4", "chapter": 99}]`;
 - otherwise it replies `[{"id": "T4", "chapter": 3}]`.
 
 Every other chat call still replies "First sentence. Second sentence.".
 
-**`scripts/test_server.mjs` (H4)**, added to the normal run. Send every `/api/course` request with the header `X-Forwarded-For: 203.0.113.50`, so it counts against its own address and the existing "21st call" count is untouched. Count the mock's chat calls before and after each request (`callsFromMock`).
+**`scripts/test_server.mjs` (H7)**, added to the normal run. Send every `/api/course` request with the header `X-Forwarded-For: 203.0.113.50`, so it counts against its own address and the existing "21st call" count is untouched. Count the mock's chat calls before and after each request (`callsFromMock`).
 - `/api/course` without a passcode returns 401.
 - With the passcode, "What is an entrepreneurial ecosystem?" returns 200 with `sources` equal to `[{"id":"T4","chapter":3}]` and `text` equal to the mock answer. The mock saw exactly 2 chat calls for it; the second one's `context` contains "You are a study helper" and `t4.chapters[2].title`.
 - "nothing-matches" returns 200 with `text` equal to `NOT_COVERED_EN` and `sources: []`, and the mock saw exactly 1 chat call.
@@ -675,27 +1044,71 @@ Every other chat call still replies "First sentence. Second sentence.".
 - The cost: give `startServer` an optional third argument of settings merged over its defaults. A separate server started with `{ GROKBOT_RATE_PER_10MIN: "3" }` answers one `/api/course` (200), refuses a second (429, since 2 + 2 > 3), and still answers one `/api/ask` (200). Stop it cleanly.
 - The existing secret checks cover the new replies too.
 
-**`scripts/check_page.mjs` (H6).** Every existing check stays.
-- **Plain file:** the greet form is hidden (`.greet .ask-form` not displayed) and the off line shows.
-- **Claude mock:** the mock's sample function also gets `.json = async (input, opts) => …`. It records `input` and `opts.modelTier` in `window.__lastJson`, and returns `[{id:"P02",chapter:2}]` if `input` contains "trinity", `[]` if it contains "nothing-matches", and `[{id:"T4",chapter:3}]` otherwise. On the front page:
-  - typing "What is an entrepreneurial ecosystem?" and tapping Ask gives `opts.modelTier === "quick"`, a pick input that contains "T4 3:" and "P07 1:", a sources line with one link to `#T4` whose text contains "Class 4, chapter 3", and the answer in `.greet .ask-text` (the mock has no voices);
-  - a question with "trinity" sends a sample whose first turn contains "do not quote";
-  - "nothing-matches" shows `NOT_COVERED_EN` in `.greet .ask-text` and makes no `sample` call.
-- **Server mode** (with `mock_openrouter.mjs`): remove `inn514-grokbot-pass` from `localStorage` first, then on the front page the passcode row shows first; after the passcode, the question reaches `/api/course`, the sources line links `#T4`, and `/api/speak` is called.
-- **Phone, 390px:** no horizontal scroll on the front page with an answer and sources showing; screenshots `checks/phone-home-chat.png` and, in dark mode, `checks/phone-home-chat-dark.png`.
-- **The H1 guard:** before changing anything, H1 saves `chapterContext("T4", 2)` and `chapterContext("P02", 1)` from the built page to `checks/context-before.txt`. A new check compares the built page's output with that file and must match exactly.
+**`scripts/check_page.mjs` (H9).**
+- **What goes and what stays:**
+  - The checks of the per-chapter panels and the greeting card go: the `.ask-btn` and `.ask` panel checks, the panel screenshots and the greet checks.
+  - Every other check stays: the routes, the player, the theme switch, the branding and the no-network rules.
+  - Old screenshots that are no longer made are left in place for Claude to tidy.
+- **The H1 guard:** before changing anything, H1 saves `chapterContext("T4", 2)` and `chapterContext("P02", 1)` from the built page to `checks/context-before.txt`. A check compares the built page's output with that file and must match exactly.
+- **Plain file:**
+  - `#grokbot` is not displayed;
+  - there is no `.ask-btn` and no `.greet` anywhere;
+  - the "Ask" how-to item is hidden.
+- **Claude mock.** The mock's sample function also gets `.json = async (input, opts) => …`. It records `input` and `opts.modelTier` in `window.__lastJson` and returns:
+  - `[{id:"P02",chapter:2}]` if `input` contains "trinity";
+  - `[]` if it contains "nothing-matches";
+  - `[{id:"T4",chapter:3}]` otherwise.
 
-### H.4 Tasks
+  A speech stub gives `speechSynthesis.getVoices()` one `en-GB` voice, and its `speak(u)` calls `u.onstart()` then `u.onend()` at once.
+  - **Always there:** `#grokbot` is displayed on `#home`, `#T4` and `#P02`, and it is the same element after each route change (keep a reference and compare).
+  - **Home:** a click on `.gb-orb` opens `.gb-bubble` with `aria-expanded="true"` and the header "About the whole course". The switch is hidden and the chips are hidden.
+  - **A chapter:**
+    - On `#T4`, scroll `#ch-2` to the top and open the bubble. The header starts "About Class 4, chapter 3" and the switch says "Whole course".
+    - A chip sends a sample whose first turn contains T4 chapter 3's title.
+    - `.gb-words` then holds the mock answer's sentences.
+  - **Whole course:**
+    - After "Whole course", the header is "About the whole course".
+    - Typing "What is an entrepreneurial ecosystem?" and Ask gives `__lastJson.modelTier === "quick"`, and a pick input containing "T4 3:" and "P07 1:".
+    - The sources link `#T4`, and their text contains "Class 4, chapter 3".
+  - **Paper 2:** a course question with "trinity" sends a sample whose first turn contains "do not quote". On `#P02`, a chapter question's first turn contains "do not quote" too.
+  - **Not covered:** "nothing-matches" puts `NOT_COVERED_EN` in `.gb-words` and makes no `sample` call.
+  - **Route change:** going to `#classes` closes the bubble (`hidden`) and leaves `gb._ask.busy` empty.
+- **Dragging** (on `#home`, with the bubble closed). Dispatch `pointerdown`, then `pointermove` 120px left and 80px up, then `pointerup` on `.gb-orb`.
+  - The orb's `left` and `top` moved by that amount, within 1px.
+  - The bubble stayed closed.
+  - `inn514-grokbot-pos` was saved, and `.gb-hint` is hidden.
+  - After a reload, the orb is in the same place.
+  - A `pointerdown`/`pointerup` with no move, then a click, opens the bubble.
+- **Keyboard:**
+  - Focus `.gb-orb`. Enter opens the bubble.
+  - Escape closes it, and `document.activeElement` is the orb.
+  - ArrowLeft moves the orb 16px left.
+- **Clamping:** after `gbMoveTo({ x: -500, y: 99999 })`, the orb is 16px from the left. Its bottom is at least 8px above the player's top once the player shows; start a chapter first.
+- **Server mode** (with `mock_openrouter.mjs`; remove `inn514-grokbot-pass` from `localStorage` first):
+  - the first question shows the passcode row;
+  - after the passcode, a question on `#T4` reaches `/api/ask`, one on `#home` reaches `/api/course`, and `/api/speak` is called;
+  - the sources link `#T4`.
+- **Phone, 390px:**
+  - the canvas is 56px;
+  - the open bubble is 358px wide (390 − 32), with no horizontal scroll;
+  - the orb doesn't overlap the player.
+
+  Screenshots, with the bubble open on `#T4` after an answer: `checks/phone-grokbot.png`, the same in dark mode `checks/phone-grokbot-dark.png`, and at 1280px `checks/desktop-grokbot.png`.
+
+### H.7 Tasks
 
 | Task | What it is |
 |---|---|
-| H1 | Refactor only (H.2): `chapterBlock`, `claudeError`, `streamClaudeAnswer`, `speakServerAnswer`, `wirePass`; the `checks/context-before.txt` guard; full `check_page.mjs` run, ALL PAGE CHECKS PASSED |
-| H2 | The six constants, `courseIndex`, `cleanPicks`, `chapterIndexOf`, `courseNote`, the greet markup and CSS, and `courseNote()` in the detection IIFE |
-| H3 | `showSources`, `wireCourse`, `askCourse` in claude mode, the not-covered sentence |
-| H4 | `server.js`: constants, `blockFor`, `courseIndex`, `cleanPicks`, `langOf`, `askUpstream` options, `limitsOk` cost, `/api/course`; the mock's pick replies; the `test_server.mjs` checks; ALL SERVER CHECKS PASSED |
-| H5 | `askCourse` in server mode (`/api/course`, passcode row, `speakServerAnswer`, errors) |
-| H6 | The `check_page.mjs` front-page checks and screenshots, full run (ALL PAGE CHECKS PASSED), then `build_static.py` |
-| G4 | **STOP GATE G4** |
+| H1 | Refactor only (H.5): `chapterBlock`, `claudeError`, `streamClaudeAnswer`, `speakServerAnswer`, `wirePass`, `status.before(t)`; the `checks/context-before.txt` guard; full `check_page.mjs` run, ALL PAGE CHECKS PASSED |
+| H2 | The shell (H.0): the `#grokbot` markup and CSS, and the "Ask" how-to item. Remove the per-chapter ask buttons and panels, the greet card and everything in H.0's remove list. Add the six constants from H.4 |
+| H3 | The face (H.1): `gbDraw`, `gbColors`, `gbMode`, `gbFrame`, `gbKick`, the theme and visibility hooks, reduced motion, and the error and happy times |
+| H4 | Moving and the bubble (H.2): `gbSize`, `gbBounds`, `gbClamp`, `gbMoveTo`, `gbSave`, `gbStart`, drag, keyboard, `gbPlace`, `gbOpen`, `gbClose`, Escape, the hashchange line |
+| H5 | Context and chapter questions (H.3): `gbChapterInView`, `gbContext`, `gbRender`, `caption`, `gbAsk`, the wiring, the caption edits and the no-voice text |
+| H6 | Course mode in claude mode (H.4, H.5): `courseIndex`, `cleanPicks`, `chapterIndexOf`, `showSources`, `askCourse` |
+| H7 | `server.js` (H.5): constants, `blockFor`, `courseIndex`, `cleanPicks`, `langOf`, `askUpstream` options, `limitsOk` cost, `/api/course`; the mock's pick replies; the `test_server.mjs` checks; ALL SERVER CHECKS PASSED |
+| H8 | Course mode in server mode: `/api/course`, the passcode row (`pending.course`), `speakServerAnswer`, errors |
+| H9 | `check_page.mjs` (H.6), screenshots, full run (ALL PAGE CHECKS PASSED), then `build_static.py` |
+| G4 | **STOP GATE G4** (it also closes G1) |
 
 ---
 
@@ -720,7 +1133,7 @@ Every other chat call still replies "First sentence. Second sentence.".
   - edit `lectures/`, `readings/`, `site/data/`, `site/audio/`, `cache/`, `site/reviewed.json`, `build_site.py`, `build_static.py`, `export_knowledge.py` or any other script;
   - load scripts from the web;
   - write "Claude", "Anthropic" or "xAI" in the template;
-  - use all caps, " · " joins, "→" in link text, or card shadows (the orb's glow is the only exception);
+  - use all caps, " · " joins, "→" in link text, or card shadows (the orb's glow and the Grokbot bubble's shadow, Part H, are the only exceptions);
   - invent wording: use this plan's copy word for word, and list any line you had to add in the report.
 - **Working method:**
   - One task per conversation.
@@ -746,8 +1159,8 @@ Every other chat call still replies "First sentence. Second sentence.".
 | A6b | The light/dark switch in the top bar (plan A.4) |
 | A7 | `check_page.mjs`: the claude mock pass, the server mode pass and the theme switch pass from A.3, screenshots, full run (ALL PAGE CHECKS PASSED), then `build_static.py` |
 | G1 | **STOP GATE G1** |
-| H1–H6 | Part H, the front-page course chat (table in H.4); it comes right after G1 and before B1 |
-| G4 | **STOP GATE G4** |
+| H1–H9 | Part H, Grokbot the floating avatar (table in H.7); it comes right after G1 and before B1 |
+| G4 | **STOP GATE G4** (it also closes G1) |
 | B1 | `sync_knowledge.py` |
 | B2 | Its default run, which must report "pack unchanged" |
 | G2 | **STOP GATE G2** |
@@ -771,11 +1184,24 @@ Every other chat call still replies "First sentence. Second sentence.".
     - a commit and push.
   - **S5:** Canner on Node, your environment variables, and Claude's checks of `/api/health`, 401, MP3 range and 404.
   - **You:** test both places on your phone, then approve G1.
-- **G4:**
-  - **Manifest and checks:** as at G1, plus the `context-before.txt` guard and the new `/api/course` and front-page checks.
-  - **Screenshots:** `phone-home-chat.png` and `phone-home-chat-dark.png`, and the earlier ones unchanged.
-  - **Code review:** H1 moved code without changing it (diff the moved bodies); `/api/course` checks the passcode, the lock and the cost of 2 before any upstream call; the page sends the pick and the answer only to `sample` (claude mode) or `/api/course` and `/api/speak` (server mode); P02 always adds `NO_QUOTE`; no history in the course chat.
+- **G4** (it also closes G1):
+  - **Manifest and checks:** as at G1, plus the `context-before.txt` guard, the new `/api/course` checks and the Grokbot checks.
+  - **Screenshots:** read `phone-grokbot.png`, `phone-grokbot-dark.png` and `desktop-grokbot.png`. Move the old panel and greeting screenshots to the scratchpad quarantine.
+  - **Code review:**
+    - H1 moved code without changing it (diff the moved bodies);
+    - the drag maths and the clamping, including the player and the top bar;
+    - one `requestAnimationFrame` at a time, which stops when the page is hidden and under reduced motion;
+    - `gbClose` gives work still running a new state, so it stops;
+    - `/api/course` checks the passcode, the lock and the cost of 2 before any upstream call;
+    - the page talks only to `sample` (claude mode) or `/api/ask`, `/api/course` and `/api/speak` (server mode);
+    - P02 always adds `NO_QUOTE`.
+  - **Claude's own look:** in the browser pane at 390px and 1280px, in light and dark: drag, tap, both modes, a long answer scrolling in the bubble, and the bubble above and below the orb.
   - **The scan,** then **publish:** commit and push (Canner redeploys) and republish the claude.ai link with `capabilities: {sample: {}}`.
-  - **You:** on both sites, ask "What is upward causation?" and a Spanish question on the front page, then use one chapter orb; approve G4.
+  - **You,** on both sites:
+    - drag Grokbot around;
+    - ask a question on a chapter;
+    - ask "What is upward causation?" on the front page;
+    - ask a Spanish question;
+    - then approve G4.
 - **G2:** `sync_knowledge.py` (no flags) prints "pack unchanged"; at the next content change, `--push`.
 - **G3:** the 12 watch questions, then `check_outbox.py --pull --since <start>`, all PASS; Claude checks the facts; you approve.
