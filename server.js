@@ -205,8 +205,9 @@ function log(req, status, ms) {
 const cleanPass = (s) => String(s || "").trim().replace(/^(["'])(.*)\1$/, "$2");
 function passcodeOk(req) {
   const want = cleanPass(process.env.GROKBOT_PASSCODE);
+  if (!want) return true;                // no passcode set: anyone may ask (the student's choice, 2026-10-24)
   const got = cleanPass(req.headers["x-grokbot-passcode"]);
-  if (!want || !got) return false;
+  if (!got) return false;
   const a = crypto.createHash("sha256").update(String(got)).digest();
   const b = crypto.createHash("sha256").update(String(want)).digest();
   return crypto.timingSafeEqual(a, b);
@@ -352,13 +353,9 @@ const server = http.createServer((req, res) => {
   if (p === "/api/health") {
     return done(200, JSONH, JSON.stringify({
       ok: true,
-      ask: !!(KEY && process.env.GROKBOT_PASSCODE),
-      // Whether each setting is present (never its value), so a missing one can be spotted from outside.
-      key: !!KEY, passcode: !!process.env.GROKBOT_PASSCODE,
-      // TEMPORARY (2026-10-24, while a refused passcode is checked): its length before and after cleaning,
-      // and whether it is only letters, digits and hyphens. Never the value; remove once the passcode works.
-      passcodeShape: process.env.GROKBOT_PASSCODE ? { raw: process.env.GROKBOT_PASSCODE.length,
-        clean: cleanPass(process.env.GROKBOT_PASSCODE).length, plain: /^[A-Za-z0-9-]+$/.test(cleanPass(process.env.GROKBOT_PASSCODE)) } : null,
+      ask: !!KEY,
+      // Whether each setting is present (never its value). The page asks for a passcode only when one is set.
+      key: !!KEY, passcode: !!cleanPass(process.env.GROKBOT_PASSCODE),
       // The NAMES (never the values) of settings that look like ours, to catch a typo or a stray space.
       seen: Object.keys(process.env).filter((k) => /openrouter|grokbot/i.test(k)).map((k) => JSON.stringify(k)).sort(),
       // How the host runs the app (names and NODE_ENV only), to tell a production deploy from a preview.

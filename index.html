@@ -1215,7 +1215,7 @@ function showSources(panel, picks) {
 async function askCourse(panel, question) {
   const st = panel._ask;
   const lang = askLang(question, false);
-  if (askMode === "server" && !serverPass) {
+  if (askMode === "server" && passNeeded && !serverPass) {
     st.pending = { question, course: true };
     const row = panel.querySelector(".ask-pass");
     row.hidden = false;
@@ -1303,7 +1303,7 @@ let sampleFn = null;             // claude mode: the page's "ask" function
     } else if (location.protocol.startsWith("http")) {
       const r = await fetch("/api/health", { signal: AbortSignal.timeout(4000) });
       const h = r.ok ? await r.json() : null;
-      if (h && h.ask) askMode = "server";
+      if (h && h.ask) { askMode = "server"; passNeeded = h.passcode !== false; }
     }
   } catch (e) { askMode = null; }
   document.body.classList.toggle("can-ask", !!askMode);
@@ -1358,6 +1358,7 @@ let orbAudio = null;             // the orb's own audio element (server mode, A6
 const SERVER_ASK_NOTE = "Answers are written by a free AI model from this chapter's text and read aloud by an AI voice. Don't type personal details.";
 const DEVICE_ASK_NOTE = "Answers are written by AI from this chapter's text and read aloud by your device.";
 let serverPass = null;
+let passNeeded = true;           // server mode: false when the server has no passcode set
 try { serverPass = localStorage.getItem("inn514-grokbot-pass") || null; } catch (e) {}
 function forgetServerPass() {
   serverPass = null;
@@ -1620,7 +1621,7 @@ async function askSendServer(id, i, panel, question, isChip) {
   const st = panel._ask;
   if (!st) return;
   st.pending = { id, i, question, isChip };
-  if (!serverPass) {
+  if (passNeeded && !serverPass) {
     const row = panel.querySelector(".ask-pass");
     row.hidden = false;
     row.querySelector("input").focus();

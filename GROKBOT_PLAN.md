@@ -308,6 +308,11 @@ Added at the student's request on 2026-10-23. Without a stored choice, the page 
 
 ## Part S: the Canner Grokbot server (`server.js` at the repo root)
 
+**Changed 2026-10-24, at the student's request: the passcode is optional.**
+- When `GROKBOT_PASSCODE` is unset or empty, anyone may ask. `/api/health` then reports `ask: true, passcode: false`, and the page shows no passcode box.
+- Canner has no passcode set; the free models and the per-IP and daily limits still apply.
+- Setting `GROKBOT_PASSCODE` again (runtime scope) brings the passcode back without a code change.
+
 **Rules for the server:**
 - No dependencies: only `node:http`, `node:fs`, `node:path`, `node:crypto` and the built-in `fetch`.
 - Node 18 or newer.

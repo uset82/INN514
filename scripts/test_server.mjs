@@ -464,6 +464,28 @@ async function run() {
     await stopProcess(server2);
     await stopProcess(mock2);
     check(!isRunning(server2) && !isRunning(mock2), "the cost server and its mock stop cleanly");
+
+    // No passcode set (the student's choice, 2026-10-24): anyone may ask, and health says so.
+    const mock3Port = await getFreePort(), server3Port = await getFreePort();
+    const mock3 = startMock(mock3Port, "");
+    await waitReady(mock3, mock3Port, "/calls", "mock");
+    const server3 = startServer(server3Port, mock3Port, { GROKBOT_PASSCODE: "" });
+    await waitReady(server3, server3Port, "/api/health", "server");
+    const health3 = parseJson(await request(server3Port, "/api/health"));
+    check(health3?.ask === true && health3?.passcode === false, "with no passcode set, health reports ask: true and passcode: false",
+      JSON.stringify({ ask: health3?.ask, passcode: health3?.passcode }));
+    const open = (requestPath, body) => request(server3Port, requestPath, {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+    });
+    const openAsk = await open("/api/ask", { id: "T4", chapter: 2, question: "What is upward causation?", history: [] });
+    check(openAsk.status === 200, "with no passcode set, an ask without a passcode is answered", `status ${openAsk.status}`);
+    const openCourse = await open("/api/course", { question: "What is an entrepreneurial ecosystem?" });
+    check(openCourse.status === 200, "with no passcode set, a course ask without a passcode is answered", `status ${openCourse.status}`);
+    const openSpeak = await open("/api/speak", { text: "Hello there.", lang: "en-GB" });
+    check(openSpeak.status === 200, "with no passcode set, speech without a passcode is returned", `status ${openSpeak.status}`);
+    await stopProcess(server3);
+    await stopProcess(mock3);
+    check(!isRunning(server3) && !isRunning(mock3), "the open server and its mock stop cleanly");
   } catch (error) {
     check(false, "test execution", error?.stack || error?.message || String(error));
   } finally {
