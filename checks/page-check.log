@@ -2,8 +2,10 @@
 [PASS] template has no "·"-joined meta strings
 [PASS] template has no "→" in link or button text
 [PASS] template names neither Claude nor Anthropic in visible content
-[PASS] the H1 guard: chapterContext("T4", 2) is unchanged  page 3509 chars, saved 3509
-[PASS] the H1 guard: chapterContext("P02", 1) is unchanged  page 3811 chars, saved 3811
+[PASS] the H1 guard: chapterContext("T4", 2) is unchanged  page 25464 chars, saved 25464
+[PASS] the H1 guard: chapterContext("P02", 1) is unchanged  page 25766 chars, saved 25766
+[PASS] textLang calls the Spanish greetings and question Spanish, the English question English  {"hola":"es-ES","greeting":"es-ES","explique":"es-ES","question":"en-GB"}
+[PASS] courseOverview names Class 4, Paper 7, Sessions 7 and 8, and every paper in brief  {"class4":true,"paper7":true,"sessions":true,"briefs":17}
 [PASS] an empty hash, #route and #home all show the front page  {"empty":"Innovation systems and sustainable transformation","route":"Innovation systems and sustainable transformation","home":"Innovation systems and sustainable transformation"}
 [PASS] the doors count the classes and the papers from the data  ["8 classes, 2 hours 47 minutes","17 papers, 4 hours 50 minutes"]
   screenshot workspace/lecture-audio/checks/desktop-home.png
@@ -17,7 +19,7 @@
 [PASS] #T1 opens the class with all its chapters  {"stops":7,"sections":7,"h1":"Innovation as systemic and sustainable transformation"}
 [PASS] a plain file hides Grokbot, the ask buttons and the greeting  {"shown":false,"askBtns":0,"greets":0}
 [PASS] the Ask how-to item is hidden in a plain file  false
-[PASS] a chapter plays from its button  {"src":"T1-02.mp3","paused":false,"t":3.364545,"d":188.424}
+[PASS] a chapter plays from its button  {"src":"T1-02.mp3","paused":false,"t":3.37865,"d":188.424}
 [PASS] paragraph highlight follows the audio  {"count":1,"inChapter":"ch-1"}
 [PASS] next chapter starts on its own  {"src":"T1-03.mp3","now":"2"}
 [PASS] finished chapter fills the route and is saved  {"done":true,"fill":58.09375,"saved":{"T1":[1]}}
@@ -40,7 +42,7 @@
 [PASS] the theme button switches colours, label and saved choice  {"start":{"theme":"light","bg":"rgb(250, 249, 245)"},"next":{"theme":"dark","bg":"rgb(38, 38, 36)","label":"Switch to light theme","saved":"dark"}}
 [PASS] the chosen theme survives a reload  {"theme":"dark","bg":"rgb(38, 38, 36)","saved":"dark"}
 [PASS] the second theme click returns to the starting theme  {"theme":"light","bg":"rgb(250, 249, 245)","saved":"light","label":"Switch to dark theme"}
-[PASS] the theme button fits in the phone top bar  {"inner":390,"scroll":390,"left":330,"right":374}
+[PASS] the theme button fits in the phone top bar  {"inner":390,"scroll":390,"left":338.84375,"right":374}
 [PASS] no horizontal scroll at phone width (home)  {"scroll":390,"inner":390}
   screenshot workspace/lecture-audio/checks/phone-home.png
   screenshot workspace/lecture-audio/checks/phone-home-dark.png
@@ -56,6 +58,13 @@
 [PASS] no horizontal scroll at phone width (reading)  {"scroll":390,"inner":390}
   screenshot workspace/lecture-audio/checks/phone-reading.png
   screenshot workspace/lecture-audio/checks/phone-reading-dark.png
+[PASS] at 390px the top bar and the search page have no horizontal scroll  {"inner":390,"scroll":390,"h1":"Search the course","input":true}
+[PASS] "upward causation" lists T4 and P07 chapters with marked matches  {"groups":["Chapters"],"links":["#T4","#P07"],"marks":5}
+  screenshot workspace/lecture-audio/checks/phone-search.png
+  screenshot workspace/lecture-audio/checks/phone-search-dark.png
+[PASS] clicking the first chapter result opens its page at that chapter  {"hash":"#T4","found":true,"top":72}
+[PASS] "Stam" lists Paper 7 under Papers  {"paperNo":"Paper 7","text":"Papers\n          \n            Paper 7\n            \n              Entrepreneurial ecosystem elements\n              Stam & van de Ven 2021\n              20 minutes, 7 chapters\n              \n              \n            \n          "}
+[PASS] a search with no matches shows the no-results sentence  Nothing in the classes or papers matches that. Try a shorter word, or ask Grokbot.
 [PASS] #grokbot is displayed on #home, #T4 and #P02 as the same element  {"gbOnHome":{"shown":true,"same":true},"gbOnT4":{"shown":true,"same":true},"gbOnP02":{"shown":true,"same":true}}
 [PASS] on the front page the bubble opens in course mode, switch and chips hidden  {"open":true,"expanded":"true","head":"About the whole course","switchHidden":true,"chipsHidden":true}
 [PASS] on #T4 with chapter 3 on screen the bubble heads that chapter with a Whole course switch  {"head":"About Class 4, chapter 3: Two models of the ecosystem","switch":"Whole course"}
@@ -64,13 +73,19 @@
 [PASS] "Whole course" switches the bubble to course mode
 [PASS] a course question picks with the quick model over the whole index  {"tier":"quick","pick":true}
 [PASS] the course answer names its source  {"href":"#T4","text":"Class 4, chapter 3: Two models of the ecosystem"}
+[PASS] "hola" answers from the course overview with the Spanish greeting  {"words":"¡Hola! Soy Grokbot. ¿En qué te ayudo?","sampleCount":1}
+[PASS] the Spanish answer is spoken with a Spanish voice  [{"text":"¡Hola!","lang":"es-ES","voice":"es-ES"},{"text":"Soy Grokbot.","lang":"es-ES","voice":"es-ES"},{"text":"¿En qué te ayudo?","lang":"es-ES","voice":"es-ES"}]
+[PASS] "Read again" is visible after the answer  flex
+  screenshot workspace/lecture-audio/checks/phone-grokbot-hola.png
+[PASS] "Read again" speaks the answer again with no new model call  {"uttBefore":3,"replay":{"utter":6,"samples":1}}
+[PASS] with only an English voice, a Spanish answer still speaks with lang es-ES and voice null  [{"text":"¡Hola!","lang":"es-ES","voice":null},{"text":"Soy Grokbot.","lang":"es-ES","voice":null},{"text":"¿En qué te ayudo?","lang":"es-ES","voice":null}]
 [PASS] a course question picked as Paper 2 sends the do-not-quote rule
 [PASS] a chapter question on #P02 sends the do-not-quote rule too
-[PASS] "nothing-matches" answers with the not-covered line and never calls the answer model  {"words":"I couldn't find that in the course companion. Try asking about a class or a paper in other words.","sample":null}
+[PASS] "nothing-matches" still answers from the course overview  {"words":"First sentence. Second sentence.","sources":"From Paper 15, chapter 2: Why agency is distributed, and why it is embedded"}
 [PASS] a route change closes the bubble and leaves no busy state  {"hidden":true,"busy":""}
-[PASS] a drag moves the orb by the dragged amount, saves the place and hides the hint  {"orbPos0":{"left":1192,"top":683,"cx":1228,"cy":719},"orbPos1":{"left":1072,"top":603,"hint":true,"saved":"{\"x\":1072,\"y\":603}","bubble":true}}
-[PASS] after a reload the orb is where the drag left it  {"left":1072,"top":603}
-[PASS] after a touch drag (no click follows it) the next tap opens the bubble  {"tc":{"x":1108,"y":639,"left":1072},"tAfter":{"x":1048,"y":639,"left":1012,"bubble":true},"tTapOpen":true}
+[PASS] a drag moves the orb by the dragged amount, saves the place and hides the hint  {"orbPos0":{"left":892,"top":683,"cx":928,"cy":719},"orbPos1":{"left":772,"top":603,"hint":true,"saved":"{\"x\":772,\"y\":603}","bubble":true}}
+[PASS] after a reload the orb is where the drag left it  {"left":772,"top":603}
+[PASS] after a touch drag (no click follows it) the next tap opens the bubble  {"tc":{"x":808,"y":639,"left":772},"tAfter":{"x":748,"y":639,"left":712,"bubble":true},"tTapOpen":true}
 [PASS] a tap without movement opens the bubble
 [PASS] Escape closes the bubble and puts focus back on the orb  {"hidden":true,"focus":true}
 [PASS] Enter on the focused orb opens the bubble
@@ -82,6 +97,8 @@
 [PASS] server mode calls /api/speak  ["/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech"]
 [PASS] the passcode is saved
 [PASS] a course question on the front page reaches /api/course and cites #T4  {"paths":["/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech","/api/v1/chat/completions","/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech"],"courseSrc":{"href":"#T4","text":"Class 4, chapter 3: Two models of the ecosystem"}}
+[PASS] a course question sends an array of hits to /api/course  {"question":"What is an entrepreneurial ecosystem?","hits":[{"id":"T4","chapter":5},{"id":"T4","chapter":4},{"id":"T4","chapter":7}]}
+[PASS] "Read again" replays the server voice with no new /api/speak request  {"replayShown":true,"before":4,"after":4}
 [PASS] on a phone the orb is 56px and the open bubble 358px wide with no horizontal scroll  {"cv":56,"bw":358,"inner":390,"scroll":390,"orbBottom":699,"playerTop":707,"saved":null,"pos":{"x":318,"y":643},"gTop":643,"gH":56,"btnTop":643,"btnBottom":699,"pTop":707,"pH":137,"side":"above","bTop":306,"bBottom":631}
 [PASS] the phone orb does not overlap the player  {"cv":56,"bw":358,"inner":390,"scroll":390,"orbBottom":699,"playerTop":707,"saved":null,"pos":{"x":318,"y":643},"gTop":643,"gH":56,"btnTop":643,"btnBottom":699,"pTop":707,"pH":137,"side":"above","bTop":306,"bBottom":631}
   screenshot workspace/lecture-audio/checks/phone-grokbot.png

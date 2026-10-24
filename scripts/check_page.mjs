@@ -116,6 +116,20 @@ try {
     !!ctxNow && ctxNow.p02 === saved['chapterContext("P02", 1)'],
     ctxNow ? `page ${ctxNow.p02.length} chars, saved ${(saved['chapterContext("P02", 1)'] || '').length}` : 'no value');
 
+  // ---- language detection and the course overview (D.7)
+  const langs = await ev(`({hola: textLang("hola"), greeting: textLang("Hola, ¿qué tal?"),
+    explique: textLang("explica el concepto"), question: textLang("What is upward causation?")})`);
+  check('textLang calls the Spanish greetings and question Spanish, the English question English',
+    langs && langs.hola === 'es-ES' && langs.greeting === 'es-ES' && langs.explique === 'es-ES' && langs.question === 'en-GB',
+    JSON.stringify(langs));
+  const overview = await ev(`(() => { const s = courseOverview(); return {
+    class4: s.includes("Class 4 (Session 4, 28 September), taught by Nora Geirsdotter Bækkelund"),
+    paper7: s.includes("Paper 7: Stam & van de Ven (2021)"), sessions: s.includes("Sessions 7 and 8"),
+    briefs: (s.match(/In brief:/g) || []).length}; })()`);
+  check('courseOverview names Class 4, Paper 7, Sessions 7 and 8, and every paper in brief',
+    overview && overview.class4 && overview.paper7 && overview.sessions && overview.briefs === 17,
+    JSON.stringify(overview));
+
   // ---- the front page, from an empty hash, #route and #home
   // The student removed the "unofficial study aid" line from the front page on 2026-10-23.
   const front = `(() => ({h1: document.querySelector('h1')?.textContent,
@@ -363,29 +377,81 @@ try {
     await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'light' }] });
   }
 
+  // ---- the search page (plain file): local, no AI, from the data (D.7)
+  await go('search');
+  const searchPhone = await ev(`({inner: innerWidth, scroll: document.documentElement.scrollWidth,
+    h1: document.querySelector('h1')?.textContent, input: !!document.getElementById('searchInput')})`);
+  check('at 390px the top bar and the search page have no horizontal scroll',
+    searchPhone.inner === 390 && searchPhone.scroll <= 390 && searchPhone.h1 === 'Search the course' && searchPhone.input,
+    JSON.stringify(searchPhone));
+  const searchFor = async (q) => {
+    await ev(`(() => { const i = document.getElementById('searchInput'); i.value = ${JSON.stringify(q)};
+      i.dispatchEvent(new Event('input')); })()`);
+    await sleep(400);
+  };
+  await searchFor('upward causation');
+  const hits = await ev(`(() => ({chapters: [...document.querySelectorAll('#searchResults a[data-chapter]')].map((a) => ({href: a.getAttribute('href'), i: a.dataset.chapter})),
+    links: [...new Set([...document.querySelectorAll('#searchResults a[data-chapter]')].map((a) => a.getAttribute('href')))],
+    marks: document.querySelectorAll('#searchResults mark').length,
+    groups: [...document.querySelectorAll('#searchResults h2')].map((h) => h.textContent)}))()`);
+  check('"upward causation" lists T4 and P07 chapters with marked matches',
+    hits.groups.includes('Chapters') && hits.links.includes('#T4') && hits.links.includes('#P07') && hits.marks > 0,
+    JSON.stringify({groups: hits.groups, links: hits.links, marks: hits.marks}));
+  await shot('phone-search.png');
+  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'dark' }] });
+  await sleep(400); await shot('phone-search-dark.png');
+  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'light' }] });
+  const firstHit = hits.chapters[0];
+  await ev(`document.querySelector('#searchResults a[data-chapter]').click()`); await sleep(900);
+  const chapterAt = await ev(`(() => { const el = document.getElementById('ch-${firstHit.i}');
+    return {hash: location.hash, found: !!el, top: el ? Math.round(el.getBoundingClientRect().top) : null}; })()`);
+  check('clicking the first chapter result opens its page at that chapter',
+    chapterAt.hash === firstHit.href && chapterAt.found && chapterAt.top >= -5 && chapterAt.top < 120, JSON.stringify(chapterAt));
+  await go('search');
+  await searchFor('Stam');
+  const stam = await ev(`(() => { const sec = [...document.querySelectorAll('#searchResults section')].find((s) => s.querySelector('h2')?.textContent === 'Papers');
+    return {paperNo: sec?.querySelector('.paper-no')?.textContent || '', text: sec?.textContent || ''}; })()`);
+  check('"Stam" lists Paper 7 under Papers', stam.paperNo === 'Paper 7' && stam.text.includes('Stam'), JSON.stringify(stam));
+  await searchFor('zzqx');
+  const none = await ev(`document.querySelector('#searchResults .lede')?.textContent || ''`);
+  check('a search with no matches shows the no-results sentence',
+    none.includes('Nothing in the classes or papers matches that'), none);
+
   // ---- claude mock pass: Grokbot on every page, chapter and course questions, drag, keyboard
   await send('Emulation.setDeviceMetricsOverride', { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
   await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'light' }] });
   const mockPage = await send('Page.addScriptToEvaluateOnNewDocument', { source: `(() => {
     window.__sampleMode = 'ok'; window.__lastSample = null; window.__lastJson = null;
+    window.__sampleCount = 0; window.__utterances = [];
+    window.__voices = [{ lang: 'es-ES', name: 'Test ES voice' }, { lang: 'en-GB', name: 'Test EN voice' }];
     if (window.speechSynthesis) {
-      window.speechSynthesis.getVoices = () => [{ lang: 'en-GB', name: 'Test EN voice' }];
+      window.speechSynthesis.getVoices = () => window.__voices;
       // A fake utterance: the real one refuses the stub's plain-object voice.
       window.SpeechSynthesisUtterance = class { constructor(text) { this.text = String(text); } };
-      window.speechSynthesis.speak = (u) => { if (u.onstart) u.onstart(); if (u.onend) u.onend(); };
+      window.speechSynthesis.speak = (u) => {
+        window.__utterances.push({ text: u.text, lang: u.lang, voice: u.voice ? u.voice.lang : null });
+        if (u.onstart) u.onstart(); if (u.onend) u.onend();
+      };
       window.speechSynthesis.cancel = () => {};
     }
     window.claude = { use: async (name) => {
       const sample = async (turns, opts) => {
+        window.__sampleCount++;
         window.__lastSample = turns;
         const mode = window.__sampleMode || 'ok';
         if (mode !== 'ok') throw Object.assign(new Error(mode), {code: mode});
+        const last = String(turns.at(-1)?.content || '').trim().toLowerCase();
+        if (last === 'hola') {
+          opts.onText({delta: '¡Hola! Soy Grokbot. '}); opts.onText({delta: '¿En qué te ayudo?'});
+          return;
+        }
         opts.onText({delta: 'First sentence. '}); opts.onText({delta: 'Second sentence.'});
       };
       sample.json = async (input, opts) => {
         window.__lastJson = { input, modelTier: opts && opts.modelTier };
         // The needle is the question: the course index itself names the Paper 2 trinity.
         const q = String(input).split('\\n\\nQuestion: ').pop();
+        if (q.includes('hola')) return [];
         if (q.includes('trinity')) return [{id: 'P02', chapter: 2}];
         if (q.includes('nothing-matches')) return [];
         return [{id: 'T4', chapter: 3}];
@@ -441,6 +507,37 @@ try {
   const src1 = await ev(`(() => { const a = document.querySelector('.gb-src a');
     return {href: a?.getAttribute('href'), text: a?.textContent || ''}; })()`);
   check('the course answer names its source', src1.href === '#T4' && src1.text.includes('Class 4, chapter 3'), JSON.stringify(src1));
+  await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 2, mobile: true });
+  await sleep(500);
+  await ev(`window.__lastSample = null; window.__sampleCount = 0; window.__utterances = [];
+    document.querySelector('.ask-input').value = 'hola'; document.querySelector('.ask-send').click()`);
+  await waitFor(`document.querySelector('.gb-words')?.textContent.includes('¿En qué te ayudo?')`);
+  const hola = await ev(`(() => ({words: document.querySelector('.gb-words')?.textContent || '',
+    sampleCount: window.__sampleCount, sample: window.__lastSample?.[0]?.content || '',
+    utter: window.__utterances.slice(), replay: getComputedStyle(document.querySelector('.gb-replay')).display}))()`);
+  check('"hola" answers from the course overview with the Spanish greeting',
+    hola.words.includes('¡Hola! Soy Grokbot.') && hola.sampleCount === 1
+    && hola.sample.includes('If the student greets you') && hola.sample.includes('The classes, in course order'),
+    JSON.stringify({words: hola.words, sampleCount: hola.sampleCount}));
+  check('the Spanish answer is spoken with a Spanish voice',
+    hola.utter.length > 0 && hola.utter.every((u) => u.lang === 'es-ES') && hola.utter.every((u) => u.voice === 'es-ES'),
+    JSON.stringify(hola.utter));
+  check('"Read again" is visible after the answer', hola.replay !== 'none', hola.replay);
+  await shot('phone-grokbot-hola.png');
+  const samplesBefore = await ev(`window.__sampleCount`);
+  const uttBefore = await ev(`window.__utterances.length`);
+  await ev(`document.querySelector('.gb-replay').click()`); await sleep(400);
+  const replay = await ev(`({utter: window.__utterances.length, samples: window.__sampleCount})`);
+  check('"Read again" speaks the answer again with no new model call',
+    replay.utter > uttBefore && replay.samples === samplesBefore, JSON.stringify({uttBefore, replay}));
+  await ev(`window.__voices = [{ lang: 'en-GB', name: 'Test EN voice' }]; window.__utterances = []`);
+  await ev(`document.querySelector('.gb-replay').click()`); await sleep(400);
+  const fallbackVoice = await ev(`window.__utterances.slice()`);
+  check('with only an English voice, a Spanish answer still speaks with lang es-ES and voice null',
+    fallbackVoice.length > 0 && fallbackVoice.every((u) => u.lang === 'es-ES' && u.voice === null), JSON.stringify(fallbackVoice));
+  await ev(`window.__voices = [{ lang: 'es-ES', name: 'Test ES voice' }, { lang: 'en-GB', name: 'Test EN voice' }]`);
+  await send('Emulation.setDeviceMetricsOverride', { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+  await sleep(500);
   await ev(`window.__lastSample = null; document.querySelector('.ask-input').value = 'trinity';
     document.querySelector('.ask-send').click()`);
   await waitFor(`window.__lastSample?.[0]?.content.includes('do not quote')`);
@@ -455,11 +552,13 @@ try {
   await ev(`document.querySelector('.gb-switch').click()`); await sleep(300);
   await ev(`window.__lastSample = null; window.__lastJson = null;
     document.querySelector('.ask-input').value = 'nothing-matches'; document.querySelector('.ask-send').click()`);
-  await waitFor(`document.querySelector('.gb-words')?.textContent.includes("couldn't find that in the course companion")`);
-  const notCovered = await ev(`({words: document.querySelector('.gb-words')?.textContent || '', sample: window.__lastSample})`);
-  check('"nothing-matches" answers with the not-covered line and never calls the answer model',
-    notCovered.words.includes("I couldn't find that in the course companion. Try asking about a class or a paper in other words.")
-    && notCovered.sample === null, JSON.stringify(notCovered));
+  await waitFor(`window.__lastSample?.[0]?.content.includes('The classes, in course order')`);
+  const fromOverview = await ev(`({words: document.querySelector('.gb-words')?.textContent || '',
+    first: window.__lastSample?.[0]?.content || '', sources: document.querySelector('.gb-src')?.textContent || ''})`);
+  check('"nothing-matches" still answers from the course overview',
+    fromOverview.words.includes('First sentence.') && fromOverview.first.includes('If the student greets you')
+    && fromOverview.first.includes('The classes, in course order'),
+    JSON.stringify({words: fromOverview.words, sources: fromOverview.sources}));
   await go('classes');
   const routeClosed = await ev(`({hidden: document.querySelector('.gb-bubble').hidden,
     busy: document.getElementById('grokbot')._ask.busy})`);
@@ -583,13 +682,16 @@ try {
   check('the passcode is saved', (await ev(`localStorage.getItem('inn514-grokbot-pass')`)) === 'test-pass');
   const chatBefore = mockCalls.filter((c) => c.path === '/api/v1/chat/completions').length;
   await send('Page.navigate', { url: appUrl + '#home' }); await sleep(1200);
+  await ev(`(() => { const f = window.fetch.bind(window); window.__courseBodies = [];
+    window.fetch = (u, o) => { if (String(u) === '/api/course' && o && typeof o.body === 'string') {
+      try { window.__courseBodies.push(JSON.parse(o.body)); } catch (e) {} } return f(u, o); }; })()`);
   await ev(`document.querySelector('.gb-orb').click()`); await sleep(300);
   await ev(`document.querySelector('.ask-input').value = 'What is an entrepreneurial ecosystem?';
     document.querySelector('.ask-send').click()`);
   let courseCalls = [];
   for (let n = 0; n < 100; n++) {
     courseCalls = await (await fetch(`http://127.0.0.1:${mockPort}/calls`)).json();
-    if (courseCalls.some((c) => c.path === '/api/v1/chat/completions' && (c.context || '').startsWith('You choose where'))
+    if (courseCalls.some((c) => c.path === '/api/v1/chat/completions' && (c.context || '').startsWith('You choose which chapters'))
       && courseCalls.filter((c) => c.path === '/api/v1/chat/completions').length > chatBefore + 1) break;
     await sleep(100);
   }
@@ -597,8 +699,24 @@ try {
   const courseSrc = await ev(`(() => { const a = document.querySelector('.gb-src a');
     return {href: a?.getAttribute('href'), text: a?.textContent || ''}; })()`);
   check('a course question on the front page reaches /api/course and cites #T4',
-    courseCalls.some((c) => c.path === '/api/v1/chat/completions' && (c.context || '').startsWith('You choose where'))
+    courseCalls.some((c) => c.path === '/api/v1/chat/completions' && (c.context || '').startsWith('You choose which chapters'))
     && courseSrc.href === '#T4', JSON.stringify({paths: courseCalls.map((c) => c.path), courseSrc}));
+  const courseBody = await ev(`window.__courseBodies[0] || null`);
+  check('a course question sends an array of hits to /api/course',
+    !!courseBody && Array.isArray(courseBody.hits) && typeof courseBody.question === 'string',
+    JSON.stringify(courseBody && {question: courseBody.question, hits: courseBody.hits}));
+  await waitFor(`document.querySelector('.gb-words')?.textContent.includes('Second sentence.')`);
+  await ev(`document.querySelector('.ask-stop')?.click()`); await sleep(300);
+  const speechCount = async () => (await (await fetch(`http://127.0.0.1:${mockPort}/calls`)).json())
+    .filter((c) => c.path === '/api/v1/audio/speech').length;
+  const speechBeforeReplay = await speechCount();
+  const replayShown = await ev(`getComputedStyle(document.querySelector('.gb-replay')).display !== 'none'`);
+  await ev(`document.querySelector('.gb-replay').click()`); await sleep(700);
+  const speechAfterReplay = await speechCount();
+  check('"Read again" replays the server voice with no new /api/speak request',
+    replayShown && speechAfterReplay === speechBeforeReplay,
+    JSON.stringify({replayShown, before: speechBeforeReplay, after: speechAfterReplay}));
+  await ev(`document.querySelector('.ask-stop')?.click()`);
 
   // phone: the 56px orb, the 358px bubble, no horizontal scroll, clear of the player
   await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 2, mobile: true });

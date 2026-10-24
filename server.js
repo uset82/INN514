@@ -30,17 +30,16 @@ const DB = (() => {
     const tpl = fs.readFileSync(path.join(ROOT, "site", "template.html"), "utf8");
     const rules = /^const RULES = (".*");$/m.exec(tpl);
     const noQuote = /^const NO_QUOTE = (".*");$/m.exec(tpl);
+    const noQuoteCourse = /^const NO_QUOTE_COURSE = (".*");$/m.exec(tpl);
     const pickRules = /^const PICK_RULES = (".*");$/m.exec(tpl);
     const courseRules = /^const COURSE_RULES = (".*");$/m.exec(tpl);
-    const notCoveredEn = /^const NOT_COVERED_EN = (".*");$/m.exec(tpl);
-    const notCoveredEs = /^const NOT_COVERED_ES = (".*");$/m.exec(tpl);
-    if (!rules || !noQuote || !pickRules || !courseRules || !notCoveredEn || !notCoveredEs)
-      throw new Error("PICK_RULES, COURSE_RULES or NOT_COVERED_* missing from site/template.html");
+    const aboutText = /^const ABOUT_TEXT = (".*");$/m.exec(tpl);
+    if (!rules || !noQuote || !noQuoteCourse || !pickRules || !courseRules || !aboutText)
+      throw new Error("RULES, NO_QUOTE, NO_QUOTE_COURSE, PICK_RULES, COURSE_RULES or ABOUT_TEXT missing from site/template.html");
     return {
-      catalog: data.catalog, readings: data.readings || [], lectures,
-      rules: JSON.parse(rules[1]), noQuote: JSON.parse(noQuote[1]),
-      pickRules: JSON.parse(pickRules[1]), courseRules: JSON.parse(courseRules[1]),
-      notCoveredEn: JSON.parse(notCoveredEn[1]), notCoveredEs: JSON.parse(notCoveredEs[1]),
+      catalog: data.catalog, readings: data.readings || [], lectures, sessions: data.sessions || [],
+      rules: JSON.parse(rules[1]), noQuote: JSON.parse(noQuote[1]), noQuoteCourse: JSON.parse(noQuoteCourse[1]),
+      pickRules: JSON.parse(pickRules[1]), courseRules: JSON.parse(courseRules[1]), aboutText: JSON.parse(aboutText[1]),
     };
   } catch (e) {
     console.error("startup failed: " + e.message);
@@ -69,7 +68,8 @@ function blockFor(id, i) {
   return "Chapter: " + where + "\n---\n" + body + "\n---";
 }
 function contextFor(id, i) {
-  return DB.rules + (id === "P02" ? DB.noQuote : "") + "\n\n" + blockFor(id, i);
+  return DB.rules + (id === "P02" ? DB.noQuote : "") + DB.noQuoteCourse + "\n\n" + blockFor(id, i)
+    + "\n\nOverview of the whole course:\n" + COURSE_OVERVIEW;
 }
 /* The course index for /api/course's pick step: H.4's lines, classes then papers, built once. */
 const COURSE_INDEX = (() => {
@@ -80,6 +80,24 @@ const COURSE_INDEX = (() => {
     lines.push(`${c.id} ${ch.n}: ${className(c)}, ${c.authors} (${c.year}), ${c.title}; chapter ${ch.n}: ${ch.title}`);
   return lines.join("\n");
 })();
+/* The same overview text as courseOverview on the page, built once. */
+const COURSE_OVERVIEW = (() => {
+  const chs = (id) => DB.lectures[id].chapters.map((ch) => ch.n + " " + ch.title).join("; ");
+  const rows = DB.catalog.map((c) => [c.num === "Bonus" ? 99 : +c.num,
+    `- ${className(c)} (${c.when}), taught by ${c.teacher}: ${c.title}.`
+    + (c.readings && c.readings.length ? ` Its papers: ${c.readings.map((r) => className(entryOf(r))).join(", ")}.` : "")
+    + (DB.lectures[c.id] ? ` Chapters: ${chs(c.id)}.` : "")]);
+  const ss = DB.sessions || [];
+  if (ss.length) rows.push([7, `- Sessions ${ss.map((s) => s.num).join(" and ")} (${ss.map((s) => s.when).join("; ")}), taught by ${[...new Set(ss.map((s) => s.teacher))].join(" and ")}: ${ss[0].title}.`]);
+  rows.sort((a, b) => a[0] - b[0]);
+  const lines = ["About the course: " + DB.aboutText, "The classes, in course order:", ...rows.map((r) => r[1]), "The papers:"];
+  for (const r of DB.readings) {
+    const L = DB.lectures[r.id];
+    lines.push(`- ${className(r)}: ${r.authors} (${r.year}), "${r.title}", ${r.source}. For ${r.lectures.map((l) => className(entryOf(l)).toLowerCase()).join(" and ")}.`
+      + (L ? ` In brief: ${L.chapters[0].paragraphs[0]} Chapters: ${chs(r.id)}.` : ""));
+  }
+  return lines.join("\n");
+})();
 function cleanPicks(arr) {
   const out = [];
   for (const p of (Array.isArray(arr) ? arr : [])) {
@@ -87,11 +105,15 @@ function cleanPicks(arr) {
     if (!Number.isInteger(p.chapter) || !DB.lectures[p.id].chapters.some((ch) => ch.n === p.chapter)) continue;
     if (out.some((q) => q.id === p.id && q.chapter === p.chapter)) continue;
     out.push({ id: p.id, chapter: p.chapter });
-    if (out.length === 2) break;
+    if (out.length === 3) break;
   }
   return out;
 }
-const langOf = (q) => (/[¿¡ñáéíóú]/i.test(q) || ["qué", "cómo", "por", "porque", "el", "la", "los", "las", "es", "de", "del", "una"].filter((w) => new RegExp("\\b" + w + "\\b", "i").test(q)).length >= 2 ? "es-ES" : "en-GB");
+function mergePicks(picks, hits) {   // the model's picks first, then the search's, at most 4
+  const out = [];
+  for (const p of [...picks, ...hits]) if (out.length < 4 && !out.some((q) => q.id === p.id && q.chapter === p.chapter)) out.push(p);
+  return out;
+}
 
 /* ---------- the OpenRouter call (S2) ---------- */
 const BASE = process.env.OPENROUTER_BASE || "https://openrouter.ai/api/v1";
@@ -276,26 +298,28 @@ const server = http.createServer((req, res) => {
       try { body = JSON.parse(raw.toString("utf8")); } catch (e) { return done(400, JSONH, JSON.stringify({ error: "bad_request" })); }
       const question = body.question;
       if (typeof question !== "string" || question.length < 1 || question.length > 500) return done(400, JSONH, JSON.stringify({ error: "bad_request" }));
-      // The pick: the model answers with a JSON array of at most two chapters, best first.
+      if (body.hits !== undefined && (!Array.isArray(body.hits) || body.hits.length > 3)) return done(400, JSONH, JSON.stringify({ error: "bad_request" }));
+      const hits = cleanPicks(body.hits || []);
+      // The pick: the model answers with a JSON array of at most three chapters, best first.
       askUpstream([{ role: "user", content: DB.pickRules + "\n\n" + COURSE_INDEX + "\n\nQuestion: " + question }],
         { max_tokens: 600, temperature: 0 }).then((pick) => {
-        if (pick.error) return done(pick.error, JSONH, JSON.stringify({ error: pick.error === 429 ? "rate_limited" : "upstream" }));
-        const m = /\[[\s\S]*?\]/.exec(pick.text);
-        let parsed;
-        try { parsed = JSON.parse(m[0]); } catch (e) {}
-        const picks = cleanPicks(parsed);
-        if (!picks.length) {
-          const text = langOf(question) === "es-ES" ? DB.notCoveredEs : DB.notCoveredEn;
-          return done(200, JSONH, JSON.stringify({ text, sources: [] }));
+        // A pick error is not fatal: the overview and any search hits still answer.
+        let picks = [];
+        if (!pick.error) {
+          const m = /\[[\s\S]*?\]/.exec(pick.text);
+          let parsed;
+          try { parsed = JSON.parse(m[0]); } catch (e) {}
+          picks = cleanPicks(parsed);
         }
-        const blocks = picks.map((p) => blockFor(p.id, DB.lectures[p.id].chapters.findIndex((ch) => ch.n === p.chapter))).join("\n\n");
+        const chosen = mergePicks(picks, hits);
+        const blocks = chosen.map((p) => "\n\n" + blockFor(p.id, DB.lectures[p.id].chapters.findIndex((ch) => ch.n === p.chapter))).join("");
         const messages = [
-          { role: "user", content: DB.courseRules + (picks.some((p) => p.id === "P02") ? DB.noQuote : "") + "\n\n" + blocks },
+          { role: "user", content: DB.courseRules + DB.noQuoteCourse + "\n\n" + COURSE_OVERVIEW + blocks },
           { role: "user", content: question },
         ];
         askUpstream(messages).then((out) => {
           if (out.error) return done(out.error, JSONH, JSON.stringify({ error: out.error === 429 ? "rate_limited" : "upstream" }));
-          done(200, JSONH, JSON.stringify({ text: out.text, sources: picks }));
+          done(200, JSONH, JSON.stringify({ text: out.text, sources: chosen }));
         }).catch(() => done(502, JSONH, JSON.stringify({ error: "upstream" })));
       }).catch(() => done(502, JSONH, JSON.stringify({ error: "upstream" })));
     });

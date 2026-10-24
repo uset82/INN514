@@ -85,9 +85,9 @@ const server = http.createServer((req, res) => {
       reply(res, 500, { "Content-Type": "application/json" }, JSON.stringify({ error: "mock_failure" }));
       return;
     }
-    // A course pick: the first message starts with the pick rules (H6).
-    if (chat && firstMessage.startsWith("You choose where")) {
-      const pick = firstMessage.includes("nothing-matches") ? "[]"
+    // A course pick: the first message starts with the pick rules (D.6).
+    if (chat && firstMessage.startsWith("You choose which chapters")) {
+      const pick = (firstMessage.includes("hola") || firstMessage.includes("who teaches") || firstMessage.includes("nothing-matches")) ? "[]"
         : firstMessage.includes("unknown-pick") ? 'Here you go: [{"id": "T99", "chapter": 1}, {"id": "T4", "chapter": 99}]'
         : '[{"id": "T4", "chapter": 3}]';
       reply(res, 200, { "Content-Type": "application/json" }, JSON.stringify({

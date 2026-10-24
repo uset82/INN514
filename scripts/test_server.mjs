@@ -318,8 +318,10 @@ async function run() {
     let calls = await callsFromMock(mockPort);
     let chat = lastCall(calls, CHAT_PATH);
     check(chat?.authOk === true, "ask upstream uses the test-key auth header");
-    check(Boolean(chat?.messages?.[0]?.content.includes("You are a study helper")),
-      "ask prompt begins with the study-helper rules");
+    check(Boolean(chat?.context.includes("You are Grokbot") &&
+      chat?.context.includes("Overview of the whole course:") &&
+      chat?.context.includes("taught by Nora Geirsdotter Bækkelund")),
+      "ask prompt begins with the Grokbot rules and the whole-course overview");
     check(Boolean(chat?.context.includes(t4.chapters[2].title)),
       "ask prompt contains the T4 chapter title");
 
@@ -403,10 +405,8 @@ async function run() {
     const other = await guess(TEST_PASS, "192.0.2.44");
     check(other.status === 200, "another address with the right passcode still gets an answer", `status ${other.status}`);
 
-    // ---- /api/course (H7): the pick, then the answer, on its own X-Forwarded-For address
-    const tpl = await fs.readFile(path.join(ROOT, "site", "template.html"), "utf8");
-    const notCoveredEn = JSON.parse(/^const NOT_COVERED_EN = (".*");$/m.exec(tpl)[1]);
-    const notCoveredEs = JSON.parse(/^const NOT_COVERED_ES = (".*");$/m.exec(tpl)[1]);
+    // ---- /api/course (D6): the pick, the hits, then the answer, on its own X-Forwarded-For address
+    const p07 = await fs.readFile(path.join(ROOT, "site", "data", "P07.json"), "utf8").then(JSON.parse);
     const course = (body, passcode = TEST_PASS) => request(serverPort, "/api/course", {
       method: "POST",
       headers: { "Content-Type": "application/json", "X-Forwarded-For": "203.0.113.50",
@@ -423,19 +423,35 @@ async function run() {
     const chatsAfter = (await callsFromMock(mockPort)).filter((c) => c.path === CHAT_PATH);
     check(chatsAfter.length - chatsBefore === 2, "the course answer made exactly two upstream chat calls",
       `${chatsAfter.length - chatsBefore}`);
-    check(chatsAfter[1]?.context.includes("You are a study helper") && chatsAfter[1]?.context.includes(t4.chapters[2].title),
+    check(chatsAfter[chatsBefore + 1]?.context.includes("You are Grokbot") &&
+      chatsAfter[chatsBefore + 1]?.context.includes(t4.chapters[2].title),
       "the course answer's prompt holds the course rules and the picked chapter");
-    const nothing = await course({ question: "nothing-matches" });
-    check(nothing.status === 200 && nothing.json?.text === notCoveredEn && nothing.json?.sources?.length === 0,
-      "an empty pick returns the English not-covered line with no sources", `status ${nothing.status}`);
-    check((await callsFromMock(mockPort)).filter((c) => c.path === CHAT_PATH).length === chatsAfter.length + 1,
-      "the not-covered course answer made exactly one upstream chat call");
-    const spanishCourse = await course({ question: "¿Qué es nothing-matches?" });
-    check(spanishCourse.status === 200 && spanishCourse.json?.text === notCoveredEs,
-      "a Spanish not-covered question gets the Spanish line", `status ${spanishCourse.status}`);
-    const unknownPick = await course({ question: "unknown-pick" });
-    check(unknownPick.status === 200 && unknownPick.json?.text === notCoveredEn && unknownPick.json?.sources?.length === 0,
-      "an invalid pick falls back to the not-covered line with no sources", `status ${unknownPick.status}`);
+    const hola = await course({ question: "hola" });
+    check(hola.status === 200 && hola.json?.text === ANSWER && Array.isArray(hola.json?.sources) && hola.json.sources.length === 0,
+      "a greeting returns the mock answer with no sources", `status ${hola.status}`);
+    const holaCalls = (await callsFromMock(mockPort)).filter((c) => c.path === CHAT_PATH);
+    check(holaCalls.length - chatsAfter.length === 2, "the greeting made exactly two upstream chat calls",
+      `${holaCalls.length - chatsAfter.length}`);
+    check(Boolean(holaCalls.at(-1)?.context.includes("If the student greets you") &&
+      holaCalls.at(-1)?.context.includes("The classes, in course order") &&
+      holaCalls.at(-1)?.context.includes("Paper 7: Stam & van de Ven (2021)") &&
+      holaCalls.at(-1)?.context.includes("do not quote")),
+      "the greeting's answer prompt holds the course rules, the overview and the do-not-quote rule");
+    const withHits = await course({ question: "nothing-matches", hits: [{ id: "P07", chapter: 2 }] });
+    check(withHits.status === 200 && JSON.stringify(withHits.json?.sources) === JSON.stringify([{ id: "P07", chapter: 2 }]),
+      "search hits survive an empty pick", `status ${withHits.status}, sources ${JSON.stringify(withHits.json?.sources)}`);
+    const hitCalls = (await callsFromMock(mockPort)).filter((c) => c.path === CHAT_PATH);
+    check(hitCalls.length - holaCalls.length === 2 && hitCalls.at(-1)?.context.includes(p07.chapters[1].title),
+      "the hits answer's prompt contains the P07 chapter 2 title");
+    const badHit = await course({ question: "nothing-matches", hits: [{ id: "T99", chapter: 1 }] });
+    check(badHit.status === 200 && Array.isArray(badHit.json?.sources) && badHit.json.sources.length === 0,
+      "an unknown hit is dropped", `status ${badHit.status}`);
+    const fourHits = await course({ question: "What is an entrepreneurial ecosystem?", hits: [
+      { id: "T4", chapter: 1 }, { id: "T4", chapter: 2 }, { id: "T4", chapter: 3 }, { id: "T4", chapter: 4 },
+    ] });
+    check(fourHits.status === 400, "four hits return 400", `status ${fourHits.status}`);
+    const stringHits = await course({ question: "What is an entrepreneurial ecosystem?", hits: "x" });
+    check(stringHits.status === 400, "a non-array hits value returns 400", `status ${stringHits.status}`);
     const longCourse = await course({ question: "x".repeat(501) });
     check(longCourse.status === 400, "a 501-character course question returns 400", `status ${longCourse.status}`);
 
