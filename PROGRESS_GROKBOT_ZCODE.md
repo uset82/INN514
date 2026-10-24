@@ -175,6 +175,18 @@ Updated by Claude Code on 2026-10-23: the orb now has a claude mode and a server
       10. **`check_page.mjs` bug:** the phone ask pass navigated to the address the tab was already on, so the old panel stayed open, the pass's tap closed it, and the pass read leftover text. It now reloads first, and two new checks require the open panel to be in view before each ask screenshot (61 checks).
     - **Screenshots read** (all, light and dark): the claude and server panels on a phone, and the theme switch in the top bar.
     - **Scan:** no secrets and no email addresses in the 130 files to be published; the Paper 2 overlaps are the same acceptable ones as at G0.
+  - **After the review (2026-10-23/24):**
+    - **The claude.ai link** is version 32, with `capabilities: {sample: {}}`.
+    - **Canner** switched to Node by itself when `package.json` was pushed.
+    - **The Canner variables problem:** Canner does not pass any dashboard variable to the running app. That includes the key and passcode (sensitive, production) and a plain `GROKBOT_TEST` (scope all). `/api/health` now reports, never with values:
+      - whether the key and passcode are present;
+      - the names of matching settings;
+      - `NODE_ENV`, Canner's environment, branch, URL, deployment and commit.
+      - Live: production, `main`, deployment `91ed9c10-51e2-4bfc-a80c-b420aed5b4b5`, 45 settings, none of ours. The student is to raise it with Canner support.
+    - **`.env` support:** `server.js` also reads our settings from a `.env` file if a host provides one.
+    - **Front-page greeting** (at the student's request): a card with the orb pointing to "Ask about this chapter", on both sites. Where asking is off, a muted line says so. Two new page checks (63 in total).
+    - **Phone layout:** a 44px orb beside the heading below 520px.
+    - **Top bar:** the links are back at the right, next to the theme button.
 
 ## Part B: one-command pack sync
 - [ ] B1. `scripts/sync_knowledge.py` (plan Part B)

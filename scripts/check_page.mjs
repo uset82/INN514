@@ -115,6 +115,8 @@ try {
   const old = await ev(front);
   await go('home');
   const home = await ev(front);
+  const greetPlain = await ev(`(() => { const g = document.querySelector('.greet'); const off = g && g.querySelector('.greet-off'); return {orb: !!(g && g.querySelector('.orb')), offShown: !!off && getComputedStyle(off).display !== 'none'}; })()`);
+  check('the front page greets with the orb and says asking is off where nobody can ask', greetPlain.orb && greetPlain.offShown, JSON.stringify(greetPlain));
   const frontOk = (f) => f.h1 === HOME_H1 && f.classes && f.papers;
   check('an empty hash, #route and #home all show the front page',
     frontOk(empty) && frontOk(old) && frontOk(home), JSON.stringify({ empty: empty.h1, route: old.h1, home: home.h1 }));
@@ -361,7 +363,10 @@ try {
       opts.onText({delta: 'First sentence. '}); opts.onText({delta: 'Second sentence.'});
     } };
   })();` });
-  await send('Page.navigate', { url: FILE }); await sleep(1800); await go(FIRST);
+  await send('Page.navigate', { url: FILE }); await sleep(1800);
+  const greetAsk = await ev(`(() => { const g = document.querySelector('.greet'); const off = g && g.querySelector('.greet-off'); return {orb: !!(g && g.querySelector('.orb')), offShown: !!off && getComputedStyle(off).display !== 'none'}; })()`);
+  check('where asking works, the front-page greeting shows the orb without the off line', greetAsk.orb && !greetAsk.offShown, JSON.stringify(greetAsk));
+  await go(FIRST);
   const mockClass = await ev(askVisibility);
   check('the mock makes every class chapter ask button visible',
     mockClass.count === NCH && mockClass.visible === NCH, JSON.stringify(mockClass));

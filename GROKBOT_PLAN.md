@@ -116,6 +116,10 @@ All three answer from the **same course text**.
   - On a 401 reply, the page forgets it and shows "That passcode didn't work."
 - **The orb's states:** idle (blinks every ~5 s while the panel is open), thinking (breathing), speaking (a pulse as each part starts), done, error (one line).
   - Under `prefers-reduced-motion` there is no animation.
+- **Front-page greeting** (added on 2026-10-24 at the student's request; both sites): a card in the front-page hero, after the lede, with the 56px orb.
+  - The heading is "Ask about any chapter".
+  - The text is "Grokbot, the orb on every chapter, answers your questions out loud from that chapter's text. Open a class or a paper and tap **Ask about this chapter**."
+  - Once detection has finished (`body.ask-checked`), and only if asking is unavailable, a muted line says "Asking isn't switched on in this copy of the site yet." It never flickers on the claude.ai link.
 - **No branding:** never write "Claude", "Anthropic" or "xAI" in the template; `check_page.mjs` tests for it.
 
 ### A.1 The orb (a new design of your own; tokens only)

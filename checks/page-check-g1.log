@@ -2,6 +2,7 @@
 [PASS] template has no "·"-joined meta strings
 [PASS] template has no "→" in link or button text
 [PASS] template names neither Claude nor Anthropic in visible content
+[PASS] the front page greets with the orb and says asking is off where nobody can ask  {"orb":true,"offShown":true}
 [PASS] an empty hash, #route and #home all show the front page  {"empty":"Innovation systems and sustainable transformation","route":"Innovation systems and sustainable transformation","home":"Innovation systems and sustainable transformation"}
 [PASS] the doors count the classes and the papers from the data  ["8 classes, 2 hours 47 minutes","17 papers, 4 hours 50 minutes"]
   screenshot workspace/lecture-audio/checks/desktop-home.png
@@ -14,7 +15,7 @@
   screenshot workspace/lecture-audio/checks/desktop-papers.png
 [PASS] #T1 opens the class with all its chapters  {"stops":7,"sections":7,"h1":"Innovation as systemic and sustainable transformation"}
 [PASS] normal file load keeps every ask button hidden  {"count":7,"visible":0}
-[PASS] a chapter plays from its button  {"src":"T1-02.mp3","paused":false,"t":3.418132,"d":188.424}
+[PASS] a chapter plays from its button  {"src":"T1-02.mp3","paused":false,"t":3.366389,"d":188.424}
 [PASS] paragraph highlight follows the audio  {"count":1,"inChapter":"ch-1"}
 [PASS] next chapter starts on its own  {"src":"T1-03.mp3","now":"2"}
 [PASS] finished chapter fills the route and is saved  {"done":true,"fill":58.09375,"saved":{"T1":[1]}}
@@ -53,6 +54,7 @@
 [PASS] no horizontal scroll at phone width (reading)  {"scroll":390,"inner":390}
   screenshot workspace/lecture-audio/checks/phone-reading.png
   screenshot workspace/lecture-audio/checks/phone-reading-dark.png
+[PASS] where asking works, the front-page greeting shows the orb without the off line  {"orb":true,"offShown":false}
 [PASS] the mock makes every class chapter ask button visible  {"count":7,"visible":7}
 [PASS] a chapter tap opens one panel with four chips and an input  {"open":true,"chips":4,"input":1}
 [PASS] a second chapter tap closes the first ask panel  {"firstClosed":true,"secondOpen":true,"openCount":1}
