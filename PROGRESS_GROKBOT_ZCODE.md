@@ -348,6 +348,15 @@ Added by Claude Code on 2026-10-24 after the student's "aprove continue let deep
 - [ ] E2. The four unused note constants and the `.ask-text` and `.ask-note` CSS removed (plan E2); full `check_page.mjs` run ending "ALL PAGE CHECKS PASSED", then `build_static.py`
 - [ ] **STOP GATE G6:** student approved (after Claude Code's review, the push and the claude.ai republish)
 
+## Part F: a faster voice reply (DeepSeek)
+Added by Claude Code on 2026-10-24: the student asked for a faster voice reply ("Yes: plan Part F for DeepSeek with streaming speech, skipping the pick when search finds chapters, and faster model settings. Ask me before changing Canner's model setting to time models."). DeepSeek does Part F after Part E.
+- [ ] F1. `server.js`: settings and helpers, `askUpstream` using them, `askUpstreamStream`, `streamReply`, `answerStream`, `/api/ask` streaming, the `/api/course` restructure (plan F.1)
+- [ ] F2. The mock's streaming and switches, `startMock` settings, the new `test_server.mjs` checks; the run ends "ALL SERVER CHECKS PASSED" (plan F.2)
+- [ ] F3. `serverSpeaker`, `readAnswerStream`, `streamServerAnswer`; `askSendServer` and `askCourse` using them; `askServer` and `speakServerAnswer` removed (plan F.3)
+- [ ] F4. No pick in claude mode when the search finds chapters; "2 to 4 short sentences" in both rules; `checks/context-before.txt` rewritten on purpose (plan F.4)
+- [ ] F5. `check_page.mjs` (plan F.5), full run ending "ALL PAGE CHECKS PASSED", then `build_static.py`
+- [ ] **STOP GATE G7:** student approved (after Claude Code's review, the before-and-after timing on Canner, the model timing only with the student's yes, the push and the claude.ai republish)
+
 ## Part B: one-command pack sync
 - [x] B1. `scripts/sync_knowledge.py` (plan Part B)
   - Evidence (ZCode + GLM 5.3 Flash, 2026-10-24): created per plan Part B. Default mode: checks the hub is a git repo on `main` and that nothing outside `knowledge/` has local changes (stopping with the file list if it does), exports by importing `export_knowledge.main(Path(hub) / "knowledge/inn514")`, prints `git status --short -- knowledge/inn514`, and prints "pack unchanged" when nothing changed. `--commit` adds the `pull --rebase --quiet origin main` first and commits only `knowledge/inn514/` with `knowledge: refresh the INN514 pack (YYYY-MM-DD)`; `--push` implies `--commit` and pushes with one pull-rebase retry, never force-pushing. All git output is scrubbed of URLs that could carry credentials (`https://…@` → `[redacted]@`); unknown flags stop with an error.

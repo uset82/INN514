@@ -1535,7 +1535,416 @@ Before removing each one, search the whole template, `scripts/check_page.mjs` an
 
 ---
 
-## Rules for the executor: ZCode + GLM 5.3 Flash, or DeepSeek for Parts D and E (put verbatim in the kickoff)
+## Part F: a faster voice reply (added 2026-10-24; DeepSeek builds it)
+
+**Why.** Measured on Canner on 2026-10-24, before anything is heard:
+
+| Question | Time |
+|---|---|
+| A chapter question | 11.1 s |
+| An English course question | 14.5 s |
+| A Spanish course question | 38.8 s |
+
+On top of that, the first spoken part takes 3.9 s (English) or 5.2 s (Spanish) for Fish to produce. Three causes:
+1. The server waits for the whole answer before the voice starts.
+2. A course question makes two model calls. The first (choosing chapters) often chose worse than the site's own search: for "upward causation" it picked three Class 5 and Class 3 chapters.
+3. `openrouter/free` sends each question to a random free model, sometimes a slow one.
+
+**The student's decisions (2026-10-24):** stream the speech, skip the pick when the search finds chapters, and use faster model settings. Claude asks the student before changing Canner's model setting to time models (gate G7).
+
+**Unchanged:** the chips, the bubble, search, the overview, Paper 2's rules, the limits' numbers, the non-streamed replies (still used by the tests), and every lecture, paper, audio and data file. The manifest must not change.
+
+### F.1 The server streams answers (task F1, `server.js`)
+
+**Settings and helpers.** Put them right after `VOICE_ES`. Do not use `num()` here, because it is defined further down.
+
+```js
+const PICK_MODELS = (process.env.GROKBOT_PICK_MODELS || "").split(",").map((s) => s.trim()).filter(Boolean);
+const FIRST_TOKEN_MS = Number(process.env.GROKBOT_FIRST_TOKEN_MS) > 0 ? Number(process.env.GROKBOT_FIRST_TOKEN_MS) : 15000;
+/* Optional OpenRouter "reasoning" settings, as JSON (for example {"effort":"low"}); unset means none are sent. */
+const REASONING = (() => {
+  if (!process.env.GROKBOT_REASONING) return null;
+  try { return JSON.parse(process.env.GROKBOT_REASONING); } catch (e) { console.error("GROKBOT_REASONING is not JSON; ignored"); return null; }
+})();
+const upstreamHeaders = () => ({
+  "Authorization": `Bearer ${KEY}`, "Content-Type": "application/json",
+  "HTTP-Referer": "https://inn514.canner.app", "X-Title": "INN514 Course Companion",
+});
+function upstreamBody(model, messages, opts, stream) {
+  const b = { model, messages, max_tokens: opts.max_tokens || 1000, temperature: opts.temperature ?? 0.3 };
+  if (REASONING) b.reasoning = REASONING;
+  if (stream) b.stream = true;
+  return JSON.stringify(b);
+}
+```
+
+**`askUpstream`** keeps its behaviour, with three changes: it loops over `opts.models || MODELS`, sends `headers: upstreamHeaders()`, and sends `body: upstreamBody(model, messages, opts, false)`.
+
+**The streaming call**, below `askUpstream`. It was run against a fake streaming OpenRouter in six cases:
+- a normal answer (first sentence after 0.18 s);
+- a model slow to start (it moves on after `FIRST_TOKEN_MS`);
+- a model that only thinks (it moves on);
+- a 500 (it moves on);
+- 429 from both models (`{error: 429}`);
+- a model that breaks off (what it said stands).
+
+```js
+/* Streams an answer from OpenRouter and calls onSentence for each finished sentence as the model writes it.
+   Models are tried in order: a 429, a 5xx, a network error, no answer text within FIRST_TOKEN_MS, or a reply
+   with no answer text (only thinking) moves on to the next model. Once a model has started answering it
+   keeps the answer; if it breaks off, what it said so far stands. */
+async function askUpstreamStream(messages, onSentence, models = MODELS) {
+  let last429 = false;
+  for (const model of models) {
+    const ctl = new AbortController();
+    const total = setTimeout(() => ctl.abort(), 60000);
+    const first = setTimeout(() => ctl.abort(), FIRST_TOKEN_MS);
+    let text = "", pending = "", started = false;
+    const finish = () => { clearTimeout(first); clearTimeout(total); if (pending.trim()) onSentence(pending.trim()); pending = ""; };
+    try {
+      const r = await fetch(`${BASE}/chat/completions`, {
+        method: "POST", headers: upstreamHeaders(),
+        body: upstreamBody(model, messages, {}, true), signal: ctl.signal,
+      });
+      if (!r.ok) {
+        clearTimeout(first); clearTimeout(total);
+        last429 = r.status === 429;
+        if (r.status !== 429 && r.status < 500) break;
+        continue;
+      }
+      const dec = new TextDecoder();
+      let sse = "";
+      for await (const chunk of r.body) {
+        sse += dec.decode(chunk, { stream: true });
+        let nl;
+        while ((nl = sse.indexOf("\n")) >= 0) {
+          const line = sse.slice(0, nl).trim();
+          sse = sse.slice(nl + 1);
+          if (!line.startsWith("data:")) continue;
+          const data = line.slice(5).trim();
+          if (data === "[DONE]") continue;
+          let delta = "";
+          try { delta = JSON.parse(data)?.choices?.[0]?.delta?.content || ""; } catch (e) {}
+          if (!delta) continue;
+          if (!started) { started = true; clearTimeout(first); }
+          text += delta; pending += delta;
+          const parts = pending.split(/(?<=[.!?])\s+/);
+          pending = parts.pop();
+          for (const s of parts) if (s.trim()) onSentence(s.trim());
+        }
+      }
+      finish();
+      if (text.trim()) return { text: text.trim() };
+      last429 = false;                   // only thinking, no answer: the next model
+    } catch (e) {
+      finish();
+      if (started) return { text: text.trim() };   // broke off mid-answer: keep what was said
+      last429 = false;
+    }
+  }
+  return { error: last429 ? 429 : 502 };
+}
+/* A streamed reply: one JSON object per line ({sources}, {sentence}, {done, text} or {error}).
+   The headers go out with the first line, so an error before any line can still use a normal status. */
+function streamReply(req, res, start) {
+  let open = false;
+  return {
+    send(obj) {
+      if (!open) {
+        open = true;
+        res.writeHead(200, { "Content-Type": "application/x-ndjson; charset=utf-8", "Cache-Control": "no-cache, no-transform",
+          "X-Accel-Buffering": "no", "X-Content-Type-Options": "nosniff" });
+      }
+      res.write(JSON.stringify(obj) + "\n");
+    },
+    get open() { return open; },
+    end() { log(req, 200, Date.now() - start); res.end(); },
+  };
+}
+function answerStream(out, done, messages) {
+  const fail = (code) => {
+    const error = code === 429 ? "rate_limited" : "upstream";
+    if (!out.open) return done(code, JSONH, JSON.stringify({ error }));
+    out.send({ error }); out.end();
+  };
+  askUpstreamStream(messages, (s) => out.send({ sentence: s })).then((r) => {
+    if (r.error) return fail(r.error);
+    out.send({ done: true, text: r.text }); out.end();
+  }).catch(() => fail(502));
+}
+```
+
+**`/api/ask`.** Right after `messages` is built, add `if (body.stream === true) return answerStream(streamReply(req, res, start), done, messages);`. The non-streamed path below it is unchanged.
+
+**`/api/course`** is restructured like this. The guessing lock and the passcode stay first, unchanged.
+
+```js
+    return readBody(req, (err, raw) => {
+      /* unchanged: 413, JSON parse 400, question 1-500 400, hits check 400 */
+      const hits = cleanPicks(body.hits || []);
+      // a question the site's search already placed needs one model call; otherwise the model chooses chapters first
+      if (!limitsOk(req, "ask", hits.length ? 1 : 2)) return done(429, JSONH, JSON.stringify({ error: "rate_limited" }));
+      const answer = (chosen) => {
+        const blocks = chosen.map((p) => "\n\n" + blockFor(p.id, DB.lectures[p.id].chapters.findIndex((ch) => ch.n === p.chapter))).join("");
+        const messages = [
+          { role: "user", content: DB.courseRules + DB.noQuoteCourse + "\n\n" + COURSE_OVERVIEW + blocks },
+          { role: "user", content: question },
+        ];
+        if (body.stream === true) {
+          const out = streamReply(req, res, start);
+          out.send({ sources: chosen });
+          return answerStream(out, done, messages);
+        }
+        askUpstream(messages).then((out) => {
+          if (out.error) return done(out.error, JSONH, JSON.stringify({ error: out.error === 429 ? "rate_limited" : "upstream" }));
+          done(200, JSONH, JSON.stringify({ text: out.text, sources: chosen }));
+        }).catch(() => done(502, JSONH, JSON.stringify({ error: "upstream" })));
+      };
+      if (hits.length) return answer(hits);
+      askUpstream([{ role: "user", content: DB.pickRules + "\n\n" + COURSE_INDEX + "\n\nQuestion: " + question }],
+        { max_tokens: 600, temperature: 0, models: PICK_MODELS.length ? PICK_MODELS : MODELS }).then((pick) => {
+        let picks = [];
+        if (!pick.error) {
+          const m = /\[[\s\S]*?\]/.exec(pick.text);
+          let parsed;
+          try { parsed = JSON.parse(m[0]); } catch (e) {}
+          picks = cleanPicks(parsed);
+        }
+        answer(picks);
+      }).catch(() => answer([]));
+    });
+```
+
+The old `limitsOk(req, "ask", 2)` line before `readBody` goes.
+
+### F.2 Tests for the server (task F2, `scripts/mock_openrouter.mjs`, `scripts/test_server.mjs`)
+
+**The mock:**
+- When a chat request has `stream: true`, it answers `text/event-stream` with three events:
+  1. `data: {"choices":[{"delta":{"content":"First sentence. "}}]}`
+  2. after `MOCK_STREAM_GAP_MS` (default 200), `data: {"choices":[{"delta":{"content":"Second sentence."}}]}`
+  3. `data: [DONE]`
+
+  Each event ends with a blank line.
+- If `body.model === process.env.MOCK_SLOW_MODEL`, the first event waits 3000 ms.
+- If `body.model === process.env.MOCK_THINK_MODEL`, it sends only `data: {"choices":[{"delta":{"reasoning":"thinking"}}]}` and `[DONE]`.
+- Each recorded call also keeps `stream: !!body.stream` and `reasoning: body.reasoning ?? null`.
+- Non-streamed calls, picks and speech are unchanged.
+
+**The test harness.** `startMock(port, failMode, sequence, settings = {})` merges `settings` into the mock's environment.
+
+**New checks in `test_server.mjs`.** Use the `X-Forwarded-For` address `203.0.113.60`, and fresh servers where noted.
+- **Stream, chapter:** `/api/ask` with `stream: true` answers `application/x-ndjson`. Its lines are `{"sentence":"First sentence."}`, `{"sentence":"Second sentence."}` and `{"done":true,"text":"First sentence. Second sentence."}`. The first line arrives at least 120 ms before the second.
+- **Stream, course with hits:** `/api/course` with `stream: true` and `hits: [{"id":"T4","chapter":3}]` starts with `{"sources":[{"id":"T4","chapter":3}]}` and then the sentences. The mock saw exactly **1** chat call, with no pick.
+- **Course without hits:** "nothing-matches" with no hits makes 2 chat calls, a pick and then the answer.
+- **The cost:** on a fresh server with `{ GROKBOT_RATE_PER_10MIN: "2" }`, two course questions with hits get 200 and 200, and a third gets 429. The existing cost-of-2 check, a course question without hits, still passes.
+- **Slow start:** on a fresh server with `{ GROKBOT_FIRST_TOKEN_MS: "500" }` and a fresh mock with `{ MOCK_SLOW_MODEL: <first model> }`, a streamed ask is answered by the second model. The mock's last chat call has the second model's name.
+- **Thinking only:** a fresh mock with `{ MOCK_THINK_MODEL: <first model> }` gives the same result.
+- **Reasoning setting:** on a fresh server with `{ GROKBOT_REASONING: '{"effort":"low"}' }`, the mock's chat call has `reasoning` `{"effort":"low"}`. On the normal server, `reasoning` is `null`.
+- **No model answers:** with every model failing (`MOCK_FAIL` that makes chat calls 500, added to the mock as `MOCK_FAIL=chat500`), a streamed `/api/ask` gets HTTP 502 JSON, not NDJSON.
+- **Everything else** still passes, including the secret checks over the new replies.
+
+### F.3 The page speaks while the answer arrives (task F3, `site/template.html`)
+
+Add these three functions after `serverDevicePart`. The first two were run against simulated audio:
+- 5 sentences make 2–4 voice calls, played in order;
+- a failed part falls back to the device voice;
+- with no voice at all, the whole answer shows as it grows;
+- Stop halts everything.
+
+```js
+/* Speaks an answer while it is still arriving (server mode). The first sentence is sent to the voice
+   at once; after that, whatever has gathered goes as one part each time the previous part's audio has
+   arrived, so a 5-sentence answer usually takes 2 or 3 /api/speak calls. Parts always play in order.
+   If a part's audio fails, the device voice says it; with no voice at all, the answer is shown. */
+function serverSpeaker(panel, ctl) {
+  const st = panel._ask;
+  st.lastBlobs = [];
+  const parts = [];                     // { text, blob: Promise<Blob> } in speaking order
+  let waiting = "", inFlight = 0, ended = false, lang = null, wake = null, all = "", textOnly = false;
+  const poke = () => { if (wake) { const w = wake; wake = null; w(); } };
+  const flush = () => {
+    if (textOnly || !waiting.trim()) return;
+    const text = waiting.trim();
+    waiting = "";
+    if (!lang) lang = textLang(text);
+    inFlight++;
+    const blob = fetch("/api/speak", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Grokbot-Passcode": serverPass },
+      body: JSON.stringify({ text, lang }),
+      signal: ctl.signal,
+    }).then((r) => { if (!r.ok) { const e = new Error("Speak failed"); e.status = r.status; throw e; } return r.blob(); });
+    blob.catch(() => {}).finally(() => { inFlight--; if (waiting.trim()) flush(); else poke(); });
+    parts.push({ text, blob });
+    poke();
+  };
+  const run = (async () => {
+    for (let k = 0; ; k++) {
+      while (k >= parts.length) {
+        if (ended && !waiting.trim() && inFlight === 0 && k >= parts.length) return;
+        await new Promise((res) => { wake = res; });
+        if (ctl.signal.aborted || panel._ask !== st) return;
+      }
+      const { text, blob } = parts[k];
+      if (ctl.signal.aborted || panel._ask !== st) return;
+      try {
+        const b = await blob;
+        st.lastBlobs.push(b);
+        if (ctl.signal.aborted || panel._ask !== st) return;
+        serverSetBusy(panel, "Speaking…");
+        caption(panel, text);
+        await playOrbBlob(panel, b, ctl);
+      } catch (e) {
+        if (ctl.signal.aborted || panel._ask !== st) return;
+        const voice = await voiceFor(lang || textLang(text));
+        if (ctl.signal.aborted || panel._ask !== st) return;
+        if (!voice) {                   // no voice at all: show the whole answer, now and as the rest arrives
+          textOnly = true;
+          serverShowText(panel, all);
+          while (!ended) await new Promise((res) => { wake = res; });
+          return;
+        }
+        serverSetBusy(panel, "Speaking…");
+        await serverDevicePart(panel, text, voice, lang || textLang(text), ctl);
+      }
+    }
+  })();
+  return {
+    add(sentence) {                     // a finished sentence from the stream
+      all += (all ? " " : "") + sentence;
+      if (textOnly) { serverShowText(panel, all); return; }
+      waiting += (waiting ? " " : "") + sentence;
+      if (parts.length === 0 || inFlight === 0) flush();
+    },
+    end() {                             // the stream is over; resolves when everything has been spoken
+      ended = true;
+      if (inFlight === 0) flush();
+      poke();
+      return run.then(() => { if (!ctl.signal.aborted && panel._ask === st) { st.pending = null; serverClearBusy(panel); } });
+    },
+  };
+}
+/* Reads a streamed answer: one JSON object per line ({sources}, {sentence}, {done, text} or {error}). */
+async function readAnswerStream(r, onLine) {
+  const reader = r.body.getReader(), dec = new TextDecoder();
+  let buf = "";
+  for (;;) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buf += dec.decode(value, { stream: true });
+    let nl;
+    while ((nl = buf.indexOf("\n")) >= 0) {
+      const line = buf.slice(0, nl).trim();
+      buf = buf.slice(nl + 1);
+      if (line) onLine(JSON.parse(line));
+    }
+  }
+  if (buf.trim()) onLine(JSON.parse(buf.trim()));
+}
+/* Server mode: asks /api/ask or /api/course with stream: true and speaks each sentence as it arrives.
+   onDone(text) gets the whole answer as soon as the stream ends (the chapter conversation keeps it). */
+async function streamServerAnswer(panel, ctl, url, body, onDone) {
+  const st = panel._ask;
+  const r = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Grokbot-Passcode": serverPass },
+    body: JSON.stringify(Object.assign({}, body, { stream: true })),
+    signal: ctl.signal,
+  });
+  if (!r.ok) { const e = new Error("Ask failed"); e.status = r.status; throw e; }
+  const sp = serverSpeaker(panel, ctl);
+  let failed = null, any = false;
+  await readAnswerStream(r, (m) => {
+    if (ctl.signal.aborted || panel._ask !== st) return;
+    if (m.sources) showSources(panel, m.sources);
+    if (m.sentence) { any = true; sp.add(m.sentence); }
+    if (m.done && onDone) onDone(m.text || "");
+    if (m.error) failed = m.error;
+  });
+  await sp.end();
+  if (failed && !any && !ctl.signal.aborted && panel._ask === st) {
+    const e = new Error("Ask failed"); e.status = failed === "rate_limited" ? 429 : 502; throw e;
+  }
+}
+```
+
+- **`askSendServer`'s `try` block becomes:**
+
+  ```js
+  await streamServerAnswer(panel, ctl, "/api/ask", { id, chapter: i, question, history: st.hist }, (text) => {
+    if (panel._ask !== st) return;
+    st.hist.push({ role: "user", content: question }, { role: "assistant", content: text });
+    st.hist = st.hist.slice(-6);
+    st.first = false;
+  });
+  ```
+
+  Its `const lang = askLang(...)` line goes.
+- **`askCourse`'s server branch** (after `if (askMode !== "server")`) becomes one line: `await streamServerAnswer(panel, ctl, "/api/course", { question, hits: searchHits(question) }, null);`
+- **Remove** `askServer` and `speakServerAnswer`, because nothing calls them any more. `gbReplay` keeps using `st.lastBlobs`, which `serverSpeaker` fills.
+
+### F.4 Fewer and shorter model calls (task F4, `site/template.html`)
+
+- **`askCourse`, claude mode:** pick only when the search found nothing:
+
+  ```js
+  const hits = searchHits(question);
+  let picks = [];
+  if (!hits.length) {        // the search found nothing (often a question in Spanish): the model chooses chapters
+    try {
+      picks = cleanPicks(await sampleFn.json(PICK_RULES + "\n\n" + courseIndex() + "\n\nQuestion: " + question, { modelTier: "quick", signal: ctl.signal, cache: false }));
+    } catch (e) {
+      if (ctl.signal.aborted || panel._ask !== st) return;
+    }
+  }
+  if (ctl.signal.aborted || panel._ask !== st) return;
+  const chosen = mergePicks(picks, hits);
+  ```
+
+  The rest is unchanged.
+- **Shorter answers.** In both `RULES` and `COURSE_RULES`, replace `Otherwise answer in 3 to 6 sentences unless the student asks for more` with `Otherwise answer in 2 to 4 short sentences unless the student asks for more`. Nothing else in them changes.
+- **The H1 guard.** Then rewrite `checks/context-before.txt` from the built page, as in D4, and say so in the evidence.
+
+### F.5 Page checks (task F5, `scripts/check_page.mjs`)
+
+- **Claude mock:**
+  - **"What is upward causation?"** on the front page makes **no** `sample.json` call (`window.__lastJson` stays `null`). Its `sample` first turn contains "Two models of the ecosystem", T4 chapter 3's title.
+  - **"¿Qué es la causalidad ascendente?"** makes a `sample.json` call with `modelTier: "quick"` whose input contains "T4 3:" and "P07 1:". This replaces the old "What is an entrepreneurial ecosystem?" pick check.
+  - **The first turn** of a course `sample` contains "2 to 4 short sentences".
+- **Server mode** (the mock streams):
+  - the chapter question's request body has `stream: true`;
+  - the first `/api/speak` body's `text` is "First sentence.";
+  - `.gb-words` ends as "First sentence. Second sentence.";
+  - at most 2 `/api/speak` calls for that answer;
+  - a course question on `#home` sends `stream: true` and `hits`, and its sources link `#T4`;
+  - "Read again" makes no new `/api/speak` call.
+- Update any other check that relied on the non-streamed server path.
+- **Then** a full run, ALL PAGE CHECKS PASSED, and `build_static.py`.
+
+### F.6 Gate G7 (Claude)
+
+- **Review:** the usual checks, plus a local streamed answer timed with the mock.
+- **Before and after on Canner:** time from asking to the first `sentence` line, for the same three questions as above, and on the phone to the first word heard.
+- **Proxy buffering.** If Canner's proxy holds the stream back (the first line arrives with the last), Claude reports it. The answer still works, only without the speed-up.
+- **Models,** only after the student says yes in chat:
+  - Claude briefly sets `GROKBOT_ANSWER_MODELS` on Canner (runtime scope) to one candidate at a time, redeploys, and times the first sentence for an English and a Spanish question. The candidates are `nvidia/nemotron-3.5-lightning:free`, `google/gemma-4-26b-a4b-it:free`, `thinkingmachines/inkling-small:free`, `google/gemma-4-31b-it:free` and the current two. A second round also tries `GROKBOT_REASONING={"effort":"low"}`.
+  - Then Claude writes the fastest good pair as the default in `server.js`, removes the temporary Canner setting, pushes and reports the numbers.
+
+### F.7 Tasks
+
+| Task | What it is |
+|---|---|
+| F1 | `server.js`: settings and helpers, `askUpstream` using them, `askUpstreamStream`, `streamReply`, `answerStream`, `/api/ask` streaming, the `/api/course` restructure |
+| F2 | `mock_openrouter.mjs` streaming and the switches; `startMock` settings; the new `test_server.mjs` checks; ALL SERVER CHECKS PASSED |
+| F3 | `serverSpeaker`, `readAnswerStream`, `streamServerAnswer`; `askSendServer` and `askCourse` using them; `askServer` and `speakServerAnswer` removed |
+| F4 | Skip the pick in claude mode when the search finds chapters; "2 to 4 short sentences" in both rules; rewrite `checks/context-before.txt` |
+| F5 | `check_page.mjs` (F.5), full run, ALL PAGE CHECKS PASSED, `build_static.py` |
+| G7 | **STOP GATE G7** |
+
+---
+
+## Rules for the executor: ZCode + GLM 5.3 Flash, or DeepSeek for Parts D, E and F (put verbatim in the kickoff)
 
 - **Work only in** `D:/HVL2025/514/workspace/lecture-audio/`.
 - **May edit:** `site/template.html` and `scripts/check_page.mjs`; for Parts H and D also `server.js`, `scripts/mock_openrouter.mjs`, `scripts/test_server.mjs` and `checks/context-before.txt`.
@@ -1588,6 +1997,8 @@ Before removing each one, search the whole template, `scripts/check_page.mjs` an
 | G5 | **STOP GATE G5** |
 | E1–E2 | Part E (DeepSeek), the tidy-up (table in E.3) |
 | G6 | **STOP GATE G6** |
+| F1–F5 | Part F (DeepSeek), the faster voice reply (table in F.7) |
+| G7 | **STOP GATE G7** |
 | B1 | `sync_knowledge.py` |
 | B2 | Its default run, which must report "pack unchanged" |
 | G2 | **STOP GATE G2** |
@@ -1646,5 +2057,13 @@ Before removing each one, search the whole template, `scripts/check_page.mjs` an
   - **Checks:** the manifest is unchanged, and both suites pass in full.
   - **Review:** `/api/health` on a local run shows only `ok`, `ask`, `key`, `passcode` and `voices`; the removed names appear nowhere.
   - **Publish:** the scan, a push, a check that Canner's health has the new shape, and a republish of the claude.ai link.
+- **G7:**
+  - **Checks:** the manifest is unchanged, and both suites pass in full; `context-before.txt` was rewritten on purpose (F4).
+  - **Review:**
+    - the stream code matches F.1 and F.3;
+    - no `/api/speak` storm (at most 2–3 per answer);
+    - Stop and route changes end the stream and the voice.
+  - **Timing:** before and after on Canner (F.6); models only after the student's yes.
+  - **Publish:** the scan, a push and a republish.
 - **G2:** `sync_knowledge.py` (no flags) prints "pack unchanged"; at the next content change, `--push`.
 - **G3:** the 12 watch questions, then `check_outbox.py --pull --since <start>`, all PASS; Claude checks the facts; you approve.
