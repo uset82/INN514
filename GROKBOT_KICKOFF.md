@@ -10,8 +10,8 @@ When the agent writes "STOP GATE G<n>", paste its report into Claude Code and sa
 You are building part of "Grokbot for INN514", a study companion for my master's course, in D:\HVL2025\514\workspace\lecture-audio. You are the executor. Claude Code reviews your work and does every git, publish and deploy step.
 
 READ FIRST, in this order:
-1. workspace/lecture-audio/GROKBOT_PLAN.md: read "Context", "Who does what", the Part of your task (A, S, B or C), and "Rules for ZCode + GLM 5.3 Flash". It is the single spec.
-2. workspace/lecture-audio/PROGRESS_GROKBOT_ZCODE.md. Do ONLY the first unchecked task. If the first unchecked box is a STOP GATE, stop and tell me.
+1. workspace/lecture-audio/GROKBOT_PLAN.md: read "Context", "Who does what", the Part of your task (A, S, H, B or C), and "Rules for ZCode + GLM 5.3 Flash". It is the single spec.
+2. workspace/lecture-audio/PROGRESS_GROKBOT_ZCODE.md. Do ONLY the first unchecked task. If the first unchecked box is a STOP GATE, stop and tell me. The one exception: STOP GATE G1 may stay open while you do Part H, so skip that box and take the first unchecked H task.
 Then show me your task list (3 to 6 short steps) before you start.
 
 DO THE TASK:
@@ -20,8 +20,8 @@ DO THE TASK:
 - When editing site/template.html, read only the section you change (search for it), and change only that section.
 
 YOU MAY:
-- Edit: site/template.html, scripts/check_page.mjs.
-- Create: server.js, package.json, package-lock.json (written by hand), scripts/mock_openrouter.mjs, scripts/test_server.mjs, scripts/sync_knowledge.py, scripts/check_outbox.py, GROKBOT_TEST.md, checks/grokbot_tests.json.
+- Edit: site/template.html, scripts/check_page.mjs; for Part H also server.js, scripts/mock_openrouter.mjs, scripts/test_server.mjs.
+- Create: server.js, package.json, package-lock.json (written by hand), scripts/mock_openrouter.mjs, scripts/test_server.mjs, scripts/sync_knowledge.py, scripts/check_outbox.py, GROKBOT_TEST.md, checks/grokbot_tests.json, checks/context-before.txt.
 - Tick boxes and paste evidence in PROGRESS_GROKBOT_ZCODE.md.
 - Run, from D:/HVL2025/514:
   C:/Python313/python.exe workspace/lecture-audio/scripts/build_site.py
@@ -35,7 +35,7 @@ YOU MAY:
 YOU MUST NOT:
 - Run any git command in any repository (no init, add, commit, push, remote, pull). Claude Code does all git work.
 - Touch D:/Proyectos/watch, except to READ files in grok-watch-hub/knowledge/, grok-watch-hub/inbox/ and grok-watch-hub/outbox/. Never use COM3 or the watch.
-- Publish anything, sign in to Canner, OpenRouter or any website, or run sync_knowledge.py with --commit or --push.
+- Publish anything, sign in to Canner, OpenRouter or any website, or run sync_knowledge.py with --commit or --push. Never run the Canner CLI (canner ...) or create or edit canner.json.
 - Write any real API key or passcode in any file, or call the real OpenRouter. Server tests use only scripts/mock_openrouter.mjs with OPENROUTER_API_KEY=test-key and GROKBOT_PASSCODE=test-pass.
 - Run npm install or any other install. package-lock.json is written by hand, exactly as the plan shows.
 - Edit lectures/, readings/, site/data/, site/audio/, cache/, site/reviewed.json, build_site.py, export_knowledge.py, or any script not listed above.
@@ -48,6 +48,7 @@ YOU MUST NOT:
 AFTER THE TASK:
 - Template tasks (A1 to A6): run build_site.py and paste its first line.
 - Server tasks: S1 to S3, check that `node workspace/lecture-audio/server.js` starts and answers / (stop it afterwards); S4 and later, run test_server.mjs and paste its last lines (it must end "ALL SERVER CHECKS PASSED").
+- Part H: H2, H3 and H5, run build_site.py and paste its first line; H4, run test_server.mjs as above; H1 and H6, run build_site.py, then check_page.mjs until the log ends "ALL PAGE CHECKS PASSED" (H6 also opens phone-home-chat*.png and then runs build_static.py).
 - A7: run check_page.mjs, open every new screenshot it saves (phone-ask*.png and the others), fix what looks wrong, run again until the log ends "ALL PAGE CHECKS PASSED", then run build_static.py.
 - Tick the task's box in PROGRESS_GROKBOT_ZCODE.md and paste the evidence under it: the commands you ran and their output (or the last lines), and the files you changed.
 - Report to me in English: what you changed, the evidence, and any wording you added. Then STOP.

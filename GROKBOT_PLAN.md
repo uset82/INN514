@@ -1,6 +1,6 @@
 # GROKBOT_PLAN: Grokbot for INN514
 
-Written by Claude Code on 2026-10-23 from the plan the student approved, and updated the same day for the Canner Grokbot server. ZCode + GLM 5.3 Flash builds it; Claude Code reviews and publishes it. This file is the single spec: use its code shapes and copy word for word.
+Written by Claude Code on 2026-10-23 from the plan the student approved, updated the same day for the Canner Grokbot server, and on 2026-10-24 for the front-page course chat (Part H). ZCode + GLM 5.3 Flash builds it; Claude Code reviews and publishes it. This file is the single spec: use its code shapes and copy word for word.
 
 Prompt: `GROKBOT_KICKOFF.md`. Progress: `PROGRESS_GROKBOT_ZCODE.md`.
 
@@ -68,7 +68,7 @@ All three answer from the **same course text**.
 - **You:**
   - in Canner, at G1: set the key and passcode, and switch the project to Node if Canner doesn't do it by itself;
   - test on your phone;
-  - approve gates G1–G3 with "APPROVED GATE G<n>".
+  - approve gates G1–G4 with "APPROVED GATE G<n>".
 
 ## Phase 0 and Part R: done
 
@@ -120,6 +120,7 @@ All three answer from the **same course text**.
   - The heading is "Ask about any chapter".
   - The text is "Grokbot, the orb on every chapter, answers your questions out loud from that chapter's text. Open a class or a paper and tap **Ask about this chapter**."
   - Once detection has finished (`body.ask-checked`), and only if asking is unavailable, a muted line says "Asking isn't switched on in this copy of the site yet." It never flickers on the claude.ai link.
+  - **Part H** turns this card into the course chat; its heading and text change there.
 - **No branding:** never write "Claude", "Anthropic" or "xAI" in the template; `check_page.mjs` tests for it.
 
 ### A.1 The orb (a new design of your own; tokens only)
@@ -463,11 +464,246 @@ The executor runs only the default mode (no flags).
 
 ---
 
+## Part H: the front-page course chat (added 2026-10-24; both sites)
+
+The student asked for Grokbot on the front page to be a real chatbot. You ask anything about the course; Grokbot finds the right class or paper chapter, answers out loud, and says where the answer comes from. The chapter orbs stay exactly as they are.
+
+### H.0 What you see
+
+The greeting card (`section.greet`, A.0) becomes the chat. The card, its 56px orb (44px on phones) and its phone layout stay; only its inside changes:
+
+```
+( orb )  Ask Grokbot about the course
+         Ask anything about the classes or the papers. Grokbot finds the right chapter and
+         answers out loud. You can also open any chapter and tap Ask about this chapter.
+         [Enter the passcode to ask questions] [••••••] (OK)     ← server mode only, until a passcode works
+         [ Ask about any class or paper…                ] (Ask)
+         Thinking…  /  Speaking…  (Stop)                        ← status line, aria-live="polite"
+         From Class 4, chapter 3: <title>; Paper 7, chapter 3: <title>    ← links to #T4 and #P07
+         <honesty line for the mode>
+         Asking isn't switched on in this copy of the site yet.  ← only when asking is off (A.0)
+```
+
+- **Copy** (verbatim):
+  - heading: "Ask Grokbot about the course"
+  - text: "Ask anything about the classes or the papers. Grokbot finds the right chapter and answers out loud. You can also open any chapter and tap **Ask about this chapter**."
+  - input placeholder and `aria-label`: "Ask about any class or paper…"
+  - button: "Ask"
+  - sources line: "From " + the links joined with "; ". Each link's text is `<Class 4 | Paper 7 | Bonus class>, chapter <n>: <chapter title>` and its `href` is `#<id>`.
+  - honesty lines: `COURSE_DEVICE_NOTE` (claude mode) and `COURSE_SERVER_NOTE` (server mode), H.1.
+- **When asking is off** (`body:not(.can-ask)`): the passcode row, the form, the status, the sources and the honesty line are all hidden. The rest of the card shows as before, including the "Asking isn't switched on…" line under `body.ask-checked:not(.can-ask)`.
+- **Each question stands alone:** no history, no chips.
+- **Speech and fallbacks** are the chapter panel's:
+  - claude mode: the device voice, sentence by sentence;
+  - server mode: `/api/speak` (Fish or Deepgram), then the device voice, then text;
+  - Stop; the lecture player pauses; a route change (including tapping a source link) stops speech.
+- **Text backup:** the same `p.ask-text` with "This device has no voice, so here is the answer as text."
+
+### H.1 How it answers: pick, then answer
+
+1. **Pick.** The model gets `PICK_RULES`, the course index, then "Question: " and the question. It replies with a JSON array of at most 2 `{"id": "T4", "chapter": 3}` objects, or `[]`.
+   - `chapter` is the chapter's `n` (1-based, as shown in the index), never the array index.
+   - **The index,** one line per chapter, about 154 lines, classes first (`DATA.catalog` order), then papers (`DATA.readings` order):
+     - class: `T4 3: Class 4, Entrepreneurial ecosystems and sustainable transformation; chapter 3: <chapter title>`
+     - paper: `P07 3: Paper 7, Stam & van de Ven (2021), Entrepreneurial ecosystem elements; chapter 3: <chapter title>`
+
+     That is `${id} ${ch.n}: ${className(c)}, ${c.title}; chapter ${ch.n}: ${ch.title}` for a class and `${id} ${ch.n}: ${className(c)}, ${c.authors} (${c.year}), ${c.title}; chapter ${ch.n}: ${ch.title}` for a paper, joined with "\n".
+   - **Cleaning the picks** (`cleanPicks`, the same rules on the page and the server): keep only objects whose `id` is a string with chapters in the data and whose `chapter` is an integer matching some chapter's `n`; drop repeats; keep the first 2.
+2. **Answer.** The model gets one user message: `COURSE_RULES` (plus `NO_QUOTE` when a pick is P02), "\n\n", then each picked chapter's `chapterBlock` joined with "\n\n". A second user message holds the question.
+3. **Nothing picked** (an empty array after cleaning): no second call. Speak `NOT_COVERED_ES` if `askLang(question, false)` is `"es-ES"`, else `NOT_COVERED_EN`, with no sources line.
+
+**New one-line constants in the template**, right after `NO_QUOTE`, each on its own line and in exactly this form (`server.js` reads the first four by regex, like `RULES`):
+
+```js
+const PICK_RULES = "You choose where in the INN514 course companion a student's question is answered. Below is the list of chapters, one per line, as \"ID N: description\". Reply with only a JSON array of at most two objects like {\"id\": \"T4\", \"chapter\": 3} for the chapters most likely to answer the question, best first, or [] if none of them covers it.";
+const COURSE_RULES = "You are a study helper for the master's course INN514, \"Innovation systems and sustainable transformation\". Answer the student's question using only the chapters below from the course companion. Your answer will be read aloud by a speech engine, so write plain spoken sentences: no lists, no headings, no symbols, no brackets. Use 3 to 6 sentences unless the student asks for more. Answer in the language of the student's question. Say which class or paper and which chapter the answer comes from, in words, and give the page when the chapter gives one. If the chapters do not answer the question, say so in one sentence. Never invent authors, numbers, dates or quotations.";
+const NOT_COVERED_EN = "I couldn't find that in the course companion. Try asking about a class or a paper in other words.";
+const NOT_COVERED_ES = "No encontré eso en el compañero del curso. Prueba a preguntarlo de otra forma.";
+const COURSE_SERVER_NOTE = "Answers are written by a free AI model from the course companion's text and read aloud by an AI voice. Don't type personal details.";
+const COURSE_DEVICE_NOTE = "Answers are written by AI from the course companion's text and read aloud by your device.";
+```
+
+**Claude mode** (the claude.ai link):
+- The pick: `await sampleFn.json(PICK_RULES + "\n\n" + courseIndex() + "\n\nQuestion: " + question, { modelTier: "quick", signal: ctl.signal, cache: false })`, then `cleanPicks`.
+- The answer: `streamClaudeAnswer(panel, turns, lang, false, null)` with the turns from step 2.
+
+**Server mode** (Canner): `POST /api/course` with `{"question": "…"}` and the `X-Grokbot-Passcode` header.
+- In this order: `guessingLocked` → 429; `passcodeOk`, else `noteBadPass` and 401; `limitsOk(req, "ask", 2)` → 429; a question that is not a string of 1–500 characters → 400.
+- The pick: `askUpstream([{ role: "user", content: <the pick text, built as in claude mode> }], { max_tokens: 120, temperature: 0 })`. Read the first `[...]` in the reply (`/\[[\s\S]*?\]/`) with `JSON.parse` in try/catch (unreadable means `[]`), then `cleanPicks`.
+- The answer: `askUpstream([{ role: "user", content: <COURSE_RULES + blocks> }, { role: "user", content: question }])`.
+- Replies: `200 {"text": "…", "sources": [{"id": "T4", "chapter": 3}]}`; `200 {"text": NOT_COVERED_EN or NOT_COVERED_ES, "sources": []}` with no second call; an upstream failure in either step gives 429 or 502, exactly as `/api/ask`.
+
+### H.2 Code shape (reuse; never copy a function)
+
+**H1 is a refactor with no change in behaviour.** In `site/template.html`:
+
+```js
+// Split out of chapterContext; chapterContext's output stays byte-for-byte the same.
+function chapterBlock(id, i) {
+  const c = entry(id), ch = DATA.lectures[id].chapters[i], reading = isReading(id);
+  const where = /* the two where lines from today's chapterContext, unchanged */;
+  const body = /* today's body line, unchanged */;
+  return "Chapter: " + where + "\n---\n" + body + "\n---";
+}
+function chapterContext(id, i) {
+  return RULES + (id === "P02" ? NO_QUOTE : "") + "\n\n" + chapterBlock(id, i);
+}
+// The error table from today's askSend catch, moved unchanged (the codes and the six messages).
+function claudeError(panel, e) { const status = panel.querySelector(".ask-status"); /* … */ }
+// Today's askSend body from `const st = panel._ask;` to the end, moved unchanged, except:
+// `turns`, `lang` and `cache` come in as arguments, the history update moves into `onDone`,
+// and the catch's message table becomes `claudeError(panel, e)`.
+function streamClaudeAnswer(panel, turns, lang, cache, onDone) { /* … */ }
+function askSend(id, i, panel, question, isChip) {
+  if (askMode === "server") { askSendServer(id, i, panel, question, isChip); return; }
+  if (askMode !== "claude" || !sampleFn) return;
+  const st = panel._ask;
+  const turns = [{ role: "user", content: chapterContext(id, i) }, ...st.hist, { role: "user", content: question }];
+  streamClaudeAnswer(panel, turns, askLang(question, isChip), isChip && st.first ? undefined : false, (buf) => {
+    st.hist.push({ role: "user", content: question }, { role: "assistant", content: buf });
+    st.hist = st.hist.slice(-6);   // the conversation keeps at most the last 6 turns
+    st.first = false;
+  });
+}
+// Today's askSendServer from `const first = text.match(` to the end of the for loop, plus its last
+// line (`st.pending = null; serverClearBusy(panel);`), moved unchanged; `st` is `panel._ask`.
+async function speakServerAnswer(panel, text, lang, ctl) { const st = panel._ask; /* … */ }
+// askSendServer keeps its start, its history update and its outer try/catch, and calls
+// `await speakServerAnswer(panel, text, lang, ctl);` where the moved code was.
+// The passcode row wiring from askToggle (submitPass and its two handlers), moved unchanged,
+// except that the resend is passed in.
+function wirePass(panel, resend) { /* … */ }   // askToggle: wirePass(panel, (p) => askSend(p.id, p.i, panel, p.question, p.isChip));
+```
+
+One more H1 change, the only edit inside moved code: in `streamClaudeAnswer`'s `show` and in `serverShowText`, replace `panel.insertBefore(t, status)` (and `panel.insertBefore(t, panel.querySelector(".ask-status"))`) with `status.before(t)`. For a chapter panel the text lands in the same place; in the greet card the status sits inside `.greet-body`, where `insertBefore` on the section would throw.
+
+**H2 to H5** add, in `site/template.html`:
+
+```js
+function courseIndex() { /* H.1 index lines from DATA.catalog then READINGS, joined with "\n" */ }
+function cleanPicks(arr) { /* H.1 cleaning rules; returns [{ id, chapter }] */ }
+function chapterIndexOf(id, n) { return DATA.lectures[id].chapters.findIndex((ch) => ch.n === n); }
+function courseNote() {
+  const n = document.querySelector(".greet .ask-note");
+  if (n) n.textContent = askMode === "server" ? COURSE_SERVER_NOTE : COURSE_DEVICE_NOTE;
+}
+function showSources(panel, picks) { /* fills p.greet-src: "From " + links joined with "; "; empties it for [] */ }
+function wireCourse(panel) {   // called at the end of renderHome with the greet section
+  panel._ask = { hist: [], first: true, ctl: null, busy: "", pending: null };
+  const input = panel.querySelector(".ask-input");
+  const typed = () => { const q = input.value.trim(); if (q) { input.value = ""; askCourse(panel, q); } };
+  panel.querySelector(".ask-send").onclick = typed;
+  input.onkeydown = (e) => { if (e.key === "Enter") typed(); };
+  wirePass(panel, (p) => askCourse(panel, p.question));
+  courseNote();
+}
+async function askCourse(panel, question) { /* H3 claude mode, H5 server mode; below */ }
+```
+
+**`askCourse`, step by step:**
+1. `if (openAsk && openAsk !== panel) closeAsk(openAsk); openAsk = panel; startBlink(panel);` so that a route change stops it, as for a chapter panel.
+2. Server mode with no passcode: set `st.pending = { question }`, show the passcode row, focus it, and return (as `askSendServer` does).
+3. Stop anything running (`st.ctl` abort, `speechSynthesis.cancel()`, `orbAudio.pause()`), make a new `AbortController`, set `st.ctl`, clear the sources line, and `serverSetBusy(panel, "Thinking…")`.
+4. **Claude mode:** the pick with `sampleFn.json`. On an error: return if aborted, else `serverClearBusy(panel)` and `claudeError(panel, e)`. If `cleanPicks` is empty: `serverClearBusy(panel)`, then `streamClaudeAnswer` is not called, and the not-covered sentence is spoken with `voiceFor(lang)` and `speakSentence` (text backup if there is no voice). Otherwise `showSources`, then `streamClaudeAnswer(panel, turns, lang, false, null)`.
+5. **Server mode:** `fetch("/api/course", …)` with `signal: ctl.signal`. Not ok: throw an error carrying `status`, and send it to `serverError(panel, e)` (401 also shows the passcode row again). On success: `showSources(panel, out.sources)`, then `await speakServerAnswer(panel, out.text, lang, ctl)`; for `sources: []` the server's not-covered text is spoken the same way.
+6. After every `await`: return if `ctl.signal.aborted` or `panel._ask !== st`.
+
+**The greet section's new markup** (H2), inside `.greet-body` after the text paragraph, using the chapter panel's classes so the helpers work unchanged:
+
+```html
+<div class="ask-pass" hidden>
+  <label for="ask-pass-course">Enter the passcode to ask questions</label>
+  <input id="ask-pass-course" type="password" autocomplete="off">
+  <button type="button">OK</button>
+</div>
+<div class="ask-form">
+  <input class="ask-input" type="text" placeholder="Ask about any class or paper…" aria-label="Ask about any class or paper">
+  <button class="ask-send" type="button">Ask</button>
+</div>
+<p class="ask-status" aria-live="polite"></p>
+<p class="greet-src"></p>
+<p class="ask-note"></p>
+<p class="greet-off">Asking isn't switched on in this copy of the site yet.</p>
+```
+
+- **CSS (H2):**
+  - `.greet .ask-pass, .greet .ask-form, .greet .ask-status, .greet .greet-src, .greet .ask-note` show only under `body.can-ask`, with `margin-top: var(--sp-3)` on the form. Keep `.ask-pass[hidden]` working.
+  - `.greet-src` uses `var(--s-1)` and `var(--muted)`; its links use the site's normal link style; it is hidden while empty (`:empty`).
+  - On phones (≤520px), `.greet-body` is already `display: contents`, so each new row needs `grid-column: 1 / -1`.
+  - `p.ask-text` inside the greet uses the panel's existing `.ask-text` style.
+  - No new colours, no shadows, no all caps.
+- **Mode detection:** the detection IIFE calls `courseNote()` after it sets `can-ask`, because the front page can render before detection finishes.
+
+**In `server.js` (H4):**
+
+```js
+// Startup: read PICK_RULES, COURSE_RULES, NOT_COVERED_EN and NOT_COVERED_ES like RULES; if any is
+// missing, fail with "PICK_RULES, COURSE_RULES or NOT_COVERED_* missing from site/template.html".
+function blockFor(id, i) { /* split out of contextFor, as chapterBlock on the page */ }
+function contextFor(id, i) { return DB.rules + (id === "P02" ? DB.noQuote : "") + "\n\n" + blockFor(id, i); }
+function courseIndex() { /* H.1 index lines from DB.catalog then DB.readings */ }   // built once at startup
+function cleanPicks(arr) { /* H.1 cleaning rules */ }
+const langOf = (q) => /* askLang's typed-question rule, copied from the template as a one-line arrow */;
+async function askUpstream(messages, opts = {}) {
+  /* unchanged, except the body is
+     { model, messages, max_tokens: opts.max_tokens || 450, temperature: opts.temperature ?? 0.3 } */
+}
+function limitsOk(req, kind, cost = 1) {
+  /* unchanged, except: `recent.length + cost > limit` instead of `>=`, the daily check uses
+     `+ cost >`, and an admitted call pushes `cost` timestamps and adds `cost` to the day's count */
+}
+```
+
+`/api/course` sits next to `/api/ask` and reuses `readBody`, `bad()` and the reply shapes of `/api/ask`.
+
+### H.3 Tests
+
+**`scripts/mock_openrouter.mjs` (H4).** A chat call whose first message starts with "You choose where" is a pick:
+- if that message contains "nothing-matches", it replies `[]`;
+- if it contains "unknown-pick", it replies `Here you go: [{"id": "T99", "chapter": 1}, {"id": "T4", "chapter": 99}]`;
+- otherwise it replies `[{"id": "T4", "chapter": 3}]`.
+
+Every other chat call still replies "First sentence. Second sentence.".
+
+**`scripts/test_server.mjs` (H4)**, added to the normal run. Send every `/api/course` request with the header `X-Forwarded-For: 203.0.113.50`, so it counts against its own address and the existing "21st call" count is untouched. Count the mock's chat calls before and after each request (`callsFromMock`).
+- `/api/course` without a passcode returns 401.
+- With the passcode, "What is an entrepreneurial ecosystem?" returns 200 with `sources` equal to `[{"id":"T4","chapter":3}]` and `text` equal to the mock answer. The mock saw exactly 2 chat calls for it; the second one's `context` contains "You are a study helper" and `t4.chapters[2].title`.
+- "nothing-matches" returns 200 with `text` equal to `NOT_COVERED_EN` and `sources: []`, and the mock saw exactly 1 chat call.
+- "¿Qué es nothing-matches?" returns `NOT_COVERED_ES`.
+- "unknown-pick" returns `sources: []` and `NOT_COVERED_EN`.
+- A 501-character question returns 400.
+- The cost: give `startServer` an optional third argument of settings merged over its defaults. A separate server started with `{ GROKBOT_RATE_PER_10MIN: "3" }` answers one `/api/course` (200), refuses a second (429, since 2 + 2 > 3), and still answers one `/api/ask` (200). Stop it cleanly.
+- The existing secret checks cover the new replies too.
+
+**`scripts/check_page.mjs` (H6).** Every existing check stays.
+- **Plain file:** the greet form is hidden (`.greet .ask-form` not displayed) and the off line shows.
+- **Claude mock:** the mock's sample function also gets `.json = async (input, opts) => …`. It records `input` and `opts.modelTier` in `window.__lastJson`, and returns `[{id:"P02",chapter:2}]` if `input` contains "trinity", `[]` if it contains "nothing-matches", and `[{id:"T4",chapter:3}]` otherwise. On the front page:
+  - typing "What is an entrepreneurial ecosystem?" and tapping Ask gives `opts.modelTier === "quick"`, a pick input that contains "T4 3:" and "P07 1:", a sources line with one link to `#T4` whose text contains "Class 4, chapter 3", and the answer in `.greet .ask-text` (the mock has no voices);
+  - a question with "trinity" sends a sample whose first turn contains "do not quote";
+  - "nothing-matches" shows `NOT_COVERED_EN` in `.greet .ask-text` and makes no `sample` call.
+- **Server mode** (with `mock_openrouter.mjs`): remove `inn514-grokbot-pass` from `localStorage` first, then on the front page the passcode row shows first; after the passcode, the question reaches `/api/course`, the sources line links `#T4`, and `/api/speak` is called.
+- **Phone, 390px:** no horizontal scroll on the front page with an answer and sources showing; screenshots `checks/phone-home-chat.png` and, in dark mode, `checks/phone-home-chat-dark.png`.
+- **The H1 guard:** before changing anything, H1 saves `chapterContext("T4", 2)` and `chapterContext("P02", 1)` from the built page to `checks/context-before.txt`. A new check compares the built page's output with that file and must match exactly.
+
+### H.4 Tasks
+
+| Task | What it is |
+|---|---|
+| H1 | Refactor only (H.2): `chapterBlock`, `claudeError`, `streamClaudeAnswer`, `speakServerAnswer`, `wirePass`; the `checks/context-before.txt` guard; full `check_page.mjs` run, ALL PAGE CHECKS PASSED |
+| H2 | The six constants, `courseIndex`, `cleanPicks`, `chapterIndexOf`, `courseNote`, the greet markup and CSS, and `courseNote()` in the detection IIFE |
+| H3 | `showSources`, `wireCourse`, `askCourse` in claude mode, the not-covered sentence |
+| H4 | `server.js`: constants, `blockFor`, `courseIndex`, `cleanPicks`, `langOf`, `askUpstream` options, `limitsOk` cost, `/api/course`; the mock's pick replies; the `test_server.mjs` checks; ALL SERVER CHECKS PASSED |
+| H5 | `askCourse` in server mode (`/api/course`, passcode row, `speakServerAnswer`, errors) |
+| H6 | The `check_page.mjs` front-page checks and screenshots, full run (ALL PAGE CHECKS PASSED), then `build_static.py` |
+| G4 | **STOP GATE G4** |
+
+---
+
 ## Rules for ZCode + GLM 5.3 Flash (put verbatim in the kickoff)
 
 - **Work only in** `D:/HVL2025/514/workspace/lecture-audio/`.
-- **May edit:** `site/template.html` and `scripts/check_page.mjs`.
-- **May create:** `server.js`, `package.json`, `package-lock.json`, `scripts/mock_openrouter.mjs`, `scripts/test_server.mjs`, `scripts/sync_knowledge.py`, `scripts/check_outbox.py`, `GROKBOT_TEST.md` and `checks/grokbot_tests.json`.
+- **May edit:** `site/template.html` and `scripts/check_page.mjs`; for Part H also `server.js`, `scripts/mock_openrouter.mjs` and `scripts/test_server.mjs`.
+- **May create:** `server.js`, `package.json`, `package-lock.json`, `scripts/mock_openrouter.mjs`, `scripts/test_server.mjs`, `scripts/sync_knowledge.py`, `scripts/check_outbox.py`, `GROKBOT_TEST.md`, `checks/grokbot_tests.json` and `checks/context-before.txt`.
 - **May tick:** `PROGRESS_GROKBOT_ZCODE.md`.
 - **May run**, from `D:/HVL2025/514`:
   - `build_site.py` and `build_static.py`;
@@ -477,7 +713,7 @@ The executor runs only the default mode (no flags).
   - `check_outbox.py --hub <scratch folder>`;
   - `export_knowledge.py <scratch folder>`.
 - **Must not:**
-  - run any git command, publish anything, or sign in to Canner or OpenRouter;
+  - run any git command, publish anything, or sign in to Canner or OpenRouter; run the Canner CLI or touch `canner.json`;
   - **write any real key or passcode in any file**, or call the real OpenRouter; tests use only `mock_openrouter.mjs`, with `test-key` and `test-pass`;
   - run `npm install` or any other install; `package-lock.json` is written by hand;
   - touch `D:/Proyectos/watch`, except to read `grok-watch-hub/knowledge/`, `inbox/` and `outbox/`;
@@ -510,6 +746,8 @@ The executor runs only the default mode (no flags).
 | A6b | The light/dark switch in the top bar (plan A.4) |
 | A7 | `check_page.mjs`: the claude mock pass, the server mode pass and the theme switch pass from A.3, screenshots, full run (ALL PAGE CHECKS PASSED), then `build_static.py` |
 | G1 | **STOP GATE G1** |
+| H1–H6 | Part H, the front-page course chat (table in H.4); it comes right after G1 and before B1 |
+| G4 | **STOP GATE G4** |
 | B1 | `sync_knowledge.py` |
 | B2 | Its default run, which must report "pack unchanged" |
 | G2 | **STOP GATE G2** |
@@ -533,5 +771,11 @@ The executor runs only the default mode (no flags).
     - a commit and push.
   - **S5:** Canner on Node, your environment variables, and Claude's checks of `/api/health`, 401, MP3 range and 404.
   - **You:** test both places on your phone, then approve G1.
+- **G4:**
+  - **Manifest and checks:** as at G1, plus the `context-before.txt` guard and the new `/api/course` and front-page checks.
+  - **Screenshots:** `phone-home-chat.png` and `phone-home-chat-dark.png`, and the earlier ones unchanged.
+  - **Code review:** H1 moved code without changing it (diff the moved bodies); `/api/course` checks the passcode, the lock and the cost of 2 before any upstream call; the page sends the pick and the answer only to `sample` (claude mode) or `/api/course` and `/api/speak` (server mode); P02 always adds `NO_QUOTE`; no history in the course chat.
+  - **The scan,** then **publish:** commit and push (Canner redeploys) and republish the claude.ai link with `capabilities: {sample: {}}`.
+  - **You:** on both sites, ask "What is upward causation?" and a Spanish question on the front page, then use one chapter orb; approve G4.
 - **G2:** `sync_knowledge.py` (no flags) prints "pack unchanged"; at the next content change, `--push`.
 - **G3:** the 12 watch questions, then `check_outbox.py --pull --since <start>`, all PASS; Claude checks the facts; you approve.

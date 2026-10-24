@@ -188,6 +188,16 @@ Updated by Claude Code on 2026-10-23: the orb now has a claude mode and a server
     - **Phone layout:** a 44px orb beside the heading below 520px.
     - **Top bar:** the links are back at the right, next to the theme button.
 
+## Part H: the front-page course chat (both sites)
+Added by Claude Code on 2026-10-24 (plan Part H). Part H may start while STOP GATE G1 waits for the student's phone test: leave the G1 box open and do the first unchecked H task.
+- [ ] H1. Refactor only: `chapterBlock`, `claudeError`, `streamClaudeAnswer`, `speakServerAnswer`, `wirePass`, `status.before(t)`; `checks/context-before.txt` saved first and the guard check added; full `check_page.mjs` run ending "ALL PAGE CHECKS PASSED" (plan H.2, H.3)
+- [ ] H2. The six constants, `courseIndex`, `cleanPicks`, `chapterIndexOf`, `courseNote`, the greet markup and CSS, `courseNote()` in the detection IIFE (plan H.0 to H.2)
+- [ ] H3. `showSources`, `wireCourse`, `askCourse` in claude mode, the not-covered sentence (plan H.1, H.2)
+- [ ] H4. `server.js`: the constants, `blockFor`, `courseIndex`, `cleanPicks`, `langOf`, `askUpstream` options, `limitsOk` cost, `/api/course`; the mock's pick replies; the new `test_server.mjs` checks; the run ends "ALL SERVER CHECKS PASSED" (plan H.1 to H.3)
+- [ ] H5. `askCourse` in server mode: `/api/course`, passcode row, `speakServerAnswer`, errors (plan H.2)
+- [ ] H6. The `check_page.mjs` front-page checks, `phone-home-chat.png` and `phone-home-chat-dark.png`, full run ending "ALL PAGE CHECKS PASSED", then `build_static.py` (plan H.3)
+- [ ] **STOP GATE G4:** student approved (after Claude Code's review, the push, the claude.ai republish, and the student's front-page test on both sites)
+
 ## Part B: one-command pack sync
 - [ ] B1. `scripts/sync_knowledge.py` (plan Part B)
 - [ ] B2. Default run (no flags) reports "pack unchanged"
