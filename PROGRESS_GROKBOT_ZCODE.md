@@ -156,7 +156,8 @@ Updated by Claude Code on 2026-10-23: the orb now has a claude mode and a server
   - Screenshots generated: `checks/phone-ask.png`, `checks/phone-ask-dark.png`, `checks/phone-ask-server.png`. Opening them was attempted, but this model's image reader reports no image-input capability, so visual review is **not claimed** and remains part of G1.
   - Manifest check: 212/212 protected lecture, reading, data and audio files still match; no course content changed.
   - Files changed: `scripts/check_page.mjs`, `site/template.html`; generated `site/index.html`, root `index.html`, `checks/page-check.log`, `checks/build-site.log` and the A7 screenshots.
-- [ ] **STOP GATE G1:** student approved (after Claude Code's review, the claude.ai publish with the `sample` ability, the push, Canner on Node with the student's key and passcode set, Claude's server checks, and the student's phone tests in both places)
+- [x] **STOP GATE G1:** student approved (after Claude Code's review, the claude.ai publish with the `sample` ability, the push, Canner on Node with the student's key and passcode set, Claude's server checks, and the student's phone tests in both places)
+  - Approved by the student on 2026-10-24: "aprove continue let deepskeek continue with the task", in reply to Claude's "Once you approve G5…" and "I'll tick it together with G5". The message did not say whether the phone test on both sites was done.
   - **Claude Code's G1 review (2026-10-23):**
     - **Who wrote what:** ZCode's report says Claude Code applied A6 and A6b. It did not: Claude made no edits to the page between Phase 0 and this review. The report itself says a second harness ("DeepSeek Harness assisting ZCode") did the later tasks.
     - **Content:** the manifest still matches (212 files). Claude reran `build_site.py`, `test_server.mjs`, `check_page.mjs` and `build_static.py`; all pass.
@@ -328,7 +329,8 @@ D1–D5 were already present in `site/template.html` when this execution of Part
   - Evidence: file changed: `scripts/check_page.mjs`. Command: `node workspace/lecture-audio/scripts/check_page.mjs > workspace/lecture-audio/checks/page-check.log 2>&1` → 86 PASS, 0 FAIL, log ends `ALL PAGE CHECKS PASSED`. Opened `checks/phone-search.png`, `checks/phone-search-dark.png` and `checks/phone-grokbot-hola.png`: results and highlights fit at 390 px in both themes with no clipping, and the Spanish answer with "Read again" is readable in the bubble. Then `C:/Python313/python.exe workspace/lecture-audio/scripts/build_static.py` → `index.html: 588 KB, 154 audio files under site/audio/`.
   - Manifest: all 212 protected lecture, reading, data and audio files still match `checks/grokbot-manifest-before.txt`; the overview and rules live only in `site/template.html`, and the course content was untouched.
   - Final build audit (2026-10-24): the two index files differ on purpose. `index.html` is the site fragment wrapped in the doctype, viewport, `noindex` meta and `</html>` that `build_static.py` adds, with `"audio": "audio/` changed to `"audio": "site/audio/`. Checked byte for byte: wrapper present, the wrapped body equals the fragment with only that prefix change, 154 audio paths, and the Part D markers "Search the course", "Read again" and "You choose which chapters" are in the root copy. Sizes: `site/index.html` 601,921 B, `index.html` 602,901 B (770 B prefix growth plus the wrapper). `node --check` passes on `server.js`, `scripts/mock_openrouter.mjs`, `scripts/test_server.mjs` and `scripts/check_page.mjs`.
-- [ ] **STOP GATE G5:** student approved (after Claude Code's review, own look in the browser, the push, the claude.ai republish, and the student's phone test on both sites)
+- [x] **STOP GATE G5:** student approved (after Claude Code's review, own look in the browser, the push, the claude.ai republish, and the student's phone test on both sites)
+  - Approved by the student on 2026-10-24: "aprove continue let deepskeek continue with the task", in reply to Claude's "Once you approve G5…" and "I'll tick it together with G5". The message did not say whether the phone test on both sites was done.
   - **Claude Code's G5 review (2026-10-24):**
     - **Reruns:** the manifest is unchanged; `build_site.py` and `build_static.py` pass; ALL SERVER CHECKS PASSED (65); ALL PAGE CHECKS PASSED (86).
     - **Code:** the template and server diffs match Part D's code.
@@ -339,6 +341,12 @@ D1–D5 were already present in `site/template.html` when this execution of Part
       - "Read again" replays the kept MP3 with no new `/api/speak`.
     - **Tidied:** DeepSeek's `scratch/` helpers and `checks/server-check-d7.log` are quarantined in the scratchpad.
     - **Still open:** the live check with the real model after the push, and the student's phone test. Then the student's "APPROVED GATE G5".
+
+## Part E: tidy-up after Part D (DeepSeek)
+Added by Claude Code on 2026-10-24 after the student's "aprove continue let deepskeek continue with the task". DeepSeek builds E1 and E2 with `GROKBOT_DEEPSEEK_KICKOFF.md`; only the student's approval after Claude Code's review ticks G6.
+- [ ] E1. `/api/health` shows only ok, ask, key, passcode and voices; its server check (plan E1); the run ends "ALL SERVER CHECKS PASSED"
+- [ ] E2. The four unused note constants and the `.ask-text` and `.ask-note` CSS removed (plan E2); full `check_page.mjs` run ending "ALL PAGE CHECKS PASSED", then `build_static.py`
+- [ ] **STOP GATE G6:** student approved (after Claude Code's review, the push and the claude.ai republish)
 
 ## Part B: one-command pack sync
 - [x] B1. `scripts/sync_knowledge.py` (plan Part B)

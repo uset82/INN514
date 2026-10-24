@@ -1487,7 +1487,55 @@ function gbReplay() {
 
 ---
 
-## Rules for the executor: ZCode + GLM 5.3 Flash, or DeepSeek for Part D (put verbatim in the kickoff)
+## Part E: tidy-up after Part D (added 2026-10-24; DeepSeek builds it)
+
+Two small clean-ups the student asked DeepSeek to do. Nothing a visitor sees changes, and the content manifest must not change.
+
+### E1. The health report shows only what it needs (`server.js`, `scripts/test_server.mjs`)
+
+The `/api/health` reply becomes exactly this, in this order (the `.env` reading at startup stays as it is):
+
+```js
+  if (p === "/api/health") {
+    return done(200, JSONH, JSON.stringify({
+      ok: true,
+      ask: !!KEY,
+      // Whether each setting is present (never its value). The page asks for a passcode only when one is set.
+      key: !!KEY, passcode: !!cleanPass(process.env.GROKBOT_PASSCODE),
+      voices: { en: VOICE_EN, es: VOICE_ES },
+    }));
+  }
+```
+
+- `seen` and `runtime` go. They listed setting names and Canner's deployment details while the missing key was being found.
+- In `scripts/test_server.mjs`, replace the check "health lists the setting names it sees (names only)" with:
+
+  ```js
+  check(health && !("seen" in health) && !("runtime" in health) && JSON.stringify(Object.keys(health)) === JSON.stringify(["ok", "ask", "key", "passcode", "voices"]),
+    "health shows only ok, ask, key, passcode and voices", JSON.stringify(Object.keys(health || {})));
+  ```
+
+  Every other check stays.
+
+### E2. Unused text and styles leave the page (`site/template.html`)
+
+The student removed the honesty line under the bubble (commit `d6d26ee`), and Part H replaced `.ask-text` with `.gb-words`. Remove these, and nothing else:
+- the four constants `SERVER_ASK_NOTE`, `DEVICE_ASK_NOTE`, `COURSE_SERVER_NOTE` and `COURSE_DEVICE_NOTE`;
+- the CSS rules `.ask-text { … }` and `.ask-note { … }`.
+
+Before removing each one, search the whole template, `scripts/check_page.mjs` and `server.js` for its name. If anything still uses it, stop and report instead of removing it.
+
+### E3. Tasks
+
+| Task | What it is |
+|---|---|
+| E1 | The health reply and its server check; ALL SERVER CHECKS PASSED |
+| E2 | The four constants and two CSS rules; `build_site.py`, a full `check_page.mjs` run (ALL PAGE CHECKS PASSED), then `build_static.py` |
+| G6 | **STOP GATE G6** |
+
+---
+
+## Rules for the executor: ZCode + GLM 5.3 Flash, or DeepSeek for Parts D and E (put verbatim in the kickoff)
 
 - **Work only in** `D:/HVL2025/514/workspace/lecture-audio/`.
 - **May edit:** `site/template.html` and `scripts/check_page.mjs`; for Parts H and D also `server.js`, `scripts/mock_openrouter.mjs`, `scripts/test_server.mjs` and `checks/context-before.txt`.
@@ -1538,6 +1586,8 @@ function gbReplay() {
 | G4 | **STOP GATE G4** (it also closes G1) |
 | D1–D7 | Part D (DeepSeek), the friendlier Grokbot and the search page (table in D.8) |
 | G5 | **STOP GATE G5** |
+| E1–E2 | Part E (DeepSeek), the tidy-up (table in E.3) |
+| G6 | **STOP GATE G6** |
 | B1 | `sync_knowledge.py` |
 | B2 | Its default run, which must report "pack unchanged" |
 | G2 | **STOP GATE G2** |
@@ -1592,5 +1642,9 @@ function gbReplay() {
   - **Claude's own look** in the browser pane: "hola", "¿quién enseña la clase 4?", "What is upward causation?", the search page at 390px and 1280px, and "Read again".
   - **Publish:** the scan, a push (Canner redeploys) and a republish of the claude.ai link.
   - **You** test both sites on your phone, then approve G5.
+- **G6:**
+  - **Checks:** the manifest is unchanged, and both suites pass in full.
+  - **Review:** `/api/health` on a local run shows only `ok`, `ask`, `key`, `passcode` and `voices`; the removed names appear nowhere.
+  - **Publish:** the scan, a push, a check that Canner's health has the new shape, and a republish of the claude.ai link.
 - **G2:** `sync_knowledge.py` (no flags) prints "pack unchanged"; at the next content change, `--push`.
 - **G3:** the 12 watch questions, then `check_outbox.py --pull --since <start>`, all PASS; Claude checks the facts; you approve.
