@@ -65,8 +65,8 @@ function contextFor(id, i) {
 /* ---------- the OpenRouter call (S2) ---------- */
 const BASE = process.env.OPENROUTER_BASE || "https://openrouter.ai/api/v1";
 const KEY = process.env.OPENROUTER_API_KEY || "";
-const MODELS = (process.env.GROKBOT_ANSWER_MODELS || "google/gemma-4-31b-it:free,nvidia/nemotron-3-super-120b-a12b:free").split(",").map((s) => s.trim()).filter(Boolean);
-const VOICE_EN = process.env.GROKBOT_VOICE_MODEL_EN || "deepgram/flux-tts:free";
+const MODELS = (process.env.GROKBOT_ANSWER_MODELS || "openrouter/free,nvidia/nemotron-3.5-super-vl:free").split(",").map((s) => s.trim()).filter(Boolean);
+const VOICE_EN = process.env.GROKBOT_VOICE_MODEL_EN || "fish-audio/s2.1-pro-free:free";
 const VOICE_ES = process.env.GROKBOT_VOICE_MODEL_ES || "fish-audio/s2.1-pro-free:free";
 
 async function askUpstream(messages) {
@@ -79,12 +79,16 @@ async function askUpstream(messages) {
           "Authorization": `Bearer ${KEY}`, "Content-Type": "application/json",
           "HTTP-Referer": "https://inn514.canner.app", "X-Title": "INN514 Course Companion",
         },
-        body: JSON.stringify({ model, messages, max_tokens: 450, temperature: 0.3 }),
+        // Room for a reasoning model's thinking as well as the 3-to-6-sentence answer.
+        body: JSON.stringify({ model, messages, max_tokens: 1000, temperature: 0.3 }),
         signal: AbortSignal.timeout(40000),
       });
       if (r.ok) {
         const j = await r.json();
-        return { text: j.choices[0].message.content.trim() };
+        const text = String(j?.choices?.[0]?.message?.content || "").trim();
+        if (text) return { text };
+        last429 = false;                                 // an empty answer tries the next model
+        continue;
       }
       last429 = r.status === 429;
       if (r.status !== 429 && r.status < 500) break;   // only a 429, a 5xx or a timeout tries the next model
@@ -111,11 +115,13 @@ async function speakUpstream(text, lang) {
     if (!r.ok) return null;
     return Buffer.from(await r.arrayBuffer());
   };
+  // Deepgram needs one of its Flux voices; Fish picks its own when none is given.
+  const enVoice = process.env.GROKBOT_VOICE_EN || (VOICE_EN.startsWith("deepgram/") ? "flux-alexis-en" : "");
   const first = lang === "es-ES"
     ? await tryModel(VOICE_ES, esVoice)
-    : await tryModel(VOICE_EN, process.env.GROKBOT_VOICE_EN || "flux-alexis-en");
+    : await tryModel(VOICE_EN, enVoice);
   if (first) return first;
-  if (lang !== "es-ES") return tryModel(VOICE_ES, esVoice);   // the English model falls back to Fish once
+  if (lang !== "es-ES" && VOICE_EN !== VOICE_ES) return tryModel(VOICE_ES, esVoice);   // a different English model falls back to Fish once
   return null;
 }
 

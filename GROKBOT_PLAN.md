@@ -23,7 +23,7 @@ All three answer from the **same course text**.
    claude.ai link (version 31)   Canner: https://inn514.canner.app  (PART S: server.js)         WATCH: "Grok principal, ¿…?"
    orb in CLAUDE MODE:           orb in SERVER MODE:
    question → Claude (viewer's   question + passcode → server.js → OpenRouter free answer model
-   own account, `sample`)        (Gemma 4 31B, fallback Nemotron 3 Super) → answer text
+   own account, `sample`)        (openrouter/free, fallback Nemotron 3.5 Super VL) → answer text
    → device voice speaks         → server.js → OpenRouter voice: Fish Audio S2.1 Pro Free (Spanish),
                                    Deepgram Flux TTS (English) → MP3 → the page plays it
 ```
@@ -355,8 +355,8 @@ Added at the student's request on 2026-10-23. Without a stored choice, the page 
 - **The context text,** the same as `chapterContext` in A.2: `RULES` (+ `NO_QUOTE` for P02), `"\n\nChapter: "`, the where line, then `"\n---\n"`, the chapter's paragraphs with their page labels, and `"\n---"`.
 - **The call:** `POST ${OPENROUTER_BASE}/chat/completions`.
   - Headers: `Authorization: Bearer ${OPENROUTER_API_KEY}`, `Content-Type: application/json`, `HTTP-Referer: https://inn514.canner.app`, `X-Title: INN514 Course Companion`.
-  - Body: `{model, messages: [{role:"user", content: context}, ...history, {role:"user", content: question}], max_tokens: 450, temperature: 0.3}`.
-  - The models are tried in order from `GROKBOT_ANSWER_MODELS`, default `google/gemma-4-31b-it:free,nvidia/nemotron-3-super-120b-a12b:free`. The next one is tried on a 429, a 5xx or a timeout (40 s each, `AbortSignal.timeout`).
+  - Body: `{model, messages: [{role:"user", content: context}, ...history, {role:"user", content: question}], max_tokens: 1000, temperature: 0.3}`. (1000 since 2026-10-24: room for a reasoning model's thinking. An empty answer tries the next model.)
+  - The models are tried in order from `GROKBOT_ANSWER_MODELS`, default `openrouter/free,nvidia/nemotron-3.5-super-vl:free` (the student's choice on 2026-10-24; before that Gemma 4 31B, then Nemotron 3 Super). The next one is tried on a 429, a 5xx or a timeout (40 s each, `AbortSignal.timeout`).
   - The reply is `{"text": choices[0].message.content.trim()}`. If every model fails: `502 {"error": "upstream"}`, or `429` if the last failure was a 429.
 - **`OPENROUTER_BASE`** defaults to `https://openrouter.ai/api/v1`. Tests point it at the mock.
 
@@ -367,7 +367,7 @@ Added at the student's request on 2026-10-23. Without a stored choice, the page 
   - `lang` is `"es-ES"` or `"en-GB"` (anything else counts as `"en-GB"`).
 - **The model, chosen by language:**
   - `es`: `GROKBOT_VOICE_MODEL_ES` (default `fish-audio/s2.1-pro-free:free`) with the voice `GROKBOT_VOICE_ES` (default: leave `voice` out, so the provider uses its own default).
-  - `en`: `GROKBOT_VOICE_MODEL_EN` (default `deepgram/flux-tts:free`) with `GROKBOT_VOICE_EN` (default `flux-alexis-en`).
+  - `en`: `GROKBOT_VOICE_MODEL_EN`, default `fish-audio/s2.1-pro-free:free` since 2026-10-24 (the student's choice). Before that it was `deepgram/flux-tts:free`, which needs `GROKBOT_VOICE_EN` (default `flux-alexis-en`, sent only to a `deepgram/` model). When the English model is not Fish, a failure falls back to Fish once.
   - If the English model fails (any non-200 or a timeout), try the Spanish model once with the same text.
 - **The call:** `POST ${OPENROUTER_BASE}/audio/speech` with the same auth headers and body `{model, input: text, voice?, response_format: "mp3"}`, timeout 40 s. On success, return the bytes as `audio/mpeg`; otherwise `502 {"error": "upstream"}`.
 - **Limits** (in memory; reset on restart):
@@ -529,7 +529,7 @@ const COURSE_DEVICE_NOTE = "Answers are written by AI from the course companion'
 
 **Server mode** (Canner): `POST /api/course` with `{"question": "…"}` and the `X-Grokbot-Passcode` header.
 - In this order: `guessingLocked` → 429; `passcodeOk`, else `noteBadPass` and 401; `limitsOk(req, "ask", 2)` → 429; a question that is not a string of 1–500 characters → 400.
-- The pick: `askUpstream([{ role: "user", content: <the pick text, built as in claude mode> }], { max_tokens: 120, temperature: 0 })`. Read the first `[...]` in the reply (`/\[[\s\S]*?\]/`) with `JSON.parse` in try/catch (unreadable means `[]`), then `cleanPicks`.
+- The pick: `askUpstream([{ role: "user", content: <the pick text, built as in claude mode> }], { max_tokens: 600, temperature: 0 })`. Read the first `[...]` in the reply (`/\[[\s\S]*?\]/`) with `JSON.parse` in try/catch (unreadable means `[]`), then `cleanPicks`.
 - The answer: `askUpstream([{ role: "user", content: <COURSE_RULES + blocks> }, { role: "user", content: question }])`.
 - Replies: `200 {"text": "…", "sources": [{"id": "T4", "chapter": 3}]}`; `200 {"text": NOT_COVERED_EN or NOT_COVERED_ES, "sources": []}` with no second call; an upstream failure in either step gives 429 or 502, exactly as `/api/ask`.
 
@@ -646,7 +646,7 @@ function cleanPicks(arr) { /* H.1 cleaning rules */ }
 const langOf = (q) => /* askLang's typed-question rule, copied from the template as a one-line arrow */;
 async function askUpstream(messages, opts = {}) {
   /* unchanged, except the body is
-     { model, messages, max_tokens: opts.max_tokens || 450, temperature: opts.temperature ?? 0.3 } */
+     { model, messages, max_tokens: opts.max_tokens || 1000, temperature: opts.temperature ?? 0.3 } */
 }
 function limitsOk(req, kind, cost = 1) {
   /* unchanged, except: `recent.length + cost > limit` instead of `>=`, the daily check uses
