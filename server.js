@@ -201,9 +201,11 @@ function limitsOk(req, kind, cost = 1) {
 function log(req, status, ms) {
   console.log(`${req.method} ${req.url} ${status} ${ms}ms`);
 }
+/* The passcode without the spaces or quotes that a host's settings page or a copy-paste can add around it. */
+const cleanPass = (s) => String(s || "").trim().replace(/^(["'])(.*)\1$/, "$2");
 function passcodeOk(req) {
-  const want = process.env.GROKBOT_PASSCODE;
-  const got = req.headers["x-grokbot-passcode"];
+  const want = cleanPass(process.env.GROKBOT_PASSCODE);
+  const got = cleanPass(req.headers["x-grokbot-passcode"]);
   if (!want || !got) return false;
   const a = crypto.createHash("sha256").update(String(got)).digest();
   const b = crypto.createHash("sha256").update(String(want)).digest();
@@ -353,6 +355,10 @@ const server = http.createServer((req, res) => {
       ask: !!(KEY && process.env.GROKBOT_PASSCODE),
       // Whether each setting is present (never its value), so a missing one can be spotted from outside.
       key: !!KEY, passcode: !!process.env.GROKBOT_PASSCODE,
+      // TEMPORARY (2026-10-24, while a refused passcode is checked): its length before and after cleaning,
+      // and whether it is only letters, digits and hyphens. Never the value; remove once the passcode works.
+      passcodeShape: process.env.GROKBOT_PASSCODE ? { raw: process.env.GROKBOT_PASSCODE.length,
+        clean: cleanPass(process.env.GROKBOT_PASSCODE).length, plain: /^[A-Za-z0-9-]+$/.test(cleanPass(process.env.GROKBOT_PASSCODE)) } : null,
       // The NAMES (never the values) of settings that look like ours, to catch a typo or a stray space.
       seen: Object.keys(process.env).filter((k) => /openrouter|grokbot/i.test(k)).map((k) => JSON.stringify(k)).sort(),
       // How the host runs the app (names and NODE_ENV only), to tell a production deploy from a preview.
