@@ -309,6 +309,17 @@ Rewritten by Claude Code on 2026-10-24 (plan Part H): the per-chapter panels and
     - **Tidied:** `phone-ask*.png` and the stray `checks/.probe2-profile/` are quarantined in the scratchpad.
     - **One correction to ZCode's summary:** English is spoken by Fish Audio too, not Deepgram, since commit `aa58bee`.
 
+## Part D: a friendlier, course-wise, always-speaking Grokbot and a search page (DeepSeek)
+Added by Claude Code on 2026-10-24 (plan Part D). DeepSeek builds D1 to D7 with `GROKBOT_DEEPSEEK_KICKOFF.md`, one task per conversation. STOP GATE G1 and G3 stay open on purpose; only the student's "APPROVED GATE G5" after Claude Code's review ticks G5.
+- [ ] D1. `ABOUT_TEXT` (used by `renderHome`), `ES_WORDS`, `textLang`, `askLang` using it, `courseOverview()` (plan D.1)
+- [ ] D2. `SEARCH_STOP`, `searchNorm`, `searchTerms`, `searchIndex`, `searchSnippet`, `searchCourse` (plan D.2)
+- [ ] D3. The search button, the `#search` route, `pendingChapter`, `chapterHit`, `showSearch`, `renderSearch`, the CSS (plan D.3)
+- [ ] D4. The new rule texts and `NO_QUOTE_COURSE`; `chapterContext`, `courseContext`, `searchHits`, `mergePicks`, `cleanPicks` at 3; `askCourse` with hits and no not-covered branch; `checks/context-before.txt` rewritten on purpose (plan D.4)
+- [ ] D5. `voiceFor` with "default", the answer's language for the voice, `st.lastBlobs`, `speakAll`, `replayBlobs`, `gbReplay`, the "Read again" button (plan D.5)
+- [ ] D6. `server.js`, `mock_openrouter.mjs` and `test_server.mjs` (plan D.6); the run ends "ALL SERVER CHECKS PASSED"
+- [ ] D7. `check_page.mjs` (plan D.7), `phone-search.png`, `phone-search-dark.png`, `phone-grokbot-hola.png`, full run ending "ALL PAGE CHECKS PASSED", then `build_static.py`
+- [ ] **STOP GATE G5:** student approved (after Claude Code's review, own look in the browser, the push, the claude.ai republish, and the student's phone test on both sites)
+
 ## Part B: one-command pack sync
 - [x] B1. `scripts/sync_knowledge.py` (plan Part B)
   - Evidence (ZCode + GLM 5.3 Flash, 2026-10-24): created per plan Part B. Default mode: checks the hub is a git repo on `main` and that nothing outside `knowledge/` has local changes (stopping with the file list if it does), exports by importing `export_knowledge.main(Path(hub) / "knowledge/inn514")`, prints `git status --short -- knowledge/inn514`, and prints "pack unchanged" when nothing changed. `--commit` adds the `pull --rebase --quiet origin main` first and commits only `knowledge/inn514/` with `knowledge: refresh the INN514 pack (YYYY-MM-DD)`; `--push` implies `--commit` and pushes with one pull-rebase retry, never force-pushing. All git output is scrubbed of URLs that could carry credentials (`https://…@` → `[redacted]@`); unknown flags stop with an error.

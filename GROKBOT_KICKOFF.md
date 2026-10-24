@@ -10,7 +10,7 @@ When the agent writes "STOP GATE G<n>", paste its report into Claude Code and sa
 You are building part of "Grokbot for INN514", a study companion for my master's course, in D:\HVL2025\514\workspace\lecture-audio. You are the executor. Claude Code reviews your work and does every git, publish and deploy step.
 
 READ FIRST, in this order:
-1. workspace/lecture-audio/GROKBOT_PLAN.md: read "Context", "Who does what", the Part of your task (A, S, H, B or C), and "Rules for ZCode + GLM 5.3 Flash". It is the single spec.
+1. workspace/lecture-audio/GROKBOT_PLAN.md: read "Context", "Who does what", the Part of your task (A, S, H, B or C), and "Rules for the executor". It is the single spec.
 2. workspace/lecture-audio/PROGRESS_GROKBOT_ZCODE.md. Do ONLY the first unchecked task. If the first unchecked box is a STOP GATE, stop and tell me. The one exception: STOP GATE G1 may stay open while you do Part H, so skip that box and take the first unchecked H task.
 Then show me your task list (3 to 6 short steps) before you start.
 

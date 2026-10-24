@@ -1117,10 +1117,380 @@ Every other chat call still replies "First sentence. Second sentence.".
 
 ---
 
-## Rules for ZCode + GLM 5.3 Flash (put verbatim in the kickoff)
+## Part D: a friendlier, course-wise, always-speaking Grokbot and a search page (added 2026-10-24; DeepSeek builds it)
+
+The student tested Grokbot on the claude.ai link and found five problems.
+
+1. "Hola" got the fixed sentence "I couldn't find that in the course companion". The pick found no chapter for a greeting, and the language check called "hola" English.
+2. It didn't know the course. General questions (teachers, dates, which papers go with which class) had no source.
+3. It didn't reliably speak. No voice for the detected language meant silence, and an answer couldn't be heard again.
+4. There was no way to search the course by topic, author or paper.
+5. It must know the whole course, especially the papers and the classes.
+
+**The student's decisions (2026-10-24):** DeepSeek builds Part D, and Claude reviews at gate **G5**. Every answer is spoken (a Spanish voice for Spanish), with a "Read again" button. A search page (no AI) shares its search engine with Grokbot.
+
+**What stays:** the floating Grokbot, no passcode on Canner, the free models and the limits, and every lecture, paper, audio and data file. The content manifest must not change.
+
+**Where things go in `site/template.html`:**
+- `ABOUT_TEXT`, `textLang`, `courseOverview` and the search functions go **right after the `className` line**, near the top of the script. `renderHome` runs before the ask constants are defined, so a `const` placed later would throw.
+- The rule texts stay where `RULES` is.
+- `server.js` reads every `const X = "…";` line by regex wherever it is.
+
+### D.1 Language, the about text and the course overview (task D1)
+
+```js
+/* The front page's "What the course is about" paragraph; Grokbot's overview and server.js use it too. */
+const ABOUT_TEXT = "INN514 asks how innovation happens in systems rather than inside single firms, and how those systems can support a sustainable transformation. The classes move from national and regional innovation systems, through institutional work, entrepreneurial ecosystems and agency, to technological innovation systems, and end with a summary before the exam. Sessions 7 and 8 go through the papers, and the course ends with a written exam. A bonus class on crowdfunding comes from the 2025 course.";
+/* Spanish or English, from the words themselves (\b fails next to accented letters, so words are split on letters). */
+const ES_WORDS = new Set("hola gracias buenos buenas qué que cómo como cuál cual quién quien dónde donde cuándo cuando por porque para sobre explica explícame dime el la los las es de del una un y".split(" "));
+function textLang(s) {
+  const t = String(s || "");
+  if (/[¿¡ñáéíóú]/i.test(t)) return "es-ES";
+  const words = t.toLowerCase().split(/[^\p{L}]+/u).filter(Boolean);
+  const hits = words.filter((w) => ES_WORDS.has(w)).length;
+  return hits >= (words.length <= 3 ? 1 : 2) ? "es-ES" : "en-GB";
+}
+/* Everything Grokbot always knows: the course, every class with its teacher, date, papers and chapters,
+   and every paper with its reference, its class, its summary and its chapters. */
+function courseOverview() {
+  const chs = (id) => DATA.lectures[id].chapters.map((ch) => ch.n + " " + ch.title).join("; ");
+  const rows = DATA.catalog.map((c) => [c.num === "Bonus" ? 99 : +c.num,
+    `- ${className(c)} (${c.when}), taught by ${c.teacher}: ${c.title}.`
+    + (c.readings && c.readings.length ? ` Its papers: ${c.readings.map((r) => className(entry(r))).join(", ")}.` : "")
+    + (DATA.lectures[c.id] ? ` Chapters: ${chs(c.id)}.` : "")]);
+  const ss = DATA.sessions || [];
+  if (ss.length) rows.push([7, `- Sessions ${ss.map((s) => s.num).join(" and ")} (${ss.map((s) => s.when).join("; ")}), taught by ${[...new Set(ss.map((s) => s.teacher))].join(" and ")}: ${ss[0].title}.`]);
+  rows.sort((a, b) => a[0] - b[0]);
+  const lines = ["About the course: " + ABOUT_TEXT, "The classes, in course order:", ...rows.map((r) => r[1]), "The papers:"];
+  for (const r of READINGS) {
+    const L = DATA.lectures[r.id];
+    lines.push(`- ${className(r)}: ${r.authors} (${r.year}), "${r.title}", ${r.source}. For ${r.lectures.map((l) => className(entry(l)).toLowerCase()).join(" and ")}.`
+      + (L ? ` In brief: ${L.chapters[0].paragraphs[0]} Chapters: ${chs(r.id)}.` : ""));
+  }
+  return lines.join("\n");
+}
+```
+
+- `renderHome` uses `${esc(ABOUT_TEXT)}` in place of the paragraph's text; the page must look the same.
+- `askLang(q, isChip)` becomes `return isChip ? "en-GB" : textLang(q);`.
+- `server.js` replaces `langOf` with the same `textLang` (copied, one function).
+
+### D.2 The search engine (task D2)
+
+```js
+/* Local course search: no AI, so it works offline and on both sites. Grokbot uses it too. */
+const SEARCH_STOP = new Set(("a an and are as at be by can do does for from has have how in into is it its of on or that the their this to was what when where which who why with "
+  + "al como con de del el en es la las lo los para por que se sobre su un una y").split(" "));
+// lower case, no accents, and ø/æ spelled o/ae, so "floysand" and "baekkelund" find the Norwegian names
+const searchNorm = (s) => String(s || "").toLowerCase().normalize("NFD").replace(/\p{M}/gu, "").replace(/ø/g, "o").replace(/æ/g, "ae");
+function searchTerms(q) {
+  return [...new Set(searchNorm(q).split(/[^\p{L}\p{N}]+/u).filter((w) => (w.length > 1 || /\d/.test(w)) && !SEARCH_STOP.has(w)))];
+}
+let SEARCH_INDEX = null;
+function searchIndex() {               // one document per chapter; the title counts three times
+  if (SEARCH_INDEX) return SEARCH_INDEX;
+  const docs = [], df = new Map();
+  for (const id of Object.keys(DATA.lectures)) DATA.lectures[id].chapters.forEach((ch, i) => {
+    const toks = searchNorm([ch.title, ch.title, ch.title, ...(ch.labels || []), ...ch.paragraphs].join(" ")).split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+    const tf = new Map();
+    for (const t of toks) tf.set(t, (tf.get(t) || 0) + 1);
+    for (const t of tf.keys()) df.set(t, (df.get(t) || 0) + 1);
+    docs.push({ id, i, tf, len: toks.length });
+  });
+  const avg = docs.reduce((s, d) => s + d.len, 0) / docs.length;
+  return (SEARCH_INDEX = { docs, df, avg, vocab: [...df.keys()] });
+}
+function searchSnippet(ch, forms) {    // about 30 words around the first match in the best paragraph, escaped, matches marked
+  const hit = (w) => forms.includes(searchNorm(w).replace(/[^\p{L}\p{N}]/gu, ""));
+  let best = ch.paragraphs[0] || "", bestN = -1;
+  for (const p of ch.paragraphs) { const n = p.split(/\s+/).filter(hit).length; if (n > bestN) { best = p; bestN = n; } }
+  const words = best.split(/\s+/), from = Math.max(0, words.findIndex(hit) - 12), part = words.slice(from, from + 30);
+  return (from ? "… " : "") + part.map((w) => (hit(w) ? "<mark>" + esc(w) + "</mark>" : esc(w))).join(" ") + (from + 30 < words.length ? " …" : "");
+}
+function searchCourse(q) {
+  const terms = searchTerms(q), ix = searchIndex(), N = ix.docs.length;
+  if (!terms.length) return { terms, classes: [], papers: [], chapters: [] };
+  // a word of 4 or more letters also matches the longer words that start with it ("ecosystem" -> "ecosystems")
+  const forms = terms.map((t) => (t.length >= 4 ? ix.vocab.filter((v) => v.startsWith(t)) : (ix.df.has(t) ? [t] : [])));
+  const chapters = [];
+  for (const d of ix.docs) {
+    let score = 0;
+    for (const group of forms) for (const v of group) {
+      const f = d.tf.get(v);
+      if (!f) continue;
+      const n = ix.df.get(v), idf = Math.log(1 + (N - n + 0.5) / (n + 0.5));
+      score += idf * (f * 2.2) / (f + 1.2 * (0.25 + 0.75 * d.len / ix.avg));      // BM25, k1 1.2, b 0.75
+    }
+    if (score > 0) chapters.push({ id: d.id, i: d.i, score });
+  }
+  chapters.sort((a, b) => b.score - a.score);
+  const top = chapters.slice(0, 20), all = forms.flat();
+  for (const c of top) c.snippet = searchSnippet(DATA.lectures[c.id].chapters[c.i], all);
+  // every query word must start a word of the entry; a number only counts in its "Class 4" / "Paper 7" name or its date
+  const words = (f) => searchNorm(f).split(/[^\p{L}\p{N}]+/u);
+  const has = (text, nums) => terms.every((t) => (/^\d+$/.test(t) ? nums : text).some((f) => words(f).some((w) => w.startsWith(t))));
+  return {
+    terms,
+    classes: DATA.catalog.filter((c) => has([c.title, c.teacher, c.when, className(c)], [className(c), c.when])),
+    papers: READINGS.filter((r) => has([r.title, r.authors, r.source, r.cite, className(r)], [className(r), String(r.year)])),
+    chapters: top,
+  };
+}
+```
+
+### D.3 The search page (task D3)
+
+- **The top bar.** Add `<a class="theme-btn search-btn" href="#search" aria-label="Search the course" title="Search the course">` before the theme button. It holds a magnifier SVG: `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.2-4.2"/></svg>`, styled `fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round`. The link uses `.theme-btn`'s size and hover rules.
+- **The route.** `route()` gets `else if (id === "search") renderSearch();`. `setNav` marks neither Classes nor Papers.
+- **Deep links.** `let pendingChapter = null;` sits next to `pendingPage`. The view's click listener also does `const c = e.target.closest("a[data-chapter]"); if (c) pendingChapter = +c.dataset.chapter;`. In `route()`, the scroll target becomes:
+
+  ```js
+  (pendingPage && document.getElementById("page-" + pendingPage)) || (pendingChapter !== null && document.getElementById("ch-" + pendingChapter))
+  ```
+
+  and both pendings are reset afterwards.
+- **The page.**
+
+```js
+function chapterHit(h) {
+  const e = entry(h.id), ch = DATA.lectures[h.id].chapters[h.i];
+  return `
+          <li class="row ready">
+            <span class="paper-no">${esc(className(e))}</span>
+            <div>
+              <a class="row-title" href="#${h.id}" data-chapter="${h.i}">Chapter ${ch.n}: ${esc(ch.title)}</a>
+              <p class="row-note">${h.snippet}</p>
+            </div>
+          </li>`;
+}
+function showSearch(q) {
+  const box = $("searchResults");
+  if (!q) { box.innerHTML = `<p class="lede">Type a topic, a term, an author or a paper, for example upward causation, Stam or crowdfunding.</p>`; return; }
+  const r = searchCourse(q);
+  if (!r.classes.length && !r.papers.length && !r.chapters.length) {
+    box.innerHTML = `<p class="lede">Nothing in the classes or papers matches that. Try a shorter word, or ask Grokbot.</p>`; return;
+  }
+  box.innerHTML = (r.classes.length ? `<section class="group"><h2>Classes</h2><ul class="list">${r.classes.map(classRow).join("")}</ul></section>` : "")
+    + (r.papers.length ? `<section class="group"><h2>Papers</h2><ul class="list papers">${r.papers.map(paperRow).join("")}</ul></section>` : "")
+    + (r.chapters.length ? `<section class="group"><h2>Chapters</h2><ul class="list papers">${r.chapters.map(chapterHit).join("")}</ul></section>` : "");
+  refreshProgress();
+}
+function renderSearch() {
+  viewId = null;
+  let q = "";
+  try { q = sessionStorage.getItem("inn514-search") || ""; } catch (e) {}
+  view.innerHTML = `
+    <header class="page-head">
+      <h1>Search the course</h1>
+      <input class="search-input" id="searchInput" type="search" aria-label="Search the course" placeholder="Search classes, papers and chapters…" autocomplete="off" value="${esc(q)}">
+    </header>
+    <div id="searchResults"></div>`;
+  const input = $("searchInput");
+  let timer = 0;
+  const run = () => { const v = input.value.trim(); try { sessionStorage.setItem("inn514-search", v); } catch (e) {} showSearch(v); };
+  input.oninput = () => { clearTimeout(timer); timer = setTimeout(run, 150); };
+  run();
+  if (matchMedia("(pointer: fine)").matches) input.focus({ preventScroll: true });
+}
+```
+
+- **CSS (tokens only):**
+  - `.search-btn svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; width: 1.25rem; height: 1.25rem; }`
+  - `.search-input { width: 100%; max-width: 36rem; height: 2.75rem; padding: 0 1rem; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); font: inherit; font-size: 1rem; }`
+  - `mark { background: var(--glow); color: var(--glow-ink); border-radius: 3px; padding: 0 .1em; }`
+- **Phones (390px):** the top bar must not scroll sideways. If it would, use `.mainnav a { padding: 0 var(--sp-2); }` under 400px.
+
+### D.4 The rules, the overview in every answer, and course retrieval (task D4)
+
+Replace the four texts verbatim, each on one line. `NO_QUOTE` stays as it is.
+
+```js
+const RULES = "You are Grokbot, the friendly study companion of the master's course INN514, \"Innovation systems and sustainable transformation\". Below is the chapter the student is reading, then an overview of the whole course. Your answer will be read aloud by a speech engine, so write plain spoken sentences: no lists, no headings, no symbols, no brackets. Always answer in the language of the student's message. If the student greets you, thanks you or chats, reply warmly in one or two sentences and offer to explain the chapter. Otherwise answer in 3 to 6 sentences unless the student asks for more, from the chapter first and the overview second, and say where it comes from, using the slide or page numbers in words (\"on page 764\"). If neither covers the question, say so kindly in one sentence and suggest the Whole course button. Never invent authors, numbers, dates or quotations.";
+const NO_QUOTE_COURSE = " Paper 2 (Fløysand, Jakobsen & Hidle 2013) is marked \"paper in preparation, do not quote\": paraphrase it and never quote it.";
+const PICK_RULES = "You choose which chapters of the INN514 course companion help answer a student's message. The message may be in any language; the chapters are in English. Below is the list of chapters, one per line, as \"ID N: description\". Reply with only a JSON array of at most three objects like {\"id\": \"T4\", \"chapter\": 3}, best first, or [] if the message is a greeting or small talk, a general question about the course (teachers, dates, which papers go with which class), or not covered by any chapter.";
+const COURSE_RULES = "You are Grokbot, the friendly study companion of the master's course INN514, \"Innovation systems and sustainable transformation\". Below is an overview of the whole course and, when they match the question, chapters from the course companion. Your answer will be read aloud by a speech engine, so write plain spoken sentences: no lists, no headings, no symbols, no brackets. Always answer in the language of the student's message. If the student greets you, thanks you or chats, reply warmly in one or two sentences and offer help with the classes or the papers. Otherwise answer in 3 to 6 sentences unless the student asks for more, using only the overview and the chapters, and say which class or paper and which chapter the answer comes from, in words, with the page when the chapter gives one. If the course does not cover the question, say so kindly in one sentence and name a related topic it does cover. Never invent authors, numbers, dates or quotations.";
+```
+
+- **Remove** `NOT_COVERED_EN` and `NOT_COVERED_ES` and the not-covered branch of `askCourse`.
+- **The contexts:**
+
+```js
+function chapterContext(id, i) {     // the chapter, then everything Grokbot always knows
+  return RULES + (id === "P02" ? NO_QUOTE : "") + NO_QUOTE_COURSE + "\n\n" + chapterBlock(id, i) + "\n\nOverview of the whole course:\n" + courseOverview();
+}
+function courseContext(picks) {      // the overview, then the chosen chapters
+  return COURSE_RULES + NO_QUOTE_COURSE + "\n\n" + courseOverview()
+    + (picks.length ? "\n\n" + picks.map((p) => chapterBlock(p.id, chapterIndexOf(p.id, p.chapter))).join("\n\n") : "");
+}
+function searchHits(q) {             // up to 3 chapters the local search is sure about
+  return searchCourse(q).chapters.filter((c) => c.score >= 1.5).slice(0, 3)
+    .map((c) => ({ id: c.id, chapter: DATA.lectures[c.id].chapters[c.i].n }));
+}
+function mergePicks(picks, hits) {   // the model's picks first, then the search's, at most 4
+  const out = [];
+  for (const p of [...picks, ...hits]) if (out.length < 4 && !out.some((q) => q.id === p.id && q.chapter === p.chapter)) out.push(p);
+  return out;
+}
+```
+
+- `cleanPicks(arr)` keeps at most **3** (it was 2).
+- **`askCourse`, claude mode:**
+  1. `const hits = searchHits(question);`
+  2. The pick uses `sampleFn.json` as now. **On any error other than an abort**, `picks = []` and it carries on; it does not stop with `claudeError`.
+  3. `const chosen = mergePicks(picks, hits);`, then `showSources(panel, chosen)`.
+  4. `streamClaudeAnswer(panel, [{ role: "user", content: courseContext(chosen) }, { role: "user", content: question }], lang, false, null)`. It always answers, even with no chapters.
+- **`askCourse`, server mode:** the body becomes `JSON.stringify({ question, hits: searchHits(question) })`.
+- **The H1 guard.** `chapterContext` changes on purpose, so after this task **rewrite `checks/context-before.txt`** from the built page's `chapterContext("T4", 2)` and `chapterContext("P02", 1)`. Say so in the evidence.
+
+### D.5 Always speaking, and "Read again" (task D5)
+
+- **`voiceFor(lang)`:** a matching voice when there is one. When the device has voices but none matches, it returns `"default"`. It returns `null` only when there are no voices at all after waiting.
+
+```js
+function voiceFor(lang) {
+  if (!("speechSynthesis" in window)) return Promise.resolve(null);
+  const choose = () => pickVoice(lang) || (speechSynthesis.getVoices().length ? "default" : null);
+  if (speechSynthesis.getVoices().length) return Promise.resolve(choose());
+  return new Promise((res) => {
+    const t = setTimeout(() => res(choose()), 1000);
+    speechSynthesis.addEventListener("voiceschanged", () => { clearTimeout(t); res(choose()); }, { once: true });
+  });
+}
+```
+
+- **`speakSentence`:** `u.voice = voice === "default" ? null : voice;`. `u.lang` stays set, so the browser chooses a voice for the language.
+- **The voice follows the answer's language.** In `streamClaudeAnswer`, remove the `voiceFor(lang).then(...)` call that starts with "Thinking…" and add:
+
+```js
+  let choosing = false;
+  const chooseVoice = (sample) => {        // judged from the answer's first sentence, so a Spanish answer gets a Spanish voice
+    if (choosing) return;
+    choosing = true;
+    lang = textLang(sample);
+    voiceFor(lang).then((v) => { if (panel._ask !== st || st.ctl !== ctl) return; voice = v; drain(); });
+  };
+```
+
+  - In `onText`, after `queued.push(...parts);`, add `if (queued.length) chooseVoice(queued[0]);`.
+  - In the success `.then`, add `chooseVoice(buf);` before `drain();`.
+  - `drain` already waits while `voice === undefined`.
+- **In `speakServerAnswer`:** the first lines become `lang = textLang(text); st.lastBlobs = [];`, and `st.lastBlobs.push(blob);` follows `const blob = await mine;`.
+- **"Read again."** Add `<button class="gb-replay" type="button">Read again</button>` right after `<p class="gb-words"></p>` in the bubble.
+  - **CSS:** `.gb-replay` copies `.gb-switch`'s look, with `justify-self: start; display: none;` and `#grokbot:has(.ask-status:empty) .gb-words:not(:empty) + .gb-replay { display: inline-flex; align-items: center; }`. So it shows only when there are words and nothing is busy or wrong.
+  - **Wiring:** `gb.querySelector(".gb-replay").onclick = gbReplay;`
+
+```js
+function speakAll(panel, text, lang) {   // reads the words again with the device voice; no captions
+  const st = panel._ask;
+  stopAsk(panel);
+  const ctl = new AbortController();
+  st.ctl = ctl;
+  const parts = text.split(/(?<=[.!?])\s+/).filter((s) => s.trim());
+  voiceFor(lang).then((voice) => {
+    if (!voice || ctl.signal.aborted || panel._ask !== st) return;
+    let left = parts.length;
+    serverSetBusy(panel, "Speaking…");
+    for (const s of parts) speakSentence(panel, s, voice, lang, () => audio.pause(),
+      () => { if (!--left && !ctl.signal.aborted && panel._ask === st) serverClearBusy(panel); });
+  });
+}
+async function replayBlobs(panel, blobs) {   // server mode: the AI voice's MP3s again, no new /api/speak call
+  const st = panel._ask;
+  stopAsk(panel);
+  const ctl = new AbortController();
+  st.ctl = ctl;
+  serverSetBusy(panel, "Speaking…");
+  for (const b of blobs) {
+    if (ctl.signal.aborted || panel._ask !== st) return;
+    try { await playOrbBlob(panel, b, ctl); } catch (e) { break; }
+  }
+  if (!ctl.signal.aborted && panel._ask === st) serverClearBusy(panel);
+}
+function gbReplay() {
+  const st = gb._ask, text = gb.querySelector(".gb-words").textContent.replace(/^This device has no voice[^\n]*\n/, "").trim();
+  if (!text) return;
+  if (askMode === "server" && st.lastBlobs && st.lastBlobs.length) replayBlobs(gb, st.lastBlobs);
+  else speakAll(gb, text, textLang(text));
+}
+```
+
+### D.6 The server (task D6)
+
+- **Startup:**
+  - Read `RULES`, `NO_QUOTE`, `NO_QUOTE_COURSE`, `PICK_RULES`, `COURSE_RULES` and `ABOUT_TEXT` from the template, failing at start if any is missing.
+  - `NOT_COVERED_*` and `langOf` go.
+  - `DB` also keeps `sessions: data.sessions || []`.
+- **`COURSE_OVERVIEW`** is built once with D.1's `courseOverview` code, using `DB.catalog`, `DB.readings`, `DB.lectures`, `DB.sessions` and `entryOf`. It must give the same text as the page.
+- **The contexts:**
+  - `contextFor(id, i)` mirrors `chapterContext`: `DB.rules + (P02 ? DB.noQuote : "") + DB.noQuoteCourse + "\n\n" + blockFor(id, i) + "\n\nOverview of the whole course:\n" + COURSE_OVERVIEW`.
+  - `cleanPicks` keeps at most 3, and `mergePicks` is as on the page.
+- **`/api/course`:**
+  - after the question check, if `body.hits !== undefined` and it is not an array of at most 3 items, reply 400;
+  - `const hits = cleanPicks(body.hits || [])`;
+  - the pick prompt is `DB.pickRules + "\n\n" + COURSE_INDEX + "\n\nQuestion: " + question` with `{ max_tokens: 600, temperature: 0 }`. **A pick upstream error means `picks = []`**, and it carries on;
+  - `const chosen = mergePicks(picks, hits)`;
+  - always answer with `[{ role: "user", content: DB.courseRules + DB.noQuoteCourse + "\n\n" + COURSE_OVERVIEW + blocks }, { role: "user", content: question }]`, where `blocks` is `"\n\n" + …` or `""`;
+  - reply `200 {text, sources: chosen}`, or 429 or 502 as before. It still costs 2.
+- **`scripts/mock_openrouter.mjs`:**
+  - a pick is a chat whose first message starts with **"You choose which chapters"**, the new `PICK_RULES` (it was "You choose where");
+  - it replies `[]` when that message contains "hola", "who teaches" or "nothing-matches", and keeps the "unknown-pick" and default replies.
+- **`scripts/test_server.mjs`.** Replace the not-covered checks with:
+  - **"hola" on `/api/course`:** 200, `sources: []`, `text` = the mock answer, and exactly 2 chat calls. The second's `context` contains "If the student greets you", "The classes, in course order", "Paper 7: Stam & van de Ven (2021)" and "do not quote".
+  - **Hits:** `hits: [{"id":"P07","chapter":2}]` with "nothing-matches" gives `sources: [{"id":"P07","chapter":2}]` and a second call containing P07 chapter 2's title. `hits: [{"id":"T99","chapter":1}]` gives `sources: []`. Four hits give 400; `hits: "x"` gives 400.
+  - **`/api/ask`:** the context contains "Overview of the whole course:" and "taught by Nora Geirsdotter Bækkelund".
+  - **Everything else** still passes, including the open-mode, cost and secret checks.
+
+### D.7 Page checks and screenshots (task D7)
+
+**`scripts/check_page.mjs`:**
+- **What changes:**
+  - Update every "You choose where" to "You choose which chapters".
+  - Replace the "nothing-matches gives NOT_COVERED" check with "nothing-matches still answers from the overview (a sample call whose first turn contains 'The classes, in course order')".
+- **`textLang`:**
+  - `textLang("hola")` is `"es-ES"`;
+  - `textLang("Hola, ¿qué tal?")` is `"es-ES"`;
+  - `textLang("explica el concepto")` is `"es-ES"`;
+  - `textLang("What is upward causation?")` is `"en-GB"`.
+- **`courseOverview()`:**
+  - contains "Class 4 (Session 4, 28 September), taught by Nora Geirsdotter Bækkelund";
+  - contains "Paper 7: Stam & van de Ven (2021)";
+  - contains "Sessions 7 and 8";
+  - has exactly 17 "In brief:".
+- **Search (plain file is fine):**
+  - On `#search`, typing "upward causation" lists Chapters including a `#T4` link and a `#P07` link, and at least one `<mark>`.
+  - "Stam" lists Paper 7 under Papers.
+  - Clicking the first chapter result opens its class or paper, and its `#ch-<i>` is within 120px of the top.
+  - "zzqx" shows the no-results sentence.
+  - At 390px the top bar and the search page have no horizontal scroll.
+- **Claude mock.** The speech stub gives two voices (`es-ES` and `en-GB`) and records each utterance's `lang` and `voice`. The mock's `sample` answers "¡Hola! Soy Grokbot. ¿En qué te ayudo?" when the last turn is "hola". On `#home`:
+  - "hola" makes a pick that returns `[]`, then a `sample` whose first turn contains "If the student greets you" and "The classes, in course order";
+  - the utterances' lang is `es-ES`;
+  - the words show the answer;
+  - "Read again" (visible after the answer) speaks again, adding utterances, with no new `sample` call.
+- **The fallback voice.** With a stub that has only an `en-GB` voice, a Spanish answer still speaks, with voice `null` and lang `es-ES`.
+- **Server mode:** a course question sends a body with `hits` (an array) to `/api/course`, and "Read again" replays with no new `/api/speak` request.
+- **Screenshots:** `checks/phone-search.png` (390px, "upward causation" results), `checks/phone-search-dark.png`, and `checks/phone-grokbot-hola.png` (the "hola" answer in the bubble).
+- **Then** do a full run (ALL PAGE CHECKS PASSED) and run `build_static.py`.
+
+### D.8 Tasks
+
+| Task | What it is |
+|---|---|
+| D1 | `ABOUT_TEXT` (and `renderHome` using it), `ES_WORDS`, `textLang`, `askLang` using it, `courseOverview()` |
+| D2 | `SEARCH_STOP`, `searchNorm`, `searchTerms`, `searchIndex`, `searchSnippet`, `searchCourse` |
+| D3 | The search button, the `#search` route, `pendingChapter`, `chapterHit`, `showSearch`, `renderSearch`, the CSS |
+| D4 | The new rule texts and `NO_QUOTE_COURSE`; `chapterContext`, `courseContext`, `searchHits`, `mergePicks`, `cleanPicks` at 3; `askCourse` with hits, pick errors carrying on, and no not-covered branch; rewrite `checks/context-before.txt` |
+| D5 | `voiceFor` with `"default"`, `speakSentence`'s voice line, `chooseVoice` in `streamClaudeAnswer`, `st.lastBlobs` and `textLang` in `speakServerAnswer`, `speakAll`, `replayBlobs`, `gbReplay`, the "Read again" button and CSS |
+| D6 | `server.js` (D.6), `mock_openrouter.mjs`, `test_server.mjs`; ALL SERVER CHECKS PASSED |
+| D7 | `check_page.mjs` (D.7), screenshots, full run, ALL PAGE CHECKS PASSED, `build_static.py` |
+| G5 | **STOP GATE G5** |
+
+---
+
+## Rules for the executor: ZCode + GLM 5.3 Flash, or DeepSeek for Part D (put verbatim in the kickoff)
 
 - **Work only in** `D:/HVL2025/514/workspace/lecture-audio/`.
-- **May edit:** `site/template.html` and `scripts/check_page.mjs`; for Part H also `server.js`, `scripts/mock_openrouter.mjs` and `scripts/test_server.mjs`.
+- **May edit:** `site/template.html` and `scripts/check_page.mjs`; for Parts H and D also `server.js`, `scripts/mock_openrouter.mjs`, `scripts/test_server.mjs` and `checks/context-before.txt`.
 - **May create:** `server.js`, `package.json`, `package-lock.json`, `scripts/mock_openrouter.mjs`, `scripts/test_server.mjs`, `scripts/sync_knowledge.py`, `scripts/check_outbox.py`, `GROKBOT_TEST.md`, `checks/grokbot_tests.json` and `checks/context-before.txt`.
 - **May tick:** `PROGRESS_GROKBOT_ZCODE.md`.
 - **May run**, from `D:/HVL2025/514`:
@@ -1166,6 +1536,8 @@ Every other chat call still replies "First sentence. Second sentence.".
 | G1 | **STOP GATE G1** |
 | H1–H9 | Part H, Grokbot the floating avatar (table in H.7); it comes right after G1 and before B1 |
 | G4 | **STOP GATE G4** (it also closes G1) |
+| D1–D7 | Part D (DeepSeek), the friendlier Grokbot and the search page (table in D.8) |
+| G5 | **STOP GATE G5** |
 | B1 | `sync_knowledge.py` |
 | B2 | Its default run, which must report "pack unchanged" |
 | G2 | **STOP GATE G2** |
@@ -1208,5 +1580,17 @@ Every other chat call still replies "First sentence. Second sentence.".
     - ask "What is upward causation?" on the front page;
     - ask a Spanish question;
     - then approve G4.
+- **G5:**
+  - **Checks:** the manifest is unchanged; `test_server.mjs` and `check_page.mjs` pass in full; `context-before.txt` was rewritten on purpose (D4).
+  - **Screenshots:** read `phone-search*.png` and `phone-grokbot-hola.png`.
+  - **Code review:**
+    - `ABOUT_TEXT` and the search code sit before the first `route()`;
+    - the search escapes everything it shows;
+    - every Paper 2 path carries a do-not-quote rule;
+    - "Read again" never calls `/api/speak` twice;
+    - the page talks only to `sample` or to `/api/*`.
+  - **Claude's own look** in the browser pane: "hola", "¿quién enseña la clase 4?", "What is upward causation?", the search page at 390px and 1280px, and "Read again".
+  - **Publish:** the scan, a push (Canner redeploys) and a republish of the claude.ai link.
+  - **You** test both sites on your phone, then approve G5.
 - **G2:** `sync_knowledge.py` (no flags) prints "pack unchanged"; at the next content change, `--push`.
 - **G3:** the 12 watch questions, then `check_outbox.py --pull --since <start>`, all PASS; Claude checks the facts; you approve.
