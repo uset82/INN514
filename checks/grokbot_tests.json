@@ -1,0 +1,110 @@
+[
+  {
+    "id": "class-4-3",
+    "say": "Grok principal, explícame los dos modelos del ecosistema de la clase 4, capítulo 3.",
+    "expected": { "class": "4", "chapter": 3 },
+    "facts": [
+      "At the base sit institutional arrangements.",
+      "Proposition three, downward causation, describes a feedback loop",
+      "The model sorts the ecosystem into three interdependent elements: cultural, social and material."
+    ]
+  },
+  {
+    "id": "class-1-4",
+    "say": "Grok principal, ¿cuál es la diferencia entre STI y DUI en la clase 1, capítulo 4?",
+    "expected": { "class": "1", "chapter": 4 },
+    "facts": [
+      "The first way is called STI, short for science, technology and innovation.",
+      "The knowledge behind it is synthetic knowledge. It is practical, often tacit, built on experience and tied to a particular place and situation."
+    ]
+  },
+  {
+    "id": "class-2-3",
+    "say": "Grok principal, ¿de qué se compone un sistema regional de innovación según la clase 2, capítulo 3?",
+    "expected": { "class": "2", "chapter": 3 },
+    "facts": [
+      "The first subsystem is firms and industries, which are often organised in clusters, together with the public sector.",
+      "The third is support organisations, such as regional authorities, cluster organisations and incubators."
+    ]
+  },
+  {
+    "id": "class-3-2",
+    "say": "Grok principal, sobre equipos, herramientas y tareas, ¿qué dice la clase 3, capítulo 2?",
+    "expected": { "class": "3", "chapter": 2 },
+    "facts": [
+      "In each one, we find teams, tools and tasks.",
+      "They remind us that technology cannot be understood in isolation from its socio-cultural system."
+    ]
+  },
+  {
+    "id": "paper-14-764",
+    "say": "Grok principal, ¿qué cuenta el paper 14 en la página 764?",
+    "expected": { "paper": 14, "page": 764 },
+    "facts": [
+      "In 1997 the state railway decided to end operations.",
+      "The deal combined institutional and Schumpeterian entrepreneurship.",
+      "in 2018 Parliament decided that the world heritage fjords must be zero emission by 2026"
+    ]
+  },
+  {
+    "id": "paper-1-431",
+    "say": "Grok principal, resume la página 431 del paper 1.",
+    "expected": { "paper": 1, "page": 431 },
+    "facts": [
+      "They trace the national innovation system concept to Freeman (1987), Lundvall (1992) and Nelson (1993).",
+      "economic benefits come primarily from applying knowledge to production"
+    ]
+  },
+  {
+    "id": "paper-7-813",
+    "say": "Grok principal, ¿qué modelos compara el paper 7 en la página 813?",
+    "expected": { "paper": 7, "page": 813 },
+    "facts": [
+      "Isenberg named six domains: policy, finance, culture, support, human capital and markets.",
+      "the authors build a model of ten elements"
+    ]
+  },
+  {
+    "id": "paper-3-14",
+    "say": "Grok principal, ¿cuál es el objetivo del estudio en el paper 3, página 14?",
+    "expected": { "paper": 3, "page": 14 },
+    "facts": [
+      "The authors introduce their study of regional key actors and green industrial restructuring in petroleum-dependent regions.",
+      "The authors respond by combining evolutionary economic geography with institutional work, comparing Hordaland and Rogaland in Western Norway."
+    ]
+  },
+  {
+    "id": "paper-5-323",
+    "say": "Grok principal, habla de la renovación regional en el paper 5, página 323.",
+    "expected": { "paper": 5, "page": 323 },
+    "facts": [
+      "The authors argue that taking part in internationalisation and having related variety are decisive for the degree of regional renewal.",
+      "It concentrates petroleum, seafood and the maritime sector, is often called the gold coast"
+    ]
+  },
+  {
+    "id": "paper-2-brief",
+    "say": "Grok principal, ¿de qué trata el paper 2?",
+    "expected": { "paper": 2, "chapter": 1 },
+    "facts": [
+      "this is a conference paper marked \"paper in preparation, do not quote\"",
+      "Paraphrase it; never quote it."
+    ]
+  },
+  {
+    "id": "paper-4-1",
+    "say": "Grok principal, ¿qué proponen los autores del paper 4?",
+    "expected": { "paper": 4, "chapter": 1 },
+    "facts": [
+      "the authors call for a paradigm shift towards systems dedicated to sustainability, with research on directionality, legitimacy and responsibility",
+      "Among the eight authors are Fagerberg and Andersen."
+    ]
+  },
+  {
+    "id": "out-of-scope",
+    "say": "Grok principal, ¿quién ganó el último partido de fútbol de la Champions?",
+    "expected": {},
+    "expect_not_covered": true,
+    "facts": []
+  }
+]

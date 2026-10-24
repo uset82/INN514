@@ -315,59 +315,44 @@ details.check > summary { cursor: pointer; color: var(--clay-ink); font-size: .9
 .controls .play svg { width: 1.5rem; height: 1.5rem; }
 /* ---------- ask the orb ---------- */
 .chapter .listen { margin-right: var(--sp-2); }
-.ask-btn { display: none; align-items: center; gap: var(--sp-2); min-height: 2.75rem;
-  margin-bottom: var(--sp-4); padding: .4rem 1rem; border: 1px solid var(--line); border-radius: 999px;
-  background: transparent; color: var(--ink); font-size: var(--s-1); font-weight: 500; cursor: pointer;
-  transition: background-color .15s; }
-body.can-ask .ask-btn { display: inline-flex; }
-.ask-btn:hover { background: var(--surface-2); }
 .orb { filter: drop-shadow(0 0 6px color-mix(in srgb, var(--clay) 30%, transparent)); }
-.orb circle { stroke: var(--line); stroke-width: 1.5; }
-/* The orb's body is light in both themes, so its eyes stay dark in both. */
-.orb .eye { fill: #1F1E1D; transform-box: fill-box; transform-origin: center; transition: transform .06s; }
-.orb-defs { position: absolute; width: 0; height: 0; }
-.orb-stop-a { stop-color: #FFFFFF; }
-.orb-stop-b { stop-color: #F0EEE6; }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .orb-stop-a { stop-color: #F2F0E8; }
-  :root:not([data-theme="light"]) .orb-stop-b { stop-color: #C9C6BC; }
-}
-:root[data-theme="dark"] .orb-stop-a { stop-color: #F2F0E8; }
-:root[data-theme="dark"] .orb-stop-b { stop-color: #C9C6BC; }
-.ask-btn .orb { width: 20px; height: 20px; }
-/* The front-page greeting: the orb and where to find it */
-.greet { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--sp-4); align-items: center;
-  padding: var(--sp-4) var(--sp-5); border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface); }
-.greet .orb { width: 56px; height: 56px; }
-.greet h2 { margin: 0 0 var(--sp-1); font-family: var(--sans); font-size: var(--s0); font-weight: 600; line-height: 1.3; }
-.greet p { margin: 0; font-family: var(--serif); font-size: 1.0625rem; line-height: 1.55; color: var(--ink-2); }
-.greet strong { font-weight: 600; color: var(--ink); }
-.greet .greet-off { display: none; margin-top: var(--sp-2); font-family: var(--sans); font-size: var(--s-1); color: var(--muted); }
-body.ask-checked:not(.can-ask) .greet .greet-off { display: block; }
-@media (max-width: 520px) {        /* phone: a smaller orb beside the heading, the text at full width */
-  .greet { row-gap: var(--sp-2); }
-  .greet .orb { width: 44px; height: 44px; }
-  .greet-body { display: contents; }
-  .greet h2 { grid-column: 2; margin: 0; }
-  .greet p { grid-column: 1 / -1; }
-}
-.ask .orb { width: 72px; height: 72px; }
-.orb.thinking { animation: orb-breathe 2.4s ease-in-out infinite; }
-.orb.pulse { transform: scale(1.06); transition: transform .12s; }
-.orb .eye.blink { transform: scaleY(.1); }
-@keyframes orb-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
-.ask { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--sp-2) var(--sp-4); align-items: start;
-  margin: 0 0 var(--sp-5); padding: var(--sp-4); border: 1px solid var(--line); border-radius: var(--r-md); }
-.ask[hidden] { display: none; }
-.ask > .orb { grid-column: 1; grid-row: 1; }
-.ask > :not(.orb) { grid-column: 2; }
-@media (max-width: 520px) {
-  .ask .orb { width: 48px; height: 48px; }
-  .ask > :not(.orb) { grid-column: 1 / -1; }
-  .ask > .ask-title { grid-column: 2; grid-row: 1; }
-}
-.ask-title { margin: 0; align-self: center; font-family: var(--sans); font-size: 1rem; font-weight: 600;
-  line-height: 1.3; }
+/* ---------- Grokbot, the floating avatar ---------- */
+#grokbot { position: fixed; z-index: 8; display: none; }
+body.can-ask #grokbot { display: block; }
+#grokbot [hidden] { display: none !important; }   /* the chips and switch set display, which would beat the hidden attribute */
+.gb-orb { display: block; border: 0; background: none; padding: 0; touch-action: none; cursor: grab; }
+.gb-orb canvas { display: block; width: 72px; height: 72px; }   /* block: no descender gap; the size holds before the first frame */
+@media (max-width: 520px) { .gb-orb canvas { width: 56px; height: 56px; } }
+.gb-orb.dragging { cursor: grabbing; }
+.gb-orb:focus-visible { outline: 2px solid var(--clay-ink); outline-offset: 2px; border-radius: 50%; }
+.gb-bubble { position: fixed; z-index: 9; background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r-lg); box-shadow: 0 6px 24px color-mix(in srgb, var(--ink) 14%, transparent); }
+.gb-inner { max-height: min(70vh, 32rem); overflow-y: auto; padding: var(--sp-4); display: grid; gap: var(--sp-3); }
+.gb-bubble::after { content: ""; position: absolute; width: 14px; height: 14px; background: var(--surface);
+  border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); transform: rotate(45deg);
+  left: calc(var(--tail, 24px) - 7px); bottom: -8px; }
+.gb-bubble[data-side="below"]::after { top: -8px; bottom: auto; border-right: 0; border-bottom: 0;
+  border-left: 1px solid var(--line); border-top: 1px solid var(--line); }
+.gb-top { display: flex; align-items: center; gap: var(--sp-2); }
+.gb-head { flex: 1; min-width: 0; margin: 0; font-family: var(--sans); font-size: var(--s-1); font-weight: 600;
+  line-height: 1.35; }
+.gb-switch { flex: none; height: 2rem; padding: 0 .7rem; border: 1px solid var(--line); border-radius: 999px;
+  background: none; color: var(--ink); font-size: var(--s-1); font-weight: 500; cursor: pointer;
+  transition: background-color .15s; }
+.gb-switch:hover { background: var(--surface-2); }
+.gb-close { flex: none; display: grid; place-items: center; width: 2rem; height: 2rem; border: 0;
+  border-radius: 999px; background: none; color: var(--muted); font-size: 1.125rem; line-height: 1; cursor: pointer;
+  transition: background-color .15s; }
+.gb-close:hover { background: var(--surface-2); color: var(--ink); }
+.gb-hello { margin: 0; font-family: var(--serif); color: var(--ink-2); font-size: 1.0625rem; line-height: 1.6; }
+.gb-hint { margin: 0; color: var(--muted); font-size: var(--s-1); }
+.gb-words { margin: 0; font-family: var(--serif); font-size: 1.0625rem; line-height: 1.6; white-space: pre-line;
+  max-height: 12rem; overflow-y: auto; }
+.gb-words:empty { display: none; }
+.gb-src { margin: 0; color: var(--muted); font-size: var(--s-1); line-height: 1.45; }
+.gb-src:empty { display: none; }
+.howto > .gb-only { display: none; }
+body.can-ask .howto > .gb-only { display: grid; }
 .ask-pass { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; }
 .ask-pass[hidden] { display: none; }
 .ask-pass label { flex: 1 1 auto; min-width: 0; color: var(--muted); font-size: var(--s-1); }
@@ -395,16 +380,9 @@ body.ask-checked:not(.can-ask) .greet .greet-off { display: block; }
 .ask-text { margin: 0; font-family: var(--serif); font-size: 1.125rem; line-height: 1.7; max-width: 65ch; white-space: pre-line; }
 .ask-note { margin: 0; color: var(--muted); font-size: var(--s-1); line-height: 1.45; }
 @media (prefers-reduced-motion: reduce) {
-  .orb.thinking { animation: none; }
-  .orb.pulse { transform: none; }
-  .orb .eye.blink { transform: none; }
-}
-@media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
 </style>
-
-<svg class="orb-defs" aria-hidden="true"><defs><radialGradient id="orbFill"><stop class="orb-stop-a" offset="0%"></stop><stop class="orb-stop-b" offset="100%"></stop></radialGradient></defs></svg>
 
 <a class="skip" href="#view">Skip to content</a>
 <header class="topbar">
@@ -445,6 +423,40 @@ body.ask-checked:not(.can-ask) .greet .greet-off { display: block; }
   <audio id="audio" preload="metadata"></audio>
 </div>
 
+<div id="grokbot">
+  <button class="gb-orb" type="button" aria-label="Ask Grokbot" aria-expanded="false"><canvas class="orb" aria-hidden="true"></canvas></button>
+  <section class="gb-bubble" role="dialog" aria-label="Grokbot" tabindex="-1" hidden>
+    <div class="gb-inner">
+      <div class="gb-top">
+        <p class="gb-head"></p>
+        <button class="gb-switch" type="button"></button>
+        <button class="gb-close" type="button" aria-label="Close">×</button>
+      </div>
+      <p class="gb-hello"></p>
+      <p class="gb-hint">You can drag me anywhere on the page.</p>
+      <div class="ask-pass" hidden>
+        <label for="gb-pass">Enter the passcode to ask questions</label>
+        <input id="gb-pass" type="password" autocomplete="off">
+        <button type="button">OK</button>
+      </div>
+      <div class="ask-chips">
+        <button type="button">Explain this simply</button>
+        <button type="button">Give me an example</button>
+        <button type="button">What could the exam ask?</button>
+        <button type="button">Key terms</button>
+      </div>
+      <div class="ask-form">
+        <input class="ask-input" type="text">
+        <button class="ask-send" type="button">Ask</button>
+      </div>
+      <p class="gb-words"></p>
+      <p class="gb-src"></p>
+      <p class="ask-status" aria-live="polite"></p>
+      <p class="ask-note"></p>
+    </div>
+  </section>
+</div>
+
 <script>
 const DATA = /*DATA*/;
 const $ = (id) => document.getElementById(id);
@@ -453,7 +465,6 @@ const view = $("view");
 const RATES = [1, 1.15, 1.3, 0.9];
 const PLAY = '<path d="M8 5v14l11-7z"/>', PAUSE = '<path d="M7 5h4v14H7zm6 0h4v14h-4z"/>';
 const PLAY_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
-const ORB_SVG = '<svg class="orb" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="26" fill="url(#orbFill)"></circle><g transform="rotate(8 25.5 31)"><rect class="eye" x="23" y="26" width="5" height="10" rx="2.5"></rect></g><g transform="rotate(-8 38.5 31)"><rect class="eye" x="36" y="26" width="5" height="10" rx="2.5"></rect></g></svg>';
 
 let store = {};
 try { store = JSON.parse(localStorage.getItem("inn514-companion") || "{}") || {}; } catch (e) { store = {}; }
@@ -585,14 +596,6 @@ function renderHome() {
       </div>
       <p class="lede">Every class of the course explained in plain English, and every paper on the reading list summarised page by page. Listen on the way, read at your desk, and check yourself after each chapter.</p>
       ${resumeHtml}
-      <section class="greet" aria-labelledby="greet-h">
-        ${ORB_SVG}
-        <div class="greet-body">
-          <h2 id="greet-h">Ask about any chapter</h2>
-          <p>Grokbot, the orb on every chapter, answers your questions out loud from that chapter's text. Open a class or a paper and tap <strong>Ask about this chapter</strong>.</p>
-          <p class="greet-off">Asking isn't switched on in this copy of the site yet.</p>
-        </div>
-      </section>
     </section>
     <div class="doors">
       <a class="door" href="#classes" data-door="classes" style="--p:${pct(ct)}">
@@ -623,6 +626,7 @@ function renderHome() {
         <div><dt>Read</dt><dd>The paragraph being read is highlighted. Turn off Follow if you want to scroll on your own.</dd></div>
         <div><dt>Check yourself</dt><dd>Each chapter ends with a question or two. The answer stays hidden until you open it.</dd></div>
         <div><dt>Your progress</dt><dd>Chapters you have heard are marked, and saved in this browser only.</dd></div>
+        <div class="gb-only"><dt>Ask</dt><dd>Tap Grokbot, the round face in the corner, and ask a question. It answers out loud and in writing, and says where the answer comes from. Drag it anywhere it's in the way.</dd></div>
       </dl>
     </section>
     <section class="home-section">
@@ -734,28 +738,6 @@ function renderLecture(id) {
           <h2><span class="chno">${ch.n}</span><span>${esc(ch.title)}</span></h2>
           <p class="src">${srcHtml(ch)}</p>
           <button class="listen" data-i="${i}">${PLAY_SVG}Listen to this chapter</button>
-          <button class="ask-btn" type="button" data-i="${i}">${ORB_SVG}Ask about this chapter</button>
-          <section class="ask" hidden data-i="${i}">
-            ${ORB_SVG}
-            <h3 class="ask-title">Ask about this chapter</h3>
-            <div class="ask-pass" hidden>
-              <label for="ask-pass-${id}-${i}">Enter the passcode to ask questions</label>
-              <input id="ask-pass-${id}-${i}" type="password" autocomplete="off">
-              <button type="button">OK</button>
-            </div>
-            <div class="ask-chips">
-              <button type="button">Explain this simply</button>
-              <button type="button">Give me an example</button>
-              <button type="button">What could the exam ask?</button>
-              <button type="button">Key terms</button>
-            </div>
-            <div class="ask-form">
-              <input class="ask-input" type="text" placeholder="Or type your own question…" aria-label="Or type your own question">
-              <button class="ask-send" type="button">Ask</button>
-            </div>
-            <p class="ask-status" aria-live="polite"></p>
-            <p class="ask-note">Answers are written by AI from this chapter's text and read aloud by your device.</p>
-          </section>
           ${parasHtml(ch)}
           ${ch.checks.length ? `<details class="check"><summary>Check yourself (${ch.checks.length})</summary><div class="qa">${ch.checks.map((q) => `
             <div><p class="q">${esc(q.q)}</p><details><summary>Show answer</summary><p>${esc(q.a)}</p></details></div>`).join("")}</div></details>` : ""}
@@ -765,7 +747,6 @@ function renderLecture(id) {
     ${whereNext(c, reading)}`;
   $("startBtn").onclick = () => (pos ? resume(pos) : play(id, 0, true));
   view.querySelectorAll(".chapters .body, .listen").forEach((b) => (b.onclick = () => play(id, +b.dataset.i, true)));
-  view.querySelectorAll(".ask-btn").forEach((b) => (b.onclick = () => askToggle(id, +b.dataset.i, b.parentElement.querySelector(".ask"))));
   refreshProgress();
 }
 
@@ -889,8 +870,8 @@ audio.addEventListener("timeupdate", () => {
   if (audio.duration && t / d >= 0.9) markDone(pl.id, plIdx);
   store.pos = { lecture: pl.id, chapter: plIdx, time: Math.floor(t) }; save();
 });
-audio.addEventListener("play", () => ($("playIcon").innerHTML = PAUSE));
-audio.addEventListener("pause", () => ($("playIcon").innerHTML = PLAY));
+audio.addEventListener("play", () => { $("playIcon").innerHTML = PAUSE; gbMoveTo(gbPos); });
+audio.addEventListener("pause", () => { $("playIcon").innerHTML = PLAY; gbMoveTo(gbPos); });
 audio.addEventListener("ended", () => {
   if (!pl) return;
   markDone(pl.id, plIdx);
@@ -968,10 +949,340 @@ $("themeBtn").onclick = () => {
 };
 darkQuery.addEventListener("change", showThemeButton);
 showThemeButton();
+/* Grokbot's face: the site's orb, moved by the watch avatar's formulas. */
+const GB_EYES = [{ x: -0.25, y: -0.04, tilt: 8 }, { x: 0.25, y: -0.04, tilt: -8 }];   // the old ORB_SVG eyes, in units of R
+const GB_EYE_W = 0.19, GB_EYE_H = 0.385;
+function gbHash(k) { let h = (k * 2654435761) >>> 0; h ^= h >>> 13; return (h % 1000) / 1000; }
+function gbSmooth(e0, e1, x) { const t = Math.min(1, Math.max(0, (x - e0) / (e1 - e0))); return t * t * (3 - 2 * t); }
+function gbBlink(t, period) {
+  const k = Math.floor(t / period), at = k * period + 1 + gbHash(k + 7) * (period - 2), d = t - at;
+  return d >= 0 && d < 0.12 ? 0.1 : 1;
+}
+function gbLevel(t) { return Math.min(1, Math.abs(Math.sin(t * 7.1) * Math.sin(t * 2.3)) * 0.9 + 0.1); }
+let gbCol = null;                 // the face's colours for the current theme
+function gbColors() {
+  const cs = getComputedStyle(document.documentElement), dark = effectiveTheme() === "dark";
+  gbCol = { a: dark ? "#F2F0E8" : "#FFFFFF", b: dark ? "#C9C6BC" : "#F0EEE6",
+            rim: cs.getPropertyValue("--line").trim(), accent: cs.getPropertyValue("--clay").trim() };
+}
+function gbDraw(ctx, size, mode, t) {
+  let scale = 1, ox = 0, oy = 0, gx = 0, gy = 0, eyeH = 1;
+  const rings = [], dots = [], level = gbLevel(t);
+  if (mode === "idle" || mode === "happy") {
+    scale = 1 + 0.015 * Math.sin(2 * Math.PI * t / 4); eyeH *= gbBlink(t, 5);
+    const ph = t % 9, g = gbSmooth(0, 0.25, ph) * (1 - gbSmooth(1.2, 1.45, ph)); gx = -0.10 * g; gy = 0.06 * g;
+  }
+  if (mode === "happy") { oy = -0.08 * Math.abs(Math.sin(2 * Math.PI * 2 * t)); eyeH *= 0.45; }
+  if (mode === "thinking") {
+    gx = -0.05 + 0.06 * Math.sin(2 * Math.PI * t / 2.5); gy = -0.10; eyeH *= gbBlink(t, 2.5);
+    for (let k = 0; k < 3; k++) {
+      const ang = 2 * Math.PI * t / 1.6 + k * 2 * Math.PI / 3;
+      dots.push({ x: 1.22 * Math.cos(ang), y: 1.22 * Math.sin(ang), r: 0.065 });
+    }
+  }
+  if (mode === "speaking") { scale = 1 + 0.06 * level; gx = -0.12; gy = 0.04; eyeH *= 0.70 + 0.30 * (1 - level); rings.push({ r: 1.10, hw: 0.02, a: 0.30 * level }); }
+  if (mode === "error") { const mt = t % 2.5; ox = 0.07 * Math.sin(2 * Math.PI * 5 * mt) * Math.exp(-2 * mt); gy = 0.08; eyeH *= 0.25; }
+  const R = 0.34 * size, Rs = R * scale, cx = size / 2 + ox * R, cy = size / 2 + oy * R;
+  ctx.clearRect(0, 0, size, size);
+  for (const r of rings) {
+    ctx.globalAlpha = Math.max(0, r.a); ctx.strokeStyle = gbCol.accent; ctx.lineWidth = 2 * r.hw * R;
+    ctx.beginPath(); ctx.arc(cx, cy, r.r * R, 0, 2 * Math.PI); ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = gbCol.accent;
+  for (const d of dots) { ctx.beginPath(); ctx.arc(cx + d.x * R, cy + d.y * R, d.r * R, 0, 2 * Math.PI); ctx.fill(); }
+  const body = ctx.createRadialGradient(cx, cy, 0, cx, cy, Rs);
+  body.addColorStop(0, gbCol.a); body.addColorStop(1, gbCol.b);
+  ctx.fillStyle = body; ctx.beginPath(); ctx.arc(cx, cy, Rs, 0, 2 * Math.PI); ctx.fill();
+  ctx.strokeStyle = gbCol.rim; ctx.lineWidth = 1.5; ctx.stroke();
+  ctx.fillStyle = "#1F1E1D";        // the body is light in both themes, so the eyes stay dark in both
+  for (const e of GB_EYES) {
+    const w = GB_EYE_W * Rs, h = Math.max(0.5, GB_EYE_H * eyeH * Rs);
+    ctx.save(); ctx.translate(cx + (e.x + gx) * Rs, cy + (e.y + gy) * Rs); ctx.rotate(e.tilt * Math.PI / 180);
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(-w / 2, -h / 2, w, h, w / 2); else ctx.rect(-w / 2, -h / 2, w, h);   // older browsers: square eyes
+    ctx.fill(); ctx.restore();
+  }
+}
+let gbRaf = 0, gbHappyUntil = 0, gbErrorUntil = 0;
+const gbReduce = matchMedia("(prefers-reduced-motion: reduce)");
+function gbMode(now) {
+  const busy = gb._ask && gb._ask.busy;
+  if (now < gbHappyUntil) return "happy";
+  if (now < gbErrorUntil) return "error";
+  if (busy === "Thinking…") return "thinking";
+  if (busy === "Speaking…") return "speaking";
+  return "idle";
+}
+function gbFrame(now) {
+  gbRaf = 0;
+  const cv = gb.querySelector("canvas.orb"), s = gbSize(), dpr = window.devicePixelRatio || 1;
+  if (cv.width !== Math.round(s * dpr)) { cv.width = cv.height = Math.round(s * dpr); cv.style.width = cv.style.height = s + "px"; }
+  const ctx = cv.getContext("2d");
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  if (gbReduce.matches) { gbDraw(ctx, s, "idle", 0); return; }      // one still frame: open eyes, no motion
+  gbDraw(ctx, s, gbMode(now), now / 1000 + 2);
+  if (!document.hidden && document.body.classList.contains("can-ask")) gbRaf = requestAnimationFrame(gbFrame);
+}
+function gbKick() { if (!gbRaf) gbRaf = requestAnimationFrame(gbFrame); }
+gbReduce.addEventListener("change", gbKick);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) gbKick(); });
+darkQuery.addEventListener("change", () => { gbColors(); gbKick(); });
+new MutationObserver(() => { gbColors(); gbKick(); }).observe(document.documentElement, { attributeFilter: ["data-theme"] });
+const GB_POS_KEY = "inn514-grokbot-pos", GB_MOVED_KEY = "inn514-grokbot-moved";
+const gb = $("grokbot");          // the panel the ask helpers use: it holds the .orb and every .ask-* element
+let gbPos = null;                 // the orb's top-left corner, in CSS px
+let gbCtx = null;                 // the context the bubble shows: { mode: "chapter", id, i } or { mode: "course" }
+let gbCourse = false;             // "Whole course" chosen on this route
+gb._ask = { hist: [], first: true, ctl: null, busy: "", pending: null };
+function gbSize() { return matchMedia("(max-width: 520px)").matches ? 56 : 72; }
+function gbBounds() {
+  const top = document.querySelector(".topbar").getBoundingClientRect().bottom + 8;
+  const p = document.querySelector(".player").getBoundingClientRect();
+  const bottom = (p.height > 0 ? Math.min(innerHeight, p.top) : innerHeight) - 8;
+  return { top, bottom };
+}
+function gbClamp(pos) {
+  const s = gbSize(), b = gbBounds();
+  return { x: Math.min(Math.max(16, pos.x), innerWidth - s - 16), y: Math.min(Math.max(b.top, pos.y), b.bottom - s) };
+}
+function gbMoveTo(pos) {
+  gbPos = gbClamp(pos);
+  gb.style.left = gbPos.x + "px"; gb.style.top = gbPos.y + "px";
+  if (!gb.querySelector(".gb-bubble").hidden) gbPlace();
+}
+function gbSave() {
+  try { localStorage.setItem(GB_POS_KEY, JSON.stringify(gbPos)); localStorage.setItem(GB_MOVED_KEY, "1"); } catch (e) {}
+  gb.querySelector(".gb-hint").hidden = true;
+}
+function gbStart() {
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(GB_POS_KEY) || "null"); } catch (e) {}
+  const s = gbSize();
+  gbMoveTo(saved && Number.isFinite(saved.x) && Number.isFinite(saved.y) ? saved : { x: innerWidth - s - 16, y: gbBounds().bottom - s });
+  try { gb.querySelector(".gb-hint").hidden = localStorage.getItem(GB_MOVED_KEY) === "1"; } catch (e) {}
+}
+function gbPlace() {
+  const b = gb.querySelector(".gb-bubble"), s = gbSize(), gap = 12;
+  const w = innerWidth <= 520 ? innerWidth - 32 : Math.min(352, innerWidth - 32);   // 352px = 22rem
+  b.style.width = w + "px";
+  const h = b.offsetHeight, above = gbPos.y - gap - h >= 16;
+  const top = above ? gbPos.y - gap - h : Math.min(gbPos.y + s + gap, innerHeight - h - 16);
+  const mid = gbPos.x + s / 2;
+  const left = Math.min(Math.max(16, mid > innerWidth / 2 ? gbPos.x + s - w : gbPos.x), innerWidth - w - 16);
+  b.style.left = left + "px"; b.style.top = Math.max(16, top) + "px";
+  b.dataset.side = above ? "above" : "below";
+  b.style.setProperty("--tail", Math.min(Math.max(20, mid - left), w - 20) + "px");
+}
+function gbOpen() {
+  const b = gb.querySelector(".gb-bubble");
+  b.hidden = false; gbOrb.setAttribute("aria-expanded", "true");
+  openAsk = gb;                   // askServer reads the open panel
+  gbRender(gbContext());
+  gbPlace();
+  // A mouse goes straight to typing; on a touch screen the keyboard waits until the student taps the input.
+  gb.querySelector(matchMedia("(pointer: fine)").matches ? ".ask-input" : ".gb-bubble").focus({ preventScroll: true });
+}
+function gbClose() {
+  stopAsk(gb);
+  gb.querySelector(".gb-bubble").hidden = true; gbOrb.setAttribute("aria-expanded", "false");
+  gb._ask = { hist: [], first: true, ctl: null, busy: "", pending: null };   // work still running sees a new state and stops
+  gbCtx = null; gbCourse = false;
+  if (openAsk === gb) openAsk = null;
+}
+const gbOrb = gb.querySelector(".gb-orb");
+let gbDraggedAt = -1e9;           // when the last drag ended
+gbOrb.addEventListener("pointerdown", (e) => {
+  if (e.button !== 0) return;
+  const sx = e.clientX, sy = e.clientY, start = { ...gbPos };
+  let dragging = false;
+  gbOrb.setPointerCapture(e.pointerId);
+  const move = (ev) => {
+    const dx = ev.clientX - sx, dy = ev.clientY - sy;
+    if (!dragging && Math.hypot(dx, dy) > 6) { dragging = true; gbOrb.classList.add("dragging"); }
+    if (dragging) gbMoveTo({ x: start.x + dx, y: start.y + dy });
+  };
+  const end = (ev) => {
+    gbOrb.removeEventListener("pointermove", move); gbOrb.removeEventListener("pointerup", end); gbOrb.removeEventListener("pointercancel", end);
+    gbOrb.classList.remove("dragging");
+    if (dragging && ev.type === "pointerup") gbMoveTo({ x: start.x + ev.clientX - sx, y: start.y + ev.clientY - sy });
+    // A mouse sends a click right after a drag, which is not a tap; a touch drag sends none, so
+    // only a click within half a second of the drag is ignored, and the next real tap still works.
+    if (dragging) { gbSave(); gbDraggedAt = performance.now(); }
+  };
+  gbOrb.addEventListener("pointermove", move); gbOrb.addEventListener("pointerup", end); gbOrb.addEventListener("pointercancel", end);
+});
+gbOrb.addEventListener("click", () => {
+  if (performance.now() - gbDraggedAt < 500) return;
+  gbHappyUntil = performance.now() + 1000; gbKick();
+  if (gb.querySelector(".gb-bubble").hidden) gbOpen(); else gbClose();
+});
+gbOrb.addEventListener("keydown", (e) => {
+  const step = e.shiftKey ? 64 : 16;
+  const d = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] }[e.key];
+  if (!d) return;
+  e.preventDefault(); gbMoveTo({ x: gbPos.x + d[0], y: gbPos.y + d[1] }); gbSave();
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !gb.querySelector(".gb-bubble").hidden) { gbClose(); gbOrb.focus(); }
+});
+function gbChapterInView(id) {
+  if (pl === DATA.lectures[id] && !audio.paused) return plIdx;
+  let i = 0;
+  document.querySelectorAll("#view section.chapter").forEach((s, k) => { if (s.getBoundingClientRect().top < innerHeight * 0.4) i = k; });
+  return i;
+}
+function gbContext() {
+  if (viewId && DATA.lectures[viewId] && !gbCourse) return { mode: "chapter", id: viewId, i: gbChapterInView(viewId) };
+  return { mode: "course" };
+}
+const gbSame = (a, b) => !!a && !!b && a.mode === b.mode && a.id === b.id && a.i === b.i;
+function gbRender(ctx) {
+  if (!gbSame(ctx, gbCtx)) {        // a new chapter or mode starts a new conversation
+    stopAsk(gb);
+    gb._ask = { hist: [], first: true, ctl: null, busy: "", pending: null };
+    gb.querySelector(".gb-words").textContent = ""; gb.querySelector(".gb-src").textContent = "";
+  }
+  gbCtx = ctx;
+  const chapter = ctx.mode === "chapter", onLecture = !!(viewId && DATA.lectures[viewId]);
+  const head = gb.querySelector(".gb-head"), sw = gb.querySelector(".gb-switch"), input = gb.querySelector(".ask-input");
+  if (chapter) {
+    const c = entry(ctx.id), ch = DATA.lectures[ctx.id].chapters[ctx.i];
+    head.textContent = "About " + className(c) + ", chapter " + ch.n + ": " + ch.title;
+  } else head.textContent = "About the whole course";
+  sw.hidden = !onLecture; sw.textContent = chapter ? "Whole course" : "This chapter";
+  gb.querySelector(".gb-hello").textContent = chapter
+    ? "Hi, I'm Grokbot. Ask me about this chapter and I'll answer out loud."
+    : "Hi, I'm Grokbot. Ask me anything about the classes or the papers. I'll answer out loud and say where it comes from.";
+  gb.querySelector(".gb-hello").hidden = !!gb.querySelector(".gb-words").textContent;
+  input.placeholder = chapter ? "Ask about this chapter…" : "Ask about any class or paper…";
+  input.setAttribute("aria-label", input.placeholder);
+  gb.querySelector(".ask-chips").hidden = !chapter;
+  gb.querySelector(".ask-note").textContent = askMode === "server"
+    ? (chapter ? SERVER_ASK_NOTE : COURSE_SERVER_NOTE) : (chapter ? DEVICE_ASK_NOTE : COURSE_DEVICE_NOTE);
+  if (!gb.querySelector(".gb-bubble").hidden) gbPlace();
+}
+function caption(panel, text) {         // the words appear part by part as they are spoken
+  const w = panel.querySelector(".gb-words");
+  w.textContent += (w.textContent ? " " : "") + text.trim();
+  w.scrollTop = w.scrollHeight;
+  panel.querySelector(".gb-hello").hidden = true;
+}
+function gbAsk(question, isChip) {
+  const ctx = gbContext();
+  gbRender(ctx);
+  gb.querySelector(".gb-words").textContent = ""; gb.querySelector(".gb-src").textContent = "";
+  if (ctx.mode === "chapter") askSend(ctx.id, ctx.i, gb, question, isChip);
+  else askCourse(gb, question);
+}
+function courseIndex() {   // one line per chapter, classes first (DATA.catalog order), then papers (DATA.readings order)
+  const lines = [];
+  for (const c of DATA.catalog) for (const ch of DATA.lectures[c.id].chapters)
+    lines.push(`${c.id} ${ch.n}: ${className(c)}, ${c.title}; chapter ${ch.n}: ${ch.title}`);
+  for (const c of READINGS) for (const ch of DATA.lectures[c.id].chapters)
+    lines.push(`${c.id} ${ch.n}: ${className(c)}, ${c.authors} (${c.year}), ${c.title}; chapter ${ch.n}: ${ch.title}`);
+  return lines.join("\n");
+}
+function chapterIndexOf(id, n) { return DATA.lectures[id].chapters.findIndex((ch) => ch.n === n); }
+function cleanPicks(arr) {
+  const out = [];
+  for (const p of (Array.isArray(arr) ? arr : [])) {
+    if (!p || typeof p.id !== "string" || !DATA.lectures[p.id]) continue;
+    if (!Number.isInteger(p.chapter) || chapterIndexOf(p.id, p.chapter) < 0) continue;
+    if (out.some((q) => q.id === p.id && q.chapter === p.chapter)) continue;
+    out.push({ id: p.id, chapter: p.chapter });
+    if (out.length === 2) break;
+  }
+  return out;
+}
+function showSources(panel, picks) {
+  const src = panel.querySelector(".gb-src");
+  src.textContent = "";
+  if (!picks.length) return;
+  const links = picks.map((p) => {
+    const c = entry(p.id), ch = DATA.lectures[p.id].chapters[chapterIndexOf(p.id, p.chapter)];
+    const a = document.createElement("a");
+    a.href = "#" + p.id;
+    a.textContent = `${className(c)}, chapter ${ch.n}: ${ch.title}`;
+    return a;
+  });
+  src.append("From ", ...links.flatMap((a, k) => (k ? ["; ", a] : [a])));
+}
+async function askCourse(panel, question) {
+  const st = panel._ask;
+  const lang = askLang(question, false);
+  if (askMode === "server" && !serverPass) {
+    st.pending = { question, course: true };
+    const row = panel.querySelector(".ask-pass");
+    row.hidden = false;
+    row.querySelector("input").focus();
+    return;
+  }
+  if (st.ctl) st.ctl.abort();
+  if ("speechSynthesis" in window) speechSynthesis.cancel();
+  if (orbAudio) orbAudio.pause();
+  const ctl = new AbortController();
+  st.ctl = ctl;
+  serverSetBusy(panel, "Thinking…");
+  try {
+    if (askMode === "claude") {
+      let picks;
+      try {
+        picks = cleanPicks(await sampleFn.json(PICK_RULES + "\n\n" + courseIndex() + "\n\nQuestion: " + question, { modelTier: "quick", signal: ctl.signal, cache: false }));
+      } catch (e) {
+        if (ctl.signal.aborted || panel._ask !== st) return;
+        serverClearBusy(panel);
+        claudeError(panel, e);
+        return;
+      }
+      if (ctl.signal.aborted || panel._ask !== st) return;
+      if (!picks.length) {
+        serverClearBusy(panel);
+        const sentence = lang === "es-ES" ? NOT_COVERED_ES : NOT_COVERED_EN;
+        const voice = await voiceFor(lang);
+        if (ctl.signal.aborted || panel._ask !== st) return;
+        if (voice) speakSentence(panel, sentence, voice, lang, () => { audio.pause(); caption(panel, sentence); });
+        else {
+          panel.querySelector(".gb-words").textContent = "This device has no voice, so the answer is only written.\n" + sentence;
+          panel.querySelector(".gb-hello").hidden = true;
+        }
+        return;
+      }
+      showSources(panel, picks);
+      const turns = [
+        { role: "user", content: COURSE_RULES + (picks.some((p) => p.id === "P02") ? NO_QUOTE : "") + "\n\n" + picks.map((p) => chapterBlock(p.id, chapterIndexOf(p.id, p.chapter))).join("\n\n") },
+        { role: "user", content: question },
+      ];
+      streamClaudeAnswer(panel, turns, lang, false, null);
+      return;
+    }
+    if (askMode !== "server") { serverClearBusy(panel); return; }
+    const r = await fetch("/api/course", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Grokbot-Passcode": serverPass },
+      body: JSON.stringify({ question }),
+      signal: ctl.signal,
+    });
+    if (!r.ok) { const e = new Error("Course ask failed"); e.status = r.status; throw e; }
+    const out = await r.json();
+    if (ctl.signal.aborted || panel._ask !== st) return;
+    showSources(panel, out.sources || []);
+    await speakServerAnswer(panel, String(out.text || "").trim(), lang, ctl);
+  } catch (e) {
+    if (ctl.signal.aborted || panel._ask !== st) return;
+    serverError(panel, e);
+  }
+}
 route();
 /* ---------- ask the orb ---------- */
 const RULES = "You are a study helper for the master's course INN514, \"Innovation systems and sustainable transformation\". Answer the student's question about one chapter of the course companion, using only the chapter text below. Your answer will be read aloud by a speech engine, so write plain spoken sentences: no lists, no headings, no symbols, no brackets. Use 3 to 6 sentences unless the student asks for more. Answer in the language of the student's question. Say where it comes from, using the slide or page numbers in the chapter, in words (\"on page 764\"). If the chapter does not answer the question, say so in one sentence. Never invent authors, numbers, dates or quotations.";
 const NO_QUOTE = " This paper is marked \"paper in preparation, do not quote\": paraphrase it and never quote it.";
+const PICK_RULES = "You choose where in the INN514 course companion a student's question is answered. Below is the list of chapters, one per line, as \"ID N: description\". Reply with only a JSON array of at most two objects like {\"id\": \"T4\", \"chapter\": 3} for the chapters most likely to answer the question, best first, or [] if none of them covers it.";
+const COURSE_RULES = "You are a study helper for the master's course INN514, \"Innovation systems and sustainable transformation\". Answer the student's question using only the chapters below from the course companion. Your answer will be read aloud by a speech engine, so write plain spoken sentences: no lists, no headings, no symbols, no brackets. Use 3 to 6 sentences unless the student asks for more. Answer in the language of the student's question. Say which class or paper and which chapter the answer comes from, in words, and give the page when the chapter gives one. If the chapters do not answer the question, say so in one sentence. Never invent authors, numbers, dates or quotations.";
+const NOT_COVERED_EN = "I couldn't find that in the course companion. Try asking about a class or a paper in other words.";
+const NOT_COVERED_ES = "No encontré eso en el compañero del curso. Prueba a preguntarlo de otra forma.";
+const COURSE_SERVER_NOTE = "Answers are written by a free AI model from the course companion's text and read aloud by an AI voice. Don't type personal details.";
+const COURSE_DEVICE_NOTE = "Answers are written by AI from the course companion's text and read aloud by your device.";
 const CHIPS = [
   ["Explain this simply", "Explain this chapter simply, as if to a first-year student."],
   ["Give me an example", "Give me one concrete example that makes this chapter's main idea clear, preferably one from the chapter."],
@@ -993,13 +1304,17 @@ let sampleFn = null;             // claude mode: the page's "ask" function
   } catch (e) { askMode = null; }
   document.body.classList.toggle("can-ask", !!askMode);
   document.body.classList.add("ask-checked");      // the front-page greeting may now say if asking is off
+  gbKick();
 })();
-function chapterContext(id, i) {
+function chapterBlock(id, i) {
   const c = entry(id), ch = DATA.lectures[id].chapters[i], reading = isReading(id);
   const where = reading ? `${className(c)}, chapter ${ch.n}: ${ch.title}. ${c.authors} (${c.year}). ${pagesText(ch.pages)}.`
                         : `${className(c)}, chapter ${ch.n}: ${ch.title}. ${c.teacher}. ${slideText(ch.slides)}.`;
   const body = ch.paragraphs.map((p, k) => (ch.labels && ch.labels[k] ? ch.labels[k] + ": " : "") + p).join("\n\n");
-  return RULES + (id === "P02" ? NO_QUOTE : "") + "\n\nChapter: " + where + "\n---\n" + body + "\n---";
+  return "Chapter: " + where + "\n---\n" + body + "\n---";
+}
+function chapterContext(id, i) {
+  return RULES + (id === "P02" ? NO_QUOTE : "") + "\n\n" + chapterBlock(id, i);
 }
 /* A4: the device voice. The queue speaks each sentence as it arrives; text is only the backup. */
 function askLang(q, isChip) {
@@ -1054,60 +1369,39 @@ function stopAsk(panel) {
   panel.querySelector(".ask-status").textContent = "";
 }
 let openAsk = null;              // the one panel that is open, if any
-let blinkTimer = null;           // the open panel's orb blinks every 5 s
-function startBlink(panel) {
-  clearInterval(blinkTimer);
-  blinkTimer = setInterval(() => {
-    const eyes = panel.querySelectorAll(".orb .eye");
-    eyes.forEach((e) => e.classList.add("blink"));
-    setTimeout(() => eyes.forEach((e) => e.classList.remove("blink")), 120);
-  }, 5000);
+function wirePass(panel, resend) {   // the passcode row wiring, moved unchanged from askToggle (H1)
+  const passRow = panel.querySelector(".ask-pass"), passInput = passRow.querySelector("input");
+  const submitPass = () => {
+    if (!panel._ask || !passInput.value) { passInput.focus(); return; }
+    serverPass = passInput.value;
+    try { localStorage.setItem("inn514-grokbot-pass", serverPass); } catch (e) {}
+    passRow.hidden = true;
+    const pending = panel._ask.pending;
+    if (pending) resend(pending);
+  };
+  passRow.querySelector("button").onclick = submitPass;
+  passInput.onkeydown = (e) => { if (e.key === "Enter") submitPass(); };
 }
-function closeAsk(panel) {
-  clearInterval(blinkTimer); blinkTimer = null;
-  stopAsk(panel);
-  panel.hidden = true;
-  panel._ask = null;             // closing the panel clears the chapter's conversation
-  if (openAsk === panel) openAsk = null;
+function claudeError(panel, e) {   // the error table from askSend's catch, moved unchanged (H1)
+  gbErrorUntil = performance.now() + 2500;
+  const status = panel.querySelector(".ask-status");
+  const code = e && e.code;
+  if (code === "not_granted" || code === "sampling_disabled" || code === "not_declared" || code === "capability_disabled" || code === "capability_removed") {
+    document.body.classList.remove("can-ask");
+    status.textContent = "Asking isn't available here.";
+  } else if (code === "rate_limited") status.textContent = "Too many questions right now. Try again in a minute.";
+  else if (code === "session_expired") status.textContent = "Sign in again, then ask.";
+  else if (code === "refused") status.textContent = "That question couldn't be answered. Try asking it another way.";
+  else if (code === "prompt_too_large" || code === "empty_completion") status.textContent = "That was too much at once. Try a shorter question.";
+  else status.textContent = "The answer was interrupted. Ask again.";   // upstream_error and anything else; what was spoken stays spoken
 }
-function askToggle(id, i, panel) {
-  if (!panel.hidden) { closeAsk(panel); return; }
-  if (openAsk && openAsk !== panel) closeAsk(openAsk);
-  panel.hidden = false;
-  panel.querySelector(".ask-note").textContent = askMode === "server" ? SERVER_ASK_NOTE : DEVICE_ASK_NOTE;
-  if (!panel._ask) {
-    panel._ask = { hist: [], first: true, ctl: null, busy: "", pending: null };
-    panel.querySelectorAll(".ask-chips button").forEach((b, k) => (b.onclick = () => askSend(id, i, panel, CHIPS[k][1], true)));
-    const input = panel.querySelector(".ask-input");
-    const typed = () => { const q = input.value.trim(); if (q) { input.value = ""; askSend(id, i, panel, q, false); } };
-    panel.querySelector(".ask-send").onclick = typed;
-    input.onkeydown = (e) => { if (e.key === "Enter") typed(); };
-    const passRow = panel.querySelector(".ask-pass"), passInput = passRow.querySelector("input");
-    const submitPass = () => {
-      if (!panel._ask || !passInput.value) { passInput.focus(); return; }
-      serverPass = passInput.value;
-      try { localStorage.setItem("inn514-grokbot-pass", serverPass); } catch (e) {}
-      passRow.hidden = true;
-      const pending = panel._ask.pending;
-      if (pending) askSend(pending.id, pending.i, panel, pending.question, pending.isChip);
-    };
-    passRow.querySelector("button").onclick = submitPass;
-    passInput.onkeydown = (e) => { if (e.key === "Enter") submitPass(); };
-  }
-  openAsk = panel;
-  startBlink(panel);
-}
-function askSend(id, i, panel, question, isChip) {
-  if (askMode === "server") { askSendServer(id, i, panel, question, isChip); return; }
-  if (askMode !== "claude" || !sampleFn) return;
+function streamClaudeAnswer(panel, turns, lang, cache, onDone) {
   const st = panel._ask;
   if (st.ctl) st.ctl.abort();
   if ("speechSynthesis" in window) speechSynthesis.cancel();
   const ctl = new AbortController();
   st.ctl = ctl;
   const status = panel.querySelector(".ask-status");
-  const lang = askLang(question, isChip);
-  const turns = [{ role: "user", content: chapterContext(id, i) }, ...st.hist, { role: "user", content: question }];
   const setBusy = (txt) => {
     if (panel._ask !== st || st.ctl !== ctl || st.busy === txt) return;
     st.busy = txt;
@@ -1124,9 +1418,8 @@ function askSend(id, i, panel, question, isChip) {
   };
   const show = () => {
     if (panel._ask !== st || st.ctl !== ctl) return;
-    let t = panel.querySelector(".ask-text");
-    if (!t) { t = document.createElement("p"); t.className = "ask-text"; panel.insertBefore(t, status); }
-    t.textContent = "This device has no voice, so here is the answer as text.\n" + buf;
+    panel.querySelector(".gb-words").textContent = "This device has no voice, so the answer is only written.\n" + buf;
+    panel.querySelector(".gb-hello").hidden = true;
   };
   let buf = "", pending = "";
   const queued = [];
@@ -1139,13 +1432,14 @@ function askSend(id, i, panel, question, isChip) {
     if (panel._ask !== st || st.ctl !== ctl || failed || voice === undefined) return;
     if (!voice) { show(); if (settled) clearBusy(); return; }
     while (queued.length) {
+      const s = queued.shift();
       speaking++;
-      speakSentence(panel, queued.shift(), voice, lang, onstart, () => { if (!--speaking) clearBusy(); });
+      speakSentence(panel, s, voice, lang, () => { onstart(); caption(panel, s); }, () => { if (!--speaking) clearBusy(); });
     }
     if (settled && pending) {
-      const last = pending; pending = "";
+      const s = pending; pending = "";
       speaking++;
-      speakSentence(panel, last, voice, lang, onstart, () => { if (!--speaking) clearBusy(); });
+      speakSentence(panel, s, voice, lang, () => { onstart(); caption(panel, s); }, () => { if (!--speaking) clearBusy(); });
     }
     if (settled && !speaking) clearBusy();
   };
@@ -1165,28 +1459,29 @@ function askSend(id, i, panel, question, isChip) {
       queued.push(...parts);
       drain();
     },
-    cache: isChip && st.first ? undefined : false,
+    cache,
   }).then(() => {
     if (panel._ask !== st || st.ctl !== ctl) return;
     settled = true;
-    st.hist.push({ role: "user", content: question }, { role: "assistant", content: buf });
-    st.hist = st.hist.slice(-6);   // the conversation keeps at most the last 6 turns
-    st.first = false;
+    if (onDone) onDone(buf);
     drain();
   }).catch((e) => {
     if (panel._ask !== st || st.ctl !== ctl) return;
     settled = true; failed = true; speaking = 0;
     st.busy = "";
     if (ctl.signal.aborted || (e && e.code) === "cancelled") return;   // Stop or route change: no message
-    const code = e && e.code;
-    if (code === "not_granted" || code === "sampling_disabled" || code === "not_declared" || code === "capability_disabled" || code === "capability_removed") {
-      document.body.classList.remove("can-ask");
-      status.textContent = "Asking isn't available here.";
-    } else if (code === "rate_limited") status.textContent = "Too many questions right now. Try again in a minute.";
-    else if (code === "session_expired") status.textContent = "Sign in again, then ask.";
-    else if (code === "refused") status.textContent = "That question couldn't be answered. Try asking it another way.";
-    else if (code === "prompt_too_large" || code === "empty_completion") status.textContent = "That was too much at once. Try a shorter question.";
-    else status.textContent = "The answer was interrupted. Ask again.";   // upstream_error and anything else; what was spoken stays spoken
+    claudeError(panel, e);
+  });
+}
+function askSend(id, i, panel, question, isChip) {
+  if (askMode === "server") { askSendServer(id, i, panel, question, isChip); return; }
+  if (askMode !== "claude" || !sampleFn) return;
+  const st = panel._ask;
+  const turns = [{ role: "user", content: chapterContext(id, i) }, ...st.hist, { role: "user", content: question }];
+  streamClaudeAnswer(panel, turns, askLang(question, isChip), isChip && st.first ? undefined : false, (buf) => {
+    st.hist.push({ role: "user", content: question }, { role: "assistant", content: buf });
+    st.hist = st.hist.slice(-6);   // the conversation keeps at most the last 6 turns
+    st.first = false;
   });
 }
 /* A6: the same panel using the course server and its AI voices. */
@@ -1213,11 +1508,11 @@ function serverClearBusy(panel) {
   panel.querySelector(".orb").classList.remove("thinking");
 }
 function serverShowText(panel, text) {
-  let t = panel.querySelector(".ask-text");
-  if (!t) { t = document.createElement("p"); t.className = "ask-text"; panel.insertBefore(t, panel.querySelector(".ask-status")); }
-  t.textContent = "This device has no voice, so here is the answer as text.\n" + text;
+  panel.querySelector(".gb-words").textContent = "This device has no voice, so the answer is only written.\n" + text;
+  panel.querySelector(".gb-hello").hidden = true;
 }
 function serverError(panel, e) {
+  gbErrorUntil = performance.now() + 2500;
   const status = panel.querySelector(".ask-status");
   if (panel._ask) panel._ask.busy = "";
   panel.querySelector(".orb").classList.remove("thinking");
@@ -1270,8 +1565,52 @@ function serverDevicePart(panel, text, voice, lang, ctl) {
   return new Promise((resolve) => {
     const done = () => resolve();
     ctl.signal.addEventListener("abort", done, { once: true });
-    speakSentence(panel, text, voice, lang, () => { audio.pause(); serverSetBusy(panel, "Speaking…"); }, done);
+    speakSentence(panel, text, voice, lang, () => { audio.pause(); serverSetBusy(panel, "Speaking…"); caption(panel, text); }, done);
   });
+}
+async function speakServerAnswer(panel, text, lang, ctl) {   // moved unchanged from askSendServer (H1)
+  const st = panel._ask;
+  const first = text.match(/^([\s\S]+?[.!?])(?:\s+([\s\S]+))?$/);
+  const parts = first && first[2] ? [first[1], first[2]] : [text];
+  const fetchPart = (part) => {
+    const p = fetch("/api/speak", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Grokbot-Passcode": serverPass },
+      body: JSON.stringify({ text: part, lang }),
+      signal: ctl.signal,
+    }).then((r) => { if (!r.ok) { const e = new Error("Speak failed"); e.status = r.status; throw e; } return r.blob(); });
+    p.catch(() => {});          // awaited below; this only silences an unhandled rejection after Stop
+    return p;
+  };
+  // The next part's audio is requested as soon as this part's has arrived, so it is ready when this one ends.
+  let next = fetchPart(parts[0]);
+  for (let k = 0; k < parts.length; k++) {
+    const part = parts[k], mine = next;
+    if (ctl.signal.aborted || panel._ask !== st) return;
+    try {
+      const blob = await mine;
+      if (k + 1 < parts.length) next = fetchPart(parts[k + 1]);
+      if (ctl.signal.aborted) return;
+        serverSetBusy(panel, "Speaking…");
+        caption(panel, part);
+        await playOrbBlob(panel, blob, ctl);
+    } catch (e) {
+      if (k + 1 < parts.length && next === mine) next = fetchPart(parts[k + 1]);
+      if (ctl.signal.aborted || panel._ask !== st) return;
+      if (e && e.status === 401) { serverError(panel, e); return; }
+      const voice = await voiceFor(lang);
+      if (ctl.signal.aborted || panel._ask !== st) return;
+      if (!voice) {
+        serverShowText(panel, text);
+        st.pending = null;
+        serverClearBusy(panel);
+        return;
+      }
+      serverSetBusy(panel, "Speaking…");
+      await serverDevicePart(panel, part, voice, lang, ctl);
+    }
+  }
+  if (!ctl.signal.aborted && panel._ask === st) { st.pending = null; serverClearBusy(panel); }
 }
 async function askSendServer(id, i, panel, question, isChip) {
   const st = panel._ask;
@@ -1296,50 +1635,21 @@ async function askSendServer(id, i, panel, question, isChip) {
     st.hist.push({ role: "user", content: question }, { role: "assistant", content: text });
     st.hist = st.hist.slice(-6);
     st.first = false;
-    const first = text.match(/^([\s\S]+?[.!?])(?:\s+([\s\S]+))?$/);
-    const parts = first && first[2] ? [first[1], first[2]] : [text];
-    const fetchPart = (part) => {
-      const p = fetch("/api/speak", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "X-Grokbot-Passcode": serverPass },
-        body: JSON.stringify({ text: part, lang }),
-        signal: ctl.signal,
-      }).then((r) => { if (!r.ok) { const e = new Error("Speak failed"); e.status = r.status; throw e; } return r.blob(); });
-      p.catch(() => {});          // awaited below; this only silences an unhandled rejection after Stop
-      return p;
-    };
-    // The next part's audio is requested as soon as this part's has arrived, so it is ready when this one ends.
-    let next = fetchPart(parts[0]);
-    for (let k = 0; k < parts.length; k++) {
-      const part = parts[k], mine = next;
-      if (ctl.signal.aborted || panel._ask !== st) return;
-      try {
-        const blob = await mine;
-        if (k + 1 < parts.length) next = fetchPart(parts[k + 1]);
-        if (ctl.signal.aborted) return;
-        serverSetBusy(panel, "Speaking…");
-        await playOrbBlob(panel, blob, ctl);
-      } catch (e) {
-        if (k + 1 < parts.length && next === mine) next = fetchPart(parts[k + 1]);
-        if (ctl.signal.aborted || panel._ask !== st) return;
-        if (e && e.status === 401) { serverError(panel, e); return; }
-        const voice = await voiceFor(lang);
-        if (ctl.signal.aborted || panel._ask !== st) return;
-        if (!voice) {
-          serverShowText(panel, text);
-          st.pending = null;
-          serverClearBusy(panel);
-          return;
-        }
-        serverSetBusy(panel, "Speaking…");
-        await serverDevicePart(panel, part, voice, lang, ctl);
-      }
-    }
-    if (!ctl.signal.aborted && panel._ask === st) { st.pending = null; serverClearBusy(panel); }
+    await speakServerAnswer(panel, text, lang, ctl);
   } catch (e) {
     if (ctl.signal.aborted || panel._ask !== st) return;
     serverError(panel, e);
   }
 }
-window.addEventListener("hashchange", () => { if (openAsk) closeAsk(openAsk); });   // a route change stops speech and closes it
+gbStart();
+gbColors();
+addEventListener("resize", () => gbMoveTo(gbPos));
+window.addEventListener("hashchange", () => { gbClose(); });     // replaces today's closeAsk(openAsk) line
+gb.querySelectorAll(".ask-chips button").forEach((b, k) => (b.onclick = () => gbAsk(CHIPS[k][1], true)));
+const gbTyped = () => { const q = gb.querySelector(".ask-input").value.trim(); if (q) { gb.querySelector(".ask-input").value = ""; gbAsk(q, false); } };
+gb.querySelector(".ask-send").onclick = gbTyped;
+gb.querySelector(".ask-input").onkeydown = (e) => { if (e.key === "Enter") gbTyped(); };
+gb.querySelector(".gb-switch").onclick = () => { gbCourse = !gbCourse; gbRender(gbContext()); };
+gb.querySelector(".gb-close").onclick = () => { gbClose(); gbOrb.focus(); };
+wirePass(gb, (p) => (p.course ? askCourse(gb, p.question) : askSend(p.id, p.i, gb, p.question, p.isChip)));
 </script>

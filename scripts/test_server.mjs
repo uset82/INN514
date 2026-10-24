@@ -149,7 +149,7 @@ function startMock(port, failMode, sequence) {
   return startProcess("mock", MOCK_SCRIPT, [String(port)], { MOCK_FAIL: failMode });
 }
 
-function startServer(serverPort, mockPort) {
+function startServer(serverPort, mockPort, settings = {}) {
   return startProcess("server", SERVER_SCRIPT, [], {
     PORT: String(serverPort),
     OPENROUTER_BASE: `http://127.0.0.1:${mockPort}/api/v1`,
@@ -163,6 +163,7 @@ function startServer(serverPort, mockPort) {
     GROKBOT_VOICE_MODEL_ES: "fish-audio/s2.1-pro-free:free",
     GROKBOT_VOICE_EN: "flux-alexis-en",
     GROKBOT_VOICE_ES: "",
+    ...settings,
   });
 }
 
@@ -401,6 +402,68 @@ async function run() {
     check(spoofed.status === 429, "a faked first X-Forwarded-For entry does not escape the lock", `status ${spoofed.status}`);
     const other = await guess(TEST_PASS, "192.0.2.44");
     check(other.status === 200, "another address with the right passcode still gets an answer", `status ${other.status}`);
+
+    // ---- /api/course (H7): the pick, then the answer, on its own X-Forwarded-For address
+    const tpl = await fs.readFile(path.join(ROOT, "site", "template.html"), "utf8");
+    const notCoveredEn = JSON.parse(/^const NOT_COVERED_EN = (".*");$/m.exec(tpl)[1]);
+    const notCoveredEs = JSON.parse(/^const NOT_COVERED_ES = (".*");$/m.exec(tpl)[1]);
+    const course = (body, passcode = TEST_PASS) => request(serverPort, "/api/course", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Forwarded-For": "203.0.113.50",
+        ...(passcode === null ? {} : { "X-Grokbot-Passcode": passcode }) },
+      body: JSON.stringify(body),
+    }).then((response) => { response.json = parseJson(response); return response; });
+    const courseNoPass = await course({ question: "What is an entrepreneurial ecosystem?" }, null);
+    check(courseNoPass.status === 401, "course without a passcode returns 401", `status ${courseNoPass.status}`);
+    const chatsBefore = (await callsFromMock(mockPort)).filter((c) => c.path === CHAT_PATH).length;
+    const answered = await course({ question: "What is an entrepreneurial ecosystem?" });
+    check(answered.status === 200 && answered.json?.text === ANSWER &&
+      JSON.stringify(answered.json?.sources) === JSON.stringify([{ id: "T4", chapter: 3 }]),
+      "course returns the mock answer with the T4 chapter 3 source", `status ${answered.status}`);
+    const chatsAfter = (await callsFromMock(mockPort)).filter((c) => c.path === CHAT_PATH);
+    check(chatsAfter.length - chatsBefore === 2, "the course answer made exactly two upstream chat calls",
+      `${chatsAfter.length - chatsBefore}`);
+    check(chatsAfter[1]?.context.includes("You are a study helper") && chatsAfter[1]?.context.includes(t4.chapters[2].title),
+      "the course answer's prompt holds the course rules and the picked chapter");
+    const nothing = await course({ question: "nothing-matches" });
+    check(nothing.status === 200 && nothing.json?.text === notCoveredEn && nothing.json?.sources?.length === 0,
+      "an empty pick returns the English not-covered line with no sources", `status ${nothing.status}`);
+    check((await callsFromMock(mockPort)).filter((c) => c.path === CHAT_PATH).length === chatsAfter.length + 1,
+      "the not-covered course answer made exactly one upstream chat call");
+    const spanishCourse = await course({ question: "¿Qué es nothing-matches?" });
+    check(spanishCourse.status === 200 && spanishCourse.json?.text === notCoveredEs,
+      "a Spanish not-covered question gets the Spanish line", `status ${spanishCourse.status}`);
+    const unknownPick = await course({ question: "unknown-pick" });
+    check(unknownPick.status === 200 && unknownPick.json?.text === notCoveredEn && unknownPick.json?.sources?.length === 0,
+      "an invalid pick falls back to the not-covered line with no sources", `status ${unknownPick.status}`);
+    const longCourse = await course({ question: "x".repeat(501) });
+    check(longCourse.status === 400, "a 501-character course question returns 400", `status ${longCourse.status}`);
+
+    // The cost: a course ask spends 2 of the per-IP window's slots and 2 daily asks.
+    const mock2Port = await getFreePort(), server2Port = await getFreePort();
+    const mock2 = startMock(mock2Port, "");
+    await waitReady(mock2, mock2Port, "/calls", "mock");
+    const server2 = startServer(server2Port, mock2Port, { GROKBOT_RATE_PER_10MIN: "3" });
+    await waitReady(server2, server2Port, "/api/health", "server");
+    const course2 = (body) => request(server2Port, "/api/course", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Grokbot-Passcode": TEST_PASS },
+      body: JSON.stringify(body),
+    }).then((response) => { response.json = parseJson(response); return response; });
+    const first2 = await course2({ question: "What is an entrepreneurial ecosystem?" });
+    check(first2.status === 200, "the cost server answers one course ask", `status ${first2.status}`);
+    const second2 = await course2({ question: "What is an entrepreneurial ecosystem?" });
+    check(second2.status === 429 && second2.json?.error === "rate_limited",
+      "a second course ask refuses (2 + 2 > 3)", `status ${second2.status}`);
+    const ask2 = await request(server2Port, "/api/ask", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Grokbot-Passcode": TEST_PASS },
+      body: JSON.stringify({ id: "T4", chapter: 2, question: "What is upward causation?", history: [] }),
+    }).then((response) => { response.json = parseJson(response); return response; });
+    check(ask2.status === 200, "the cost server still answers one normal ask", `status ${ask2.status}`);
+    await stopProcess(server2);
+    await stopProcess(mock2);
+    check(!isRunning(server2) && !isRunning(mock2), "the cost server and its mock stop cleanly");
   } catch (error) {
     check(false, "test execution", error?.stack || error?.message || String(error));
   } finally {

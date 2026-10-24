@@ -1,0 +1,38 @@
+=== chapterContext("T4", 2) ===
+You are a study helper for the master's course INN514, "Innovation systems and sustainable transformation". Answer the student's question about one chapter of the course companion, using only the chapter text below. Your answer will be read aloud by a speech engine, so write plain spoken sentences: no lists, no headings, no symbols, no brackets. Use 3 to 6 sentences unless the student asks for more. Answer in the language of the student's question. Say where it comes from, using the slide or page numbers in the chapter, in words ("on page 764"). If the chapter does not answer the question, say so in one sentence. Never invent authors, numbers, dates or quotations.
+
+Chapter: Class 4, chapter 3: Two models of the ecosystem. Nora Geirsdotter Bækkelund. Slides 11–13.
+---
+To turn the broad concept of an ecosystem into a practical framework, researchers have developed analytical models. The lecture introduces two influential examples.
+
+The first model comes from Stam and van de Ven in 2021, shown on slide 11. On page 810, they build on van de Ven's work from 1993 on the infrastructure for entrepreneurship. On page 813, they present a framework divided into two main layers.
+
+At the base sit institutional arrangements. These are formal institutions, such as legal rules and property rights; informal culture, such as social attitudes towards ambition; and networks linking local actors. Resting on these institutions are resource endowments. These include physical infrastructure, market demand, intermediaries who connect people, talent, scientific knowledge, leadership, and access to finance.
+
+The model links these parts through three propositions, set out on page 814. Proposition one states that the elements are mutually interdependent and co-evolve. Proposition two, which the authors call upward causation, states that the elements together explain the level of productive entrepreneurship in a territory, the ecosystem's output. Productive entrepreneurship means activity that creates net economic and social value. Proposition three, downward causation, describes a feedback loop: successful entrepreneurial outputs feed back into the ecosystem, enriching local institutions and resources over time.
+
+The second model, presented on slide 12, comes from Spigel and Harrison. The slide also cites a 2016 paper by Stam and Spigel. The model sorts the ecosystem into three interdependent elements: cultural, social and material.
+
+Cultural elements provide the shared outlook. They include positive social attitudes towards business creation, inspiring local success stories, and an acceptance of failure as a natural step in learning.
+
+Social elements provide the human connections and resources. They include risk capital, skilled workers, and experienced mentors who advise young founders.
+
+Material elements provide the physical and organizational backbone. They include startup incubators and accelerators, university research centres, transport infrastructure, and targeted public policies.
+
+Slide 13 adds a short video titled How to Build a Thriving Entrepreneurial Ecosystem Anywhere. On page 152 of their article, Spigel and Harrison explain that the global popularity of ecosystems was accelerated by practitioners. In particular, venture investor Brad Feld wrote about startup communities in Boulder, Colorado, while Daniel Isenberg wrote about ecosystem domains. Both argued that a flourishing startup scene depends on community cooperation rather than bureaucratic planning.
+---
+=== chapterContext("P02", 1) ===
+You are a study helper for the master's course INN514, "Innovation systems and sustainable transformation". Answer the student's question about one chapter of the course companion, using only the chapter text below. Your answer will be read aloud by a speech engine, so write plain spoken sentences: no lists, no headings, no symbols, no brackets. Use 3 to 6 sentences unless the student asks for more. Answer in the language of the student's question. Say where it comes from, using the slide or page numbers in the chapter, in words ("on page 764"). If the chapter does not answer the question, say so in one sentence. Never invent authors, numbers, dates or quotations. This paper is marked "paper in preparation, do not quote": paraphrase it and never quote it.
+
+Chapter: Paper 2, chapter 2: From materiality to idea and practice. Fløysand, Jakobsen & Hidle (2013). Pages 1–5.
+---
+Page 1: This page introduces a conference paper presented at the 5th Nordic Geographers Meeting held in Iceland in June 2013. The authors, Arnt Fløysand, Stig-Erik Jakobsen and Knut Hidle, represent the University of Bergen and Bergen University College. The paper examines the trinity of innovation, exploring relationships between actors, ideas and objects in innovation practice. The authors explicitly note that this draft is a paper in preparation and should not be quoted.
+
+Page 2: Page 2 presents the research problem by exploring innovation as a discursive, material and practical phenomenon. The authors highlight a paradox in innovation studies between context-specific uniqueness and generic abstractions. To bridge ideographic and nomothetic approaches, they propose an analytical model that combines generic innovation properties with contextual specificities. Their epistemological framework builds on actor-network theory from Latour, which highlights interplays between ideas, materiality and practice, combined with realism from Sayer, which distinguishes between necessary and contingent relations.
+
+Page 3: Page 3 establishes the theoretical foundation by integrating critical realism and actor-network theory. From Sayer, the authors adopt the distinction between abstract necessary relations and contingent, place-specific structures. From actor-network theory, they introduce the concept of actants to examine the social, material and immaterial dimensions of innovation. Reviewing the history of innovation, the authors note that the term is positively charged in Western culture, often linked to progress and breaking established paradigms, as discussed by Kuhn, Foucault and Shils.
+
+Page 4: Page 4 traces the history and roots of the word. Godin shows that Plato and Aristotle valued imitation, which was seen as positive until the mid-eighteenth century. Godin also points to Nelson and Winter, who link a firm's innovation to its routines, and to Levitt, for whom imitation is often a survival strategy. The Latin root means to renew, or to change into something new. The authors conclude that the word's original meaning already refers to materiality, idea and practice. Early research, by contrast, counted patents and new products.
+
+Page 5: Page 5 evaluates Hägerstrand's spatial diffusion model, noting that it demonstrated distance delays in information flows among farmers adopting cattle vaccination. However, early diffusion research treated innovation as an objective, measurable entity while neglecting ideas. Later scholars recognized innovation as a sociocultural process. Citing Polanyi, the authors note that the economy operates as an institutional process. Nelson and Winter incorporated organizational learning into evolutionary theory. Finally, systems of innovation perspectives emerged from Freeman, Nelson and Lundvall, emphasizing interactive learning among diverse actors.
+---

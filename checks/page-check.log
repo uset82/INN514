@@ -2,6 +2,8 @@
 [PASS] template has no "·"-joined meta strings
 [PASS] template has no "→" in link or button text
 [PASS] template names neither Claude nor Anthropic in visible content
+[PASS] the H1 guard: chapterContext("T4", 2) is unchanged  page 3509 chars, saved 3509
+[PASS] the H1 guard: chapterContext("P02", 1) is unchanged  page 3811 chars, saved 3811
 [PASS] an empty hash, #route and #home all show the front page  {"empty":"Innovation systems and sustainable transformation","route":"Innovation systems and sustainable transformation","home":"Innovation systems and sustainable transformation"}
 [PASS] the doors count the classes and the papers from the data  ["8 classes, 2 hours 47 minutes","17 papers, 4 hours 50 minutes"]
   screenshot workspace/lecture-audio/checks/desktop-home.png
@@ -13,8 +15,9 @@
 [PASS] #papers marks the ready papers  {"rows":20,"ids":17,"ready":20,"groups":8,"h1":"Papers"}
   screenshot workspace/lecture-audio/checks/desktop-papers.png
 [PASS] #T1 opens the class with all its chapters  {"stops":7,"sections":7,"h1":"Innovation as systemic and sustainable transformation"}
-[PASS] normal file load keeps every ask button hidden  {"count":7,"visible":0}
-[PASS] a chapter plays from its button  {"src":"T1-02.mp3","paused":false,"t":3.364197,"d":188.424}
+[PASS] a plain file hides Grokbot, the ask buttons and the greeting  {"shown":false,"askBtns":0,"greets":0}
+[PASS] the Ask how-to item is hidden in a plain file  false
+[PASS] a chapter plays from its button  {"src":"T1-02.mp3","paused":false,"t":3.293297,"d":188.424}
 [PASS] paragraph highlight follows the audio  {"count":1,"inChapter":"ch-1"}
 [PASS] next chapter starts on its own  {"src":"T1-03.mp3","now":"2"}
 [PASS] finished chapter fills the route and is saved  {"done":true,"fill":58.09375,"saved":{"T1":[1]}}
@@ -53,26 +56,37 @@
 [PASS] no horizontal scroll at phone width (reading)  {"scroll":390,"inner":390}
   screenshot workspace/lecture-audio/checks/phone-reading.png
   screenshot workspace/lecture-audio/checks/phone-reading-dark.png
-[PASS] the mock makes every class chapter ask button visible  {"count":7,"visible":7}
-[PASS] a chapter tap opens one panel with four chips and an input  {"open":true,"chips":4,"input":1}
-[PASS] a second chapter tap closes the first ask panel  {"firstClosed":true,"secondOpen":true,"openCount":1}
-[PASS] a chip sends the chapter title and prompt rules  {"title":true,"rules":true,"backup":true,"first":true,"second":true}
-[PASS] with no device voice the whole answer appears as backup text  {"title":true,"rules":true,"backup":true,"first":true,"second":true}
-[PASS] the mock makes every paper chapter ask button visible  {"count":5,"visible":5}
-[PASS] Paper 2 sends the do-not-quote rule
-[PASS] not_granted hides every orb and keeps its error visible  {"status":"Asking isn't available here.","visible":0}
-[PASS] rate_limited keeps its error visible  Too many questions right now. Try again in a minute.
-[PASS] the open ask panel has no horizontal scroll at 390 px  {"inner":390,"scroll":390}
-  screenshot workspace/lecture-audio/checks/phone-ask.png
-  screenshot workspace/lecture-audio/checks/phone-ask-dark.png
-[PASS] server mode makes the class ask buttons visible  {"count":7,"visible":7}
+[PASS] #grokbot is displayed on #home, #T4 and #P02 as the same element  {"gbOnHome":{"shown":true,"same":true},"gbOnT4":{"shown":true,"same":true},"gbOnP02":{"shown":true,"same":true}}
+[PASS] on the front page the bubble opens in course mode, switch and chips hidden  {"open":true,"expanded":"true","head":"About the whole course","switchHidden":true,"chipsHidden":true}
+[PASS] on #T4 with chapter 3 on screen the bubble heads that chapter with a Whole course switch  {"head":"About Class 4, chapter 3: Two models of the ecosystem","switch":"Whole course"}
+[PASS] a chip sends the chapter in view  {"title":true,"first":true,"second":true}
+[PASS] the bubble captions the answer while it is spoken  {"title":true,"first":true,"second":true}
+[PASS] "Whole course" switches the bubble to course mode
+[PASS] a course question picks with the quick model over the whole index  {"tier":"quick","pick":true}
+[PASS] the course answer names its source  {"href":"#T4","text":"Class 4, chapter 3: Two models of the ecosystem"}
+[PASS] a course question picked as Paper 2 sends the do-not-quote rule
+[PASS] a chapter question on #P02 sends the do-not-quote rule too
+[PASS] "nothing-matches" answers with the not-covered line and never calls the answer model  {"words":"I couldn't find that in the course companion. Try asking about a class or a paper in other words.","sample":null}
+[PASS] a route change closes the bubble and leaves no busy state  {"hidden":true,"busy":""}
+[PASS] a drag moves the orb by the dragged amount, saves the place and hides the hint  {"orbPos0":{"left":1192,"top":683,"cx":1228,"cy":719},"orbPos1":{"left":1072,"top":603,"hint":true,"saved":"{\"x\":1072,\"y\":603}","bubble":true}}
+[PASS] after a reload the orb is where the drag left it  {"left":1072,"top":603}
+[PASS] after a touch drag (no click follows it) the next tap opens the bubble  {"tc":{"x":1108,"y":639,"left":1072},"tAfter":{"x":1048,"y":639,"left":1012,"bubble":true},"tTapOpen":true}
+[PASS] a tap without movement opens the bubble
+[PASS] Escape closes the bubble and puts focus back on the orb  {"hidden":true,"focus":true}
+[PASS] Enter on the focused orb opens the bubble
+[PASS] ArrowLeft with a focused orb moves it 16px left  moved 16
+[PASS] a far-off position clamps to 16px from the left and 8px above the player  {"left":16,"bottom":755,"playerTop":763}
+[PASS] server mode shows Grokbot on a chapter page
 [PASS] the first server question asks for a passcode  {"row":true,"note":"Answers are written by a free AI model from this chapter's text and read aloud by an AI voice. Don't type personal details."}
 [PASS] server mode shows its AI-voice honesty line
-[PASS] a wrong server passcode shows its error and is forgotten  {"status":"That passcode didn't work.","row":true,"saved":null}
-[PASS] the right passcode retries the question and reaches the answer model  ["/api/v1/chat/completions","/api/v1/audio/speech"]
-[PASS] server mode calls /api/speak  ["/api/v1/chat/completions","/api/v1/audio/speech"]
-[PASS] the server answer speaks or falls back to text and saves the passcode  {"saved":"test-pass","status":"Speaking… Stop","text":"","inner":390,"scroll":390}
-[PASS] the server ask panel has no horizontal scroll at 390 px  {"saved":"test-pass","status":"Speaking… Stop","text":"","inner":390,"scroll":390}
-  screenshot workspace/lecture-audio/checks/phone-ask-server.png
+[PASS] after the passcode the chapter question reaches /api/ask  ["/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech"]
+[PASS] server mode calls /api/speak  ["/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech"]
+[PASS] the passcode is saved
+[PASS] a course question on the front page reaches /api/course and cites #T4  {"paths":["/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech","/api/v1/chat/completions","/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech"],"courseSrc":{"href":"#T4","text":"Class 4, chapter 3: Two models of the ecosystem"}}
+[PASS] on a phone the orb is 56px and the open bubble 358px wide with no horizontal scroll  {"cv":56,"bw":358,"inner":390,"scroll":390,"orbBottom":699,"playerTop":707,"saved":null,"pos":{"x":318,"y":643},"gTop":643,"gH":56,"btnTop":643,"btnBottom":699,"pTop":707,"pH":137,"side":"above","bTop":238,"bBottom":631}
+[PASS] the phone orb does not overlap the player  {"cv":56,"bw":358,"inner":390,"scroll":390,"orbBottom":699,"playerTop":707,"saved":null,"pos":{"x":318,"y":643},"gTop":643,"gH":56,"btnTop":643,"btnBottom":699,"pTop":707,"pH":137,"side":"above","bTop":238,"bBottom":631}
+  screenshot workspace/lecture-audio/checks/phone-grokbot.png
+  screenshot workspace/lecture-audio/checks/phone-grokbot-dark.png
+  screenshot workspace/lecture-audio/checks/desktop-grokbot.png
 [PASS] no script errors
 ALL PAGE CHECKS PASSED

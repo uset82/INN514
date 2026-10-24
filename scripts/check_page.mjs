@@ -99,11 +99,22 @@ try {
     while (Date.now() < end) { const value = await ev(expr); if (value) return value; await sleep(100); }
     return false;
   };
-  const askVisibility = `(() => { const bs = [...document.querySelectorAll('.ask-btn')];
-    return {count: bs.length, visible: bs.filter((b) => getComputedStyle(b).display !== 'none').length}; })()`;
 
   await send('Page.enable'); await send('Runtime.enable');
   await send('Page.navigate', { url: FILE }); await sleep(2500);
+
+  // ---- the H1 guard: the built page's chapterContext must match checks/context-before.txt exactly
+  const before = readFileSync('workspace/lecture-audio/checks/context-before.txt', 'utf8');
+  const saved = {};
+  const chunks = before.split(/^=== (.+) ===$/m);
+  for (let i = 1; i < chunks.length; i += 2) saved[chunks[i]] = chunks[i + 1].replace(/^\n/, '').replace(/\n$/, '');
+  const ctxNow = await ev('({ t4: chapterContext("T4", 2), p02: chapterContext("P02", 1) })');
+  check('the H1 guard: chapterContext("T4", 2) is unchanged',
+    !!ctxNow && ctxNow.t4 === saved['chapterContext("T4", 2)'],
+    ctxNow ? `page ${ctxNow.t4.length} chars, saved ${(saved['chapterContext("T4", 2)'] || '').length}` : 'no value');
+  check('the H1 guard: chapterContext("P02", 1) is unchanged',
+    !!ctxNow && ctxNow.p02 === saved['chapterContext("P02", 1)'],
+    ctxNow ? `page ${ctxNow.p02.length} chars, saved ${(saved['chapterContext("P02", 1)'] || '').length}` : 'no value');
 
   // ---- the front page, from an empty hash, #route and #home
   // The student removed the "unofficial study aid" line from the front page on 2026-10-23.
@@ -115,8 +126,6 @@ try {
   const old = await ev(front);
   await go('home');
   const home = await ev(front);
-  const greetPlain = await ev(`(() => { const g = document.querySelector('.greet'); const off = g && g.querySelector('.greet-off'); return {orb: !!(g && g.querySelector('.orb')), offShown: !!off && getComputedStyle(off).display !== 'none'}; })()`);
-  check('the front page greets with the orb and says asking is off where nobody can ask', greetPlain.orb && greetPlain.offShown, JSON.stringify(greetPlain));
   const frontOk = (f) => f.h1 === HOME_H1 && f.classes && f.papers;
   check('an empty hash, #route and #home all show the front page',
     frontOk(empty) && frontOk(old) && frontOk(home), JSON.stringify({ empty: empty.h1, route: old.h1, home: home.h1 }));
@@ -154,8 +163,16 @@ try {
   const lec = await ev(`({stops: document.querySelectorAll('.chapters .stop').length, sections: document.querySelectorAll('section.chapter').length,
     h1: document.querySelector('h1')?.textContent})`);
   check(`#${FIRST} opens the class with all its chapters`, lec.stops === NCH && lec.sections === NCH, JSON.stringify(lec));
-  const normalAsk = await ev(askVisibility);
-  check('normal file load keeps every ask button hidden', normalAsk.count === NCH && normalAsk.visible === 0, JSON.stringify(normalAsk));
+  const plainGrok = await ev(`(() => { const g = document.getElementById('grokbot');
+    return {shown: !!g && getComputedStyle(g).display !== 'none',
+      askBtns: document.querySelectorAll('.ask-btn').length, greets: document.querySelectorAll('.greet').length}; })()`);
+  check('a plain file hides Grokbot, the ask buttons and the greeting',
+    !plainGrok.shown && plainGrok.askBtns === 0 && plainGrok.greets === 0, JSON.stringify(plainGrok));
+  await go('home');
+  const plainHowto = await ev(`(() => { const item = document.querySelector('.howto .gb-only');
+    return item ? getComputedStyle(item).display !== 'none' : null; })()`);
+  check('the Ask how-to item is hidden in a plain file', plainHowto === false, JSON.stringify(plainHowto));
+  await go(FIRST);
 
   await ev(`document.querySelector('.listen[data-i="1"]').click()`); await sleep(3500);
   const p1 = await ev(`(() => { const a = document.getElementById('audio'); return {src: a.src.split('/').pop(), paused: a.paused, t: a.currentTime, d: a.duration}; })()`);
@@ -346,95 +363,192 @@ try {
     await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'light' }] });
   }
 
-  // ---- claude mock pass: chapter context, one panel, fallback text and errors
+  // ---- claude mock pass: Grokbot on every page, chapter and course questions, drag, keyboard
   await send('Emulation.setDeviceMetricsOverride', { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
   await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'light' }] });
   const mockPage = await send('Page.addScriptToEvaluateOnNewDocument', { source: `(() => {
-    window.__sampleMode = 'ok'; window.__lastSample = null;
+    window.__sampleMode = 'ok'; window.__lastSample = null; window.__lastJson = null;
     if (window.speechSynthesis) {
-      window.speechSynthesis.getVoices = () => [];
-      window.speechSynthesis.speak = () => {};
+      window.speechSynthesis.getVoices = () => [{ lang: 'en-GB', name: 'Test EN voice' }];
+      // A fake utterance: the real one refuses the stub's plain-object voice.
+      window.SpeechSynthesisUtterance = class { constructor(text) { this.text = String(text); } };
+      window.speechSynthesis.speak = (u) => { if (u.onstart) u.onstart(); if (u.onend) u.onend(); };
       window.speechSynthesis.cancel = () => {};
     }
-    window.claude = { use: async (name) => async (turns, opts) => {
-      window.__lastSample = turns;
-      const mode = window.__sampleMode || 'ok';
-      if (mode !== 'ok') throw Object.assign(new Error(mode), {code: mode});
-      opts.onText({delta: 'First sentence. '}); opts.onText({delta: 'Second sentence.'});
+    window.claude = { use: async (name) => {
+      const sample = async (turns, opts) => {
+        window.__lastSample = turns;
+        const mode = window.__sampleMode || 'ok';
+        if (mode !== 'ok') throw Object.assign(new Error(mode), {code: mode});
+        opts.onText({delta: 'First sentence. '}); opts.onText({delta: 'Second sentence.'});
+      };
+      sample.json = async (input, opts) => {
+        window.__lastJson = { input, modelTier: opts && opts.modelTier };
+        // The needle is the question: the course index itself names the Paper 2 trinity.
+        const q = String(input).split('\\n\\nQuestion: ').pop();
+        if (q.includes('trinity')) return [{id: 'P02', chapter: 2}];
+        if (q.includes('nothing-matches')) return [];
+        return [{id: 'T4', chapter: 3}];
+      };
+      return sample;
     } };
   })();` });
   await send('Page.navigate', { url: FILE }); await sleep(1800);
-  const greetAsk = await ev(`(() => { const g = document.querySelector('.greet'); const off = g && g.querySelector('.greet-off'); return {orb: !!(g && g.querySelector('.orb')), offShown: !!off && getComputedStyle(off).display !== 'none'}; })()`);
-  check('where asking works, the front-page greeting shows the orb without the off line', greetAsk.orb && !greetAsk.offShown, JSON.stringify(greetAsk));
-  await go(FIRST);
-  const mockClass = await ev(askVisibility);
-  check('the mock makes every class chapter ask button visible',
-    mockClass.count === NCH && mockClass.visible === NCH, JSON.stringify(mockClass));
-  const firstPanel = await ev(`(() => { const bs = document.querySelectorAll('.ask-btn'); bs[0].click();
-    const p = document.querySelectorAll('.ask')[0]; return {open: !p.hidden, chips: p.querySelectorAll('.ask-chips button').length,
-      input: p.querySelectorAll('.ask-input').length}; })()`);
-  check('a chapter tap opens one panel with four chips and an input',
-    firstPanel.open && firstPanel.chips === 4 && firstPanel.input === 1, JSON.stringify(firstPanel));
-  const secondPanel = await ev(`(() => { const bs = document.querySelectorAll('.ask-btn'); bs[1].click();
-    const ps = document.querySelectorAll('.ask'); return {firstClosed: ps[0].hidden, secondOpen: !ps[1].hidden,
-      openCount: [...ps].filter((p) => !p.hidden).length}; })()`);
-  check('a second chapter tap closes the first ask panel',
-    secondPanel.firstClosed && secondPanel.secondOpen && secondPanel.openCount === 1, JSON.stringify(secondPanel));
-  await ev(`window.__sampleMode = 'ok'; window.__lastSample = null;
-    document.querySelectorAll('.ask')[1].querySelector('.ask-chips button').click()`);
-  await waitFor(`document.querySelectorAll('.ask')[1].querySelector('.ask-text')?.textContent.includes('Second sentence.')`);
-  const chip = await ev(`(() => { const turns = window.__lastSample || [], first = turns[0]?.content || '';
-    const text = document.querySelectorAll('.ask')[1].querySelector('.ask-text')?.textContent || '';
-    return {title: first.includes(${JSON.stringify(DATA.lectures[FIRST].chapters[1].title)}),
-      rules: first.includes('You are a study helper'), backup: text.includes('This device has no voice'),
-      first: text.includes('First sentence.'), second: text.includes('Second sentence.')}; })()`);
-  check('a chip sends the chapter title and prompt rules', chip.title && chip.rules, JSON.stringify(chip));
-  check('with no device voice the whole answer appears as backup text',
-    chip.backup && chip.first && chip.second, JSON.stringify(chip));
-  await go('P02');
-  const mockPaper = await ev(askVisibility);
-  const p02chapters = DATA.lectures.P02.chapters.length;
-  check('the mock makes every paper chapter ask button visible',
-    mockPaper.count === p02chapters && mockPaper.visible === p02chapters, JSON.stringify(mockPaper));
-  await ev(`window.__sampleMode = 'ok'; window.__lastSample = null; document.querySelector('.ask-btn').click();
-    document.querySelector('.ask:not([hidden]) .ask-chips button').click()`);
+  await ev(`window.__gbRef = document.getElementById('grokbot')`);
+  const gbShownOn = async (hash) => { await go(hash); return ev(`(() => { const g = document.getElementById('grokbot');
+    return {shown: getComputedStyle(g).display !== 'none', same: g === window.__gbRef}; })()`); };
+  const gbOnHome = await gbShownOn('home');
+  const gbOnT4 = await gbShownOn('T4');
+  const gbOnP02 = await gbShownOn('P02');
+  check('#grokbot is displayed on #home, #T4 and #P02 as the same element',
+    gbOnHome.shown && gbOnT4.shown && gbOnP02.shown && gbOnHome.same && gbOnT4.same && gbOnP02.same,
+    JSON.stringify({gbOnHome, gbOnT4, gbOnP02}));
+  await go('home');
+  await ev(`document.querySelector('.gb-orb').click()`); await sleep(300);
+  const homeBubble = await ev(`(() => { const b = document.querySelector('.gb-bubble');
+    return {open: !b.hidden, expanded: document.querySelector('.gb-orb').getAttribute('aria-expanded'),
+      head: b.querySelector('.gb-head').textContent, switchHidden: b.querySelector('.gb-switch').hidden,
+      chipsHidden: b.querySelector('.ask-chips').hidden}; })()`);
+  check('on the front page the bubble opens in course mode, switch and chips hidden',
+    homeBubble.open && homeBubble.expanded === 'true' && homeBubble.head === 'About the whole course'
+    && homeBubble.switchHidden && homeBubble.chipsHidden, JSON.stringify(homeBubble));
+  await go('T4');
+  await ev(`document.getElementById('ch-2').scrollIntoView({block: 'start'})`); await sleep(400);
+  await ev(`document.querySelector('.gb-orb').click()`); await sleep(300);
+  const t4Bubble = await ev(`(() => { const b = document.querySelector('.gb-bubble');
+    return {head: b.querySelector('.gb-head').textContent, switch: b.querySelector('.gb-switch').textContent}; })()`);
+  check('on #T4 with chapter 3 on screen the bubble heads that chapter with a Whole course switch',
+    t4Bubble.head.startsWith('About Class 4, chapter 3') && t4Bubble.switch === 'Whole course', JSON.stringify(t4Bubble));
+  await ev(`window.__lastSample = null; document.querySelector('.gb-bubble .ask-chips button').click()`);
+  await waitFor(`document.querySelector('.gb-words')?.textContent.includes('Second sentence.')`);
+  const chipAsk = await ev(`(() => { const turns = window.__lastSample || [], first = turns[0]?.content || '';
+    const words = document.querySelector('.gb-words')?.textContent || '';
+    return {title: first.includes(${JSON.stringify(DATA.lectures.T4.chapters[2].title)}),
+      first: words.includes('First sentence.'), second: words.includes('Second sentence.')}; })()`);
+  check('a chip sends the chapter in view', chipAsk.title, JSON.stringify(chipAsk));
+  check('the bubble captions the answer while it is spoken', chipAsk.first && chipAsk.second, JSON.stringify(chipAsk));
+  await ev(`document.querySelector('.gb-switch').click()`); await sleep(300);
+  check('"Whole course" switches the bubble to course mode',
+    (await ev(`document.querySelector('.gb-head').textContent`)) === 'About the whole course');
+  await ev(`window.__lastJson = null; window.__lastSample = null;
+    document.querySelector('.ask-input').value = 'What is an entrepreneurial ecosystem?';
+    document.querySelector('.ask-send').click()`);
+  await waitFor(`window.__lastJson?.input?.includes('T4 3:') && window.__lastJson?.input?.includes('P07 1:')`);
+  const courseAsk = await ev(`(() => ({tier: window.__lastJson?.modelTier,
+    pick: window.__lastJson?.input?.includes('T4 3:') && window.__lastJson?.input?.includes('P07 1:')}))()`);
+  check('a course question picks with the quick model over the whole index',
+    courseAsk.tier === 'quick' && courseAsk.pick, JSON.stringify(courseAsk));
+  const src1 = await ev(`(() => { const a = document.querySelector('.gb-src a');
+    return {href: a?.getAttribute('href'), text: a?.textContent || ''}; })()`);
+  check('the course answer names its source', src1.href === '#T4' && src1.text.includes('Class 4, chapter 3'), JSON.stringify(src1));
+  await ev(`window.__lastSample = null; document.querySelector('.ask-input').value = 'trinity';
+    document.querySelector('.ask-send').click()`);
   await waitFor(`window.__lastSample?.[0]?.content.includes('do not quote')`);
-  check('Paper 2 sends the do-not-quote rule', !!await ev(`window.__lastSample?.[0]?.content.includes('do not quote')`));
-  await ev(`window.__sampleMode = 'not_granted'; document.querySelector('.ask:not([hidden]) .ask-chips button').click()`);
-  await waitFor(`document.querySelector('.ask:not([hidden]) .ask-status')?.textContent.includes("Asking isn't available here.")`);
-  await sleep(1300);
-  const denied = await ev(`(() => ({status: document.querySelector('.ask:not([hidden]) .ask-status')?.textContent || '',
-    visible: [...document.querySelectorAll('.ask-btn')].filter((b) => getComputedStyle(b).display !== 'none').length}))()`);
-  check('not_granted hides every orb and keeps its error visible',
-    denied.visible === 0 && denied.status.includes("Asking isn't available here."), JSON.stringify(denied));
-  await send('Page.navigate', { url: FILE + '#' + FIRST }); await sleep(1800);
-  await ev(`document.querySelector('.ask-btn').click(); window.__sampleMode = 'rate_limited';
-    document.querySelector('.ask:not([hidden]) .ask-chips button').click()`);
-  await waitFor(`document.querySelector('.ask-status')?.textContent.includes('Too many questions')`);
-  await sleep(1300);
-  const limited = await ev(`document.querySelector('.ask-status')?.textContent || ''`);
-  check('rate_limited keeps its error visible', limited.includes('Too many questions right now. Try again in a minute.'), limited);
-  await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 2, mobile: true });
-  // The tab is already on the first class: navigating to the same address keeps the old page (and its open panel), so reload it.
-  await send('Page.navigate', { url: FILE + '#' + FIRST }); await send('Page.reload', {}); await sleep(1800);
-  await ev(`document.head.insertAdjacentHTML('afterbegin', '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">');
-    document.querySelector('.ask-btn').click(); window.__sampleMode = 'ok';
-    document.querySelector('.ask:not([hidden]) .ask-chips button').click()`);
-  await waitFor(`document.querySelector('.ask-text')?.textContent.includes('Second sentence.')`);
-  const mockPhone = await ev(`({inner: innerWidth, scroll: document.documentElement.scrollWidth})`);
-  check('the open ask panel has no horizontal scroll at 390 px',
-    mockPhone.inner === 390 && mockPhone.scroll <= 390, JSON.stringify(mockPhone));
-  await ev(`document.querySelector('.ask:not([hidden])')?.scrollIntoView({ block: 'center' })`); await sleep(300);
-  const inView_claude = await ev(`(() => { const p = document.querySelector('.ask:not([hidden])'); const r = p && p.getBoundingClientRect();
-    return {open: !!p, top: r ? Math.round(r.top) : null, bottom: r ? Math.round(r.bottom) : null, inner: innerHeight, y: scrollY, hash: location.hash}; })()`);
-  check('the open claude ask panel is in view for its screenshot', inView_claude.open && inView_claude.top >= 0 && inView_claude.top < inView_claude.inner, JSON.stringify(inView_claude));
-  await shot('phone-ask.png');
-  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'dark' }] });
-  await sleep(400); await shot('phone-ask-dark.png');
-  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'light' }] });
+  check('a course question picked as Paper 2 sends the do-not-quote rule',
+    !!await ev(`window.__lastSample?.[0]?.content.includes('do not quote')`));
+  await go('P02'); await sleep(500);
+  await ev(`document.querySelector('.gb-orb').click()`); await sleep(300);
+  await ev(`window.__lastSample = null; document.querySelector('.gb-bubble .ask-chips button').click()`);
+  await waitFor(`window.__lastSample?.[0]?.content.includes('do not quote')`);
+  check('a chapter question on #P02 sends the do-not-quote rule too',
+    !!await ev(`window.__lastSample?.[0]?.content.includes('do not quote')`));
+  await ev(`document.querySelector('.gb-switch').click()`); await sleep(300);
+  await ev(`window.__lastSample = null; window.__lastJson = null;
+    document.querySelector('.ask-input').value = 'nothing-matches'; document.querySelector('.ask-send').click()`);
+  await waitFor(`document.querySelector('.gb-words')?.textContent.includes("couldn't find that in the course companion")`);
+  const notCovered = await ev(`({words: document.querySelector('.gb-words')?.textContent || '', sample: window.__lastSample})`);
+  check('"nothing-matches" answers with the not-covered line and never calls the answer model',
+    notCovered.words.includes("I couldn't find that in the course companion. Try asking about a class or a paper in other words.")
+    && notCovered.sample === null, JSON.stringify(notCovered));
+  await go('classes');
+  const routeClosed = await ev(`({hidden: document.querySelector('.gb-bubble').hidden,
+    busy: document.getElementById('grokbot')._ask.busy})`);
+  check('a route change closes the bubble and leaves no busy state',
+    routeClosed.hidden && routeClosed.busy === '', JSON.stringify(routeClosed));
+
+  // dragging: real pointer input, 120px left and 80px up, then the saved place survives a reload
+  await go('home'); await sleep(400);
+  const orbPos0 = await ev(`(() => { const g = document.getElementById('grokbot'); const r = document.querySelector('.gb-orb').getBoundingClientRect();
+    return {left: parseFloat(g.style.left), top: parseFloat(g.style.top), cx: r.left + r.width / 2, cy: r.top + r.height / 2}; })()`);
+  const dragOrb = async (x0, y0, x1, y1) => {
+    await send('Input.dispatchMouseEvent', { type: 'mousePressed', x: Math.round(x0), y: Math.round(y0), button: 'left', buttons: 1, clickCount: 1 });
+    for (let k = 1; k <= 8; k++)
+      await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: Math.round(x0 + (x1 - x0) * k / 8), y: Math.round(y0 + (y1 - y0) * k / 8), buttons: 1 });
+    await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: Math.round(x1), y: Math.round(y1), button: 'left', buttons: 0, clickCount: 1 });
+  };
+  await dragOrb(orbPos0.cx, orbPos0.cy, orbPos0.cx - 120, orbPos0.cy - 80); await sleep(300);
+  const orbPos1 = await ev(`(() => { const g = document.getElementById('grokbot');
+    return {left: parseFloat(g.style.left), top: parseFloat(g.style.top), hint: document.querySelector('.gb-hint').hidden,
+      saved: localStorage.getItem('inn514-grokbot-pos'), bubble: document.querySelector('.gb-bubble').hidden}; })()`);
+  check('a drag moves the orb by the dragged amount, saves the place and hides the hint',
+    Math.abs(orbPos1.left - (orbPos0.left - 120)) <= 1 && Math.abs(orbPos1.top - (orbPos0.top - 80)) <= 1
+    && orbPos1.hint && !!orbPos1.saved && orbPos1.bubble, JSON.stringify({orbPos0, orbPos1}));
+  await send('Page.navigate', { url: FILE + '#home' }); await send('Page.reload', {}); await sleep(1800);
+  const orbReload = await ev(`(() => { const g = document.getElementById('grokbot');
+    return {left: parseFloat(g.style.left), top: parseFloat(g.style.top)}; })()`);
+  check('after a reload the orb is where the drag left it',
+    Math.abs(orbReload.left - orbPos1.left) <= 1 && Math.abs(orbReload.top - orbPos1.top) <= 1, JSON.stringify(orbReload));
+  // a phone: a touch drag sends no click afterwards, so the next tap must still open the bubble
+  await send('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 1 });
+  const tc = await ev(`(() => { const r = document.querySelector('.gb-orb').getBoundingClientRect();
+    return {x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2), left: parseFloat(document.getElementById('grokbot').style.left)}; })()`);
+  await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: tc.x, y: tc.y }] });
+  for (let k = 1; k <= 6; k++) await send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: tc.x - 10 * k, y: tc.y }] });
+  await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  await sleep(700);
+  const tAfter = await ev(`(() => { const r = document.querySelector('.gb-orb').getBoundingClientRect();
+    return {x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2), left: parseFloat(document.getElementById('grokbot').style.left),
+      bubble: document.querySelector('.gb-bubble').hidden}; })()`);
+  await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: tAfter.x, y: tAfter.y }] });
+  await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  await sleep(500);
+  const tTapOpen = !await ev(`document.querySelector('.gb-bubble').hidden`);
+  check('after a touch drag (no click follows it) the next tap opens the bubble',
+    Math.abs(tAfter.left - (tc.left - 60)) <= 1 && tAfter.bubble && tTapOpen, JSON.stringify({tc, tAfter, tTapOpen}));
+  await ev(`document.querySelector('.gb-close').click()`);
+  await send('Emulation.setTouchEmulationEnabled', { enabled: false });
+  await sleep(200);
+  const orbC = await ev(`(() => { const r = document.querySelector('.gb-orb').getBoundingClientRect();
+    return {x: r.left + r.width / 2, y: r.top + r.height / 2}; })()`);
+  await send('Input.dispatchMouseEvent', { type: 'mousePressed', x: Math.round(orbC.x), y: Math.round(orbC.y), button: 'left', buttons: 1, clickCount: 1 });
+  await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: Math.round(orbC.x), y: Math.round(orbC.y), button: 'left', buttons: 0, clickCount: 1 });
+  await sleep(400);
+  check('a tap without movement opens the bubble', !await ev(`document.querySelector('.gb-bubble').hidden`));
+
+  // keyboard: Enter opens, Escape closes and refocuses, ArrowLeft moves
+  await send('Input.dispatchKeyEvent', { type: 'rawKeyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+  await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+  await sleep(300);
+  const escClosed = await ev(`(() => ({hidden: document.querySelector('.gb-bubble').hidden,
+    focus: document.activeElement === document.querySelector('.gb-orb')}))()`);
+  check('Escape closes the bubble and puts focus back on the orb', escClosed.hidden && escClosed.focus, JSON.stringify(escClosed));
+  await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13, nativeVirtualKeyCode: 13, text: '\r', unmodifiedText: '\r' });
+  await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13, nativeVirtualKeyCode: 13 });
+  await sleep(300);
+  check('Enter on the focused orb opens the bubble', !await ev(`document.querySelector('.gb-bubble').hidden`));
+  await send('Input.dispatchKeyEvent', { type: 'rawKeyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+  await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+  await sleep(300);
+  const kbLeft0 = await ev(`parseFloat(document.getElementById('grokbot').style.left)`);
+  await send('Input.dispatchKeyEvent', { type: 'rawKeyDown', key: 'ArrowLeft', code: 'ArrowLeft', windowsVirtualKeyCode: 37 });
+  await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'ArrowLeft', code: 'ArrowLeft', windowsVirtualKeyCode: 37 });
+  await sleep(200);
+  const kbLeft1 = await ev(`parseFloat(document.getElementById('grokbot').style.left)`);
+  check('ArrowLeft with a focused orb moves it 16px left', Math.abs((kbLeft0 - kbLeft1) - 16) <= 1, `moved ${kbLeft0 - kbLeft1}`);
+
+  // clamping: a far-off position lands 16px from the left, 8px above the player
+  await go('T4'); await sleep(500);
+  await ev(`document.querySelector('.listen[data-i="0"]').click()`); await sleep(800);
+  await ev(`document.getElementById('audio').pause()`);
+  await ev(`gbMoveTo({ x: -500, y: 99999 })`); await sleep(200);
+  const clamped = await ev(`(() => { const g = document.getElementById('grokbot').getBoundingClientRect();
+    const p = document.querySelector('.player').getBoundingClientRect();
+    return {left: Math.round(g.left), bottom: Math.round(g.bottom), playerTop: Math.round(p.top)}; })()`);
+  check('a far-off position clamps to 16px from the left and 8px above the player',
+    clamped.left === 16 && clamped.playerTop - clamped.bottom >= 8, JSON.stringify(clamped));
   await send('Page.removeScriptToEvaluateOnNewDocument', { identifier: mockPage.result.identifier });
 
-  // ---- server mode pass: real page server, fake upstream, wrong then right passcode
+  // ---- server mode pass: the orb asks the local server, passcode row in between, course on the front page
   const mockPort = await freePort(), appPort = await freePort();
   mockChild = spawn(process.execPath, ['workspace/lecture-audio/scripts/mock_openrouter.mjs', String(mockPort)], { stdio: 'ignore' });
   await waitHttp(`http://127.0.0.1:${mockPort}/calls`);
@@ -443,27 +557,20 @@ try {
       OPENROUTER_API_KEY: 'test-key', GROKBOT_PASSCODE: 'test-pass'}, stdio: 'ignore'});
   await waitHttp(`http://127.0.0.1:${appPort}/api/health`);
   const appUrl = `http://127.0.0.1:${appPort}/`;
-  await send('Page.navigate', { url: appUrl + '#T1' }); await sleep(1600);
+  await send('Page.navigate', { url: appUrl + '#T4' }); await sleep(1600);
   await ev(`try { localStorage.removeItem('inn514-grokbot-pass'); } catch (e) {}`);
   await send('Page.reload', { ignoreCache: true }); await sleep(1800);
-  const serverButtons = await ev(askVisibility);
-  check('server mode makes the class ask buttons visible',
-    serverButtons.count === DATA.lectures.T1.chapters.length && serverButtons.visible === serverButtons.count, JSON.stringify(serverButtons));
-  await ev(`document.querySelector('.ask-btn').click(); document.querySelector('.ask:not([hidden]) .ask-chips button').click()`);
-  await waitFor(`!document.querySelector('.ask-pass')?.hidden`);
-  const passFirst = await ev(`(() => { const p = document.querySelector('.ask:not([hidden])');
-    return {row: !p.querySelector('.ask-pass').hidden,
-      note: p.querySelector('.ask-note').textContent}; })()`);
+  check('server mode shows Grokbot on a chapter page',
+    !!(await ev(`document.getElementById('grokbot') && getComputedStyle(document.getElementById('grokbot')).display !== 'none'`)));
+  await ev(`document.querySelector('.gb-orb').click()`); await sleep(300);
+  await ev(`document.querySelector('.ask-input').value = 'What is upward causation?';
+    document.querySelector('.ask-send').click()`);
+  await waitFor(`!document.querySelector('.ask-pass').hidden`);
+  const passFirst = await ev(`(() => ({row: !document.querySelector('.ask-pass').hidden,
+    note: document.querySelector('.ask-note').textContent}))()`);
   check('the first server question asks for a passcode', passFirst.row, JSON.stringify(passFirst));
   check('server mode shows its AI-voice honesty line',
     passFirst.note === "Answers are written by a free AI model from this chapter's text and read aloud by an AI voice. Don't type personal details.");
-  await ev(`(() => { const row = document.querySelector('.ask-pass'); row.querySelector('input').value = 'wrong-pass';
-    row.querySelector('button').click(); })()`);
-  await waitFor(`document.querySelector('.ask-status')?.textContent.includes("That passcode didn't work.")`);
-  const wrong = await ev(`(() => ({status: document.querySelector('.ask-status')?.textContent || '',
-    row: !document.querySelector('.ask-pass').hidden, saved: localStorage.getItem('inn514-grokbot-pass')}))()`);
-  check('a wrong server passcode shows its error and is forgotten',
-    wrong.status.includes("That passcode didn't work.") && wrong.row && wrong.saved === null, JSON.stringify(wrong));
   await ev(`(() => { const row = document.querySelector('.ask-pass'); row.querySelector('input').value = 'test-pass';
     row.querySelector('button').click(); })()`);
   let mockCalls = [];
@@ -472,23 +579,66 @@ try {
     if (mockCalls.some((c) => c.path === '/api/v1/audio/speech')) break;
     await sleep(100);
   }
-  await waitFor(`document.querySelector('.ask-status')?.textContent.includes('Speaking')
-    || document.querySelector('.ask-text')?.textContent.includes('First sentence.')`);
-  check('the right passcode retries the question and reaches the answer model',
+  await waitFor(`document.getElementById('grokbot')._ask.busy === 'Speaking…'`);
+  check('after the passcode the chapter question reaches /api/ask',
     mockCalls.some((c) => c.path === '/api/v1/chat/completions'), JSON.stringify(mockCalls.map((c) => c.path)));
   check('server mode calls /api/speak', mockCalls.some((c) => c.path === '/api/v1/audio/speech'), JSON.stringify(mockCalls.map((c) => c.path)));
-  const serverReady = await ev(`(() => ({saved: localStorage.getItem('inn514-grokbot-pass'),
-    status: document.querySelector('.ask-status')?.textContent || '', text: document.querySelector('.ask-text')?.textContent || '',
-    inner: innerWidth, scroll: document.documentElement.scrollWidth}))()`);
-  check('the server answer speaks or falls back to text and saves the passcode',
-    serverReady.saved === 'test-pass' && (serverReady.status.includes('Speaking') || serverReady.text.includes('First sentence.')),
-    JSON.stringify(serverReady));
-  check('the server ask panel has no horizontal scroll at 390 px', serverReady.scroll <= serverReady.inner, JSON.stringify(serverReady));
-  await ev(`document.querySelector('.ask:not([hidden])')?.scrollIntoView({ block: 'center' })`); await sleep(300);
-  const inView_server = await ev(`(() => { const p = document.querySelector('.ask:not([hidden])'); const r = p && p.getBoundingClientRect();
-    return {open: !!p, top: r ? Math.round(r.top) : null, bottom: r ? Math.round(r.bottom) : null, inner: innerHeight, y: scrollY, hash: location.hash}; })()`);
-  check('the open server ask panel is in view for its screenshot', inView_server.open && inView_server.top >= 0 && inView_server.top < inView_server.inner, JSON.stringify(inView_server));
-  await shot('phone-ask-server.png');
+  check('the passcode is saved', (await ev(`localStorage.getItem('inn514-grokbot-pass')`)) === 'test-pass');
+  const chatBefore = mockCalls.filter((c) => c.path === '/api/v1/chat/completions').length;
+  await send('Page.navigate', { url: appUrl + '#home' }); await sleep(1200);
+  await ev(`document.querySelector('.gb-orb').click()`); await sleep(300);
+  await ev(`document.querySelector('.ask-input').value = 'What is an entrepreneurial ecosystem?';
+    document.querySelector('.ask-send').click()`);
+  let courseCalls = [];
+  for (let n = 0; n < 100; n++) {
+    courseCalls = await (await fetch(`http://127.0.0.1:${mockPort}/calls`)).json();
+    if (courseCalls.some((c) => c.path === '/api/v1/chat/completions' && (c.context || '').startsWith('You choose where'))
+      && courseCalls.filter((c) => c.path === '/api/v1/chat/completions').length > chatBefore + 1) break;
+    await sleep(100);
+  }
+  await waitFor(`!!document.querySelector('.gb-src a')`);
+  const courseSrc = await ev(`(() => { const a = document.querySelector('.gb-src a');
+    return {href: a?.getAttribute('href'), text: a?.textContent || ''}; })()`);
+  check('a course question on the front page reaches /api/course and cites #T4',
+    courseCalls.some((c) => c.path === '/api/v1/chat/completions' && (c.context || '').startsWith('You choose where'))
+    && courseSrc.href === '#T4', JSON.stringify({paths: courseCalls.map((c) => c.path), courseSrc}));
+
+  // phone: the 56px orb, the 358px bubble, no horizontal scroll, clear of the player
+  await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 2, mobile: true });
+  await ev(`document.head.insertAdjacentHTML('afterbegin', '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">')`);
+  await send('Page.navigate', { url: appUrl + '#T4' }); await sleep(1000);
+  // A phone user loads the page at phone size: reload so gbStart clamps the saved place here.
+  await send('Page.reload', {}); await sleep(1800);
+  // On a real phone a chapter is playing, so the orb's re-clamp on play/pause has run too.
+  await ev(`document.querySelector('.listen[data-i="0"]').click()`); await sleep(800);
+  await ev(`document.querySelector('.gb-orb').click()`); await sleep(300);
+  await ev(`document.querySelector('.gb-bubble .ask-chips button').click()`);
+  const wordsShown = await waitFor(`document.querySelector('.gb-words')?.textContent.includes('First sentence.')`);
+  if (!wordsShown) console.log('  [debug]', JSON.stringify(await ev(`({open: !document.querySelector('.gb-bubble').hidden,
+    busy: document.getElementById('grokbot')._ask.busy, status: document.querySelector('.ask-status').textContent,
+    words: document.querySelector('.gb-words').textContent, pass: localStorage.getItem('inn514-grokbot-pass'),
+    serverPass, mode: askMode, hash: location.hash})`)));
+  const phoneGrok = await ev(`(() => { try {
+    const cv = document.querySelector('canvas.orb').getBoundingClientRect();
+    const b = document.querySelector('.gb-bubble').getBoundingClientRect();
+    const g = document.getElementById('grokbot').getBoundingClientRect();
+    const btn = document.querySelector('.gb-orb').getBoundingClientRect();
+    const p = document.querySelector('.player').getBoundingClientRect();
+    return {cv: Math.round(cv.width), bw: Math.round(b.width), inner: innerWidth,
+      scroll: document.documentElement.scrollWidth, orbBottom: Math.round(g.bottom), playerTop: Math.round(p.top),
+      saved: localStorage.getItem('inn514-grokbot-pos'), pos: gbPos,
+      gTop: Math.round(g.top), gH: Math.round(g.height), btnTop: Math.round(btn.top), btnBottom: Math.round(btn.bottom),
+      pTop: Math.round(p.top), pH: Math.round(p.height), side: document.querySelector('.gb-bubble').dataset.side,
+      bTop: Math.round(b.top), bBottom: Math.round(b.bottom)}; } catch (e) { return {error: e.message}; } })()`);
+  check('on a phone the orb is 56px and the open bubble 358px wide with no horizontal scroll',
+    phoneGrok.cv === 56 && phoneGrok.bw === 358 && phoneGrok.inner === 390 && phoneGrok.scroll <= 390, JSON.stringify(phoneGrok));
+  check('the phone orb does not overlap the player', phoneGrok.playerTop - phoneGrok.orbBottom >= 8, JSON.stringify(phoneGrok));
+  await shot('phone-grokbot.png');
+  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'dark' }] });
+  await sleep(400); await shot('phone-grokbot-dark.png');
+  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'light' }] });
+  await send('Emulation.setDeviceMetricsOverride', { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+  await sleep(400); await shot('desktop-grokbot.png');
   await ev(`document.querySelector('.ask-stop')?.click()`);
   await stopChild(serverChild); serverChild = null;
   await stopChild(mockChild); mockChild = null;

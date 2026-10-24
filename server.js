@@ -30,10 +30,17 @@ const DB = (() => {
     const tpl = fs.readFileSync(path.join(ROOT, "site", "template.html"), "utf8");
     const rules = /^const RULES = (".*");$/m.exec(tpl);
     const noQuote = /^const NO_QUOTE = (".*");$/m.exec(tpl);
-    if (!rules || !noQuote) throw new Error("RULES or NO_QUOTE missing from site/template.html");
+    const pickRules = /^const PICK_RULES = (".*");$/m.exec(tpl);
+    const courseRules = /^const COURSE_RULES = (".*");$/m.exec(tpl);
+    const notCoveredEn = /^const NOT_COVERED_EN = (".*");$/m.exec(tpl);
+    const notCoveredEs = /^const NOT_COVERED_ES = (".*");$/m.exec(tpl);
+    if (!rules || !noQuote || !pickRules || !courseRules || !notCoveredEn || !notCoveredEs)
+      throw new Error("PICK_RULES, COURSE_RULES or NOT_COVERED_* missing from site/template.html");
     return {
       catalog: data.catalog, readings: data.readings || [], lectures,
       rules: JSON.parse(rules[1]), noQuote: JSON.parse(noQuote[1]),
+      pickRules: JSON.parse(pickRules[1]), courseRules: JSON.parse(courseRules[1]),
+      notCoveredEn: JSON.parse(notCoveredEn[1]), notCoveredEs: JSON.parse(notCoveredEs[1]),
     };
   } catch (e) {
     console.error("startup failed: " + e.message);
@@ -53,14 +60,38 @@ const slideText = (sl) => {
   runs.push([a, b]);
   return (sl.length > 1 ? "Slides " : "Slide ") + runs.map(([x, y]) => (x === y ? x : x + "–" + y)).join(", ");
 };
-function contextFor(id, i) {
+function blockFor(id, i) {
   const ch = DB.lectures[id].chapters[i], c = entryOf(id);
   const where = isReading(id)
     ? `${className(c)}, chapter ${ch.n}: ${ch.title}. ${c.authors} (${c.year}). ${pagesText(ch.pages)}.`
     : `${className(c)}, chapter ${ch.n}: ${ch.title}. ${c.teacher}. ${slideText(ch.slides)}.`;
   const body = ch.paragraphs.map((p, k) => (ch.labels && ch.labels[k] ? ch.labels[k] + ": " : "") + p).join("\n\n");
-  return DB.rules + (id === "P02" ? DB.noQuote : "") + "\n\nChapter: " + where + "\n---\n" + body + "\n---";
+  return "Chapter: " + where + "\n---\n" + body + "\n---";
 }
+function contextFor(id, i) {
+  return DB.rules + (id === "P02" ? DB.noQuote : "") + "\n\n" + blockFor(id, i);
+}
+/* The course index for /api/course's pick step: H.4's lines, classes then papers, built once. */
+const COURSE_INDEX = (() => {
+  const lines = [];
+  for (const c of DB.catalog) for (const ch of DB.lectures[c.id].chapters)
+    lines.push(`${c.id} ${ch.n}: ${className(c)}, ${c.title}; chapter ${ch.n}: ${ch.title}`);
+  for (const c of DB.readings) for (const ch of DB.lectures[c.id].chapters)
+    lines.push(`${c.id} ${ch.n}: ${className(c)}, ${c.authors} (${c.year}), ${c.title}; chapter ${ch.n}: ${ch.title}`);
+  return lines.join("\n");
+})();
+function cleanPicks(arr) {
+  const out = [];
+  for (const p of (Array.isArray(arr) ? arr : [])) {
+    if (!p || typeof p.id !== "string" || !DB.lectures[p.id]) continue;
+    if (!Number.isInteger(p.chapter) || !DB.lectures[p.id].chapters.some((ch) => ch.n === p.chapter)) continue;
+    if (out.some((q) => q.id === p.id && q.chapter === p.chapter)) continue;
+    out.push({ id: p.id, chapter: p.chapter });
+    if (out.length === 2) break;
+  }
+  return out;
+}
+const langOf = (q) => (/[¿¡ñáéíóú]/i.test(q) || ["qué", "cómo", "por", "porque", "el", "la", "los", "las", "es", "de", "del", "una"].filter((w) => new RegExp("\\b" + w + "\\b", "i").test(q)).length >= 2 ? "es-ES" : "en-GB");
 
 /* ---------- the OpenRouter call (S2) ---------- */
 const BASE = process.env.OPENROUTER_BASE || "https://openrouter.ai/api/v1";
@@ -69,7 +100,7 @@ const MODELS = (process.env.GROKBOT_ANSWER_MODELS || "openrouter/free,nvidia/nem
 const VOICE_EN = process.env.GROKBOT_VOICE_MODEL_EN || "fish-audio/s2.1-pro-free:free";
 const VOICE_ES = process.env.GROKBOT_VOICE_MODEL_ES || "fish-audio/s2.1-pro-free:free";
 
-async function askUpstream(messages) {
+async function askUpstream(messages, opts = {}) {
   let last429 = false;
   for (const model of MODELS) {
     try {
@@ -80,7 +111,7 @@ async function askUpstream(messages) {
           "HTTP-Referer": "https://inn514.canner.app", "X-Title": "INN514 Course Companion",
         },
         // Room for a reasoning model's thinking as well as the 3-to-6-sentence answer.
-        body: JSON.stringify({ model, messages, max_tokens: 1000, temperature: 0.3 }),
+        body: JSON.stringify({ model, messages, max_tokens: opts.max_tokens || 1000, temperature: opts.temperature ?? 0.3 }),
         signal: AbortSignal.timeout(40000),
       });
       if (r.ok) {
@@ -148,21 +179,21 @@ function noteBadPass(req) {
   const ip = clientIp(req);
   badPasses.set(ip, [...(badPasses.get(ip) || []), Date.now()]);
 }
-function limitsOk(req, kind) {
+function limitsOk(req, kind, cost = 1) {
   const ip = clientIp(req);
   const now = Date.now();
   const recent = (ipCalls.get(ip) || []).filter((t) => now - t < 10 * 60 * 1000);
-  if (recent.length >= num(process.env.GROKBOT_RATE_PER_10MIN, 30)) { ipCalls.set(ip, recent); return false; }
+  if (recent.length + cost > num(process.env.GROKBOT_RATE_PER_10MIN, 30)) { ipCalls.set(ip, recent); return false; }
   const key = new Date().toISOString().slice(0, 10);        // UTC day
   if (dayCount.key !== key) { dayCount.key = key; dayCount.asks = 0; dayCount.speaks = 0; }
-  if (kind === "ask" ? dayCount.asks >= num(process.env.GROKBOT_ASKS_PER_DAY, 150)
-                     : dayCount.speaks >= num(process.env.GROKBOT_SPEAKS_PER_DAY, 300)) {
+  if (kind === "ask" ? dayCount.asks + cost > num(process.env.GROKBOT_ASKS_PER_DAY, 150)
+                     : dayCount.speaks + cost > num(process.env.GROKBOT_SPEAKS_PER_DAY, 300)) {
     ipCalls.set(ip, recent);
     return false;
   }
-  recent.push(now);
+  for (let k = 0; k < cost; k++) recent.push(now);
   ipCalls.set(ip, recent);
-  if (kind === "ask") dayCount.asks++; else dayCount.speaks++;
+  if (kind === "ask") dayCount.asks += cost; else dayCount.speaks += cost;
   return true;
 }
 
@@ -228,6 +259,41 @@ const server = http.createServer((req, res) => {
       askUpstream(messages).then((out) => {
         if (out.error) return done(out.error, JSONH, JSON.stringify({ error: out.error === 429 ? "rate_limited" : "upstream" }));
         done(200, JSONH, JSON.stringify({ text: out.text }));
+      }).catch(() => done(502, JSONH, JSON.stringify({ error: "upstream" })));
+    });
+  }
+
+  if (req.method === "POST" && p === "/api/course") {
+    if (guessingLocked(req)) return done(429, JSONH, JSON.stringify({ error: "rate_limited" }));
+    if (!passcodeOk(req)) { noteBadPass(req); return done(401, JSONH, JSON.stringify({ error: "passcode" })); }
+    if (!limitsOk(req, "ask", 2)) return done(429, JSONH, JSON.stringify({ error: "rate_limited" }));
+    return readBody(req, (err, raw) => {
+      if (err) return done(413, JSONH, JSON.stringify({ error: "bad_request" }));
+      let body;
+      try { body = JSON.parse(raw.toString("utf8")); } catch (e) { return done(400, JSONH, JSON.stringify({ error: "bad_request" })); }
+      const question = body.question;
+      if (typeof question !== "string" || question.length < 1 || question.length > 500) return done(400, JSONH, JSON.stringify({ error: "bad_request" }));
+      // The pick: the model answers with a JSON array of at most two chapters, best first.
+      askUpstream([{ role: "user", content: DB.pickRules + "\n\n" + COURSE_INDEX + "\n\nQuestion: " + question }],
+        { max_tokens: 600, temperature: 0 }).then((pick) => {
+        if (pick.error) return done(pick.error, JSONH, JSON.stringify({ error: pick.error === 429 ? "rate_limited" : "upstream" }));
+        const m = /\[[\s\S]*?\]/.exec(pick.text);
+        let parsed;
+        try { parsed = JSON.parse(m[0]); } catch (e) {}
+        const picks = cleanPicks(parsed);
+        if (!picks.length) {
+          const text = langOf(question) === "es-ES" ? DB.notCoveredEs : DB.notCoveredEn;
+          return done(200, JSONH, JSON.stringify({ text, sources: [] }));
+        }
+        const blocks = picks.map((p) => blockFor(p.id, DB.lectures[p.id].chapters.findIndex((ch) => ch.n === p.chapter))).join("\n\n");
+        const messages = [
+          { role: "user", content: DB.courseRules + (picks.some((p) => p.id === "P02") ? DB.noQuote : "") + "\n\n" + blocks },
+          { role: "user", content: question },
+        ];
+        askUpstream(messages).then((out) => {
+          if (out.error) return done(out.error, JSONH, JSON.stringify({ error: out.error === 429 ? "rate_limited" : "upstream" }));
+          done(200, JSONH, JSON.stringify({ text: out.text, sources: picks }));
+        }).catch(() => done(502, JSONH, JSON.stringify({ error: "upstream" })));
       }).catch(() => done(502, JSONH, JSON.stringify({ error: "upstream" })));
     });
   }
