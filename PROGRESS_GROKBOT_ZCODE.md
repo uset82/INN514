@@ -515,6 +515,18 @@ Added by Claude Code on 2026-10-24: the student asked for a faster voice reply (
   - Files changed: `scripts/check_page.mjs`; generated `checks/page-check.log` and the root `index.html`.
 - [x] **STOP GATE G7:** student approved (after Claude Code's review, the before-and-after timing on Canner, the model timing only with the student's yes, the push and the claude.ai republish)
   - Approved by the student on 2026-10-26: "just skip claude and execute everything and push everything". At the student's request, Claude Code's review, the before-and-after timing on Canner and the claude.ai republish were skipped; DeepSeek committed and pushed Part F itself. The automated checks were the only verification: ALL PAGE CHECKS PASSED (112), ALL SERVER CHECKS PASSED (83), the manifest unchanged (212/212).
+  - **Claude Code's review after the push (2026-10-26):**
+    - **Code:** the page and server code match plan F.1, F.3 and F.4 line for line, including the speaker and stream code tested before hand-over. `askServer` and `speakServerAnswer` are gone, and both rules say "2 to 4 short sentences".
+    - **Scan:** no secrets in DeepSeek's commit `e17f5c0`.
+    - **Reruns:** the manifest is unchanged; ALL SERVER CHECKS PASSED; ALL PAGE CHECKS PASSED (112).
+    - **In the browser:** against the local server with the mock, the first sentence went to `/api/speak` 57 ms after the question.
+    - **Timing on Canner** (Part F live, `openrouter/free` routing, time to the first sentence / the whole answer):
+      - the chapter question took 9.6 s / 10.1 s (before: 11.1 s whole);
+      - the English course question with hits took 26.1 s / 26.4 s (before: 14.5 s);
+      - the Spanish course question took 35.0 s / 35.0 s (before: 38.8 s).
+
+      The model's thinking before it writes dominates, so the next step is the model timing (F.6), which needs the student's yes. The Spanish question about "causalidad ascendente" got "not covered", because the pick only sees chapter titles.
+    - **Tidied:** the five test logs DeepSeek committed (`page-check-f4.log` and the `server-check-*.log` files) were removed from the repo and kept in the scratchpad quarantine.
 
 ## Part B: one-command pack sync
 - [x] B1. `scripts/sync_knowledge.py` (plan Part B)
