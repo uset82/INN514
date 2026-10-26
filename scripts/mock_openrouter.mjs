@@ -79,10 +79,45 @@ const server = http.createServer((req, res) => {
       // also needs to verify context that follows the much longer RULES prefix.
       context: firstMessage,
       authOk: req.headers.authorization === "Bearer test-key",
+      stream: body.stream === true,
+      reasoning: body.reasoning ?? null,
     });
 
     if (process.env.MOCK_FAIL === "deepgram" && typeof body.model === "string" && body.model.includes("deepgram")) {
       reply(res, 500, { "Content-Type": "application/json" }, JSON.stringify({ error: "mock_failure" }));
+      return;
+    }
+    if (process.env.MOCK_FAIL === "chat500" && chat) {
+      reply(res, 500, { "Content-Type": "application/json" }, JSON.stringify({ error: "mock_failure" }));
+      return;
+    }
+    // A streamed chat: three SSE events (first sentence, second sentence, done), 200 ms apart.
+    if (chat && body.stream === true) {
+      res.on("error", () => {});
+      res.writeHead(200, { "Content-Type": "text/event-stream", "Cache-Control": "no-cache", "Connection": "close" });
+      const gap = Number(process.env.MOCK_STREAM_GAP_MS) > 0 ? Number(process.env.MOCK_STREAM_GAP_MS) : 200;
+      const firstEvent = 'data: {"choices":[{"delta":{"content":"First sentence. "}}]}\n\n';
+      const secondEvent = 'data: {"choices":[{"delta":{"content":"Second sentence."}}]}\n\n';
+      const doneEvent = "data: [DONE]\n\n";
+      const finish = () => {
+        if (res.destroyed || res.writableEnded) return;
+        res.write(secondEvent);
+        res.write(doneEvent);
+        res.end();
+      };
+      if (body.model === process.env.MOCK_THINK_MODEL) {
+        res.write('data: {"choices":[{"delta":{"reasoning":"thinking"}}]}\n\n');
+        res.write(doneEvent);
+        res.end();
+        return;
+      }
+      const announce = () => {
+        if (res.destroyed || res.writableEnded) return;
+        res.write(firstEvent);
+        setTimeout(finish, gap);
+      };
+      if (body.model === process.env.MOCK_SLOW_MODEL) setTimeout(announce, 3000);
+      else announce();
       return;
     }
     // A course pick: the first message starts with the pick rules (D.6).

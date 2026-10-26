@@ -497,16 +497,26 @@ try {
   check('"Whole course" switches the bubble to course mode',
     (await ev(`document.querySelector('.gb-head').textContent`)) === 'About the whole course');
   await ev(`window.__lastJson = null; window.__lastSample = null;
-    document.querySelector('.ask-input').value = 'What is an entrepreneurial ecosystem?';
+    document.querySelector('.ask-input').value = 'What is upward causation?';
     document.querySelector('.ask-send').click()`);
-  await waitFor(`window.__lastJson?.input?.includes('T4 3:') && window.__lastJson?.input?.includes('P07 1:')`);
-  const courseAsk = await ev(`(() => ({tier: window.__lastJson?.modelTier,
-    pick: window.__lastJson?.input?.includes('T4 3:') && window.__lastJson?.input?.includes('P07 1:')}))()`);
-  check('a course question picks with the quick model over the whole index',
-    courseAsk.tier === 'quick' && courseAsk.pick, JSON.stringify(courseAsk));
+  await waitFor(`window.__lastSample?.[0]?.content.includes('Two models of the ecosystem')`);
+  const searchedAsk = await ev(`({json: window.__lastJson, first: window.__lastSample?.[0]?.content || ''})`);
+  check('"What is upward causation?" answers from the search without a pick',
+    searchedAsk.json === null && searchedAsk.first.includes('Two models of the ecosystem'),
+    JSON.stringify({json: searchedAsk.json, title: searchedAsk.first.includes('Two models of the ecosystem')}));
+  check('a course answer asks for 2 to 4 short sentences',
+    searchedAsk.first.includes('2 to 4 short sentences'), searchedAsk.first.slice(0, 120));
   const src1 = await ev(`(() => { const a = document.querySelector('.gb-src a');
     return {href: a?.getAttribute('href'), text: a?.textContent || ''}; })()`);
-  check('the course answer names its source', src1.href === '#T4' && src1.text.includes('Class 4, chapter 3'), JSON.stringify(src1));
+  check('the searched answer cites the chapter the search found', src1.href === '#T4', JSON.stringify(src1));
+  await ev(`window.__lastJson = null; window.__lastSample = null;
+    document.querySelector('.ask-input').value = '¿Qué es la causalidad ascendente?';
+    document.querySelector('.ask-send').click()`);
+  await waitFor(`window.__lastJson !== null`);
+  const spanishPick = await ev(`({tier: window.__lastJson?.modelTier,
+    pick: window.__lastJson?.input?.includes('T4 3:') && window.__lastJson?.input?.includes('P07 1:')})`);
+  check('a Spanish course question makes the quick pick over the whole index',
+    spanishPick.tier === 'quick' && spanishPick.pick, JSON.stringify(spanishPick));
   await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 2, mobile: true });
   await sleep(500);
   await ev(`window.__lastSample = null; window.__sampleCount = 0; window.__utterances = [];
@@ -662,6 +672,12 @@ try {
   check('server mode shows Grokbot on a chapter page',
     !!(await ev(`document.getElementById('grokbot') && getComputedStyle(document.getElementById('grokbot')).display !== 'none'`)));
   await ev(`document.querySelector('.gb-orb').click()`); await sleep(300);
+  await ev(`(() => { const f = window.fetch.bind(window); window.__askBodies = []; window.__speakBodies = [];
+    window.fetch = (u, o) => { if (o && typeof o.body === 'string') {
+      let b = null; try { b = JSON.parse(o.body); } catch (e) {}
+      if (String(u) === '/api/ask') window.__askBodies.push(b);
+      if (String(u) === '/api/speak') window.__speakBodies.push(b);
+    } return f(u, o); }; })()`);
   await ev(`document.querySelector('.ask-input').value = 'What is upward causation?';
     document.querySelector('.ask-send').click()`);
   await waitFor(`!document.querySelector('.ask-pass').hidden`);
@@ -680,6 +696,24 @@ try {
     mockCalls.some((c) => c.path === '/api/v1/chat/completions'), JSON.stringify(mockCalls.map((c) => c.path)));
   check('server mode calls /api/speak', mockCalls.some((c) => c.path === '/api/v1/audio/speech'), JSON.stringify(mockCalls.map((c) => c.path)));
   check('the passcode is saved', (await ev(`localStorage.getItem('inn514-grokbot-pass')`)) === 'test-pass');
+  await waitFor(`document.querySelector('.gb-words')?.textContent.includes('First sentence.')`);
+  // The mock's audio is a full lecture MP3; end each part at once so the next part starts, as with short audio.
+  for (let n = 0; n < 10; n++) {
+    if (await ev(`document.querySelector('.gb-words')?.textContent.includes('Second sentence.')`)) break;
+    await ev(`(() => { if (typeof orbAudio === 'object' && orbAudio) orbAudio.dispatchEvent(new Event('ended')); })()`);
+    await sleep(300);
+  }
+  await waitFor(`document.querySelector('.gb-words')?.textContent.includes('Second sentence.')`);
+  const chapterAnswer = await ev(`({words: document.querySelector('.gb-words')?.textContent || '',
+    asks: window.__askBodies.slice(), speaks: window.__speakBodies.slice()})`);
+  check('the chapter question asks the server to stream',
+    chapterAnswer.asks.length === 1 && chapterAnswer.asks[0]?.stream === true,
+    JSON.stringify(chapterAnswer.asks[0] && {stream: chapterAnswer.asks[0].stream}));
+  check('the first voice part is the first sentence, and the answer takes at most two parts',
+    chapterAnswer.speaks.length > 0 && chapterAnswer.speaks[0].text === 'First sentence.' && chapterAnswer.speaks.length <= 2,
+    JSON.stringify(chapterAnswer.speaks));
+  check('the streamed chapter answer ends with both sentences',
+    chapterAnswer.words.trim().endsWith('First sentence. Second sentence.'), chapterAnswer.words);
   const chatBefore = mockCalls.filter((c) => c.path === '/api/v1/chat/completions').length;
   await send('Page.navigate', { url: appUrl + '#home' }); await sleep(1200);
   await ev(`(() => { const f = window.fetch.bind(window); window.__courseBodies = [];
@@ -691,20 +725,19 @@ try {
   let courseCalls = [];
   for (let n = 0; n < 100; n++) {
     courseCalls = await (await fetch(`http://127.0.0.1:${mockPort}/calls`)).json();
-    if (courseCalls.some((c) => c.path === '/api/v1/chat/completions' && (c.context || '').startsWith('You choose which chapters'))
-      && courseCalls.filter((c) => c.path === '/api/v1/chat/completions').length > chatBefore + 1) break;
+    if (courseCalls.filter((c) => c.path === '/api/v1/chat/completions').length > chatBefore) break;
     await sleep(100);
   }
   await waitFor(`!!document.querySelector('.gb-src a')`);
   const courseSrc = await ev(`(() => { const a = document.querySelector('.gb-src a');
     return {href: a?.getAttribute('href'), text: a?.textContent || ''}; })()`);
   check('a course question on the front page reaches /api/course and cites #T4',
-    courseCalls.some((c) => c.path === '/api/v1/chat/completions' && (c.context || '').startsWith('You choose which chapters'))
+    courseCalls.filter((c) => c.path === '/api/v1/chat/completions').length > chatBefore
     && courseSrc.href === '#T4', JSON.stringify({paths: courseCalls.map((c) => c.path), courseSrc}));
   const courseBody = await ev(`window.__courseBodies[0] || null`);
-  check('a course question sends an array of hits to /api/course',
-    !!courseBody && Array.isArray(courseBody.hits) && typeof courseBody.question === 'string',
-    JSON.stringify(courseBody && {question: courseBody.question, hits: courseBody.hits}));
+  check('a course question sends stream: true and an array of hits to /api/course',
+    !!courseBody && courseBody.stream === true && Array.isArray(courseBody.hits) && typeof courseBody.question === 'string',
+    JSON.stringify(courseBody && {stream: courseBody.stream, question: courseBody.question, hits: courseBody.hits}));
   await waitFor(`document.querySelector('.gb-words')?.textContent.includes('Second sentence.')`);
   await ev(`document.querySelector('.ask-stop')?.click()`); await sleep(300);
   const speechCount = async () => (await (await fetch(`http://127.0.0.1:${mockPort}/calls`)).json())

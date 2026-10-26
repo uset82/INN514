@@ -1,0 +1,131 @@
+[PASS] template has no all-caps labels
+[PASS] template has no "·"-joined meta strings
+[PASS] template has no "→" in link or button text
+[PASS] template names neither Claude nor Anthropic in visible content
+[PASS] the H1 guard: chapterContext("T4", 2) is unchanged  page 25470 chars, saved 25470
+[PASS] the H1 guard: chapterContext("P02", 1) is unchanged  page 25772 chars, saved 25772
+[PASS] textLang calls the Spanish greetings and question Spanish, the English question English  {"hola":"es-ES","greeting":"es-ES","explique":"es-ES","question":"en-GB"}
+[PASS] courseOverview names Class 4, Paper 7, Sessions 7 and 8, and every paper in brief  {"class4":true,"paper7":true,"sessions":true,"briefs":17}
+[PASS] an empty hash, #route and #home all show the front page  {"empty":"Innovation systems and sustainable transformation","route":"Innovation systems and sustainable transformation","home":"Innovation systems and sustainable transformation"}
+[PASS] the doors count the classes and the papers from the data  ["8 classes, 2 hours 47 minutes","17 papers, 4 hours 50 minutes"]
+  screenshot workspace/lecture-audio/checks/desktop-home.png
+[PASS] #classes lists every class in order and marks the ready ones  {"rows":8,"ready":8,"sessions":2,"teachers":8,"h1":"Classes"}
+[PASS] #classes has sessions 7 and 8 as quiet rows  sessions 2
+[PASS] every class row names its teacher  8 of 8
+  screenshot workspace/lecture-audio/checks/desktop-classes.png
+[PASS] #papers groups every paper under its class  {"rows":20,"ids":17,"ready":20,"groups":8,"h1":"Papers"}
+[PASS] #papers marks the ready papers  {"rows":20,"ids":17,"ready":20,"groups":8,"h1":"Papers"}
+  screenshot workspace/lecture-audio/checks/desktop-papers.png
+[PASS] #T1 opens the class with all its chapters  {"stops":7,"sections":7,"h1":"Innovation as systemic and sustainable transformation"}
+[PASS] a plain file hides Grokbot, the ask buttons and the greeting  {"shown":false,"askBtns":0,"greets":0}
+[PASS] the Ask how-to item is hidden in a plain file  false
+[PASS] a chapter plays from its button  {"src":"T1-02.mp3","paused":false,"t":3.402374,"d":188.424}
+[PASS] paragraph highlight follows the audio  {"count":1,"inChapter":"ch-1"}
+[PASS] next chapter starts on its own  {"src":"T1-03.mp3","now":"2"}
+[PASS] finished chapter fills the route and is saved  {"done":true,"fill":58.09375,"saved":{"T1":[1]}}
+[PASS] speed button changes playback rate  rate 1.15
+[PASS] the classes door shows progress and a continue button  {"p":"0.017241379310344827","info":"1 of 58 chapters heard","resume":true,"label":"Continue Class 1, chapter 3"}
+[PASS] the class row shows the same progress  {"p":"0.14285714285714285","info":"20 minutes, 1 of 7 chapters heard. 3 papers","meter":true}
+[PASS] #T1 links to its paper P01  {"hash":"#P01","h1":"The evolution of Norway's national innovation system"}
+[PASS] a paper has a breadcrumb back to Papers and a Where next block  {"crumbs":true,"next":true,"h2":"Where next"}
+[PASS] a class has a breadcrumb back to Classes and a Where next block  {"crumbs":true,"next":true}
+[PASS] the top bar stays at the top of a scrolled paper  {"top":0,"y":3000}
+[PASS] both top bar links stay visible  [{"href":"#classes","w":76,"top":6,"bottom":50},{"href":"#papers","w":70,"top":6,"bottom":50}]
+[PASS] the Papers link in the top bar opens the papers page  {"papers":true,"current":"page"}
+[PASS] the player title names what is playing and links to it  {"href":"#T1","text":"Class 1, chapter 3: Norway's innovation puzzle","tag":"A"}
+[PASS] the player title opens what is playing  {"hash":"#T1","h1":"Innovation as systemic and sustainable transformation"}
+[PASS] all 17 ready papers open with their chapters and page subheadings  []
+[PASS] a page link in T1 opens P01 at page 431  {"hash":"#P01","found":true,"top":72}
+  (every class is ready: the class not-ready check is skipped)
+  (every paper is ready: the paper not-ready check is skipped)
+[PASS] the theme follows the device until a choice is saved  {"light":"rgb(250, 249, 245)","dark":"rgb(38, 38, 36)"}
+[PASS] the theme button switches colours, label and saved choice  {"start":{"theme":"light","bg":"rgb(250, 249, 245)"},"next":{"theme":"dark","bg":"rgb(38, 38, 36)","label":"Switch to light theme","saved":"dark"}}
+[PASS] the chosen theme survives a reload  {"theme":"dark","bg":"rgb(38, 38, 36)","saved":"dark"}
+[PASS] the second theme click returns to the starting theme  {"theme":"light","bg":"rgb(250, 249, 245)","saved":"light","label":"Switch to dark theme"}
+[PASS] the theme button fits in the phone top bar  {"inner":390,"scroll":390,"left":338.84375,"right":374}
+[PASS] no horizontal scroll at phone width (home)  {"scroll":390,"inner":390}
+  screenshot workspace/lecture-audio/checks/phone-home.png
+  screenshot workspace/lecture-audio/checks/phone-home-dark.png
+[PASS] no horizontal scroll at phone width (classes)  {"scroll":390,"inner":390}
+  screenshot workspace/lecture-audio/checks/phone-classes.png
+  screenshot workspace/lecture-audio/checks/phone-classes-dark.png
+[PASS] no horizontal scroll at phone width (papers)  {"scroll":390,"inner":390}
+  screenshot workspace/lecture-audio/checks/phone-papers.png
+  screenshot workspace/lecture-audio/checks/phone-papers-dark.png
+[PASS] no horizontal scroll at phone width (lecture)  {"scroll":390,"inner":390}
+  screenshot workspace/lecture-audio/checks/phone-lecture.png
+  screenshot workspace/lecture-audio/checks/phone-lecture-dark.png
+[PASS] no horizontal scroll at phone width (reading)  {"scroll":390,"inner":390}
+  screenshot workspace/lecture-audio/checks/phone-reading.png
+  screenshot workspace/lecture-audio/checks/phone-reading-dark.png
+[PASS] at 390px the top bar and the search page have no horizontal scroll  {"inner":390,"scroll":390,"h1":"Search the course","input":true}
+[PASS] "upward causation" lists T4 and P07 chapters with marked matches  {"groups":["Chapters"],"links":["#T4","#P07"],"marks":5}
+  screenshot workspace/lecture-audio/checks/phone-search.png
+  screenshot workspace/lecture-audio/checks/phone-search-dark.png
+[PASS] clicking the first chapter result opens its page at that chapter  {"hash":"#T4","found":true,"top":72}
+[PASS] "Stam" lists Paper 7 under Papers  {"paperNo":"Paper 7","text":"Papers\n          \n            Paper 7\n            \n              Entrepreneurial ecosystem elements\n              Stam & van de Ven 2021\n              20 minutes, 7 chapters\n              \n              \n            \n          "}
+[PASS] a search with no matches shows the no-results sentence  Nothing in the classes or papers matches that. Try a shorter word, or ask Grokbot.
+[PASS] #grokbot is displayed on #home, #T4 and #P02 as the same element  {"gbOnHome":{"shown":true,"same":true},"gbOnT4":{"shown":true,"same":true},"gbOnP02":{"shown":true,"same":true}}
+[PASS] on the front page the bubble opens in course mode, switch and chips hidden  {"open":true,"expanded":"true","head":"About the whole course","switchHidden":true,"chipsHidden":true}
+[PASS] on #T4 with chapter 3 on screen the bubble heads that chapter with a Whole course switch  {"head":"About Class 4, chapter 3: Two models of the ecosystem","switch":"Whole course"}
+[PASS] a chip sends the chapter in view  {"title":true,"first":true,"second":true}
+[PASS] the bubble captions the answer while it is spoken  {"title":true,"first":true,"second":true}
+[PASS] "Whole course" switches the bubble to course mode
+[FAIL] a course question picks with the quick model over the whole index  {}
+[FAIL] the course answer names its source  {"href":"#T4","text":"Class 4, chapter 5: Can public policy build an ecosystem?"}
+[PASS] "hola" answers from the course overview with the Spanish greeting  {"words":"¡Hola! Soy Grokbot. ¿En qué te ayudo?","sampleCount":1}
+[PASS] the Spanish answer is spoken with a Spanish voice  [{"text":"¡Hola!","lang":"es-ES","voice":"es-ES"},{"text":"Soy Grokbot.","lang":"es-ES","voice":"es-ES"},{"text":"¿En qué te ayudo?","lang":"es-ES","voice":"es-ES"}]
+[PASS] "Read again" is visible after the answer  flex
+  screenshot workspace/lecture-audio/checks/phone-grokbot-hola.png
+[PASS] "Read again" speaks the answer again with no new model call  {"uttBefore":3,"replay":{"utter":6,"samples":1}}
+[PASS] with only an English voice, a Spanish answer still speaks with lang es-ES and voice null  [{"text":"¡Hola!","lang":"es-ES","voice":null},{"text":"Soy Grokbot.","lang":"es-ES","voice":null},{"text":"¿En qué te ayudo?","lang":"es-ES","voice":null}]
+[PASS] a course question picked as Paper 2 sends the do-not-quote rule
+[PASS] a chapter question on #P02 sends the do-not-quote rule too
+[PASS] "nothing-matches" still answers from the course overview  {"words":"First sentence. Second sentence.","sources":"From Paper 15, chapter 2: Why agency is distributed, and why it is embedded"}
+[PASS] a route change closes the bubble and leaves no busy state  {"hidden":true,"busy":""}
+[PASS] a drag moves the orb by the dragged amount, saves the place and hides the hint  {"orbPos0":{"left":892,"top":683,"cx":928,"cy":719},"orbPos1":{"left":772,"top":603,"hint":true,"saved":"{\"x\":772,\"y\":603}","bubble":true}}
+[PASS] after a reload the orb is where the drag left it  {"left":772,"top":603}
+[PASS] after a touch drag (no click follows it) the next tap opens the bubble  {"tc":{"x":808,"y":639,"left":772},"tAfter":{"x":748,"y":639,"left":712,"bubble":true},"tTapOpen":true}
+[PASS] a tap without movement opens the bubble
+[PASS] Escape closes the bubble and puts focus back on the orb  {"hidden":true,"focus":true}
+[PASS] Enter on the focused orb opens the bubble
+[PASS] ArrowLeft with a focused orb moves it 16px left  moved 16
+[PASS] a far-off position clamps to 16px from the left and 8px above the player  {"left":16,"bottom":755,"playerTop":763}
+[PASS] server mode shows Grokbot on a chapter page
+[PASS] the first server question asks for a passcode  {"row":true}
+[PASS] after the passcode the chapter question reaches /api/ask  ["/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech"]
+[PASS] server mode calls /api/speak  ["/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech"]
+[PASS] the passcode is saved
+[FAIL] a course question on the front page reaches /api/course and cites #T4  {"paths":["/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech","/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech"],"courseSrc":{"href":"#T4","text":"Class 4, chapter 5: Can public policy build an ecosystem?"}}
+[PASS] a course question sends an array of hits to /api/course  {"question":"What is an entrepreneurial ecosystem?","hits":[{"id":"T4","chapter":5},{"id":"T4","chapter":4},{"id":"T4","chapter":7}]}
+[PASS] "Read again" replays the server voice with no new /api/speak request  {"replayShown":true,"before":4,"after":4}
+[PASS] on a phone the orb is 56px and the open bubble 358px wide with no horizontal scroll  {"cv":56,"bw":358,"inner":390,"scroll":390,"orbBottom":699,"playerTop":707,"saved":null,"pos":{"x":318,"y":643},"gTop":643,"gH":56,"btnTop":643,"btnBottom":699,"pTop":707,"pH":137,"side":"above","bTop":306,"bBottom":631}
+[PASS] the phone orb does not overlap the player  {"cv":56,"bw":358,"inner":390,"scroll":390,"orbBottom":699,"playerTop":707,"saved":null,"pos":{"x":318,"y":643},"gTop":643,"gH":56,"btnTop":643,"btnBottom":699,"pTop":707,"pH":137,"side":"above","bTop":306,"bBottom":631}
+  screenshot workspace/lecture-audio/checks/phone-grokbot.png
+  screenshot workspace/lecture-audio/checks/phone-grokbot-dark.png
+  screenshot workspace/lecture-audio/checks/desktop-grokbot.png
+[PASS] SERIES.classes is ["T1","T2","T3","T4","T5","T6","T8","B1"]  ["T1","T2","T3","T4","T5","T6","T8","B1"]
+[PASS] SERIES.papers is P01 to P17 in number order  ["P01","P02","P03","P04","P05","P06","P07","P08","P09","P10","P11","P12","P13","P14","P15","P16","P17"]
+[PASS] on #T1 with Follow and Auto on, the last chapter ends and T2-01.mp3 plays with the page on #T2  {"src":"T2-01.mp3","paused":false,"hash":"#T2","h1":"Regional innovation systems and sustainable transformation","t2":"Regional innovation systems and sustainable transformation","auto":"true","follow":true}
+[PASS] on #P08 the last chapter ends on P09-01.mp3: number order, not the list's P14  {"src":"P09-01.mp3","paused":false,"hash":"#P09","h1":"Functions of innovation systems: a new approach for analysing technological change","p09":"Functions of innovation systems: a new approach for analysing technological change"}
+[PASS] on #papers T1's last chapter ends: the audio goes on to T2, and the hash stays #papers  {"src":"T2-01.mp3","paused":false,"hash":"#papers"}
+[PASS] Auto off: aria-pressed is false and the saved store has autoplay false  {"pressed":"false","saved":false}
+[PASS] with Auto off, the end of P01's last chapter stops on P01  {"src":"P01-05.mp3","paused":true,"hash":"#P01"}
+[PASS] with Auto off, ⏭ on that last chapter still opens P02 chapter 1  {"src":"P02-01.mp3","paused":false,"hash":"#P02"}
+[PASS] ⏮ at the start of T2 chapter 1 opens T1's last chapter  {"src":"T1-07.mp3","paused":false,"hash":"#T1"}
+[PASS] Auto is back on (aria-pressed true, autoplay true saved)  {"pressed":"true","saved":true}
+[PASS] with Auto on, the end of P17's last chapter stops (no next paper)  {"src":"P17-06.mp3","paused":true,"hash":"#P17"}
+[PASS] with Auto on, the end of B1's last chapter stops (no next class)  {"src":"B1-08.mp3","paused":true,"hash":"#B1"}
+[PASS] #P07: the top pager links #P06 and #P08, labelled "Previous paper: Paper 6," and "Next paper: Paper 8,"  {"links":["#P06","#P08"],"labels":["Previous paper: Paper 6, Toward a process theory of entrepreneurial ecosystems","Next paper: Paper 8, Entrepreneurial innovation: the importance of context"],"spans":0}
+[PASS] #P07: "Where next" has "Previous paper:" and "Next paper:"  ["Other papers for class 4:","Previous paper:","Next paper:"]
+[PASS] #P01: no previous; the next is #P02  {"links":["#P02"],"labels":["Next paper: Paper 2, The “trinity” of innovation: actors, ideas and objects in innovation practice"],"spans":1}
+[PASS] #P17: the previous is #P16, with no next button; "Where next" has "Back to the first paper:"  {"pg17":{"links":["#P16"],"labels":["Previous paper: Paper 16, Paving the way for new regional industrial paths: actors and modes of change in Scania's games industry"],"spans":1},"wn17":["Other papers for class 9:","Previous paper:","Back to the first paper:"]}
+[PASS] #P08: the next is #P09  {"links":["#P07","#P09"],"labels":["Previous paper: Paper 7, Entrepreneurial ecosystem elements","Next paper: Paper 9, Functions of innovation systems: a new approach for analysing technological change"],"spans":0}
+[PASS] #T8: the next is #B1  {"links":["#T6","#B1"],"labels":["Previous class: Class 6, Technological innovation systems and sustainable transformation","Next class: Bonus class, The art of crowdfunding"],"spans":0}
+[PASS] #B1: the previous is #T8, with no next  {"links":["#T8"],"labels":["Previous class: Class 9, Summary and exam preparation"],"spans":1}
+[PASS] on a phone #P07 has no horizontal scroll, the player with the Auto chip included  {"inner":390,"scroll":390,"oneRow":true,"wrapped":false,"overlap":false,"auto":"Auto","playerRow":true}
+[PASS] the breadcrumb and pager sit on one row, or wrap without overlapping  {"inner":390,"scroll":390,"oneRow":true,"wrapped":false,"overlap":false,"auto":"Auto","playerRow":true}
+  screenshot workspace/lecture-audio/checks/phone-paper-pager.png
+  screenshot workspace/lecture-audio/checks/phone-player-auto.png
+[PASS] no script errors
+3 check(s) failed

@@ -11,6 +11,8 @@ const MOCK_SCRIPT = path.join(ROOT, "scripts", "mock_openrouter.mjs");
 const TEST_KEY = "test-key";
 const TEST_PASS = "test-pass";
 const ANSWER = "First sentence. Second sentence.";
+const FIRST_MODEL = "google/gemma-4-31b-it:free";
+const SECOND_MODEL = "nvidia/nemotron-3-super-120b-a12b:free";
 const CHAT_PATH = "/api/v1/chat/completions";
 const SPEECH_PATH = "/api/v1/audio/speech";
 
@@ -94,6 +96,60 @@ function request(port, requestPath, { method = "GET", headers = {}, body = null,
   });
 }
 
+/* Reads an NDJSON reply line by line, keeping when each line arrived. */
+function streamRequest(port, requestPath, { method = "POST", headers = {}, body = null, origin = "server" } = {}) {
+  return new Promise((resolve, reject) => {
+    const payload = body === null ? null : Buffer.from(body);
+    const requestHeaders = { ...headers, "Connection": "close" };
+    if (payload) requestHeaders["Content-Length"] = String(payload.length);
+    const startedAt = Date.now();
+    const req = http.request({
+      host: "127.0.0.1",
+      port,
+      path: requestPath,
+      method,
+      headers: requestHeaders,
+      agent: false,
+    }, (res) => {
+      const chunks = [];
+      const lines = [];
+      const times = [];
+      let buffer = "";
+      res.setEncoding("utf8");
+      res.on("data", (chunk) => {
+        chunks.push(Buffer.from(chunk, "utf8"));
+        buffer += chunk;
+        let newline;
+        while ((newline = buffer.indexOf("\n")) >= 0) {
+          const line = buffer.slice(0, newline).trim();
+          buffer = buffer.slice(newline + 1);
+          if (!line) continue;
+          try {
+            lines.push(JSON.parse(line));
+            times.push(Date.now() - startedAt);
+          } catch (error) { /* not one of our JSON lines */ }
+        }
+      });
+      res.on("end", () => {
+        const response = {
+          status: res.statusCode,
+          headers: res.headers,
+          rawHeaders: res.rawHeaders,
+          body: Buffer.concat(chunks),
+          path: requestPath,
+        };
+        inspectResponse(response, origin);
+        resolve({ ...response, lines, times, text: response.body.toString("utf8") });
+      });
+      res.on("error", reject);
+    });
+    req.setTimeout(15000, () => req.destroy(new Error(`stream timed out: ${requestPath}`)));
+    req.on("error", reject);
+    if (payload) req.write(payload);
+    req.end();
+  });
+}
+
 async function postJson(port, requestPath, value, { passcode, origin = "server", counted = false } = {}) {
   const headers = { "Content-Type": "application/json" };
   if (passcode !== undefined) headers["X-Grokbot-Passcode"] = passcode;
@@ -145,8 +201,8 @@ function startProcess(kind, script, args, extraEnv) {
   return child;
 }
 
-function startMock(port, failMode, sequence) {
-  return startProcess("mock", MOCK_SCRIPT, [String(port)], { MOCK_FAIL: failMode });
+function startMock(port, failMode, sequence, settings = {}) {
+  return startProcess("mock", MOCK_SCRIPT, [String(port)], { MOCK_FAIL: failMode, ...settings });
 }
 
 function startServer(serverPort, mockPort, settings = {}) {
@@ -158,7 +214,7 @@ function startServer(serverPort, mockPort, settings = {}) {
     GROKBOT_RATE_PER_10MIN: "20",
     GROKBOT_ASKS_PER_DAY: "150",
     GROKBOT_SPEAKS_PER_DAY: "300",
-    GROKBOT_ANSWER_MODELS: "google/gemma-4-31b-it:free,nvidia/nemotron-3-super-120b-a12b:free",
+    GROKBOT_ANSWER_MODELS: `${FIRST_MODEL},${SECOND_MODEL}`,
     GROKBOT_VOICE_MODEL_EN: "deepgram/flux-tts:free",
     GROKBOT_VOICE_MODEL_ES: "fish-audio/s2.1-pro-free:free",
     GROKBOT_VOICE_EN: "flux-alexis-en",
@@ -441,7 +497,7 @@ async function run() {
     check(withHits.status === 200 && JSON.stringify(withHits.json?.sources) === JSON.stringify([{ id: "P07", chapter: 2 }]),
       "search hits survive an empty pick", `status ${withHits.status}, sources ${JSON.stringify(withHits.json?.sources)}`);
     const hitCalls = (await callsFromMock(mockPort)).filter((c) => c.path === CHAT_PATH);
-    check(hitCalls.length - holaCalls.length === 2 && hitCalls.at(-1)?.context.includes(p07.chapters[1].title),
+    check(hitCalls.length - holaCalls.length === 1 && hitCalls.at(-1)?.context.includes(p07.chapters[1].title),
       "the hits answer's prompt contains the P07 chapter 2 title");
     const badHit = await course({ question: "nothing-matches", hits: [{ id: "T99", chapter: 1 }] });
     check(badHit.status === 200 && Array.isArray(badHit.json?.sources) && badHit.json.sources.length === 0,
@@ -454,6 +510,144 @@ async function run() {
     check(stringHits.status === 400, "a non-array hits value returns 400", `status ${stringHits.status}`);
     const longCourse = await course({ question: "x".repeat(501) });
     check(longCourse.status === 400, "a 501-character course question returns 400", `status ${longCourse.status}`);
+
+    // ---- Part F.2: streaming, the pick skipped when the search has hits, and the new settings
+    const STREAM_IP = "203.0.113.60";
+    const streamHeaders = { "Content-Type": "application/json", "X-Forwarded-For": STREAM_IP, "X-Grokbot-Passcode": TEST_PASS };
+    const beforeStream = (await callsFromMock(mockPort)).filter((c) => c.path === CHAT_PATH).length;
+    const streamed = await streamRequest(serverPort, "/api/ask", {
+      headers: streamHeaders,
+      body: JSON.stringify({ ...validAsk, stream: true }),
+    });
+    check(streamed.status === 200 && String(streamed.headers["content-type"] || "").includes("application/x-ndjson"),
+      "a streamed ask answers NDJSON", `status ${streamed.status}, type ${streamed.headers["content-type"]}`);
+    check(JSON.stringify(streamed.lines) === JSON.stringify([
+      { sentence: "First sentence." }, { sentence: "Second sentence." }, { done: true, text: ANSWER },
+    ]), "the streamed ask sends each sentence, then the whole answer", JSON.stringify(streamed.lines));
+    check(streamed.lines.length === 3 && streamed.times[1] - streamed.times[0] >= 120,
+      "the first streamed line arrives at least 120 ms before the second", streamed.times.join(","));
+    const afterStream = (await callsFromMock(mockPort)).filter((c) => c.path === CHAT_PATH);
+    check(afterStream.length - beforeStream === 1, "the streamed ask made one chat call",
+      `${afterStream.length - beforeStream}`);
+
+    const beforeStreamCourse = afterStream.length;
+    const streamedCourse = await streamRequest(serverPort, "/api/course", {
+      headers: streamHeaders,
+      body: JSON.stringify({ question: "What is an entrepreneurial ecosystem?", hits: [{ id: "T4", chapter: 3 }], stream: true }),
+    });
+    check(streamedCourse.status === 200 && String(streamedCourse.headers["content-type"] || "").includes("application/x-ndjson") &&
+      JSON.stringify(streamedCourse.lines[0]) === JSON.stringify({ sources: [{ id: "T4", chapter: 3 }] }) &&
+      JSON.stringify(streamedCourse.lines.slice(1)) === JSON.stringify([
+        { sentence: "First sentence." }, { sentence: "Second sentence." }, { done: true, text: ANSWER },
+      ]), "a streamed course answer sends the sources first, then the sentences", JSON.stringify(streamedCourse.lines));
+    const afterStreamCourse = (await callsFromMock(mockPort)).filter((c) => c.path === CHAT_PATH);
+    check(afterStreamCourse.length - beforeStreamCourse === 1 && !afterStreamCourse.at(-1)?.context.startsWith("You choose which chapters"),
+      "a course question with hits makes one chat call, with no pick", `${afterStreamCourse.length - beforeStreamCourse}`);
+
+    const beforeNoHits = afterStreamCourse.length;
+    const noHits = await course({ question: "nothing-matches" });
+    const afterNoHits = (await callsFromMock(mockPort)).filter((c) => c.path === CHAT_PATH);
+    check(noHits.status === 200 && afterNoHits.length - beforeNoHits === 2 &&
+      afterNoHits[beforeNoHits]?.context.startsWith("You choose which chapters"),
+      "a course question without hits makes a pick, then the answer", `${afterNoHits.length - beforeNoHits}`);
+
+    // The cost of a course question with hits: 1 slot each, so two fit a limit of two.
+    const mockCostPort = await getFreePort(), serverCostPort = await getFreePort();
+    const mockCost = startMock(mockCostPort, "");
+    await waitReady(mockCost, mockCostPort, "/calls", "mock");
+    const serverCost = startServer(serverCostPort, mockCostPort, { GROKBOT_RATE_PER_10MIN: "2" });
+    await waitReady(serverCost, serverCostPort, "/api/health", "server");
+    const hitCourse = (body) => request(serverCostPort, "/api/course", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Grokbot-Passcode": TEST_PASS },
+      body: JSON.stringify(body),
+    }).then((response) => { response.json = parseJson(response); return response; });
+    const costHits = [];
+    for (let n = 0; n < 3; n++) {
+      costHits.push(await hitCourse({ question: "What is an entrepreneurial ecosystem?", hits: [{ id: "T4", chapter: 3 }] }));
+    }
+    check(costHits[0].status === 200 && costHits[1].status === 200 && costHits[2].status === 429 &&
+      costHits[2].json?.error === "rate_limited",
+      "two course questions with hits fit a limit of two; the third is refused",
+      costHits.map((response) => response.status).join(","));
+    await stopProcess(serverCost);
+    await stopProcess(mockCost);
+    check(!isRunning(serverCost) && !isRunning(mockCost), "the cost-of-hits server and its mock stop cleanly");
+
+    // A model slow to start is abandoned after FIRST_TOKEN_MS and the next one answers.
+    const slowMockPort = await getFreePort(), slowServerPort = await getFreePort();
+    const slowMock = startMock(slowMockPort, "", undefined, { MOCK_SLOW_MODEL: FIRST_MODEL });
+    await waitReady(slowMock, slowMockPort, "/calls", "mock");
+    const slowServer = startServer(slowServerPort, slowMockPort, { GROKBOT_FIRST_TOKEN_MS: "500" });
+    await waitReady(slowServer, slowServerPort, "/api/health", "server");
+    const slow = await streamRequest(slowServerPort, "/api/ask", {
+      headers: streamHeaders,
+      body: JSON.stringify({ ...validAsk, stream: true }),
+    });
+    const slowChats = (await callsFromMock(slowMockPort)).filter((c) => c.path === CHAT_PATH);
+    check(slow.status === 200 && slow.lines.at(-1)?.done === true && slowChats.length === 2 &&
+      slowChats.at(-1)?.model === SECOND_MODEL,
+      "a model slow to start is replaced by the second model",
+      JSON.stringify({ models: slowChats.map((call) => call.model), done: slow.lines.at(-1)?.done }));
+    await stopProcess(slowServer);
+    await stopProcess(slowMock);
+    check(!isRunning(slowServer) && !isRunning(slowMock), "the slow-model server and its mock stop cleanly");
+
+    // A model that only thinks is abandoned for the next one.
+    const thinkMockPort = await getFreePort(), thinkServerPort = await getFreePort();
+    const thinkMock = startMock(thinkMockPort, "", undefined, { MOCK_THINK_MODEL: FIRST_MODEL });
+    await waitReady(thinkMock, thinkMockPort, "/calls", "mock");
+    const thinkServer = startServer(thinkServerPort, thinkMockPort);
+    await waitReady(thinkServer, thinkServerPort, "/api/health", "server");
+    const think = await streamRequest(thinkServerPort, "/api/ask", {
+      headers: streamHeaders,
+      body: JSON.stringify({ ...validAsk, stream: true }),
+    });
+    const thinkChats = (await callsFromMock(thinkMockPort)).filter((c) => c.path === CHAT_PATH);
+    check(think.status === 200 && think.lines.at(-1)?.done === true && thinkChats.length === 2 &&
+      thinkChats.at(-1)?.model === SECOND_MODEL,
+      "a model that only thinks is replaced by the second model",
+      JSON.stringify({ models: thinkChats.map((call) => call.model), done: think.lines.at(-1)?.done }));
+    await stopProcess(thinkServer);
+    await stopProcess(thinkMock);
+    check(!isRunning(thinkServer) && !isRunning(thinkMock), "the thinking-model server and its mock stop cleanly");
+
+    // GROKBOT_REASONING is passed through only when it is set.
+    const reasonMockPort = await getFreePort(), reasonServerPort = await getFreePort();
+    const reasonMock = startMock(reasonMockPort, "");
+    await waitReady(reasonMock, reasonMockPort, "/calls", "mock");
+    const reasonServer = startServer(reasonServerPort, reasonMockPort, { GROKBOT_REASONING: '{"effort":"low"}' });
+    await waitReady(reasonServer, reasonServerPort, "/api/health", "server");
+    await postJson(reasonServerPort, "/api/ask", validAsk, { passcode: TEST_PASS });
+    const reasonCalls = (await callsFromMock(reasonMockPort)).filter((c) => c.path === CHAT_PATH);
+    check(JSON.stringify(reasonCalls.at(-1)?.reasoning) === JSON.stringify({ effort: "low" }),
+      "GROKBOT_REASONING is sent with the chat call", JSON.stringify(reasonCalls.at(-1)?.reasoning));
+    const normalCalls = (await callsFromMock(mockPort)).filter((c) => c.path === CHAT_PATH);
+    check(normalCalls.length > 0 && normalCalls.every((c) => c.reasoning === null),
+      "without GROKBOT_REASONING no reasoning settings are sent", `${normalCalls.length} calls`);
+    await stopProcess(reasonServer);
+    await stopProcess(reasonMock);
+    check(!isRunning(reasonServer) && !isRunning(reasonMock), "the reasoning server and its mock stop cleanly");
+
+    // Every model failing: a streamed ask falls back to a normal 502 JSON reply.
+    const failMockPort = await getFreePort(), failServerPort = await getFreePort();
+    const failMock = startMock(failMockPort, "chat500");
+    await waitReady(failMock, failMockPort, "/calls", "mock");
+    const failServer = startServer(failServerPort, failMockPort);
+    await waitReady(failServer, failServerPort, "/api/health", "server");
+    const failedStream = await request(failServerPort, "/api/ask", {
+      method: "POST",
+      headers: streamHeaders,
+      body: JSON.stringify({ ...validAsk, stream: true }),
+    });
+    check(failedStream.status === 502 && String(failedStream.headers["content-type"] || "").includes("application/json") &&
+      parseJson(failedStream)?.error === "upstream",
+      "when every model fails, a streamed ask gets a normal 502 JSON error",
+      `status ${failedStream.status}, type ${failedStream.headers["content-type"]}`);
+    await stopProcess(failServer);
+    await stopProcess(failMock);
+    check(!isRunning(failServer) && !isRunning(failMock), "the failing-model server and its mock stop cleanly");
+
 
     // The cost: a course ask spends 2 of the per-IP window's slots and 2 daily asks.
     const mock2Port = await getFreePort(), server2Port = await getFreePort();

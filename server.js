@@ -121,19 +121,33 @@ const KEY = process.env.OPENROUTER_API_KEY || "";
 const MODELS = (process.env.GROKBOT_ANSWER_MODELS || "openrouter/free,nvidia/nemotron-3.5-super-vl:free").split(",").map((s) => s.trim()).filter(Boolean);
 const VOICE_EN = process.env.GROKBOT_VOICE_MODEL_EN || "fish-audio/s2.1-pro-free:free";
 const VOICE_ES = process.env.GROKBOT_VOICE_MODEL_ES || "fish-audio/s2.1-pro-free:free";
+const PICK_MODELS = (process.env.GROKBOT_PICK_MODELS || "").split(",").map((s) => s.trim()).filter(Boolean);
+const FIRST_TOKEN_MS = Number(process.env.GROKBOT_FIRST_TOKEN_MS) > 0 ? Number(process.env.GROKBOT_FIRST_TOKEN_MS) : 15000;
+/* Optional OpenRouter "reasoning" settings, as JSON (for example {"effort":"low"}); unset means none are sent. */
+const REASONING = (() => {
+  if (!process.env.GROKBOT_REASONING) return null;
+  try { return JSON.parse(process.env.GROKBOT_REASONING); } catch (e) { console.error("GROKBOT_REASONING is not JSON; ignored"); return null; }
+})();
+const upstreamHeaders = () => ({
+  "Authorization": `Bearer ${KEY}`, "Content-Type": "application/json",
+  "HTTP-Referer": "https://inn514.canner.app", "X-Title": "INN514 Course Companion",
+});
+function upstreamBody(model, messages, opts, stream) {
+  const b = { model, messages, max_tokens: opts.max_tokens || 1000, temperature: opts.temperature ?? 0.3 };
+  if (REASONING) b.reasoning = REASONING;
+  if (stream) b.stream = true;
+  return JSON.stringify(b);
+}
 
 async function askUpstream(messages, opts = {}) {
   let last429 = false;
-  for (const model of MODELS) {
+  for (const model of (opts.models || MODELS)) {
     try {
       const r = await fetch(`${BASE}/chat/completions`, {
         method: "POST",
-        headers: {
-          "Authorization": `Bearer ${KEY}`, "Content-Type": "application/json",
-          "HTTP-Referer": "https://inn514.canner.app", "X-Title": "INN514 Course Companion",
-        },
+        headers: upstreamHeaders(),
         // Room for a reasoning model's thinking as well as the 3-to-6-sentence answer.
-        body: JSON.stringify({ model, messages, max_tokens: opts.max_tokens || 1000, temperature: opts.temperature ?? 0.3 }),
+        body: upstreamBody(model, messages, opts, false),
         signal: AbortSignal.timeout(40000),
       });
       if (r.ok) {
@@ -148,6 +162,90 @@ async function askUpstream(messages, opts = {}) {
     } catch (e) { last429 = false; }
   }
   return { error: last429 ? 429 : 502 };
+}
+
+/* Streams an answer from OpenRouter and calls onSentence for each finished sentence as the model writes it.
+   Models are tried in order: a 429, a 5xx, a network error, no answer text within FIRST_TOKEN_MS, or a reply
+   with no answer text (only thinking) moves on to the next model. Once a model has started answering it
+   keeps the answer; if it breaks off, what it said so far stands. */
+async function askUpstreamStream(messages, onSentence, models = MODELS) {
+  let last429 = false;
+  for (const model of models) {
+    const ctl = new AbortController();
+    const total = setTimeout(() => ctl.abort(), 60000);
+    const first = setTimeout(() => ctl.abort(), FIRST_TOKEN_MS);
+    let text = "", pending = "", started = false;
+    const finish = () => { clearTimeout(first); clearTimeout(total); if (pending.trim()) onSentence(pending.trim()); pending = ""; };
+    try {
+      const r = await fetch(`${BASE}/chat/completions`, {
+        method: "POST", headers: upstreamHeaders(),
+        body: upstreamBody(model, messages, {}, true), signal: ctl.signal,
+      });
+      if (!r.ok) {
+        clearTimeout(first); clearTimeout(total);
+        last429 = r.status === 429;
+        if (r.status !== 429 && r.status < 500) break;
+        continue;
+      }
+      const dec = new TextDecoder();
+      let sse = "";
+      for await (const chunk of r.body) {
+        sse += dec.decode(chunk, { stream: true });
+        let nl;
+        while ((nl = sse.indexOf("\n")) >= 0) {
+          const line = sse.slice(0, nl).trim();
+          sse = sse.slice(nl + 1);
+          if (!line.startsWith("data:")) continue;
+          const data = line.slice(5).trim();
+          if (data === "[DONE]") continue;
+          let delta = "";
+          try { delta = JSON.parse(data)?.choices?.[0]?.delta?.content || ""; } catch (e) {}
+          if (!delta) continue;
+          if (!started) { started = true; clearTimeout(first); }
+          text += delta; pending += delta;
+          const parts = pending.split(/(?<=[.!?])\s+/);
+          pending = parts.pop();
+          for (const s of parts) if (s.trim()) onSentence(s.trim());
+        }
+      }
+      finish();
+      if (text.trim()) return { text: text.trim() };
+      last429 = false;                   // only thinking, no answer: the next model
+    } catch (e) {
+      finish();
+      if (started) return { text: text.trim() };   // broke off mid-answer: keep what was said
+      last429 = false;
+    }
+  }
+  return { error: last429 ? 429 : 502 };
+}
+/* A streamed reply: one JSON object per line ({sources}, {sentence}, {done, text} or {error}).
+   The headers go out with the first line, so an error before any line can still use a normal status. */
+function streamReply(req, res, start) {
+  let open = false;
+  return {
+    send(obj) {
+      if (!open) {
+        open = true;
+        res.writeHead(200, { "Content-Type": "application/x-ndjson; charset=utf-8", "Cache-Control": "no-cache, no-transform",
+          "X-Accel-Buffering": "no", "X-Content-Type-Options": "nosniff" });
+      }
+      res.write(JSON.stringify(obj) + "\n");
+    },
+    get open() { return open; },
+    end() { log(req, 200, Date.now() - start); res.end(); },
+  };
+}
+function answerStream(out, done, messages) {
+  const fail = (code) => {
+    const error = code === 429 ? "rate_limited" : "upstream";
+    if (!out.open) return done(code, JSONH, JSON.stringify({ error }));
+    out.send({ error }); out.end();
+  };
+  askUpstreamStream(messages, (s) => out.send({ sentence: s })).then((r) => {
+    if (r.error) return fail(r.error);
+    out.send({ done: true, text: r.text }); out.end();
+  }).catch(() => fail(502));
 }
 
 /* ---------- speak: the voice call (S3) ---------- */
@@ -281,6 +379,7 @@ const server = http.createServer((req, res) => {
         ...history.map((h) => ({ role: h.role, content: h.content })),
         { role: "user", content: question },
       ];
+      if (body.stream === true) return answerStream(streamReply(req, res, start), done, messages);
       askUpstream(messages).then((out) => {
         if (out.error) return done(out.error, JSONH, JSON.stringify({ error: out.error === 429 ? "rate_limited" : "upstream" }));
         done(200, JSONH, JSON.stringify({ text: out.text }));
@@ -291,7 +390,6 @@ const server = http.createServer((req, res) => {
   if (req.method === "POST" && p === "/api/course") {
     if (guessingLocked(req)) return done(429, JSONH, JSON.stringify({ error: "rate_limited" }));
     if (!passcodeOk(req)) { noteBadPass(req); return done(401, JSONH, JSON.stringify({ error: "passcode" })); }
-    if (!limitsOk(req, "ask", 2)) return done(429, JSONH, JSON.stringify({ error: "rate_limited" }));
     return readBody(req, (err, raw) => {
       if (err) return done(413, JSONH, JSON.stringify({ error: "bad_request" }));
       let body;
@@ -300,10 +398,27 @@ const server = http.createServer((req, res) => {
       if (typeof question !== "string" || question.length < 1 || question.length > 500) return done(400, JSONH, JSON.stringify({ error: "bad_request" }));
       if (body.hits !== undefined && (!Array.isArray(body.hits) || body.hits.length > 3)) return done(400, JSONH, JSON.stringify({ error: "bad_request" }));
       const hits = cleanPicks(body.hits || []);
-      // The pick: the model answers with a JSON array of at most three chapters, best first.
+      // a question the site's search already placed needs one model call; otherwise the model chooses chapters first
+      if (!limitsOk(req, "ask", hits.length ? 1 : 2)) return done(429, JSONH, JSON.stringify({ error: "rate_limited" }));
+      const answer = (chosen) => {
+        const blocks = chosen.map((p) => "\n\n" + blockFor(p.id, DB.lectures[p.id].chapters.findIndex((ch) => ch.n === p.chapter))).join("");
+        const messages = [
+          { role: "user", content: DB.courseRules + DB.noQuoteCourse + "\n\n" + COURSE_OVERVIEW + blocks },
+          { role: "user", content: question },
+        ];
+        if (body.stream === true) {
+          const out = streamReply(req, res, start);
+          out.send({ sources: chosen });
+          return answerStream(out, done, messages);
+        }
+        askUpstream(messages).then((out) => {
+          if (out.error) return done(out.error, JSONH, JSON.stringify({ error: out.error === 429 ? "rate_limited" : "upstream" }));
+          done(200, JSONH, JSON.stringify({ text: out.text, sources: chosen }));
+        }).catch(() => done(502, JSONH, JSON.stringify({ error: "upstream" })));
+      };
+      if (hits.length) return answer(hits);
       askUpstream([{ role: "user", content: DB.pickRules + "\n\n" + COURSE_INDEX + "\n\nQuestion: " + question }],
-        { max_tokens: 600, temperature: 0 }).then((pick) => {
-        // A pick error is not fatal: the overview and any search hits still answer.
+        { max_tokens: 600, temperature: 0, models: PICK_MODELS.length ? PICK_MODELS : MODELS }).then((pick) => {
         let picks = [];
         if (!pick.error) {
           const m = /\[[\s\S]*?\]/.exec(pick.text);
@@ -311,17 +426,8 @@ const server = http.createServer((req, res) => {
           try { parsed = JSON.parse(m[0]); } catch (e) {}
           picks = cleanPicks(parsed);
         }
-        const chosen = mergePicks(picks, hits);
-        const blocks = chosen.map((p) => "\n\n" + blockFor(p.id, DB.lectures[p.id].chapters.findIndex((ch) => ch.n === p.chapter))).join("");
-        const messages = [
-          { role: "user", content: DB.courseRules + DB.noQuoteCourse + "\n\n" + COURSE_OVERVIEW + blocks },
-          { role: "user", content: question },
-        ];
-        askUpstream(messages).then((out) => {
-          if (out.error) return done(out.error, JSONH, JSON.stringify({ error: out.error === 429 ? "rate_limited" : "upstream" }));
-          done(200, JSONH, JSON.stringify({ text: out.text, sources: chosen }));
-        }).catch(() => done(502, JSONH, JSON.stringify({ error: "upstream" })));
-      }).catch(() => done(502, JSONH, JSON.stringify({ error: "upstream" })));
+        answer(picks);
+      }).catch(() => answer([]));
     });
   }
 

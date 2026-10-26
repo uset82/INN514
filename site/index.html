@@ -1271,7 +1271,7 @@ function gbPlace() {
 function gbOpen() {
   const b = gb.querySelector(".gb-bubble");
   b.hidden = false; gbOrb.setAttribute("aria-expanded", "true");
-  openAsk = gb;                   // askServer reads the open panel
+  openAsk = gb;                   // the ask helpers read the open panel
   gbRender(gbContext());
   gbPlace();
   // A mouse goes straight to typing; on a touch screen the keyboard waits until the student taps the input.
@@ -1419,13 +1419,13 @@ async function askCourse(panel, question) {
   try {
     if (askMode === "claude") {
       const hits = searchHits(question);
-      let picks;
-      try {
-        picks = cleanPicks(await sampleFn.json(PICK_RULES + "\n\n" + courseIndex() + "\n\nQuestion: " + question, { modelTier: "quick", signal: ctl.signal, cache: false }));
-      } catch (e) {
-        if (ctl.signal.aborted || panel._ask !== st) return;
-        serverClearBusy(panel);
-        picks = [];   // pick errors carry on; the overview always answers
+      let picks = [];
+      if (!hits.length) {        // the search found nothing (often a question in Spanish): the model chooses chapters
+        try {
+          picks = cleanPicks(await sampleFn.json(PICK_RULES + "\n\n" + courseIndex() + "\n\nQuestion: " + question, { modelTier: "quick", signal: ctl.signal, cache: false }));
+        } catch (e) {
+          if (ctl.signal.aborted || panel._ask !== st) return;
+        }
       }
       if (ctl.signal.aborted || panel._ask !== st) return;
       const chosen = mergePicks(picks, hits);
@@ -1438,17 +1438,7 @@ async function askCourse(panel, question) {
       return;
     }
     if (askMode !== "server") { serverClearBusy(panel); return; }
-    const r = await fetch("/api/course", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "X-Grokbot-Passcode": serverPass },
-      body: JSON.stringify({ question, hits: searchHits(question) }),
-      signal: ctl.signal,
-    });
-    if (!r.ok) { const e = new Error("Course ask failed"); e.status = r.status; throw e; }
-    const out = await r.json();
-    if (ctl.signal.aborted || panel._ask !== st) return;
-    showSources(panel, out.sources || []);
-    await speakServerAnswer(panel, String(out.text || "").trim(), lang, ctl);
+    await streamServerAnswer(panel, ctl, "/api/course", { question, hits: searchHits(question) }, null);
   } catch (e) {
     if (ctl.signal.aborted || panel._ask !== st) return;
     serverError(panel, e);
@@ -1456,11 +1446,11 @@ async function askCourse(panel, question) {
 }
 route();
 /* ---------- ask the orb ---------- */
-const RULES = "You are Grokbot, the friendly study companion of the master's course INN514, \"Innovation systems and sustainable transformation\". Below is the chapter the student is reading, then an overview of the whole course. Your answer will be read aloud by a speech engine, so write plain spoken sentences: no lists, no headings, no symbols, no brackets. Always answer in the language of the student's message. If the student greets you, thanks you or chats, reply warmly in one or two sentences and offer to explain the chapter. Otherwise answer in 3 to 6 sentences unless the student asks for more, from the chapter first and the overview second, and say where it comes from, using the slide or page numbers in words (\"on page 764\"). If neither covers the question, say so kindly in one sentence and suggest the Whole course button. Never invent authors, numbers, dates or quotations.";
+const RULES = "You are Grokbot, the friendly study companion of the master's course INN514, \"Innovation systems and sustainable transformation\". Below is the chapter the student is reading, then an overview of the whole course. Your answer will be read aloud by a speech engine, so write plain spoken sentences: no lists, no headings, no symbols, no brackets. Always answer in the language of the student's message. If the student greets you, thanks you or chats, reply warmly in one or two sentences and offer to explain the chapter. Otherwise answer in 2 to 4 short sentences unless the student asks for more, from the chapter first and the overview second, and say where it comes from, using the slide or page numbers in words (\"on page 764\"). If neither covers the question, say so kindly in one sentence and suggest the Whole course button. Never invent authors, numbers, dates or quotations.";
 const NO_QUOTE = " This paper is marked \"paper in preparation, do not quote\": paraphrase it and never quote it.";
 const NO_QUOTE_COURSE = " Paper 2 (Fløysand, Jakobsen & Hidle 2013) is marked \"paper in preparation, do not quote\": paraphrase it and never quote it.";
 const PICK_RULES = "You choose which chapters of the INN514 course companion help answer a student's message. The message may be in any language; the chapters are in English. Below is the list of chapters, one per line, as \"ID N: description\". Reply with only a JSON array of at most three objects like {\"id\": \"T4\", \"chapter\": 3}, best first, or [] if the message is a greeting or small talk, a general question about the course (teachers, dates, which papers go with which class), or not covered by any chapter.";
-const COURSE_RULES = "You are Grokbot, the friendly study companion of the master's course INN514, \"Innovation systems and sustainable transformation\". Below is an overview of the whole course and, when they match the question, chapters from the course companion. Your answer will be read aloud by a speech engine, so write plain spoken sentences: no lists, no headings, no symbols, no brackets. Always answer in the language of the student's message. If the student greets you, thanks you or chats, reply warmly in one or two sentences and offer help with the classes or the papers. Otherwise answer in 3 to 6 sentences unless the student asks for more, using only the overview and the chapters, and say which class or paper and which chapter the answer comes from, in words, with the page when the chapter gives one. If the course does not cover the question, say so kindly in one sentence and name a related topic it does cover. Never invent authors, numbers, dates or quotations.";
+const COURSE_RULES = "You are Grokbot, the friendly study companion of the master's course INN514, \"Innovation systems and sustainable transformation\". Below is an overview of the whole course and, when they match the question, chapters from the course companion. Your answer will be read aloud by a speech engine, so write plain spoken sentences: no lists, no headings, no symbols, no brackets. Always answer in the language of the student's message. If the student greets you, thanks you or chats, reply warmly in one or two sentences and offer help with the classes or the papers. Otherwise answer in 2 to 4 short sentences unless the student asks for more, using only the overview and the chapters, and say which class or paper and which chapter the answer comes from, in words, with the page when the chapter gives one. If the course does not cover the question, say so kindly in one sentence and name a related topic it does cover. Never invent authors, numbers, dates or quotations.";
 const CHIPS = [
   ["Explain this simply", "Explain this chapter simply, as if to a first-year student."],
   ["Give me an example", "Give me one concrete example that makes this chapter's main idea clear, preferably one from the chapter."],
@@ -1717,20 +1707,6 @@ function serverError(panel, e) {
   else if (e && e.status === 400) status.textContent = "That was too much at once. Try a shorter question.";
   else status.textContent = "The answer was interrupted. Ask again.";
 }
-async function askServer(id, i, question) {
-  const panel = openAsk, st = panel && panel._ask;
-  if (!st || !st.ctl) throw new Error("The answer was interrupted.");
-  const r = await fetch("/api/ask", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "X-Grokbot-Passcode": serverPass },
-    body: JSON.stringify({ id, chapter: i, question, history: st.hist }),
-    signal: st.ctl.signal,
-  });
-  if (!r.ok) { const e = new Error("Ask failed"); e.status = r.status; throw e; }
-  const out = await r.json();
-  if (!out || typeof out.text !== "string" || !out.text.trim()) throw new Error("Empty answer");
-  return out.text.trim();
-}
 function playOrbBlob(panel, blob, ctl) {
   return new Promise((resolve, reject) => {
     if (!orbAudio) orbAudio = new Audio();
@@ -1759,52 +1735,119 @@ function serverDevicePart(panel, text, voice, lang, ctl) {
     speakSentence(panel, text, voice, lang, () => { audio.pause(); serverSetBusy(panel, "Speaking…"); caption(panel, text); }, done);
   });
 }
-async function speakServerAnswer(panel, text, lang, ctl) {   // moved unchanged from askSendServer (H1)
+/* Speaks an answer while it is still arriving (server mode). The first sentence is sent to the voice
+   at once; after that, whatever has gathered goes as one part each time the previous part's audio has
+   arrived, so a 5-sentence answer usually takes 2 or 3 /api/speak calls. Parts always play in order.
+   If a part's audio fails, the device voice says it; with no voice at all, the answer is shown. */
+function serverSpeaker(panel, ctl) {
   const st = panel._ask;
-  lang = textLang(text);
   st.lastBlobs = [];
-  const first = text.match(/^([\s\S]+?[.!?])(?:\s+([\s\S]+))?$/);
-  const parts = first && first[2] ? [first[1], first[2]] : [text];
-  const fetchPart = (part) => {
-    const p = fetch("/api/speak", {
+  const parts = [];                     // { text, blob: Promise<Blob> } in speaking order
+  let waiting = "", inFlight = 0, ended = false, lang = null, wake = null, all = "", textOnly = false;
+  const poke = () => { if (wake) { const w = wake; wake = null; w(); } };
+  const flush = () => {
+    if (textOnly || !waiting.trim()) return;
+    const text = waiting.trim();
+    waiting = "";
+    if (!lang) lang = textLang(text);
+    inFlight++;
+    const blob = fetch("/api/speak", {
       method: "POST",
       headers: { "Content-Type": "application/json", "X-Grokbot-Passcode": serverPass },
-      body: JSON.stringify({ text: part, lang }),
+      body: JSON.stringify({ text, lang }),
       signal: ctl.signal,
     }).then((r) => { if (!r.ok) { const e = new Error("Speak failed"); e.status = r.status; throw e; } return r.blob(); });
-    p.catch(() => {});          // awaited below; this only silences an unhandled rejection after Stop
-    return p;
+    blob.catch(() => {}).finally(() => { inFlight--; if (waiting.trim()) flush(); else poke(); });
+    parts.push({ text, blob });
+    poke();
   };
-  // The next part's audio is requested as soon as this part's has arrived, so it is ready when this one ends.
-  let next = fetchPart(parts[0]);
-  for (let k = 0; k < parts.length; k++) {
-    const part = parts[k], mine = next;
-    if (ctl.signal.aborted || panel._ask !== st) return;
-    try {
-      const blob = await mine;
-      st.lastBlobs.push(blob);
-      if (k + 1 < parts.length) next = fetchPart(parts[k + 1]);
-      if (ctl.signal.aborted) return;
-        serverSetBusy(panel, "Speaking…");
-        caption(panel, part);
-        await playOrbBlob(panel, blob, ctl);
-    } catch (e) {
-      if (k + 1 < parts.length && next === mine) next = fetchPart(parts[k + 1]);
-      if (ctl.signal.aborted || panel._ask !== st) return;
-      if (e && e.status === 401) { serverError(panel, e); return; }
-      const voice = await voiceFor(lang);
-      if (ctl.signal.aborted || panel._ask !== st) return;
-      if (!voice) {
-        serverShowText(panel, text);
-        st.pending = null;
-        serverClearBusy(panel);
-        return;
+  const run = (async () => {
+    for (let k = 0; ; k++) {
+      while (k >= parts.length) {
+        if (ended && !waiting.trim() && inFlight === 0 && k >= parts.length) return;
+        await new Promise((res) => { wake = res; });
+        if (ctl.signal.aborted || panel._ask !== st) return;
       }
-      serverSetBusy(panel, "Speaking…");
-      await serverDevicePart(panel, part, voice, lang, ctl);
+      const { text, blob } = parts[k];
+      if (ctl.signal.aborted || panel._ask !== st) return;
+      try {
+        const b = await blob;
+        st.lastBlobs.push(b);
+        if (ctl.signal.aborted || panel._ask !== st) return;
+        serverSetBusy(panel, "Speaking…");
+        caption(panel, text);
+        await playOrbBlob(panel, b, ctl);
+      } catch (e) {
+        if (ctl.signal.aborted || panel._ask !== st) return;
+        const voice = await voiceFor(lang || textLang(text));
+        if (ctl.signal.aborted || panel._ask !== st) return;
+        if (!voice) {                   // no voice at all: show the whole answer, now and as the rest arrives
+          textOnly = true;
+          serverShowText(panel, all);
+          while (!ended) await new Promise((res) => { wake = res; });
+          return;
+        }
+        serverSetBusy(panel, "Speaking…");
+        await serverDevicePart(panel, text, voice, lang || textLang(text), ctl);
+      }
+    }
+  })();
+  return {
+    add(sentence) {                     // a finished sentence from the stream
+      all += (all ? " " : "") + sentence;
+      if (textOnly) { serverShowText(panel, all); return; }
+      waiting += (waiting ? " " : "") + sentence;
+      if (parts.length === 0 || inFlight === 0) flush();
+    },
+    end() {                             // the stream is over; resolves when everything has been spoken
+      ended = true;
+      if (inFlight === 0) flush();
+      poke();
+      return run.then(() => { if (!ctl.signal.aborted && panel._ask === st) { st.pending = null; serverClearBusy(panel); } });
+    },
+  };
+}
+/* Reads a streamed answer: one JSON object per line ({sources}, {sentence}, {done, text} or {error}). */
+async function readAnswerStream(r, onLine) {
+  const reader = r.body.getReader(), dec = new TextDecoder();
+  let buf = "";
+  for (;;) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buf += dec.decode(value, { stream: true });
+    let nl;
+    while ((nl = buf.indexOf("\n")) >= 0) {
+      const line = buf.slice(0, nl).trim();
+      buf = buf.slice(nl + 1);
+      if (line) onLine(JSON.parse(line));
     }
   }
-  if (!ctl.signal.aborted && panel._ask === st) { st.pending = null; serverClearBusy(panel); }
+  if (buf.trim()) onLine(JSON.parse(buf.trim()));
+}
+/* Server mode: asks /api/ask or /api/course with stream: true and speaks each sentence as it arrives.
+   onDone(text) gets the whole answer as soon as the stream ends (the chapter conversation keeps it). */
+async function streamServerAnswer(panel, ctl, url, body, onDone) {
+  const st = panel._ask;
+  const r = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Grokbot-Passcode": serverPass },
+    body: JSON.stringify(Object.assign({}, body, { stream: true })),
+    signal: ctl.signal,
+  });
+  if (!r.ok) { const e = new Error("Ask failed"); e.status = r.status; throw e; }
+  const sp = serverSpeaker(panel, ctl);
+  let failed = null, any = false;
+  await readAnswerStream(r, (m) => {
+    if (ctl.signal.aborted || panel._ask !== st) return;
+    if (m.sources) showSources(panel, m.sources);
+    if (m.sentence) { any = true; sp.add(m.sentence); }
+    if (m.done && onDone) onDone(m.text || "");
+    if (m.error) failed = m.error;
+  });
+  await sp.end();
+  if (failed && !any && !ctl.signal.aborted && panel._ask === st) {
+    const e = new Error("Ask failed"); e.status = failed === "rate_limited" ? 429 : 502; throw e;
+  }
 }
 function speakAll(panel, text, lang) {   // reads the words again with the device voice; no captions
   const st = panel._ask;
@@ -1853,15 +1896,14 @@ async function askSendServer(id, i, panel, question, isChip) {
   if (orbAudio) orbAudio.pause();
   const ctl = new AbortController();
   st.ctl = ctl;
-  const lang = askLang(question, isChip);
   serverSetBusy(panel, "Thinking…");
   try {
-    const text = await askServer(id, i, question);
-    if (ctl.signal.aborted || panel._ask !== st) return;
-    st.hist.push({ role: "user", content: question }, { role: "assistant", content: text });
-    st.hist = st.hist.slice(-6);
-    st.first = false;
-    await speakServerAnswer(panel, text, lang, ctl);
+    await streamServerAnswer(panel, ctl, "/api/ask", { id, chapter: i, question, history: st.hist }, (text) => {
+      if (panel._ask !== st) return;
+      st.hist.push({ role: "user", content: question }, { role: "assistant", content: text });
+      st.hist = st.hist.slice(-6);
+      st.first = false;
+    });
   } catch (e) {
     if (ctl.signal.aborted || panel._ask !== st) return;
     serverError(panel, e);

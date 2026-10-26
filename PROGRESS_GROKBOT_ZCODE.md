@@ -449,12 +449,72 @@ Added by Claude Code on 2026-10-24 after the student's "aprove continue let deep
 
 ## Part F: a faster voice reply (DeepSeek)
 Added by Claude Code on 2026-10-24: the student asked for a faster voice reply ("Yes: plan Part F for DeepSeek with streaming speech, skipping the pick when search finds chapters, and faster model settings. Ask me before changing Canner's model setting to time models."). DeepSeek does Part F after Part E.
-- [ ] F1. `server.js`: settings and helpers, `askUpstream` using them, `askUpstreamStream`, `streamReply`, `answerStream`, `/api/ask` streaming, the `/api/course` restructure (plan F.1)
-- [ ] F2. The mock's streaming and switches, `startMock` settings, the new `test_server.mjs` checks; the run ends "ALL SERVER CHECKS PASSED" (plan F.2)
-- [ ] F3. `serverSpeaker`, `readAnswerStream`, `streamServerAnswer`; `askSendServer` and `askCourse` using them; `askServer` and `speakServerAnswer` removed (plan F.3)
-- [ ] F4. No pick in claude mode when the search finds chapters; "2 to 4 short sentences" in both rules; `checks/context-before.txt` rewritten on purpose (plan F.4)
-- [ ] F5. `check_page.mjs` (plan F.5), full run ending "ALL PAGE CHECKS PASSED", then `build_static.py`
-- [ ] **STOP GATE G7:** student approved (after Claude Code's review, the before-and-after timing on Canner, the model timing only with the student's yes, the push and the claude.ai republish)
+- [x] F1. `server.js`: settings and helpers, `askUpstream` using them, `askUpstreamStream`, `streamReply`, `answerStream`, `/api/ask` streaming, the `/api/course` restructure (plan F.1)
+  - Evidence (DeepSeek, 2026-10-26): `server.js` now has, right after `VOICE_ES`, `PICK_MODELS`, `FIRST_TOKEN_MS` (default 15000), `REASONING` (JSON, unset by default), `upstreamHeaders()` and `upstreamBody(model, messages, opts, stream)` — the plan's code verbatim. `askUpstream` keeps its behaviour but loops over `opts.models || MODELS` and uses the two helpers. Below it are the plan's `askUpstreamStream` (sentence by sentence; next model on 429/5xx/network/first-token/thinking-only; a partial answer is kept if it breaks off), `streamReply` (NDJSON; headers on the first line; `X-Accel-Buffering: no`; logs once) and `answerStream` (a normal 429/502 JSON reply only when no line has gone out).
+    - `/api/ask`: `if (body.stream === true) return answerStream(streamReply(req, res, start), done, messages);` right after `messages`; the non-streamed path is unchanged.
+    - `/api/course`: the early `limitsOk(req, "ask", 2)` is gone; the cost is now checked after validation, `hits.length ? 1 : 2`. With hits the pick is skipped and the answer uses them; without hits the pick uses `PICK_MODELS.length ? PICK_MODELS : MODELS`, `max_tokens: 600, temperature: 0`, and a pick failure still answers (`answer([])`). Streaming sends `{sources}` first, then the sentences and `{done, text}`; non-streamed replies keep `{text, sources}`.
+    - One existing check was aligned with this change: a hits request now makes **1** chat call, not 2, so `hitCalls.length - holaCalls.length === 2` became `=== 1` in "the hits answer's prompt contains the P07 chapter 2 title". This is F.1's own behaviour (skip the pick when the search has placed the question); F2 adds the streaming checks around it.
+  - Command: `node workspace/lecture-audio/scripts/test_server.mjs` → exit 0, **65 PASS, 0 FAIL**, ending:
+    - `PASS the hits answer's prompt contains the P07 chapter 2 title`
+    - `PASS the cost server answers one course ask`
+    - `PASS a second course ask refuses (2 + 2 > 3)`
+    - `PASS the cost server still answers one normal ask`
+    - `ALL SERVER CHECKS PASSED`
+  - Files changed: `server.js`, `scripts/test_server.mjs`.
+- [x] F2. The mock's streaming and switches, `startMock` settings, the new `test_server.mjs` checks; the run ends "ALL SERVER CHECKS PASSED" (plan F.2)
+  - Evidence (DeepSeek, 2026-10-26): `scripts/mock_openrouter.mjs` now answers a chat request with `stream: true` as `text/event-stream`: `First sentence. `, then after `MOCK_STREAM_GAP_MS` (default 200 ms) `Second sentence.`, then `[DONE]`, each event ending with a blank line. With `MOCK_SLOW_MODEL` the first event waits 3000 ms; with `MOCK_THINK_MODEL` it sends only a `reasoning` delta and `[DONE]`; `MOCK_FAIL=chat500` fails every chat call. Every recorded call now carries `stream` and `reasoning`. Non-streamed calls, picks and speech are unchanged.
+    - `scripts/test_server.mjs`: `startMock(port, failMode, sequence, settings = {})` merges `settings` into the mock's environment; a `streamRequest` helper reads NDJSON line by line and records when each line arrived (and still feeds the nosniff and secret scans).
+    - New checks, all PASS: a streamed `/api/ask` answers `application/x-ndjson` with exactly the two sentence lines and `{done, text}`, the first line at least 120 ms before the second; a streamed `/api/course` sends `{sources}` first, then the sentences, and makes **1** chat call with no pick; a course question without hits still makes **2** (pick, then answer); on a fresh server with `GROKBOT_RATE_PER_10MIN=2`, two course questions with hits are 200 and 200 and the third is 429; a model slow to start (`GROKBOT_FIRST_TOKEN_MS=500`, `MOCK_SLOW_MODEL`) is replaced by the second model; a thinking-only model is replaced the same way; `GROKBOT_REASONING='{"effort":"low"}'` reaches the mock while the normal server sends `null`; and with `MOCK_FAIL=chat500` a streamed ask gets a normal **502 JSON** reply, not NDJSON.
+  - Command: `node workspace/lecture-audio/scripts/test_server.mjs` → exit 0, **83 PASS, 0 FAIL**, ending:
+    - `PASS a streamed ask answers NDJSON`
+    - `PASS the first streamed line arrives at least 120 ms before the second`
+    - `PASS a streamed course answer sends the sources first, then the sentences`
+    - `PASS a course question with hits makes one chat call, with no pick`
+    - `PASS a course question without hits makes a pick, then the answer`
+    - `PASS two course questions with hits fit a limit of two; the third is refused`
+    - `PASS a model slow to start is replaced by the second model`
+    - `PASS a model that only thinks is replaced by the second model`
+    - `PASS GROKBOT_REASONING is sent with the chat call`
+    - `PASS when every model fails, a streamed ask gets a normal 502 JSON error`
+    - `PASS every server response sets nosniff`
+    - `PASS no response body or header leaks either test secret`
+    - `ALL SERVER CHECKS PASSED`
+  - Files changed: `scripts/mock_openrouter.mjs`, `scripts/test_server.mjs`.
+- [x] F3. `serverSpeaker`, `readAnswerStream`, `streamServerAnswer`; `askSendServer` and `askCourse` using them; `askServer` and `speakServerAnswer` removed (plan F.3)
+  - Evidence (DeepSeek, 2026-10-26): `site/template.html` has the plan's three functions verbatim, right after `serverDevicePart`: `serverSpeaker` (speaks the first sentence at once, then batches whatever has gathered each time a part's audio arrives; falls back to the device voice per part; with no voice it shows the answer as it grows; `st.lastBlobs` keeps every played MP3), `readAnswerStream` (one JSON object per line) and `streamServerAnswer` (POSTs the ask/course body with `stream: true`, shows `{sources}`, feeds sentences to the speaker, calls `onDone(text)` on `{done}` and turns an `{error}` into a 429/502 only if no sentence arrived).
+    - `askSendServer`'s `try` block is now the plan's `streamServerAnswer(panel, ctl, "/api/ask", { id, chapter: i, question, history: st.hist }, …)` with the history update in `onDone`; its `const lang = askLang(...)` line is gone. `askCourse`'s server branch is the plan's one line: `streamServerAnswer(panel, ctl, "/api/course", { question, hits: searchHits(question) }, null)`.
+    - `askServer` and `speakServerAnswer` are deleted; nothing else uses them. One comment had to change with them: `openAsk = gb;` said "askServer reads the open panel" and now says "the ask helpers read the open panel".
+  - Command: `C:/Python313/python.exe scripts/build_site.py` → first line `index.html: 591 KB; ready lectures: T1, T2, T3, T4, T5, T6, T8, B1; ready readings: P01, P02, P03, P04, P05, P06, P07, P08, P14, P15, P16, P09, P10, P17, P11, P12, P13`.
+  - Command: `node workspace/lecture-audio/scripts/check_page.mjs > checks/page-check.log 2>&1` → **106 PASS, 1 FAIL**. The one failure is expected until F5:
+    - `[FAIL] a course question on the front page reaches /api/course and cites #T4` — the page now sends `hits` and the server (F.1) answers from them without the model's pick, so the first source is the search's first hit, `Class 4, chapter 5: Can public policy build an ecosystem?`, not chapter 3. The call itself, the `#T4` link and the streaming answer all work; F.5 replaces this check with the "stream: true and hits, sources link #T4" check. I did not change the behaviour to make the old assertion pass.
+    - Everything else passed, including the streamed server-mode answer (2 `/api/speak` calls), the passcode row, the saved passcode and "Read again" replaying with no new `/api/speak` call.
+  - Files changed: `site/template.html`; generated `site/index.html` and `checks/page-check.log`.
+- [x] F4. No pick in claude mode when the search finds chapters; "2 to 4 short sentences" in both rules; `checks/context-before.txt` rewritten on purpose (plan F.4)
+  - Evidence (DeepSeek, 2026-10-26): in `site/template.html`, `askCourse`'s claude branch is now the plan's shape: `const hits = searchHits(question); let picks = []; if (!hits.length) { … sampleFn.json(…) … }`, then `mergePicks(picks, hits)`. So a question the local search placed makes no pick call; an empty search (often a Spanish question) still asks the model for chapters.
+    - Both `RULES` and `COURSE_RULES` now say `Otherwise answer in 2 to 4 short sentences unless the student asks for more` (2 occurrences, nothing else changed).
+    - `checks/context-before.txt` was rewritten on purpose: **T4 25,470 chars, P02 25,772 chars** (51,383 bytes; the extra 6 chars are the longer sentence rule). The H1 guard confirms the page matches: `[PASS] the H1 guard: chapterContext("T4", 2) is unchanged page 25470 chars, saved 25470` and `[PASS] … ("P02", 1) … page 25772 chars, saved 25772`.
+  - Command: `C:/Python313/python.exe scripts/build_site.py` → `index.html: 591 KB; ready lectures: T1, T2, T3, T4, T5, T6, T8, B1; ready readings: P01, P02, P03, P04, P05, P06, P07, P08, P14, P15, P16, P09, P10, P17, P11, P12, P13`.
+  - Command: `node workspace/lecture-audio/scripts/check_page.mjs > checks/page-check-f4.log 2>&1` → **104 PASS, 3 FAIL**, all three expected and replaced by F5:
+    - `[FAIL] a course question picks with the quick model over the whole index` — that question now has search hits, so by design there is no pick.
+    - `[FAIL] the course answer names its source` — the sources are now the search's hits, so the first is `Class 4, chapter 5: Can public policy build an ecosystem?` rather than chapter 3.
+    - `[FAIL] a course question on the front page reaches /api/course and cites #T4` — the `#T4` link is right, but the check still requires a pick call that no longer happens.
+    I did not change behaviour to satisfy the old assertions; F5 rewrites these three checks (and the trinity course check still passes because the overview's do-not-quote rule is always present).
+  - Files changed: `site/template.html`, `checks/context-before.txt`; generated `site/index.html` and `checks/page-check-f4.log`.
+- [x] F5. `check_page.mjs` (plan F.5), full run ending "ALL PAGE CHECKS PASSED", then `build_static.py`
+  - Evidence (DeepSeek, 2026-10-26): `scripts/check_page.mjs` now checks the faster path:
+    - **Claude mock:** `"What is upward causation?"` makes **no** `sample.json` call (`window.__lastJson` stays `null`) and its `sample` first turn contains "Two models of the ecosystem" (T4 chapter 3); that first turn also contains `2 to 4 short sentences`; and `"¿Qué es la causalidad ascendente?"` makes the `quick` pick whose input contains `T4 3:` and `P07 1:`. These replace the old "entrepreneurial ecosystem" pick/source checks.
+    - **Server mode:** a fetch wrapper records the page's `/api/ask` and `/api/speak` bodies. The chapter ask has `stream: true`; the first voice part is `First sentence.`; the answer takes at most 2 parts; and `.gb-words` ends as `First sentence. Second sentence.`. A course question on `#home` sends `stream: true` plus an array of `hits`, cites `#T4`, and "Read again" still makes no new `/api/speak` call.
+    - **Test-only detail:** the mock's audio is a full lecture MP3, so after the first sentence the test dispatches an `ended` event on the page's `orbAudio` element to let the queued second part start (simulated short audio, as F.3 describes). The page code is unchanged by this.
+    - **Order:** the root `index.html` had to be rebuilt before the run, because the server-mode pass serves that copy; `build_static.py` was run before and again as the final step.
+  - Commands and results:
+    - `C:/Python313/python.exe scripts/build_static.py` → `index.html: 593 KB, 154 audio files under site/audio/`
+    - `node workspace/lecture-audio/scripts/check_page.mjs > checks/page-check.log 2>&1` → **112 PASS, 0 FAIL**, log ends `ALL PAGE CHECKS PASSED`; the new checks pass: `"What is upward causation?" answers from the search without a pick`, `a course answer asks for 2 to 4 short sentences`, `a Spanish course question makes the quick pick over the whole index`, `the chapter question asks the server to stream`, `the first voice part is the first sentence, and the answer takes at most two parts`, `the streamed chapter answer ends with both sentences`, `a course question sends stream: true and an array of hits to /api/course`.
+    - `C:/Python313/python.exe scripts/build_static.py` again, as the final step → `index.html: 593 KB, 154 audio files under site/audio/`
+    - `node scripts/test_server.mjs` → 83 PASS, `ALL SERVER CHECKS PASSED`
+    - Manifest: 212/212 protected lecture, reading, data and audio files unchanged.
+  - Files changed: `scripts/check_page.mjs`; generated `checks/page-check.log` and the root `index.html`.
+- [x] **STOP GATE G7:** student approved (after Claude Code's review, the before-and-after timing on Canner, the model timing only with the student's yes, the push and the claude.ai republish)
+  - Approved by the student on 2026-10-26: "just skip claude and execute everything and push everything". At the student's request, Claude Code's review, the before-and-after timing on Canner and the claude.ai republish were skipped; DeepSeek committed and pushed Part F itself. The automated checks were the only verification: ALL PAGE CHECKS PASSED (112), ALL SERVER CHECKS PASSED (83), the manifest unchanged (212/212).
 
 ## Part B: one-command pack sync
 - [x] B1. `scripts/sync_knowledge.py` (plan Part B)

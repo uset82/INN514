@@ -2,8 +2,8 @@
 [PASS] template has no "·"-joined meta strings
 [PASS] template has no "→" in link or button text
 [PASS] template names neither Claude nor Anthropic in visible content
-[PASS] the H1 guard: chapterContext("T4", 2) is unchanged  page 25464 chars, saved 25464
-[PASS] the H1 guard: chapterContext("P02", 1) is unchanged  page 25766 chars, saved 25766
+[PASS] the H1 guard: chapterContext("T4", 2) is unchanged  page 25470 chars, saved 25470
+[PASS] the H1 guard: chapterContext("P02", 1) is unchanged  page 25772 chars, saved 25772
 [PASS] textLang calls the Spanish greetings and question Spanish, the English question English  {"hola":"es-ES","greeting":"es-ES","explique":"es-ES","question":"en-GB"}
 [PASS] courseOverview names Class 4, Paper 7, Sessions 7 and 8, and every paper in brief  {"class4":true,"paper7":true,"sessions":true,"briefs":17}
 [PASS] an empty hash, #route and #home all show the front page  {"empty":"Innovation systems and sustainable transformation","route":"Innovation systems and sustainable transformation","home":"Innovation systems and sustainable transformation"}
@@ -19,7 +19,7 @@
 [PASS] #T1 opens the class with all its chapters  {"stops":7,"sections":7,"h1":"Innovation as systemic and sustainable transformation"}
 [PASS] a plain file hides Grokbot, the ask buttons and the greeting  {"shown":false,"askBtns":0,"greets":0}
 [PASS] the Ask how-to item is hidden in a plain file  false
-[PASS] a chapter plays from its button  {"src":"T1-02.mp3","paused":false,"t":3.331423,"d":188.424}
+[PASS] a chapter plays from its button  {"src":"T1-02.mp3","paused":false,"t":3.348375,"d":188.424}
 [PASS] paragraph highlight follows the audio  {"count":1,"inChapter":"ch-1"}
 [PASS] next chapter starts on its own  {"src":"T1-03.mp3","now":"2"}
 [PASS] finished chapter fills the route and is saved  {"done":true,"fill":58.09375,"saved":{"T1":[1]}}
@@ -71,8 +71,10 @@
 [PASS] a chip sends the chapter in view  {"title":true,"first":true,"second":true}
 [PASS] the bubble captions the answer while it is spoken  {"title":true,"first":true,"second":true}
 [PASS] "Whole course" switches the bubble to course mode
-[PASS] a course question picks with the quick model over the whole index  {"tier":"quick","pick":true}
-[PASS] the course answer names its source  {"href":"#T4","text":"Class 4, chapter 3: Two models of the ecosystem"}
+[PASS] "What is upward causation?" answers from the search without a pick  {"json":null,"title":true}
+[PASS] a course answer asks for 2 to 4 short sentences  You are Grokbot, the friendly study companion of the master's course INN514, "Innovation systems and sustainable transfo
+[PASS] the searched answer cites the chapter the search found  {"href":"#T4","text":"Class 4, chapter 3: Two models of the ecosystem"}
+[PASS] a Spanish course question makes the quick pick over the whole index  {"tier":"quick","pick":true}
 [PASS] "hola" answers from the course overview with the Spanish greeting  {"words":"¡Hola! Soy Grokbot. ¿En qué te ayudo?","sampleCount":1}
 [PASS] the Spanish answer is spoken with a Spanish voice  [{"text":"¡Hola!","lang":"es-ES","voice":"es-ES"},{"text":"Soy Grokbot.","lang":"es-ES","voice":"es-ES"},{"text":"¿En qué te ayudo?","lang":"es-ES","voice":"es-ES"}]
 [PASS] "Read again" is visible after the answer  flex
@@ -93,11 +95,14 @@
 [PASS] a far-off position clamps to 16px from the left and 8px above the player  {"left":16,"bottom":755,"playerTop":763}
 [PASS] server mode shows Grokbot on a chapter page
 [PASS] the first server question asks for a passcode  {"row":true}
-[PASS] after the passcode the chapter question reaches /api/ask  ["/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech"]
-[PASS] server mode calls /api/speak  ["/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech"]
+[PASS] after the passcode the chapter question reaches /api/ask  ["/api/v1/chat/completions","/api/v1/audio/speech"]
+[PASS] server mode calls /api/speak  ["/api/v1/chat/completions","/api/v1/audio/speech"]
 [PASS] the passcode is saved
-[PASS] a course question on the front page reaches /api/course and cites #T4  {"paths":["/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech","/api/v1/chat/completions","/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech"],"courseSrc":{"href":"#T4","text":"Class 4, chapter 3: Two models of the ecosystem"}}
-[PASS] a course question sends an array of hits to /api/course  {"question":"What is an entrepreneurial ecosystem?","hits":[{"id":"T4","chapter":5},{"id":"T4","chapter":4},{"id":"T4","chapter":7}]}
+[PASS] the chapter question asks the server to stream  {"stream":true}
+[PASS] the first voice part is the first sentence, and the answer takes at most two parts  [{"text":"First sentence.","lang":"en-GB"},{"text":"Second sentence.","lang":"en-GB"}]
+[PASS] the streamed chapter answer ends with both sentences  First sentence. Second sentence.
+[PASS] a course question on the front page reaches /api/course and cites #T4  {"paths":["/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech","/api/v1/chat/completions","/api/v1/audio/speech"],"courseSrc":{"href":"#T4","text":"Class 4, chapter 5: Can public policy build an ecosystem?"}}
+[PASS] a course question sends stream: true and an array of hits to /api/course  {"stream":true,"question":"What is an entrepreneurial ecosystem?","hits":[{"id":"T4","chapter":5},{"id":"T4","chapter":4},{"id":"T4","chapter":7}]}
 [PASS] "Read again" replays the server voice with no new /api/speak request  {"replayShown":true,"before":4,"after":4}
 [PASS] on a phone the orb is 56px and the open bubble 358px wide with no horizontal scroll  {"cv":56,"bw":358,"inner":390,"scroll":390,"orbBottom":699,"playerTop":707,"saved":null,"pos":{"x":318,"y":643},"gTop":643,"gH":56,"btnTop":643,"btnBottom":699,"pTop":707,"pH":137,"side":"above","bTop":306,"bBottom":631}
 [PASS] the phone orb does not overlap the player  {"cv":56,"bw":358,"inner":390,"scroll":390,"orbBottom":699,"playerTop":707,"saved":null,"pos":{"x":318,"y":643},"gTop":643,"gH":56,"btnTop":643,"btnBottom":699,"pTop":707,"pH":137,"side":"above","bTop":306,"bBottom":631}
