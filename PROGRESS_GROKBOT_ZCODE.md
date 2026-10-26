@@ -536,7 +536,13 @@ Added by Claude Code on 2026-10-24: the student asked for a faster voice reply (
 
 ## Part L: Spanish course questions (DeepSeek)
 Added by Claude Code on 2026-10-26 after the student's "Yes: plan a fix for slow or failing Spanish course questions." DeepSeek builds L1 to L3 with `GROKBOT_DEEPSEEK_KICKOFF.md`. DeepSeek must not run git: Claude reviews at G9, then pushes and republishes.
-- [ ] L1. `ES_EN`, `expandSpanish`, and `searchCourse` using it (plan L.1)
+- [x] L1. `ES_EN`, `expandSpanish`, and `searchCourse` using it (plan L.1)
+  - Evidence (DeepSeek, 2026-10-26): right after `searchTerms` in `site/template.html` are the plan's `ES_EN` glossary (79 pairs) and `expandSpanish(q)` (matches whole Spanish terms on the accented-free text and appends their English words). `searchCourse`'s first line is now `const terms = searchTerms(expandSpanish(q)), ix = searchIndex(), N = ix.docs.length;`; nothing else in it changed. Both the search page and `searchHits` call `searchCourse`, so Spanish questions now reach the local search.
+  - Command: `C:/Python313/python.exe scripts/build_site.py` → first line `index.html: 595 KB; ready lectures: T1, T2, T3, T4, T5, T6, T8, B1; ready readings: P01, P02, P03, P04, P05, P06, P07, P08, P14, P15, P16, P09, P10, P17, P11, P12, P13`.
+  - Command: `node workspace/lecture-audio/scripts/check_page.mjs > checks/page-check.log 2>&1` → **111 PASS, 1 FAIL**. The one failure is expected until L3:
+    - `[FAIL] a Spanish course question makes the quick pick over the whole index` — "¿Qué es la causalidad ascendente?" now finds T4/P07 through the glossary, so claude mode correctly makes **no** pick call and F5's old check (which used this question for the pick) no longer applies. Plan L.3 replaces it with "¿Qué dice el curso sobre el liderazgo de las mujeres?", a question the glossary does not place. I did not weaken the behaviour to satisfy the old check.
+    - Every other check passed, including the search page and the English course questions.
+  - Files changed: `site/template.html`; generated `site/index.html` and `checks/page-check.log`.
 - [ ] L2. `PICK_TIMEOUT_MS`, `upstreamBody`, the `askUpstream` timeout, the pick options; the mock and the `test_server.mjs` checks; the run ends "ALL SERVER CHECKS PASSED" (plan L.2, L.3)
 - [ ] L3. The `check_page.mjs` checks (plan L.3), full run ending "ALL PAGE CHECKS PASSED", then `build_static.py`
 - [ ] **STOP GATE G9:** student approved (after Claude Code's review, the Spanish timing on Canner before and after, the push and the claude.ai republish)

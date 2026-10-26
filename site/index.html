@@ -558,6 +558,50 @@ const searchNorm = (s) => String(s || "").toLowerCase().normalize("NFD").replace
 function searchTerms(q) {
   return [...new Set(searchNorm(q).split(/[^\p{L}\p{N}]+/u).filter((w) => (w.length > 1 || /\d/.test(w)) && !SEARCH_STOP.has(w)))];
 }
+/* Spanish course terms and the English words the course text uses for them, so the search can place a
+   Spanish question without asking a model. Keys are lower case, without accents. */
+const ES_EN = [
+  ["causalidad ascendente", "upward causation"], ["causalidad descendente", "downward causation"],
+  ["ecosistema emprendedor", "entrepreneurial ecosystem"], ["ecosistemas emprendedores", "entrepreneurial ecosystems"],
+  ["ecosistema de emprendimiento", "entrepreneurial ecosystem"], ["ecosistema", "ecosystem"], ["ecosistemas", "ecosystems"],
+  ["emprendimiento productivo", "productive entrepreneurship"], ["emprendimiento", "entrepreneurship"],
+  ["emprendedor", "entrepreneur"], ["emprendedores", "entrepreneurs"], ["emprendedora", "entrepreneurial"],
+  ["sistema nacional de innovacion", "national innovation system"],
+  ["sistema regional de innovacion", "regional innovation system"], ["sistemas regionales de innovacion", "regional innovation systems"],
+  ["sistema tecnologico de innovacion", "technological innovation system"], ["sistemas tecnologicos de innovacion", "technological innovation systems"],
+  ["sistema de innovacion", "innovation system"], ["sistemas de innovacion", "innovation systems"],
+  ["innovacion", "innovation"], ["innovaciones", "innovations"],
+  ["transformacion sostenible", "sustainable transformation"], ["transformacion", "transformation"],
+  ["sostenibilidad", "sustainability"], ["sostenible", "sustainable"],
+  ["trabajo institucional", "institutional work"], ["liderazgo colectivo", "collective leadership"],
+  ["agencia de cambio", "change agency"], ["agencia reproductiva", "reproductive agency"], ["agencia", "agency"],
+  ["trinidad", "trinity"],
+  ["creacion de trayectorias", "path creation"], ["creacion de rutas", "path creation"],
+  ["dependencia de la trayectoria", "path dependence"], ["trayectoria industrial", "industrial path"],
+  ["trayectorias industriales", "industrial paths"], ["trayectoria", "path"], ["trayectorias", "paths"],
+  ["variedad relacionada", "related variety"], ["renovacion regional", "regional renewal"],
+  ["funciones", "functions"], ["motores de cambio", "motors of change"],
+  ["captura y almacenamiento de carbono", "carbon capture and storage CCS"], ["captura de carbono", "carbon capture CCS"],
+  ["baterias", "battery"], ["turbinas eolicas", "wind turbines"], ["aerogeneradores", "wind turbines"], ["energia eolica", "wind"],
+  ["bricolaje", "bricolage"], ["avance radical", "breakthrough"],
+  ["videojuegos", "games industry"], ["turismo", "tourism"],
+  ["financiacion colectiva", "crowdfunding"], ["micromecenazgo", "crowdfunding"],
+  ["propuesta de valor", "value proposition"], ["cocreacion de valor", "value cocreation"], ["co creacion de valor", "value cocreation"],
+  ["innovacion responsable", "responsible innovation"], ["sector cultural", "culture sector"],
+  ["dimension normativa", "normative dimension"], ["paradoja", "paradox"],
+  ["aprendizaje", "learning"], ["politica publica", "public policy"], ["politicas publicas", "public policy"],
+  ["contexto", "context"], ["contextos", "contexts"], ["elementos", "elements"], ["proposiciones", "propositions"],
+  ["legitimidad", "legitimacy"], ["capacidades regionales", "regional capabilities"],
+  ["redes", "networks"], ["recursos", "resources"], ["instituciones", "institutions"], ["institucional", "institutional"],
+  ["examen", "exam"], ["noruega occidental", "western norway"], ["oeste de noruega", "western norway"],
+  ["noruega", "norway"], ["dinamarca", "denmark"], ["escania", "scania"],
+];
+/* Adds the English words for any Spanish course terms in the question, so the search can find their chapters. */
+function expandSpanish(q) {
+  const t = " " + searchNorm(q).replace(/[^\p{L}\p{N}]+/gu, " ").trim() + " ";
+  const extra = ES_EN.filter(([es]) => t.includes(" " + es + " ")).map(([, en]) => en);
+  return extra.length ? q + " " + extra.join(" ") : q;
+}
 let SEARCH_INDEX = null;
 function searchIndex() {               // one document per chapter; the title counts three times
   if (SEARCH_INDEX) return SEARCH_INDEX;
@@ -580,7 +624,7 @@ function searchSnippet(ch, forms) {    // about 30 words around the first match 
   return (from ? "… " : "") + part.map((w) => (hit(w) ? "<mark>" + esc(w) + "</mark>" : esc(w))).join(" ") + (from + 30 < words.length ? " …" : "");
 }
 function searchCourse(q) {
-  const terms = searchTerms(q), ix = searchIndex(), N = ix.docs.length;
+  const terms = searchTerms(expandSpanish(q)), ix = searchIndex(), N = ix.docs.length;
   if (!terms.length) return { terms, classes: [], papers: [], chapters: [] };
   // a word of 4 or more letters also matches the longer words that start with it ("ecosystem" -> "ecosystems")
   const forms = terms.map((t) => (t.length >= 4 ? ix.vocab.filter((v) => v.startsWith(t)) : (ix.df.has(t) ? [t] : [])));
