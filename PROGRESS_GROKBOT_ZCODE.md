@@ -439,7 +439,8 @@ Added by Claude Code on 2026-10-24 after the student's "aprove continue let deep
     - `node scripts/test_server.mjs` after the final build → 65 PASS, 0 FAIL, `ALL SERVER CHECKS PASSED`
   - Manifest: 212/212 protected lecture, reading, data and audio files still match `checks/grokbot-manifest-before.txt`.
   - Files changed: `site/template.html`; generated `site/index.html`, root `index.html` and `checks/page-check.log`.
-- [ ] **STOP GATE G6:** student approved (after Claude Code's review, the push and the claude.ai republish)
+- [x] **STOP GATE G6:** student approved (after Claude Code's review, the push and the claude.ai republish)
+  - Approved by the student on 2026-10-26: "APPROVED GATE G6". DeepSeek may now start Part F.
   - **Claude Code's G6 review (2026-10-26):**
     - **Diff:** exactly plan E1 and E2. Health keeps ok, ask, key, passcode and voices; the six unused lines are gone and nothing referred to them.
     - **Reruns:** the manifest is unchanged; `build_site.py` and `build_static.py` pass; ALL SERVER CHECKS PASSED, including "health shows only ok, ask, key, passcode and voices"; ALL PAGE CHECKS PASSED (107).
