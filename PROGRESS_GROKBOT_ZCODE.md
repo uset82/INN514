@@ -408,7 +408,8 @@ Added by Claude Code on 2026-10-26 from the student's request. ZCode does N1 to 
       ```
     - `C:/Python313/python.exe workspace/lecture-audio/scripts/build_static.py` — output: `index.html: 592 KB, 154 audio files under site/audio/`
   - Files changed: `scripts/check_page.mjs` only (the template was untouched in this task). No wording invented: check names use the plan's wording; the only lines not in the plan are the check harness itself (expected-value arrays, the `playToEnd` helper reusing the existing seek method, and the one-row/wrap geometry test).
-- [ ] **STOP GATE G8:** student approved (after Claude Code's review and own look in the browser, the push, the claude.ai republish, and the student's listening test)
+- [x] **STOP GATE G8:** student approved (after Claude Code's review and own look in the browser, the push, the claude.ai republish, and the student's listening test)
+  - Approved by the student on 2026-10-26: "APPROVED GATE G8". DeepSeek may now start Part E.
   - **Claude Code's G8 review (2026-10-26):**
     - **Reruns:** the manifest is unchanged; `build_site.py` and `build_static.py` pass; ALL SERVER CHECKS PASSED; ALL PAGE CHECKS PASSED (107, including the 21 Part N checks).
     - **Code:** the N1 and N2 diffs match plan N.1 and N.2. ZCode placed "Previous …" before "Next …" in "Where next", which is kept.
