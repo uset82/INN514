@@ -2092,7 +2092,137 @@ Every existing check stays. New checks, with the same "seek to `duration - 0.4`,
 
 ---
 
-## Rules for the executor: ZCode + GLM 5.3 Flash (Parts A, S, H, B, C and N), or DeepSeek (Parts D, E and F) (put verbatim in the kickoff)
+## Part L: Spanish course questions, faster and without failures (added 2026-10-26; DeepSeek builds it)
+
+**Why.** On Canner on 2026-10-26, with the new default models, the two kinds of question behaved very differently:
+- English chapter and course questions answered in about 4–20 s;
+- **"¿Qué es la causalidad ascendente?"** (a whole-course question in Spanish) took 28.6 s and then 81 s, and both times **failed**.
+
+The cause:
+1. The site's own search works on the English course text, so a Spanish question finds no chapters. Grokbot then asks a model to choose chapters first: an extra call of up to 40 s per model.
+2. These free models are reasoning models. Their thinking counts toward `max_tokens` (1000 for answers, 600 for the pick), so a long think can leave no room for the answer, which then comes back empty and fails.
+
+**The fix:**
+1. A **Spanish→English glossary of course terms** lets the local search place Spanish questions. Claude ran 11 Spanish questions through the real search: **before, none found a chapter; with the glossary, all 11 did** ("causalidad ascendente" finds T4 ch 3 and P07 ch 1; "micromecenazgo" finds P11, B1 and P13; "captura de carbono en Noruega" finds T6 ch 4 and P10). "hola" still finds none.
+2. When a pick is still needed, it uses **one model, low reasoning effort and a 10 s limit**. After that Grokbot answers from the overview instead of waiting.
+3. **Answers get `max_tokens: 2000`,** so thinking cannot use up the room for the answer.
+
+**Unchanged:** the overview, the rules, the voices, the streaming, the limits and every lecture, paper, audio and data file. The manifest must not change.
+
+### L.1 The glossary in the search (task L1, `site/template.html`)
+
+Put this right after `searchTerms` (it uses `searchNorm`), word for word:
+
+```js
+/* Spanish course terms and the English words the course text uses for them, so the search can place a
+   Spanish question without asking a model. Keys are lower case, without accents. */
+const ES_EN = [
+  ["causalidad ascendente", "upward causation"], ["causalidad descendente", "downward causation"],
+  ["ecosistema emprendedor", "entrepreneurial ecosystem"], ["ecosistemas emprendedores", "entrepreneurial ecosystems"],
+  ["ecosistema de emprendimiento", "entrepreneurial ecosystem"], ["ecosistema", "ecosystem"], ["ecosistemas", "ecosystems"],
+  ["emprendimiento productivo", "productive entrepreneurship"], ["emprendimiento", "entrepreneurship"],
+  ["emprendedor", "entrepreneur"], ["emprendedores", "entrepreneurs"], ["emprendedora", "entrepreneurial"],
+  ["sistema nacional de innovacion", "national innovation system"],
+  ["sistema regional de innovacion", "regional innovation system"], ["sistemas regionales de innovacion", "regional innovation systems"],
+  ["sistema tecnologico de innovacion", "technological innovation system"], ["sistemas tecnologicos de innovacion", "technological innovation systems"],
+  ["sistema de innovacion", "innovation system"], ["sistemas de innovacion", "innovation systems"],
+  ["innovacion", "innovation"], ["innovaciones", "innovations"],
+  ["transformacion sostenible", "sustainable transformation"], ["transformacion", "transformation"],
+  ["sostenibilidad", "sustainability"], ["sostenible", "sustainable"],
+  ["trabajo institucional", "institutional work"], ["liderazgo colectivo", "collective leadership"],
+  ["agencia de cambio", "change agency"], ["agencia reproductiva", "reproductive agency"], ["agencia", "agency"],
+  ["trinidad", "trinity"],
+  ["creacion de trayectorias", "path creation"], ["creacion de rutas", "path creation"],
+  ["dependencia de la trayectoria", "path dependence"], ["trayectoria industrial", "industrial path"],
+  ["trayectorias industriales", "industrial paths"], ["trayectoria", "path"], ["trayectorias", "paths"],
+  ["variedad relacionada", "related variety"], ["renovacion regional", "regional renewal"],
+  ["funciones", "functions"], ["motores de cambio", "motors of change"],
+  ["captura y almacenamiento de carbono", "carbon capture and storage CCS"], ["captura de carbono", "carbon capture CCS"],
+  ["baterias", "battery"], ["turbinas eolicas", "wind turbines"], ["aerogeneradores", "wind turbines"], ["energia eolica", "wind"],
+  ["bricolaje", "bricolage"], ["avance radical", "breakthrough"],
+  ["videojuegos", "games industry"], ["turismo", "tourism"],
+  ["financiacion colectiva", "crowdfunding"], ["micromecenazgo", "crowdfunding"],
+  ["propuesta de valor", "value proposition"], ["cocreacion de valor", "value cocreation"], ["co creacion de valor", "value cocreation"],
+  ["innovacion responsable", "responsible innovation"], ["sector cultural", "culture sector"],
+  ["dimension normativa", "normative dimension"], ["paradoja", "paradox"],
+  ["aprendizaje", "learning"], ["politica publica", "public policy"], ["politicas publicas", "public policy"],
+  ["contexto", "context"], ["contextos", "contexts"], ["elementos", "elements"], ["proposiciones", "propositions"],
+  ["legitimidad", "legitimacy"], ["capacidades regionales", "regional capabilities"],
+  ["redes", "networks"], ["recursos", "resources"], ["instituciones", "institutions"], ["institucional", "institutional"],
+  ["examen", "exam"], ["noruega occidental", "western norway"], ["oeste de noruega", "western norway"],
+  ["noruega", "norway"], ["dinamarca", "denmark"], ["escania", "scania"],
+];
+/* Adds the English words for any Spanish course terms in the question, so the search can find their chapters. */
+function expandSpanish(q) {
+  const t = " " + searchNorm(q).replace(/[^\p{L}\p{N}]+/gu, " ").trim() + " ";
+  const extra = ES_EN.filter(([es]) => t.includes(" " + es + " ")).map(([, en]) => en);
+  return extra.length ? q + " " + extra.join(" ") : q;
+}
+```
+
+- In `searchCourse`, the first line becomes `const terms = searchTerms(expandSpanish(q)), ix = searchIndex(), N = ix.docs.length;`. Nothing else in `searchCourse` changes.
+- Because `searchHits` and the search page both call `searchCourse`, both now place Spanish questions. In server mode, the page's `hits` for a Spanish question are no longer empty, so the server skips the pick.
+
+### L.2 A short, light pick and room for the answer (task L2, `server.js`)
+
+- **The setting,** next to `FIRST_TOKEN_MS`: `const PICK_TIMEOUT_MS = Number(process.env.GROKBOT_PICK_TIMEOUT_MS) > 0 ? Number(process.env.GROKBOT_PICK_TIMEOUT_MS) : 10000;`
+- **`upstreamBody`** becomes:
+
+  ```js
+  function upstreamBody(model, messages, opts, stream) {
+    const b = { model, messages, max_tokens: opts.max_tokens || 2000, temperature: opts.temperature ?? 0.3 };
+    const reasoning = opts.reasoning || REASONING;
+    if (reasoning) b.reasoning = reasoning;
+    if (stream) b.stream = true;
+    return JSON.stringify(b);
+  }
+  ```
+
+- **`askUpstream`:** the fetch's `signal` becomes `AbortSignal.timeout(opts.timeoutMs || 40000)`, and its comment becomes `// Room for a reasoning model's thinking as well as the answer.` Nothing else changes.
+- **The pick in `/api/course`** uses these options:
+
+  ```js
+  { max_tokens: 600, temperature: 0, models: (PICK_MODELS.length ? PICK_MODELS : MODELS).slice(0, 1),
+    timeoutMs: PICK_TIMEOUT_MS, reasoning: { effort: "low" } }
+  ```
+
+  A timed-out pick is a pick error, so `answer([])` answers from the overview, as today.
+
+### L.3 Tests (task L2 for the server, task L3 for the page)
+
+**`scripts/mock_openrouter.mjs` (L2):**
+- each recorded call also keeps `max_tokens: body.max_tokens ?? null`;
+- when `MOCK_SLOW_PICK` is a number, a pick reply (first message starts "You choose which chapters") waits that many milliseconds.
+
+**`scripts/test_server.mjs` (L2):**
+- **Course question without hits** ("nothing-matches"): the pick call has `reasoning` `{"effort":"low"}` and `max_tokens` 600, and the answer call has `max_tokens` 2000.
+- **Only the first model picks:** on a fresh mock with `MOCK_FAIL=chat500`, a non-streamed course question without hits shows exactly one pick call, using the first model in the list.
+- **Slow pick:** on a fresh server with `{ GROKBOT_PICK_TIMEOUT_MS: "500" }` and a mock with `{ MOCK_SLOW_PICK: "3000" }`, a streamed course question without hits sends `{"sources":[]}`, then the sentences and `{done}`, in under 2.5 s.
+- **Everything else** still passes.
+
+**`scripts/check_page.mjs` (L3):**
+- `expandSpanish("¿Qué es la causalidad ascendente?")` contains "upward causation".
+- `searchHits` gives:
+  - for "¿Qué es la causalidad ascendente?": `T4` chapter 3 and `P07` chapter 1;
+  - for "¿Qué es el micromecenazgo?": at least one of `P11` and `B1`;
+  - for "¿Qué es la propuesta de valor?": `P13`;
+  - for "hola": `[]`.
+- On the search page, "ecosistema emprendedor" lists chapter results with a `#T4` link.
+- **Claude mock:** "¿Qué es la causalidad ascendente?" on the front page makes **no** `sample.json` call, and the `sample` first turn contains T4 chapter 3's title. **Update** F5's pick check, which used this question: use "¿Qué dice el curso sobre el liderazgo de las mujeres?", which the glossary does not place, so it still makes the pick call.
+- **Then** a full run, ALL PAGE CHECKS PASSED, and `build_static.py`.
+
+### L.4 Tasks
+
+| Task | What it is |
+|---|---|
+| L1 | `ES_EN`, `expandSpanish`, and `searchCourse` using it (plan L.1); `build_site.py`; `check_page.mjs` (until L3, list any check that fails and why) |
+| L2 | `PICK_TIMEOUT_MS`, `upstreamBody`, the `askUpstream` timeout, the pick options (plan L.2); the mock and `test_server.mjs` checks (plan L.3); ALL SERVER CHECKS PASSED |
+| L3 | The `check_page.mjs` checks (plan L.3), full run, ALL PAGE CHECKS PASSED, `build_static.py` |
+| G9 | **STOP GATE G9.** Claude reviews and times the Spanish question on Canner before and after (before: 28.6 s and 81 s, both failed), then pushes and republishes |
+
+---
+
+## Rules for the executor: ZCode + GLM 5.3 Flash (Parts A, S, H, B, C and N), or DeepSeek (Parts D, E, F and L) (put verbatim in the kickoff)
 
 - **Work only in** `D:/HVL2025/514/workspace/lecture-audio/`.
 - **May edit:** `site/template.html` and `scripts/check_page.mjs`; for Parts H and D also `server.js`, `scripts/mock_openrouter.mjs`, `scripts/test_server.mjs` and `checks/context-before.txt`.
@@ -2149,6 +2279,8 @@ Every existing check stays. New checks, with the same "seek to `duration - 0.4`,
 | G6 | **STOP GATE G6** |
 | F1–F5 | Part F (DeepSeek), the faster voice reply (table in F.7) |
 | G7 | **STOP GATE G7** |
+| L1–L3 | Part L (DeepSeek), Spanish course questions (table in L.4) |
+| G9 | **STOP GATE G9** |
 | B1 | `sync_knowledge.py` |
 | B2 | Its default run, which must report "pack unchanged" |
 | G2 | **STOP GATE G2** |

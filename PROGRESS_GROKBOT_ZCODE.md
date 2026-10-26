@@ -534,6 +534,13 @@ Added by Claude Code on 2026-10-24: the student asked for a faster voice reply (
     - **The new default** is `nvidia/nemotron-3.5-super-vl:free,openrouter/free`, with `GROKBOT_REASONING` unset. The temporary Canner settings are removed.
     - **With that pair,** English course questions with search hits took 20, 13.5 and 8.3 s in all. A Spanish course question with no hits took 28.6 s and then 81 s and failed upstream after the pick: still the weak spot.
 
+## Part L: Spanish course questions (DeepSeek)
+Added by Claude Code on 2026-10-26 after the student's "Yes: plan a fix for slow or failing Spanish course questions." DeepSeek builds L1 to L3 with `GROKBOT_DEEPSEEK_KICKOFF.md`. DeepSeek must not run git: Claude reviews at G9, then pushes and republishes.
+- [ ] L1. `ES_EN`, `expandSpanish`, and `searchCourse` using it (plan L.1)
+- [ ] L2. `PICK_TIMEOUT_MS`, `upstreamBody`, the `askUpstream` timeout, the pick options; the mock and the `test_server.mjs` checks; the run ends "ALL SERVER CHECKS PASSED" (plan L.2, L.3)
+- [ ] L3. The `check_page.mjs` checks (plan L.3), full run ending "ALL PAGE CHECKS PASSED", then `build_static.py`
+- [ ] **STOP GATE G9:** student approved (after Claude Code's review, the Spanish timing on Canner before and after, the push and the claude.ai republish)
+
 ## Part B: one-command pack sync
 - [x] B1. `scripts/sync_knowledge.py` (plan Part B)
   - Evidence (ZCode + GLM 5.3 Flash, 2026-10-24): created per plan Part B. Default mode: checks the hub is a git repo on `main` and that nothing outside `knowledge/` has local changes (stopping with the file list if it does), exports by importing `export_knowledge.main(Path(hub) / "knowledge/inn514")`, prints `git status --short -- knowledge/inn514`, and prints "pack unchanged" when nothing changed. `--commit` adds the `pull --rebase --quiet origin main` first and commits only `knowledge/inn514/` with `knowledge: refresh the INN514 pack (YYYY-MM-DD)`; `--push` implies `--commit` and pushes with one pull-rebase retry, never force-pushing. All git output is scrubbed of URLs that could carry credentials (`https://…@` → `[redacted]@`); unknown flags stop with an error.
