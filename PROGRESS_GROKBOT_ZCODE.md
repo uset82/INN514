@@ -342,8 +342,15 @@ D1–D5 were already present in `site/template.html` when this execution of Part
     - **Tidied:** DeepSeek's `scratch/` helpers and `checks/server-check-d7.log` are quarantined in the scratchpad.
     - **Still open:** the live check with the real model after the push, and the student's phone test. Then the student's "APPROVED GATE G5".
 
+## Part N: autoplay and previous/next (ZCode + GLM 5.3 Flash)
+Added by Claude Code on 2026-10-26 from the student's request. ZCode does N1 to N3 with `GROKBOT_KICKOFF.md`, one task per conversation. Parts E and F (DeepSeek) wait until STOP GATE G8 is ticked.
+- [ ] N1. `SERIES`, `seriesOf`, `neighbour`, `autoplay`, `goOn`; the `ended` handler; the previous and next player buttons across classes and papers; the Auto button, its CSS and wiring (plan N.1)
+- [ ] N2. `CHEV_L`, `CHEV_R`, `pager`; the `.lec-top` row in both branches of `renderLecture`; the CSS; "Where next" in number order with previous lines (plan N.2)
+- [ ] N3. The `check_page.mjs` checks (plan N.3), `phone-paper-pager.png` and `phone-player-auto.png`, full run ending "ALL PAGE CHECKS PASSED", then `build_static.py`
+- [ ] **STOP GATE G8:** student approved (after Claude Code's review and own look in the browser, the push, the claude.ai republish, and the student's listening test)
+
 ## Part E: tidy-up after Part D (DeepSeek)
-Added by Claude Code on 2026-10-24 after the student's "aprove continue let deepskeek continue with the task". DeepSeek builds E1 and E2 with `GROKBOT_DEEPSEEK_KICKOFF.md`; only the student's approval after Claude Code's review ticks G6.
+Added by Claude Code on 2026-10-24 after the student's "aprove continue let deepskeek continue with the task". DeepSeek builds E1 and E2 with `GROKBOT_DEEPSEEK_KICKOFF.md`, only after STOP GATE G8 (ZCode's Part N) is ticked; only the student's approval after Claude Code's review ticks G6.
 - [ ] E1. `/api/health` shows only ok, ask, key, passcode and voices; its server check (plan E1); the run ends "ALL SERVER CHECKS PASSED"
 - [ ] E2. The four unused note constants and the `.ask-text` and `.ask-note` CSS removed (plan E2); full `check_page.mjs` run ending "ALL PAGE CHECKS PASSED", then `build_static.py`
 - [ ] **STOP GATE G6:** student approved (after Claude Code's review, the push and the claude.ai republish)

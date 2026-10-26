@@ -11,7 +11,7 @@ You are building part of "Grokbot for INN514", a study companion for my master's
 
 READ FIRST, in this order:
 1. workspace/lecture-audio/GROKBOT_PLAN.md: read "Context", "Who does what", the Part of your task ("Part D", "Part E" or "Part F", the whole of it), and "Rules for the executor". It is the single spec. It gives most code in full: copy it exactly.
-2. workspace/lecture-audio/PROGRESS_GROKBOT_ZCODE.md, sections "Part D", "Part E" and "Part F". Do ONLY the first unchecked D, E or F task, in that order. Start Part F only once STOP GATE G6 is ticked; if it isn't, stop and tell me. Ignore the open boxes of other parts (STOP GATE G3 stays open on purpose). If the first unchecked box of your Part is a STOP GATE, stop and tell me.
+2. workspace/lecture-audio/PROGRESS_GROKBOT_ZCODE.md, sections "Part D", "Part E" and "Part F". Do ONLY the first unchecked D, E or F task, in that order. Start Part E only once STOP GATE G8 (ZCode's Part N) is ticked, and Part F only once STOP GATE G6 is ticked; if the gate you need isn't ticked, stop and tell me. Ignore the open boxes of other parts (STOP GATE G3 stays open on purpose). If the first unchecked box of your Part is a STOP GATE, stop and tell me.
 Then show me your task list (3 to 6 short steps) before you start.
 
 DO THE TASK:

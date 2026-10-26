@@ -10,8 +10,8 @@ When the agent writes "STOP GATE G<n>", paste its report into Claude Code and sa
 You are building part of "Grokbot for INN514", a study companion for my master's course, in D:\HVL2025\514\workspace\lecture-audio. You are the executor. Claude Code reviews your work and does every git, publish and deploy step.
 
 READ FIRST, in this order:
-1. workspace/lecture-audio/GROKBOT_PLAN.md: read "Context", "Who does what", the Part of your task (A, S, H, B or C), and "Rules for the executor". It is the single spec.
-2. workspace/lecture-audio/PROGRESS_GROKBOT_ZCODE.md. Do ONLY the first unchecked task. If the first unchecked box is a STOP GATE, stop and tell me. The one exception: STOP GATE G1 may stay open while you do Part H, so skip that box and take the first unchecked H task.
+1. workspace/lecture-audio/GROKBOT_PLAN.md: read "Context", "Who does what", the Part of your task (A, S, H, B, C or N; now Part N), and "Rules for the executor". It is the single spec.
+2. workspace/lecture-audio/PROGRESS_GROKBOT_ZCODE.md. Do ONLY the first unchecked task of Part N (section "Part N"). Ignore the boxes of other parts: Parts E and F belong to DeepSeek, and STOP GATE G3 stays open on purpose. If the first unchecked N box is STOP GATE G8, stop and tell me.
 Then show me your task list (3 to 6 short steps) before you start.
 
 DO THE TASK:
@@ -49,8 +49,10 @@ AFTER THE TASK:
 - Template tasks (A1 to A6): run build_site.py and paste its first line.
 - Server tasks: S1 to S3, check that `node workspace/lecture-audio/server.js` starts and answers / (stop it afterwards); S4 and later, run test_server.mjs and paste its last lines (it must end "ALL SERVER CHECKS PASSED").
 - Part H: H2 to H6 and H8, run build_site.py and paste its first line; H7, run test_server.mjs as above; H1 and H9, run build_site.py, then check_page.mjs until the log ends "ALL PAGE CHECKS PASSED" (H9 also opens phone-grokbot.png, phone-grokbot-dark.png and desktop-grokbot.png, fixes what looks wrong, and then runs build_static.py).
+- Part N: N1 and N2, run build_site.py and paste its first line, then run check_page.mjs and paste its last lines (every existing check must still pass); N3, run check_page.mjs until the log ends "ALL PAGE CHECKS PASSED", open phone-paper-pager.png and phone-player-auto.png, fix what looks wrong, then run build_static.py.
 - A7: run check_page.mjs, open every new screenshot it saves (phone-ask*.png and the others), fix what looks wrong, run again until the log ends "ALL PAGE CHECKS PASSED", then run build_static.py.
 - Tick the task's box in PROGRESS_GROKBOT_ZCODE.md and paste the evidence under it: the commands you ran and their output (or the last lines), and the files you changed.
 - Report to me in English: what you changed, the evidence, and any wording you added. Then STOP.
 - If the next box is a STOP GATE, end your report with: "STOP GATE G<n>: ask Claude Code to review and publish."
+- Never tick a STOP GATE box yourself, even if I say "I approve everything": Claude Code ticks it after the review and my approval.
 ```

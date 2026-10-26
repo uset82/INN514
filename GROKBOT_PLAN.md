@@ -1944,7 +1944,155 @@ async function streamServerAnswer(panel, ctl, url, body, onDone) {
 
 ---
 
-## Rules for the executor: ZCode + GLM 5.3 Flash, or DeepSeek for Parts D, E and F (put verbatim in the kickoff)
+## Part N: autoplay from class to class and paper to paper, and previous/next on every page (added 2026-10-26; ZCode + GLM 5.3 Flash builds it)
+
+The student listened to the whole course on 2026-10-26 and found two problems:
+1. **Playback stopped at the end of every class or paper.** The player went from chapter to chapter, but stopped after a class's or paper's last chapter.
+2. **A paper page had no way to the previous or next paper.** It had only a "Next paper" line at the bottom, which followed the papers page's grouping (P08 led to P14), and there was no "previous".
+
+**The student's decisions (2026-10-26):**
+- **The class chain** runs Class 1, 2, 3, 4, 5, 6, 9, then the **bonus class**, and stops.
+- **The paper chain** runs **1 → 17** by number and stops. The two chains are separate.
+- **An "Auto" button in the player,** on by default and remembered, turns the chain on and off.
+- **ZCode builds Part N first,** and DeepSeek's Parts E and F wait for gate **G8**, because both agents edit `site/template.html`.
+
+**Unchanged:** Grokbot, search, the server, and every lecture, paper, audio and data file. The manifest must not change. Only `site/template.html` and `scripts/check_page.mjs` are edited.
+
+**Checked by Claude before handing over:** on the real `DATA`, `SERIES` and `neighbour` give T1 → T8 → B1 and P01 → P17, with Paper 8 followed by Paper 9, and `pager("P07")` gives the Paper 6 and Paper 8 buttons with their labels.
+
+### N.1 The listening order and the autoplay (task N1)
+
+Put this after `READINGS`, `entry` and `className` are defined, near the player code is fine:
+
+```js
+/* The listening order: classes in course order (the bonus class last), papers by their number. */
+const SERIES = {
+  classes: DATA.catalog.filter((c) => DATA.lectures[c.id]).map((c) => c.id),
+  papers: READINGS.filter((r) => DATA.lectures[r.id]).slice().sort((a, b) => a.num - b.num).map((r) => r.id),
+};
+const seriesOf = (id) => (isReading(id) ? SERIES.papers : SERIES.classes);
+const neighbour = (id, step) => { const s = seriesOf(id), k = s.indexOf(id); return k < 0 ? null : s[k + step] || null; };
+let autoplay = store.autoplay !== false;   // the Auto button: go on to the next class or paper
+/* Goes on to another class or paper at chapter i. The audio goes on; the page follows when it was showing
+   the one that was playing and Follow is on. */
+function goOn(id, i) {
+  const follows = !!pl && viewId === pl.id && follow;
+  play(id, i, false);
+  if (follows) { pendingChapter = i; location.hash = id; }
+}
+```
+
+- `SERIES.classes` is `T1 T2 T3 T4 T5 T6 T8 B1`, and `SERIES.papers` is `P01`–`P17`.
+- **The `ended` handler** becomes:
+
+  ```js
+  audio.addEventListener("ended", () => {
+    if (!pl) return;
+    markDone(pl.id, plIdx);
+    if (plIdx < pl.chapters.length - 1) return play(pl.id, plIdx + 1, false);
+    const nxt = autoplay ? neighbour(pl.id, 1) : null;
+    if (nxt) return goOn(nxt, 0);
+    $("playIcon").innerHTML = PLAY; markParagraph(-1);
+  });
+  ```
+
+- **The player's ⏮ and ⏭ buttons**, and therefore the phone's lock-screen buttons, also cross from one class or paper to the next. These are your own taps, so they work even with Auto off:
+
+  ```js
+  $("prev").onclick = () => {
+    if (!pl) return;
+    if (audio.currentTime > 5) audio.currentTime = 0;
+    else if (plIdx > 0) play(pl.id, plIdx - 1, true);
+    else { const p = neighbour(pl.id, -1); if (p) goOn(p, DATA.lectures[p].chapters.length - 1); }
+  };
+  $("next").onclick = () => {
+    if (!pl) return;
+    if (plIdx < pl.chapters.length - 1) play(pl.id, plIdx + 1, true);
+    else { const n = neighbour(pl.id, 1); if (n) goOn(n, 0); }
+  };
+  ```
+
+- **The Auto button.** In the player's first row, between Follow and the speed chip, add:
+
+  ```html
+  <button class="chip auto" id="auto" aria-pressed="true" title="Go on to the next class or paper when this one ends">Auto</button>
+  ```
+
+  - Its CSS is `.chip.auto[aria-pressed="true"] { background: var(--surface-2); }`, like Follow.
+  - The wiring:
+
+    ```js
+    $("auto").setAttribute("aria-pressed", String(autoplay));
+    $("auto").onclick = () => { autoplay = !autoplay; $("auto").setAttribute("aria-pressed", String(autoplay)); store.autoplay = autoplay; save(); };
+    ```
+
+### N.2 Previous and next on every class and paper page (task N2)
+
+```js
+const CHEV_L = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>';
+const CHEV_R = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
+/* The previous and next class (or paper) as two small buttons beside the breadcrumb. */
+function pager(id) {
+  const kind = isReading(id) ? "paper" : "class";
+  const btn = (to, dir) => {
+    const e = entry(to), label = (dir < 0 ? "Previous " : "Next ") + kind + ": " + className(e) + ", " + e.title;
+    return `<a class="pager-btn" href="#${to}" aria-label="${esc(label)}" title="${esc(label)}">${dir < 0 ? CHEV_L : ""}${esc(className(e))}${dir > 0 ? CHEV_R : ""}</a>`;
+  };
+  const p = neighbour(id, -1), n = neighbour(id, 1);
+  if (!p && !n) return "";
+  return `<nav class="pager" aria-label="Previous and next ${kind}">${p ? btn(p, -1) : "<span></span>"}${n ? btn(n, 1) : "<span></span>"}</nav>`;
+}
+```
+
+- **In `renderLecture`,** both the "in preparation" branch and the full page wrap the breadcrumb and the pager in one row: `<div class="lec-top">${crumbs}${pager(id)}</div>` in place of `${crumbs}`.
+- **CSS (tokens only):**
+  - `.lec-top { display: flex; justify-content: space-between; align-items: center; gap: var(--sp-2); flex-wrap: wrap; }`
+  - `.pager { display: flex; gap: var(--sp-2); padding-top: var(--sp-4); }`
+  - `.pager-btn { display: inline-flex; align-items: center; gap: var(--sp-1); min-height: 2.75rem; padding: 0 .9rem; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); font-size: var(--s-1); font-weight: 500; text-decoration: none; transition: background-color .15s; }`
+  - `.pager-btn:hover { background: var(--surface-2); }`
+  - `.pager-btn svg { width: 1rem; height: 1rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }`
+- **"Where next" at the bottom** (`whereNext`) uses the same order.
+  - **For a paper:** "Next paper:" now comes from `neighbour(c.id, 1)` (number order). A new "Previous paper:" line, with the same markup, comes from `neighbour(c.id, -1)`. On Paper 17 the next line becomes "Back to the first paper:" linking Paper 1, as the classes already do.
+  - **For a class:** "Next class:" comes from `neighbour`, and a new "Previous class:" line is added. "Back to the first class:" stays for the bonus class.
+
+### N.3 Checks and screenshots (task N3, `scripts/check_page.mjs`)
+
+Every existing check stays. New checks, with the same "seek to `duration - 0.4`, wait 3 s" method as "next chapter starts on its own":
+- **The order:** `SERIES.classes` is `["T1","T2","T3","T4","T5","T6","T8","B1"]`, and `SERIES.papers` is `P01`…`P17` in number order.
+- **Class to class:**
+  - On `#T1`, with Follow and Auto on, play T1's last chapter and let it end. `T2-01.mp3` is playing, `location.hash` is `#T2`, and the page's `h1` is T2's title.
+  - Do the same on `#P08`'s last chapter. `P09-01.mp3` plays: number order, not the list's P14.
+- **Where you are:** on `#papers`, let T1's last chapter end. The audio goes on to T2, and the hash stays `#papers`.
+- **Auto off:**
+  - Click `#auto`. `aria-pressed` is `false`, and the saved store has `autoplay: false`.
+  - Let P01's last chapter end: the audio stops on P01.
+  - ⏭ on that last chapter still opens P02 chapter 1.
+  - ⏮ at the start of T2 chapter 1 opens T1's last chapter.
+  - Switch Auto back on.
+- **The ends:** with Auto on, the end of P17's last chapter stops, and so does the end of B1's.
+- **The pager:**
+  - **`#P07`:** the top pager links `#P06` and `#P08`, with `aria-label`s beginning "Previous paper: Paper 6," and "Next paper: Paper 8,". "Where next" has "Previous paper:" and "Next paper:".
+  - **`#P01`:** no previous; the next is `#P02`.
+  - **`#P17`:** the previous is `#P16`, with no next button; "Where next" has "Back to the first paper:".
+  - **`#P08`:** the next is `#P09`.
+  - **`#T8`:** the next is `#B1`.
+  - **`#B1`:** the previous is `#T8`, with no next.
+- **Phone, 390px:** on `#P07`, and in the player with the Auto chip, there is no horizontal scroll. The breadcrumb and pager sit on one row, or wrap without overlapping.
+- **Screenshots:** `checks/phone-paper-pager.png` (the top of `#P07` at 390px) and `checks/phone-player-auto.png` (the player with Auto).
+- **Then** a full run, ALL PAGE CHECKS PASSED, and `build_static.py`.
+
+### N.4 Tasks for ZCode
+
+| Task | What it is |
+|---|---|
+| N1 | `SERIES`, `seriesOf`, `neighbour`, `autoplay`, `goOn`; the `ended` handler; ⏮ ⏭ across classes and papers; the Auto button, its CSS and wiring |
+| N2 | `CHEV_L`, `CHEV_R`, `pager`; the `.lec-top` row in both branches of `renderLecture`; the CSS; "Where next" in number order with previous lines |
+| N3 | The `check_page.mjs` checks and screenshots, full run, `build_static.py` |
+| G8 | **STOP GATE G8** |
+
+---
+
+## Rules for the executor: ZCode + GLM 5.3 Flash (Parts A, S, H, B, C and N), or DeepSeek (Parts D, E and F) (put verbatim in the kickoff)
 
 - **Work only in** `D:/HVL2025/514/workspace/lecture-audio/`.
 - **May edit:** `site/template.html` and `scripts/check_page.mjs`; for Parts H and D also `server.js`, `scripts/mock_openrouter.mjs`, `scripts/test_server.mjs` and `checks/context-before.txt`.
@@ -1995,6 +2143,8 @@ async function streamServerAnswer(panel, ctl, url, body, onDone) {
 | G4 | **STOP GATE G4** (it also closes G1) |
 | D1–D7 | Part D (DeepSeek), the friendlier Grokbot and the search page (table in D.8) |
 | G5 | **STOP GATE G5** |
+| N1–N3 | Part N (ZCode), autoplay and previous/next (table in N.4); it comes before Part E |
+| G8 | **STOP GATE G8** |
 | E1–E2 | Part E (DeepSeek), the tidy-up (table in E.3) |
 | G6 | **STOP GATE G6** |
 | F1–F5 | Part F (DeepSeek), the faster voice reply (table in F.7) |
@@ -2053,6 +2203,13 @@ async function streamServerAnswer(panel, ctl, url, body, onDone) {
   - **Claude's own look** in the browser pane: "hola", "¿quién enseña la clase 4?", "What is upward causation?", the search page at 390px and 1280px, and "Read again".
   - **Publish:** the scan, a push (Canner redeploys) and a republish of the claude.ai link.
   - **You** test both sites on your phone, then approve G5.
+- **G8:**
+  - **Checks:** the manifest is unchanged, and both suites pass in full.
+  - **Screenshots:** read `phone-paper-pager.png` and `phone-player-auto.png`.
+  - **Review:** `goOn` changes the hash only when the page showed the ending lecture; the Auto state is saved; ⏮ ⏭ cross lectures.
+  - **Claude's own look** in the browser pane: a class end moves on, Auto off stops, and the pager works at 390px.
+  - **Publish:** the scan, a push and a republish.
+  - **You** listen across a class end and a paper end on your phone, then approve G8.
 - **G6:**
   - **Checks:** the manifest is unchanged, and both suites pass in full.
   - **Review:** `/api/health` on a local run shows only `ok`, `ask`, `key`, `passcode` and `voices`; the removed names appear nowhere.
