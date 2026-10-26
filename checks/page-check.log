@@ -19,7 +19,7 @@
 [PASS] #T1 opens the class with all its chapters  {"stops":7,"sections":7,"h1":"Innovation as systemic and sustainable transformation"}
 [PASS] a plain file hides Grokbot, the ask buttons and the greeting  {"shown":false,"askBtns":0,"greets":0}
 [PASS] the Ask how-to item is hidden in a plain file  false
-[PASS] a chapter plays from its button  {"src":"T1-02.mp3","paused":false,"t":3.37865,"d":188.424}
+[PASS] a chapter plays from its button  {"src":"T1-02.mp3","paused":false,"t":3.244628,"d":188.424}
 [PASS] paragraph highlight follows the audio  {"count":1,"inChapter":"ch-1"}
 [PASS] next chapter starts on its own  {"src":"T1-03.mp3","now":"2"}
 [PASS] finished chapter fills the route and is saved  {"done":true,"fill":58.09375,"saved":{"T1":[1]}}
@@ -96,13 +96,36 @@
 [PASS] after the passcode the chapter question reaches /api/ask  ["/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech"]
 [PASS] server mode calls /api/speak  ["/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech"]
 [PASS] the passcode is saved
-[PASS] a course question on the front page reaches /api/course and cites #T4  {"paths":["/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech","/api/v1/chat/completions","/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech"],"courseSrc":{"href":"#T4","text":"Class 4, chapter 3: Two models of the ecosystem"}}
+[PASS] a course question on the front page reaches /api/course and cites #T4  {"paths":["/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech","/api/v1/chat/completions","/api/v1/chat/completions"],"courseSrc":{"href":"#T4","text":"Class 4, chapter 3: Two models of the ecosystem"}}
 [PASS] a course question sends an array of hits to /api/course  {"question":"What is an entrepreneurial ecosystem?","hits":[{"id":"T4","chapter":5},{"id":"T4","chapter":4},{"id":"T4","chapter":7}]}
 [PASS] "Read again" replays the server voice with no new /api/speak request  {"replayShown":true,"before":4,"after":4}
-[PASS] on a phone the orb is 56px and the open bubble 358px wide with no horizontal scroll  {"cv":56,"bw":358,"inner":390,"scroll":390,"orbBottom":699,"playerTop":707,"saved":null,"pos":{"x":318,"y":643},"gTop":643,"gH":56,"btnTop":643,"btnBottom":699,"pTop":707,"pH":137,"side":"above","bTop":306,"bBottom":631}
-[PASS] the phone orb does not overlap the player  {"cv":56,"bw":358,"inner":390,"scroll":390,"orbBottom":699,"playerTop":707,"saved":null,"pos":{"x":318,"y":643},"gTop":643,"gH":56,"btnTop":643,"btnBottom":699,"pTop":707,"pH":137,"side":"above","bTop":306,"bBottom":631}
+[PASS] on a phone the orb is 56px and the open bubble 358px wide with no horizontal scroll  {"cv":56,"bw":358,"inner":390,"scroll":390,"orbBottom":699,"playerTop":707,"saved":null,"pos":{"x":318,"y":643},"gTop":643,"gH":56,"btnTop":643,"btnBottom":699,"pTop":707,"pH":137,"side":"above","bTop":282,"bBottom":607}
+[PASS] the phone orb does not overlap the player  {"cv":56,"bw":358,"inner":390,"scroll":390,"orbBottom":699,"playerTop":707,"saved":null,"pos":{"x":318,"y":643},"gTop":643,"gH":56,"btnTop":643,"btnBottom":699,"pTop":707,"pH":137,"side":"above","bTop":282,"bBottom":607}
   screenshot workspace/lecture-audio/checks/phone-grokbot.png
   screenshot workspace/lecture-audio/checks/phone-grokbot-dark.png
   screenshot workspace/lecture-audio/checks/desktop-grokbot.png
+[PASS] SERIES.classes is ["T1","T2","T3","T4","T5","T6","T8","B1"]  ["T1","T2","T3","T4","T5","T6","T8","B1"]
+[PASS] SERIES.papers is P01 to P17 in number order  ["P01","P02","P03","P04","P05","P06","P07","P08","P09","P10","P11","P12","P13","P14","P15","P16","P17"]
+[PASS] on #T1 with Follow and Auto on, the last chapter ends and T2-01.mp3 plays with the page on #T2  {"src":"T2-01.mp3","paused":false,"hash":"#T2","h1":"Regional innovation systems and sustainable transformation","t2":"Regional innovation systems and sustainable transformation","auto":"true","follow":true}
+[PASS] on #P08 the last chapter ends on P09-01.mp3: number order, not the list's P14  {"src":"P09-01.mp3","paused":false,"hash":"#P09","h1":"Functions of innovation systems: a new approach for analysing technological change","p09":"Functions of innovation systems: a new approach for analysing technological change"}
+[PASS] on #papers T1's last chapter ends: the audio goes on to T2, and the hash stays #papers  {"src":"T2-01.mp3","paused":false,"hash":"#papers"}
+[PASS] Auto off: aria-pressed is false and the saved store has autoplay false  {"pressed":"false","saved":false}
+[PASS] with Auto off, the end of P01's last chapter stops on P01  {"src":"P01-05.mp3","paused":true,"hash":"#P01"}
+[PASS] with Auto off, ⏭ on that last chapter still opens P02 chapter 1  {"src":"P02-01.mp3","paused":false,"hash":"#P02"}
+[PASS] ⏮ at the start of T2 chapter 1 opens T1's last chapter  {"src":"T1-07.mp3","paused":false,"hash":"#T1"}
+[PASS] Auto is back on (aria-pressed true, autoplay true saved)  {"pressed":"true","saved":true}
+[PASS] with Auto on, the end of P17's last chapter stops (no next paper)  {"src":"P17-06.mp3","paused":true,"hash":"#P17"}
+[PASS] with Auto on, the end of B1's last chapter stops (no next class)  {"src":"B1-08.mp3","paused":true,"hash":"#B1"}
+[PASS] #P07: the top pager links #P06 and #P08, labelled "Previous paper: Paper 6," and "Next paper: Paper 8,"  {"links":["#P06","#P08"],"labels":["Previous paper: Paper 6, Toward a process theory of entrepreneurial ecosystems","Next paper: Paper 8, Entrepreneurial innovation: the importance of context"],"spans":0}
+[PASS] #P07: "Where next" has "Previous paper:" and "Next paper:"  ["Other papers for class 4:","Previous paper:","Next paper:"]
+[PASS] #P01: no previous; the next is #P02  {"links":["#P02"],"labels":["Next paper: Paper 2, The “trinity” of innovation: actors, ideas and objects in innovation practice"],"spans":1}
+[PASS] #P17: the previous is #P16, with no next button; "Where next" has "Back to the first paper:"  {"pg17":{"links":["#P16"],"labels":["Previous paper: Paper 16, Paving the way for new regional industrial paths: actors and modes of change in Scania's games industry"],"spans":1},"wn17":["Other papers for class 9:","Previous paper:","Back to the first paper:"]}
+[PASS] #P08: the next is #P09  {"links":["#P07","#P09"],"labels":["Previous paper: Paper 7, Entrepreneurial ecosystem elements","Next paper: Paper 9, Functions of innovation systems: a new approach for analysing technological change"],"spans":0}
+[PASS] #T8: the next is #B1  {"links":["#T6","#B1"],"labels":["Previous class: Class 6, Technological innovation systems and sustainable transformation","Next class: Bonus class, The art of crowdfunding"],"spans":0}
+[PASS] #B1: the previous is #T8, with no next  {"links":["#T8"],"labels":["Previous class: Class 9, Summary and exam preparation"],"spans":1}
+[PASS] on a phone #P07 has no horizontal scroll, the player with the Auto chip included  {"inner":390,"scroll":390,"oneRow":true,"wrapped":false,"overlap":false,"auto":"Auto","playerRow":true}
+[PASS] the breadcrumb and pager sit on one row, or wrap without overlapping  {"inner":390,"scroll":390,"oneRow":true,"wrapped":false,"overlap":false,"auto":"Auto","playerRow":true}
+  screenshot workspace/lecture-audio/checks/phone-paper-pager.png
+  screenshot workspace/lecture-audio/checks/phone-player-auto.png
 [PASS] no script errors
 ALL PAGE CHECKS PASSED

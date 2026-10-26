@@ -200,6 +200,11 @@ a.row-title:hover { text-decoration: underline; text-underline-offset: 3px; }
 .crumbs a { color: var(--clay-ink); text-decoration: none; }
 .crumbs a:hover { text-decoration: underline; }
 .crumbs .sep, .crumbs span { color: var(--muted); }
+.lec-top { display: flex; justify-content: space-between; align-items: center; gap: var(--sp-2); flex-wrap: wrap; }
+.pager { display: flex; gap: var(--sp-2); padding-top: var(--sp-4); }
+.pager-btn { display: inline-flex; align-items: center; gap: var(--sp-1); min-height: 2.75rem; padding: 0 .9rem; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); font-size: var(--s-1); font-weight: 500; text-decoration: none; transition: background-color .15s; }
+.pager-btn:hover { background: var(--surface-2); }
+.pager-btn svg { width: 1rem; height: 1rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
 /* A class or a paper: the header lines */
 .lec-head { display: grid; gap: var(--sp-3); max-width: 44rem; padding-block: var(--sp-4) var(--sp-6); }
@@ -305,6 +310,7 @@ details.check > summary { cursor: pointer; color: var(--clay-ink); font-size: .9
 .chip:hover { background: var(--surface-2); }
 .chip.rate { font-variant-numeric: tabular-nums; }
 .chip.follow[aria-pressed="true"] { background: var(--surface-2); }
+.chip.auto[aria-pressed="true"] { background: var(--surface-2); }
 .bar { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--sp-2); align-items: center;
   color: var(--muted); font-size: var(--s-1); font-variant-numeric: tabular-nums; }
 .bar input { width: 100%; accent-color: var(--clay-ink); }
@@ -416,6 +422,7 @@ body.can-ask .howto > .gb-only { display: grid; }
     <div class="row1">
       <a class="now-title" id="nowTitle" href="#home">Choose a class or paper to listen</a>
       <button class="chip follow" id="follow" aria-pressed="true" title="Scroll the text along with the audio">Follow</button>
+      <button class="chip auto" id="auto" aria-pressed="true" title="Go on to the next class or paper when this one ends">Auto</button>
       <button class="chip rate" id="rate" aria-label="Playback speed">1×</button>
     </div>
     <div class="bar">
@@ -500,6 +507,21 @@ const smooth = () => (matchMedia("(prefers-reduced-motion: reduce)").matches ? "
 const doneSet = (id) => new Set(store.done[id] || []);
 /* One name everywhere: "Class 9", "Bonus class", "Paper 14". */
 const className = (c) => (rcat(c.id) ? "Paper " + c.num : c.num === "Bonus" ? "Bonus class" : "Class " + c.num);
+/* The listening order: classes in course order (the bonus class last), papers by their number. */
+const SERIES = {
+  classes: DATA.catalog.filter((c) => DATA.lectures[c.id]).map((c) => c.id),
+  papers: READINGS.filter((r) => DATA.lectures[r.id]).slice().sort((a, b) => a.num - b.num).map((r) => r.id),
+};
+const seriesOf = (id) => (isReading(id) ? SERIES.papers : SERIES.classes);
+const neighbour = (id, step) => { const s = seriesOf(id), k = s.indexOf(id); return k < 0 ? null : s[k + step] || null; };
+let autoplay = store.autoplay !== false;   // the Auto button: go on to the next class or paper
+/* Goes on to another class or paper at chapter i. The audio goes on; the page follows when it was showing
+   the one that was playing and Follow is on. */
+function goOn(id, i) {
+  const follows = !!pl && viewId === pl.id && follow;
+  play(id, i, false);
+  if (follows) { pendingChapter = i; location.hash = id; }
+}
 /* The front page's "What the course is about" paragraph; Grokbot's overview and server.js use it too. */
 const ABOUT_TEXT = "INN514 asks how innovation happens in systems rather than inside single firms, and how those systems can support a sustainable transformation. The classes move from national and regional innovation systems, through institutional work, entrepreneurial ecosystems and agency, to technological innovation systems, and end with a summary before the exam. Sessions 7 and 8 go through the papers, and the course ends with a written exam. A bonus class on crowdfunding comes from the 2025 course.";
 /* Spanish or English, from the words themselves (\b fails next to accented letters, so words are split on letters). */
@@ -820,6 +842,20 @@ const classLinks = (ids) => {
   return parts.length > 1 ? parts.slice(0, -1).join(", ") + " and " + parts[parts.length - 1] : parts.join("");
 };
 
+const CHEV_L = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>';
+const CHEV_R = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
+/* The previous and next class (or paper) as two small buttons beside the breadcrumb. */
+function pager(id) {
+  const kind = isReading(id) ? "paper" : "class";
+  const btn = (to, dir) => {
+    const e = entry(to), label = (dir < 0 ? "Previous " : "Next ") + kind + ": " + className(e) + ", " + e.title;
+    return `<a class="pager-btn" href="#${to}" aria-label="${esc(label)}" title="${esc(label)}">${dir < 0 ? CHEV_L : ""}${esc(className(e))}${dir > 0 ? CHEV_R : ""}</a>`;
+  };
+  const p = neighbour(id, -1), n = neighbour(id, 1);
+  if (!p && !n) return "";
+  return `<nav class="pager" aria-label="Previous and next ${kind}">${p ? btn(p, -1) : "<span></span>"}${n ? btn(n, 1) : "<span></span>"}</nav>`;
+}
+
 function renderLecture(id) {
   viewId = id;
   const reading = isReading(id);
@@ -832,7 +868,7 @@ function renderLecture(id) {
     ? `<p class="by">Papers for this class: ${c.readings.map(rcat).filter(Boolean)
         .map((r) => `<a href="#${r.id}">${esc(className(r))} (${esc(r.cite)})</a>`).join(", ")}</p>` : "";
   if (!L) {
-    view.innerHTML = `${crumbs}
+    view.innerHTML = `<div class="lec-top">${crumbs}${pager(id)}</div>
       <header class="lec-head">
         <p class="when">${whenText}</p>
         <h1>${esc(c.title)}</h1>
@@ -856,7 +892,7 @@ function renderLecture(id) {
     return `${label ? `<h3 class="pg" id="${pageId(label)}">${esc(label)}</h3>` : ""}<p class="prose" data-k="${k}">${esc(p)}</p>`;
   }).join("");
   view.innerHTML = `
-    ${crumbs}
+    <div class="lec-top">${crumbs}${pager(id)}</div>
     <header class="lec-head">
       <p class="when">${whenText}</p>
       <h1>${esc(c.title)}</h1>
@@ -899,19 +935,19 @@ function whereNext(c, reading) {
     if (others.length) items.push(`<li><span class="label">Other papers for ${esc(classWord(first))}:</span> <span class="links">${others
       .map((r) => `<a href="#${r.id}">${esc(className(r))}, ${esc(r.title)}</a>`).join(", ")}</span></li>`);
     if (first) items.push(`<li><a href="#${first.id}">${esc(className(first))}: ${esc(first.title)}</a></li>`);
-    const rp = READINGS.filter((r) => r.ready);
-    const nxt = rp[rp.findIndex((r) => r.id === c.id) + 1];
-    if (nxt) items.push(`<li><span class="label">Next paper:</span> <a href="#${nxt.id}">${esc(className(nxt))}, ${esc(nxt.title)}</a></li>`);
+    const prv = neighbour(c.id, -1), nxt = neighbour(c.id, 1);
+    if (prv) { const p = entry(prv); items.push(`<li><span class="label">Previous paper:</span> <a href="#${p.id}">${esc(className(p))}, ${esc(p.title)}</a></li>`); }
+    if (nxt) { const p = entry(nxt); items.push(`<li><span class="label">Next paper:</span> <a href="#${p.id}">${esc(className(p))}, ${esc(p.title)}</a></li>`); }
+    else if (SERIES.papers.length > 1) { const p = entry(SERIES.papers[0]); items.push(`<li><span class="label">Back to the first paper:</span> <a href="#${p.id}">${esc(className(p))}, ${esc(p.title)}</a></li>`); }
     items.push(`<li><a href="#papers">All papers</a></li>`);
   } else {
     const papers = (c.readings || []).map(rcat).filter((r) => r && r.ready);
     if (papers.length) items.push(`<li><span class="label">Papers for this class:</span> <span class="links">${papers
       .map((r) => `<a href="#${r.id}">${esc(className(r))}, ${esc(r.title)}</a>`).join(", ")}</span></li>`);
-    const rc = DATA.catalog.filter((x) => x.ready);
-    const i = rc.findIndex((x) => x.id === c.id);
-    const nxt = rc[i + 1], back = !nxt && rc.length > 1 ? rc[0] : null;
-    if (nxt) items.push(`<li><span class="label">Next class:</span> <a href="#${nxt.id}">${esc(className(nxt))}, ${esc(nxt.title)}</a></li>`);
-    else if (back) items.push(`<li><span class="label">Back to the first class:</span> <a href="#${back.id}">${esc(className(back))}, ${esc(back.title)}</a></li>`);
+    const prv = neighbour(c.id, -1), nxt = neighbour(c.id, 1);
+    if (prv) { const p = entry(prv); items.push(`<li><span class="label">Previous class:</span> <a href="#${p.id}">${esc(className(p))}, ${esc(p.title)}</a></li>`); }
+    if (nxt) { const p = entry(nxt); items.push(`<li><span class="label">Next class:</span> <a href="#${p.id}">${esc(className(p))}, ${esc(p.title)}</a></li>`); }
+    else if (SERIES.classes.length > 1) { const p = entry(SERIES.classes[0]); items.push(`<li><span class="label">Back to the first class:</span> <a href="#${p.id}">${esc(className(p))}, ${esc(p.title)}</a></li>`); }
     items.push(`<li><a href="#classes">All classes</a></li>`);
   }
   return `<section class="next" aria-labelledby="next-h"><h2 id="next-h">Where next</h2><ul>${items.join("")}</ul></section>`;
@@ -1015,8 +1051,10 @@ audio.addEventListener("pause", () => { $("playIcon").innerHTML = PLAY; gbMoveTo
 audio.addEventListener("ended", () => {
   if (!pl) return;
   markDone(pl.id, plIdx);
-  if (plIdx < pl.chapters.length - 1) play(pl.id, plIdx + 1, false);
-  else { $("playIcon").innerHTML = PLAY; markParagraph(-1); }
+  if (plIdx < pl.chapters.length - 1) return play(pl.id, plIdx + 1, false);
+  const nxt = autoplay ? neighbour(pl.id, 1) : null;
+  if (nxt) return goOn(nxt, 0);
+  $("playIcon").innerHTML = PLAY; markParagraph(-1);
 });
 $("seek").addEventListener("input", () => { seeking = true; $("tCur").textContent = fmt((audio.duration || 0) * $("seek").value / 1000); });
 $("seek").addEventListener("change", () => { if (audio.duration) audio.currentTime = audio.duration * $("seek").value / 1000; seeking = false; });
@@ -1026,14 +1064,25 @@ $("play").onclick = () => {
 };
 $("back").onclick = () => { audio.currentTime = Math.max(0, audio.currentTime - 15); };
 $("fwd").onclick = () => { audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 30); };
-$("prev").onclick = () => { if (!pl) return; if (audio.currentTime > 5) audio.currentTime = 0; else if (plIdx > 0) play(pl.id, plIdx - 1, true); };
-$("next").onclick = () => { if (pl && plIdx < pl.chapters.length - 1) play(pl.id, plIdx + 1, true); };
+$("prev").onclick = () => {
+  if (!pl) return;
+  if (audio.currentTime > 5) audio.currentTime = 0;
+  else if (plIdx > 0) play(pl.id, plIdx - 1, true);
+  else { const p = neighbour(pl.id, -1); if (p) goOn(p, DATA.lectures[p].chapters.length - 1); }
+};
+$("next").onclick = () => {
+  if (!pl) return;
+  if (plIdx < pl.chapters.length - 1) play(pl.id, plIdx + 1, true);
+  else { const n = neighbour(pl.id, 1); if (n) goOn(n, 0); }
+};
 $("rate").onclick = () => {
   rateIdx = (rateIdx + 1) % RATES.length; audio.playbackRate = RATES[rateIdx];
   $("rate").textContent = RATES[rateIdx] + "×"; store.rate = RATES[rateIdx]; save();
 };
 $("rate").textContent = RATES[rateIdx] + "×";
 $("follow").onclick = () => { follow = !follow; $("follow").setAttribute("aria-pressed", String(follow)); };
+$("auto").setAttribute("aria-pressed", String(autoplay));
+$("auto").onclick = () => { autoplay = !autoplay; $("auto").setAttribute("aria-pressed", String(autoplay)); store.autoplay = autoplay; save(); };
 if ("mediaSession" in navigator) {
   const h = (a, f) => { try { navigator.mediaSession.setActionHandler(a, f); } catch (e) {} };
   h("play", () => audio.play()); h("pause", () => audio.pause());

@@ -758,6 +758,144 @@ try {
   await stopChild(serverChild); serverChild = null;
   await stopChild(mockChild); mockChild = null;
 
+  // ---- Part N: the listening order, autoplay across classes and papers, the Auto button, the pager
+  await send('Page.navigate', { url: FILE + '#home' }); await sleep(1600);
+  const order = await ev(`({classes: SERIES.classes, papers: SERIES.papers})`);
+  check('SERIES.classes is ["T1","T2","T3","T4","T5","T6","T8","B1"]',
+    JSON.stringify(order.classes) === JSON.stringify(['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T8', 'B1']), JSON.stringify(order.classes));
+  check('SERIES.papers is P01 to P17 in number order',
+    JSON.stringify(order.papers) === JSON.stringify([...Array(17)].map((_, i) => 'P' + String(i + 1).padStart(2, '0'))), JSON.stringify(order.papers));
+  const lastFile = (id) => `${id}-${String(DATA.lectures[id].chapters.length).padStart(2, '0')}.mp3`;
+  const storeOf = `(() => { try { return JSON.parse(localStorage.getItem('inn514-companion')); } catch (e) { return {}; } })()`;
+  const audioNow = `(() => { const a = document.getElementById('audio');
+    return {src: a.src.split('/').pop(), paused: a.paused, hash: location.hash}; })()`;
+  // play a lecture's last chapter and let it end (the seek method of "next chapter starts on its own")
+  const playToEnd = async (id) => {
+    await go(id);
+    await ev(`document.querySelector('.listen[data-i="${DATA.lectures[id].chapters.length - 1}"]').click()`);
+    await waitFor(`(() => { const a = document.getElementById('audio');
+      return a.src.endsWith('${lastFile(id)}') && !a.paused && a.duration > 60; })()`);
+    await ev(`(() => { const a = document.getElementById('audio'); a.currentTime = a.duration - 0.4; })()`);
+    await sleep(3000);
+  };
+
+  // class to class, and paper to paper by number, with Follow and Auto on
+  await playToEnd('T1');
+  const t1to2 = await ev(`(() => { const a = document.getElementById('audio');
+    return {src: a.src.split('/').pop(), paused: a.paused, hash: location.hash, h1: document.querySelector('h1')?.textContent,
+      t2: DATA.catalog.find((c) => c.id === 'T2').title,
+      auto: document.getElementById('auto').getAttribute('aria-pressed'), follow}; })()`);
+  check('on #T1 with Follow and Auto on, the last chapter ends and T2-01.mp3 plays with the page on #T2',
+    t1to2.src === 'T2-01.mp3' && !t1to2.paused && t1to2.hash === '#T2' && t1to2.h1 === t1to2.t2
+    && t1to2.auto === 'true' && t1to2.follow === true, JSON.stringify(t1to2));
+  await playToEnd('P08');
+  const p08to9 = await ev(`(() => { const a = document.getElementById('audio');
+    return {src: a.src.split('/').pop(), paused: a.paused, hash: location.hash, h1: document.querySelector('h1')?.textContent,
+      p09: DATA.readings.find((r) => r.id === 'P09').title}; })()`);
+  check(`on #P08 the last chapter ends on P09-01.mp3: number order, not the list's P14`,
+    p08to9.src === 'P09-01.mp3' && !p08to9.paused && p08to9.hash === '#P09' && p08to9.h1 === p08to9.p09, JSON.stringify(p08to9));
+
+  // where you are: on #papers the audio goes on and the hash stays
+  await go('T1');
+  await ev(`document.querySelector('.listen[data-i="${DATA.lectures.T1.chapters.length - 1}"]').click()`);
+  await waitFor(`(() => { const a = document.getElementById('audio');
+    return a.src.endsWith('${lastFile('T1')}') && !a.paused && a.duration > 60; })()`);
+  await go('papers');
+  await ev(`(() => { const a = document.getElementById('audio'); a.currentTime = a.duration - 0.4; })()`); await sleep(3000);
+  const kept = await ev(audioNow);
+  check(`on #papers T1's last chapter ends: the audio goes on to T2, and the hash stays #papers`,
+    kept.src === 'T2-01.mp3' && !kept.paused && kept.hash === '#papers', JSON.stringify(kept));
+
+  // Auto off
+  await ev(`document.getElementById('auto').click()`); await sleep(200);
+  const autoOff = await ev(`({pressed: document.getElementById('auto').getAttribute('aria-pressed'), saved: ${storeOf}.autoplay})`);
+  check('Auto off: aria-pressed is false and the saved store has autoplay false',
+    autoOff.pressed === 'false' && autoOff.saved === false, JSON.stringify(autoOff));
+  await playToEnd('P01');
+  const stoppedP01 = await ev(audioNow);
+  check(`with Auto off, the end of P01's last chapter stops on P01`,
+    stoppedP01.src === lastFile('P01') && stoppedP01.paused && stoppedP01.hash === '#P01', JSON.stringify(stoppedP01));
+  await ev(`document.getElementById('next').click()`); await sleep(1500);
+  const nxtP02 = await ev(audioNow);
+  check(`with Auto off, ⏭ on that last chapter still opens P02 chapter 1`,
+    nxtP02.src === 'P02-01.mp3' && !nxtP02.paused && nxtP02.hash === '#P02', JSON.stringify(nxtP02));
+  await go('T2');
+  await ev(`document.querySelector('.listen[data-i="0"]').click()`);
+  await waitFor(`(() => { const a = document.getElementById('audio');
+    return a.src.endsWith('T2-01.mp3') && !a.paused && a.duration > 60; })()`);
+  await ev(`document.getElementById('audio').currentTime = 0`);
+  await ev(`document.getElementById('prev').click()`); await sleep(1500);
+  const prvT1 = await ev(audioNow);
+  check(`⏮ at the start of T2 chapter 1 opens T1's last chapter`,
+    prvT1.src === lastFile('T1') && !prvT1.paused && prvT1.hash === '#T1', JSON.stringify(prvT1));
+  await ev(`document.getElementById('auto').click()`); await sleep(200);
+  const autoBack = await ev(`({pressed: document.getElementById('auto').getAttribute('aria-pressed'), saved: ${storeOf}.autoplay})`);
+  check('Auto is back on (aria-pressed true, autoplay true saved)',
+    autoBack.pressed === 'true' && autoBack.saved === true, JSON.stringify(autoBack));
+
+  // the ends: with Auto on
+  await playToEnd('P17');
+  const endP17 = await ev(audioNow);
+  check(`with Auto on, the end of P17's last chapter stops (no next paper)`,
+    endP17.src === lastFile('P17') && endP17.paused && endP17.hash === '#P17', JSON.stringify(endP17));
+  await playToEnd('B1');
+  const endB1 = await ev(audioNow);
+  check(`with Auto on, the end of B1's last chapter stops (no next class)`,
+    endB1.src === lastFile('B1') && endB1.paused && endB1.hash === '#B1', JSON.stringify(endB1));
+
+  // the pager on class and paper pages
+  const pagerOf = `(() => { const n = document.querySelector('.lec-top .pager');
+    return {links: n ? [...n.querySelectorAll('a')].map((a) => a.getAttribute('href')) : null,
+      labels: n ? [...n.querySelectorAll('a')].map((a) => a.getAttribute('aria-label')) : null,
+      spans: n ? n.querySelectorAll(':scope > span').length : 0}; })()`;
+  await go('P07');
+  const pg07 = await ev(pagerOf);
+  check(`#P07: the top pager links #P06 and #P08, labelled "Previous paper: Paper 6," and "Next paper: Paper 8,"`,
+    pg07.links[0] === '#P06' && pg07.links[1] === '#P08'
+    && (pg07.labels[0] || '').startsWith('Previous paper: Paper 6,') && (pg07.labels[1] || '').startsWith('Next paper: Paper 8,'), JSON.stringify(pg07));
+  const wn07 = await ev(`[...document.querySelectorAll('section.next .label')].map((s) => s.textContent)`);
+  check(`#P07: "Where next" has "Previous paper:" and "Next paper:"`,
+    wn07.includes('Previous paper:') && wn07.includes('Next paper:'), JSON.stringify(wn07));
+  await go('P01');
+  const pg01 = await ev(pagerOf);
+  check('#P01: no previous; the next is #P02',
+    JSON.stringify(pg01.links) === JSON.stringify(['#P02']) && pg01.spans === 1, JSON.stringify(pg01));
+  await go('P17');
+  const pg17 = await ev(pagerOf);
+  const wn17 = await ev(`[...document.querySelectorAll('section.next .label')].map((s) => s.textContent)`);
+  check(`#P17: the previous is #P16, with no next button; "Where next" has "Back to the first paper:"`,
+    JSON.stringify(pg17.links) === JSON.stringify(['#P16']) && pg17.spans === 1 && wn17.includes('Back to the first paper:'), JSON.stringify({pg17, wn17}));
+  await go('P08');
+  const pg08 = await ev(pagerOf);
+  check('#P08: the next is #P09', pg08.links[1] === '#P09', JSON.stringify(pg08));
+  await go('T8');
+  const pgT8 = await ev(pagerOf);
+  check('#T8: the next is #B1', pgT8.links[1] === '#B1', JSON.stringify(pgT8));
+  await go('B1');
+  const pgB1 = await ev(pagerOf);
+  check('#B1: the previous is #T8, with no next', pgB1.links[0] === '#T8' && pgB1.spans === 1, JSON.stringify(pgB1));
+
+  // phone, 390px: #P07 with the pager, and the player with the Auto chip
+  await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 2, mobile: true });
+  await ev(`document.head.insertAdjacentHTML('afterbegin', '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">')`);
+  await go('P07');
+  await ev(`window.scrollTo(0, 0)`); await sleep(400);
+  const phonePager = await ev(`(() => { const c = document.querySelector('.lec-top .crumbs').getBoundingClientRect();
+    const p = document.querySelector('.lec-top .pager').getBoundingClientRect();
+    const row1 = document.querySelector('.player .row1');
+    return {inner: innerWidth, scroll: document.documentElement.scrollWidth,
+      oneRow: c.top < p.bottom && p.top < c.bottom, wrapped: p.top >= c.bottom - 1,
+      overlap: c.top < p.bottom && p.top < c.bottom && c.left < p.right && p.left < c.right,
+      auto: document.getElementById('auto')?.textContent,
+      playerRow: row1.scrollWidth <= row1.clientWidth + 1}; })()`);
+  check('on a phone #P07 has no horizontal scroll, the player with the Auto chip included',
+    phonePager.inner === 390 && phonePager.scroll <= 390 && phonePager.auto === 'Auto' && phonePager.playerRow, JSON.stringify(phonePager));
+  check('the breadcrumb and pager sit on one row, or wrap without overlapping',
+    (phonePager.oneRow || phonePager.wrapped) && !phonePager.overlap, JSON.stringify(phonePager));
+  await shot('phone-paper-pager.png');
+  await ev(`window.scrollTo(0, document.body.scrollHeight)`); await sleep(400);
+  await shot('phone-player-auto.png');
+
   check('no script errors', errors.length === 0, errors.slice(0, 3).join(' | '));
   ws.close();
 } catch (e) {

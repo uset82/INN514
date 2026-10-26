@@ -344,10 +344,79 @@ D1–D5 were already present in `site/template.html` when this execution of Part
 
 ## Part N: autoplay and previous/next (ZCode + GLM 5.3 Flash)
 Added by Claude Code on 2026-10-26 from the student's request. ZCode does N1 to N3 with `GROKBOT_KICKOFF.md`, one task per conversation. Parts E and F (DeepSeek) wait until STOP GATE G8 is ticked.
-- [ ] N1. `SERIES`, `seriesOf`, `neighbour`, `autoplay`, `goOn`; the `ended` handler; the previous and next player buttons across classes and papers; the Auto button, its CSS and wiring (plan N.1)
-- [ ] N2. `CHEV_L`, `CHEV_R`, `pager`; the `.lec-top` row in both branches of `renderLecture`; the CSS; "Where next" in number order with previous lines (plan N.2)
-- [ ] N3. The `check_page.mjs` checks (plan N.3), `phone-paper-pager.png` and `phone-player-auto.png`, full run ending "ALL PAGE CHECKS PASSED", then `build_static.py`
+- [x] N1. `SERIES`, `seriesOf`, `neighbour`, `autoplay`, `goOn`; the `ended` handler; the previous and next player buttons across classes and papers; the Auto button, its CSS and wiring (plan N.1)
+  - Evidence (ZCode + GLM 5.3 Flash, 2026-10-26): everything verbatim from plan N.1.
+    - `SERIES` (classes and papers), `seriesOf`, `neighbour`, `let autoplay = store.autoplay !== false` and `goOn(id, i)` added in `site/template.html` right after `className` is defined (plan: "after `READINGS`, `entry` and `className` are defined, near the player code is fine").
+    - The `ended` handler replaced with the plan's version: next chapter, else `goOn(neighbour(pl.id, 1), 0)` when Auto is on, else stop (play icon back to play, paragraph mark cleared).
+    - `$("prev").onclick` / `$("next").onclick` replaced with the plan's versions: at a chain edge they cross to the previous/next class or paper (`goOn`), independent of Auto. The phone's lock-screen buttons keep calling these handlers, so they cross too.
+    - Auto button `<button class="chip auto" id="auto" aria-pressed="true" title="Go on to the next class or paper when this one ends">Auto</button>` added in the player's first row between Follow and the speed chip; CSS `.chip.auto[aria-pressed="true"] { background: var(--surface-2); }` added after the Follow rule; wiring added after the Follow wiring (`setAttribute` from `autoplay` at load, click toggles, saves `store.autoplay`).
+  - Commands (from `D:/HVL2025/514`):
+    - `C:/Python313/python.exe workspace/lecture-audio/scripts/build_site.py` — first line:
+      `index.html: 588 KB; ready lectures: T1, T2, T3, T4, T5, T6, T8, B1; ready readings: P01, P02, P03, P04, P05, P06, P07, P08, P14, P15, P16, P09, P10, P17, P11, P12, P13`
+    - `node workspace/lecture-audio/scripts/check_page.mjs > workspace/lecture-audio/checks/page-check.log 2>&1` — 87 PASS, 0 FAIL; last lines:
+      ```
+      [PASS] on a phone the orb is 56px and the open bubble 358px wide with no horizontal scroll  {"cv":56,"bw":358,"inner":390,"scroll":390,"orbBottom":699,"playerTop":707,"saved":null,"pos":{"x":318,"y":643},"gTop":643,"gH":56,"btnTop":643,"btnBottom":699,"pTop":707,"pH":137,"side":"above","bTop":306,"bBottom":631}
+      [PASS] the phone orb does not overlap the player  {"cv":56,"bw":358,"inner":390,"scroll":390,"orbBottom":699,"playerTop":707,"saved":null,"pos":{"x":318,"y":643},"gTop":643,"gH":56,"btnTop":643,"btnBottom":699,"pTop":707,"pH":137,"side":"above","bTop":306,"bBottom":631}
+        screenshot workspace/lecture-audio/checks/phone-grokbot.png
+        screenshot workspace/lecture-audio/checks/phone-grokbot-dark.png
+        screenshot workspace/lecture-audio/checks/desktop-grokbot.png
+      [PASS] no script errors
+      ALL PAGE CHECKS PASSED
+      ```
+    - Existing checks unaffected, including `[PASS] next chapter starts on its own  {"src":"T1-03.mp3","now":"2"}`.
+  - Files changed: `site/template.html` only. No wording was invented; every line is from the plan.
+- [x] N2. `CHEV_L`, `CHEV_R`, `pager`; the `.lec-top` row in both branches of `renderLecture`; the CSS; "Where next" in number order with previous lines (plan N.2)
+  - Evidence (ZCode + GLM 5.3 Flash, 2026-10-26):
+    - `CHEV_L`, `CHEV_R` and `pager(id)` added verbatim in `site/template.html` just before `renderLecture` (pager buttons beside the breadcrumb, `aria-label`/`title` "Previous paper: Paper 6, …" form, spans when a side is missing).
+    - Both `renderLecture` branches (the "in preparation" branch and the full page) now open with `<div class="lec-top">${crumbs}${pager(id)}</div>` in place of `${crumbs}`.
+    - CSS added verbatim after the `.crumbs` block: `.lec-top`, `.pager`, `.pager-btn`, `.pager-btn:hover`, `.pager-btn svg` (tokens only).
+    - `whereNext` rewritten to the plan's behaviour: for a paper, "Previous paper:" from `neighbour(c.id, -1)` (new line) and "Next paper:" from `neighbour(c.id, 1)` (number order, not the papers page's grouping), with "Back to the first paper:" on Paper 17; for a class, a new "Previous class:" line from `neighbour(c.id, -1)`, "Next class:" from `neighbour(c.id, 1)`, and "Back to the first class:" kept for the bonus class. The label/link markup is unchanged from today's lines.
+  - Commands (from `D:/HVL2025/514`):
+    - `C:/Python313/python.exe workspace/lecture-audio/scripts/build_site.py` — first line:
+      `index.html: 590 KB; ready lectures: T1, T2, T3, T4, T5, T6, T8, B1; ready readings: P01, P02, P03, P04, P05, P06, P07, P08, P14, P15, P16, P09, P10, P17, P11, P12, P13`
+    - `node workspace/lecture-audio/scripts/check_page.mjs > workspace/lecture-audio/checks/page-check.log 2>&1` — 86 `[PASS]` lines, 0 `[FAIL]`; last lines:
+      ```
+      [PASS] on a phone the orb is 56px and the open bubble 358px wide with no horizontal scroll  {"cv":56,"bw":358,"inner":390,"scroll":390,"orbBottom":699,"playerTop":707,"saved":null,"pos":{"x":318,"y":643},"gTop":643,"gH":56,"btnTop":643,"btnBottom":699,"pTop":707,"pH":137,"side":"above","bTop":306,"bBottom":631}
+      [PASS] the phone orb does not overlap the player  {"cv":56,"bw":358,"inner":390,"scroll":390,"orbBottom":699,"playerTop":707,"saved":null,"pos":{"x":318,"y":643},"gTop":643,"gH":56,"btnTop":643,"btnBottom":699,"pTop":707,"pH":137,"side":"above","bTop":306,"bBottom":631}
+        screenshot workspace/lecture-audio/checks/phone-grokbot.png
+        screenshot workspace/lecture-audio/checks/phone-grokbot-dark.png
+        screenshot workspace/lecture-audio/checks/desktop-grokbot.png
+      [PASS] no script errors
+      ALL PAGE CHECKS PASSED
+      ```
+    - Every existing check still passes, including the breadcrumb/Where-next checks and both phone no-horizontal-scroll checks on the lecture and reading views (the new `.lec-top` row wraps, no overlap).
+  - Files changed: `site/template.html` only. No wording invented: all new CSS, the `pager` code and the chevrons are verbatim from plan N.2; the whereNext labels ("Previous paper:", "Previous class:", "Back to the first paper:") are the plan's words.
+- [x] N3. The `check_page.mjs` checks (plan N.3), `phone-paper-pager.png` and `phone-player-auto.png`, full run ending "ALL PAGE CHECKS PASSED", then `build_static.py`
+  - Evidence (ZCode + GLM 5.3 Flash, 2026-10-26): 21 new checks appended to `scripts/check_page.mjs` after the server-mode section (before the final "no script errors" check), on the plain file page, with the same seek-to-`duration - 0.4`, wait 3 s method as "next chapter starts on its own":
+    - The order: `SERIES.classes` is `["T1","T2","T3","T4","T5","T6","T8","B1"]`; `SERIES.papers` is P01–P17 in number order.
+    - Class to class: on `#T1` with Follow and Auto on, T1's last chapter ends and `T2-01.mp3` plays with the hash on `#T2` and the h1 equal to T2's title; on `#P08` the last chapter ends on `P09-01.mp3` (number order, not the list's P14), hash `#P09`, h1 = P09's title.
+    - Where you are: on `#papers`, T1's last chapter ends, the audio goes on to `T2-01.mp3`, and the hash stays `#papers`.
+    - Auto off: `#auto` click gives `aria-pressed: false` and `autoplay: false` saved in the store; the end of P01's last chapter stops on P01 (`P01-05.mp3`, paused, hash `#P01`); ⏭ then opens P02 chapter 1 (`P02-01.mp3`, playing, hash `#P02`); ⏮ at the start of T2 chapter 1 opens T1's last chapter (`T1-07.mp3`, playing, hash `#T1`); Auto switched back on (aria-pressed true, autoplay true saved).
+    - The ends: with Auto on, the end of P17's last chapter stops (`P17-06.mp3`, hash `#P17`) and so does the end of B1's (`B1-08.mp3`, hash `#B1`).
+    - The pager: `#P07` links `#P06` and `#P08` with aria-labels beginning "Previous paper: Paper 6," and "Next paper: Paper 8,", and "Where next" has "Previous paper:" and "Next paper:"; `#P01` has no previous and the next is `#P02`; `#P17` has the previous `#P16` with no next button and "Where next" has "Back to the first paper:"; `#P08`'s next is `#P09`; `#T8`'s next is `#B1`; `#B1`'s previous is `#T8` with no next.
+    - Phone, 390px: on `#P07` no horizontal scroll with the player's Auto chip row fitting (`row1.scrollWidth <= clientWidth`), and the breadcrumb and pager sit on one row without overlapping. Screenshots `checks/phone-paper-pager.png` (the top of `#P07`) and `checks/phone-player-auto.png` (the bottom with "Where next" and the player with Auto highlighted).
+    - Both screenshots were opened and reviewed: the pager row reads "Papers / Paper 7" with the "‹ Paper 6" and "Paper 8 ›" pill buttons on one row; "Where next" lists Previous/Next paper in number order; the player shows Follow, Auto (highlighted, on) and the speed chip with no overflow. Nothing looked wrong, so no fix run was needed. The Grokbot orb is absent in these shots, correctly: the claude mock is removed before the server-mode section, so this late plain-file page has no `can-ask` (same state as the other plain-file phone shots).
+  - Commands (from `D:/HVL2025/514`):
+    - `node workspace/lecture-audio/scripts/check_page.mjs > workspace/lecture-audio/checks/page-check.log 2>&1` — first run: **107 `[PASS]`, 0 `[FAIL]`** (86 previous + 21 new), last line `ALL PAGE CHECKS PASSED`. Last lines:
+      ```
+      [PASS] on a phone #P07 has no horizontal scroll, the player with the Auto chip included  {"inner":390,"scroll":390,"oneRow":true,"wrapped":false,"overlap":false,"auto":"Auto","playerRow":true}
+      [PASS] the breadcrumb and pager sit on one row, or wrap without overlapping  {"inner":390,"scroll":390,"oneRow":true,"wrapped":false,"overlap":false,"auto":"Auto","playerRow":true}
+        screenshot workspace/lecture-audio/checks/phone-paper-pager.png
+        screenshot workspace/lecture-audio/checks/phone-player-auto.png
+      [PASS] no script errors
+      ALL PAGE CHECKS PASSED
+      ```
+    - `C:/Python313/python.exe workspace/lecture-audio/scripts/build_static.py` — output: `index.html: 592 KB, 154 audio files under site/audio/`
+  - Files changed: `scripts/check_page.mjs` only (the template was untouched in this task). No wording invented: check names use the plan's wording; the only lines not in the plan are the check harness itself (expected-value arrays, the `playToEnd` helper reusing the existing seek method, and the one-row/wrap geometry test).
 - [ ] **STOP GATE G8:** student approved (after Claude Code's review and own look in the browser, the push, the claude.ai republish, and the student's listening test)
+  - **Claude Code's G8 review (2026-10-26):**
+    - **Reruns:** the manifest is unchanged; `build_site.py` and `build_static.py` pass; ALL SERVER CHECKS PASSED; ALL PAGE CHECKS PASSED (107, including the 21 Part N checks).
+    - **Code:** the N1 and N2 diffs match plan N.1 and N.2. ZCode placed "Previous …" before "Next …" in "Where next", which is kept.
+    - **Tried by hand** in the browser pane against a local server:
+      - after N1, the end of T1's last chapter went on to T2 chapter 1 and the page followed to `#T2`;
+      - after N2, at 375px, `#P07` shows "Papers / Paper 7" with the Paper 6 and Paper 8 buttons on one row, and nothing scrolls sideways.
+    - **Screenshots:** `phone-player-auto.png` was read.
+    - **Still open:** the student's listening test and approval.
 
 ## Part E: tidy-up after Part D (DeepSeek)
 Added by Claude Code on 2026-10-24 after the student's "aprove continue let deepskeek continue with the task". DeepSeek builds E1 and E2 with `GROKBOT_DEEPSEEK_KICKOFF.md`, only after STOP GATE G8 (ZCode's Part N) is ticked; only the student's approval after Claude Code's review ticks G6.
