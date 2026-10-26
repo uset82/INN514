@@ -421,9 +421,30 @@ Added by Claude Code on 2026-10-26 from the student's request. ZCode does N1 to 
 
 ## Part E: tidy-up after Part D (DeepSeek)
 Added by Claude Code on 2026-10-24 after the student's "aprove continue let deepskeek continue with the task". DeepSeek builds E1 and E2 with `GROKBOT_DEEPSEEK_KICKOFF.md`, only after STOP GATE G8 (ZCode's Part N) is ticked; only the student's approval after Claude Code's review ticks G6.
-- [ ] E1. `/api/health` shows only ok, ask, key, passcode and voices; its server check (plan E1); the run ends "ALL SERVER CHECKS PASSED"
-- [ ] E2. The four unused note constants and the `.ask-text` and `.ask-note` CSS removed (plan E2); full `check_page.mjs` run ending "ALL PAGE CHECKS PASSED", then `build_static.py`
+- [x] E1. `/api/health` shows only ok, ask, key, passcode and voices; its server check (plan E1); the run ends "ALL SERVER CHECKS PASSED"
+  - Evidence (DeepSeek, 2026-10-26): `server.js`'s `/api/health` now returns the plan's five keys in order (`ok`, `ask`, `key`, `passcode`, `voices`); the `seen` and `runtime` blocks are gone, and the `.env` reading at startup is untouched. In `scripts/test_server.mjs` the old "health lists the setting names it sees (names only)" check was replaced by the plan's `health shows only ok, ask, key, passcode and voices` check (key presence and order, no `seen` or `runtime`).
+  - Command: `node workspace/lecture-audio/scripts/test_server.mjs` → exit 0, **65 PASS, 0 FAIL**, ending:
+    - `PASS health reports ask: true`
+    - `PASS health reports that the key and the passcode are present`
+    - `PASS health shows only ok, ask, key, passcode and voices`
+    - `PASS with no passcode set, health reports ask: true and passcode: false`
+    - `ALL SERVER CHECKS PASSED`
+  - Files changed: `server.js`, `scripts/test_server.mjs`.
+- [x] E2. The four unused note constants and the `.ask-text` and `.ask-note` CSS removed (plan E2); full `check_page.mjs` run ending "ALL PAGE CHECKS PASSED", then `build_static.py`
+  - Evidence (DeepSeek, 2026-10-26): before removing each name I searched the whole template, `scripts/check_page.mjs` and `server.js`: every one of `SERVER_ASK_NOTE`, `DEVICE_ASK_NOTE`, `COURSE_SERVER_NOTE`, `COURSE_DEVICE_NOTE`, `.ask-text` and `.ask-note` occurred once (its own definition or CSS rule) and nowhere else. Removed exactly those six lines from `site/template.html`; the diff shows no other change. After the build the six names occur 0 times in `site/index.html` and in the root `index.html`.
+  - Commands, in order:
+    - `C:/Python313/python.exe scripts/build_site.py` → first line `index.html: 589 KB; ready lectures: T1, T2, T3, T4, T5, T6, T8, B1; ready readings: P01, P02, P03, P04, P05, P06, P07, P08, P14, P15, P16, P09, P10, P17, P11, P12, P13`
+    - `node workspace/lecture-audio/scripts/check_page.mjs > checks/page-check.log 2>&1` → **107 PASS, 0 FAIL**, log ends `ALL PAGE CHECKS PASSED`
+    - `C:/Python313/python.exe scripts/build_static.py` → `index.html: 591 KB, 154 audio files under site/audio/`
+    - `node scripts/test_server.mjs` after the final build → 65 PASS, 0 FAIL, `ALL SERVER CHECKS PASSED`
+  - Manifest: 212/212 protected lecture, reading, data and audio files still match `checks/grokbot-manifest-before.txt`.
+  - Files changed: `site/template.html`; generated `site/index.html`, root `index.html` and `checks/page-check.log`.
 - [ ] **STOP GATE G6:** student approved (after Claude Code's review, the push and the claude.ai republish)
+  - **Claude Code's G6 review (2026-10-26):**
+    - **Diff:** exactly plan E1 and E2. Health keeps ok, ask, key, passcode and voices; the six unused lines are gone and nothing referred to them.
+    - **Reruns:** the manifest is unchanged; `build_site.py` and `build_static.py` pass; ALL SERVER CHECKS PASSED, including "health shows only ok, ask, key, passcode and voices"; ALL PAGE CHECKS PASSED (107).
+    - **Tidied:** DeepSeek's `checks/server-check-e1-e2.log` is quarantined in the scratchpad.
+    - **Still open:** the student's approval.
 
 ## Part F: a faster voice reply (DeepSeek)
 Added by Claude Code on 2026-10-24: the student asked for a faster voice reply ("Yes: plan Part F for DeepSeek with streaming speech, skipping the pick when search finds chapters, and faster model settings. Ask me before changing Canner's model setting to time models."). DeepSeek does Part F after Part E.

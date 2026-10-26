@@ -395,8 +395,6 @@ body.can-ask .howto > .gb-only { display: grid; }
 .ask-status { min-height: 1.25em; color: var(--muted); font-size: var(--s-1); }
 .ask-stop { padding: 0; border: 0; background: none; color: var(--clay-ink); font: inherit; font-size: var(--s-1);
   font-weight: 500; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
-.ask-text { margin: 0; font-family: var(--serif); font-size: 1.125rem; line-height: 1.7; max-width: 65ch; white-space: pre-line; }
-.ask-note { margin: 0; color: var(--muted); font-size: var(--s-1); line-height: 1.45; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
@@ -1467,8 +1465,6 @@ const NO_QUOTE = " This paper is marked \"paper in preparation, do not quote\": 
 const NO_QUOTE_COURSE = " Paper 2 (Fløysand, Jakobsen & Hidle 2013) is marked \"paper in preparation, do not quote\": paraphrase it and never quote it.";
 const PICK_RULES = "You choose which chapters of the INN514 course companion help answer a student's message. The message may be in any language; the chapters are in English. Below is the list of chapters, one per line, as \"ID N: description\". Reply with only a JSON array of at most three objects like {\"id\": \"T4\", \"chapter\": 3}, best first, or [] if the message is a greeting or small talk, a general question about the course (teachers, dates, which papers go with which class), or not covered by any chapter.";
 const COURSE_RULES = "You are Grokbot, the friendly study companion of the master's course INN514, \"Innovation systems and sustainable transformation\". Below is an overview of the whole course and, when they match the question, chapters from the course companion. Your answer will be read aloud by a speech engine, so write plain spoken sentences: no lists, no headings, no symbols, no brackets. Always answer in the language of the student's message. If the student greets you, thanks you or chats, reply warmly in one or two sentences and offer help with the classes or the papers. Otherwise answer in 3 to 6 sentences unless the student asks for more, using only the overview and the chapters, and say which class or paper and which chapter the answer comes from, in words, with the page when the chapter gives one. If the course does not cover the question, say so kindly in one sentence and name a related topic it does cover. Never invent authors, numbers, dates or quotations.";
-const COURSE_SERVER_NOTE = "Answers are written by a free AI model from the course companion's text and read aloud by an AI voice. Don't type personal details.";
-const COURSE_DEVICE_NOTE = "Answers are written by AI from the course companion's text and read aloud by your device.";
 const CHIPS = [
   ["Explain this simply", "Explain this chapter simply, as if to a first-year student."],
   ["Give me an example", "Give me one concrete example that makes this chapter's main idea clear, preferably one from the chapter."],
@@ -1546,8 +1542,6 @@ function speakSentence(panel, text, voice, lang, onStart, onEnd) {
   speechSynthesis.speak(u);
 }
 let orbAudio = null;             // the orb's own audio element (server mode, A6)
-const SERVER_ASK_NOTE = "Answers are written by a free AI model from this chapter's text and read aloud by an AI voice. Don't type personal details.";
-const DEVICE_ASK_NOTE = "Answers are written by AI from this chapter's text and read aloud by your device.";
 let serverPass = null;
 let passNeeded = true;           // server mode: false when the server has no passcode set
 try { serverPass = localStorage.getItem("inn514-grokbot-pass") || null; } catch (e) {}

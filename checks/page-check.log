@@ -19,7 +19,7 @@
 [PASS] #T1 opens the class with all its chapters  {"stops":7,"sections":7,"h1":"Innovation as systemic and sustainable transformation"}
 [PASS] a plain file hides Grokbot, the ask buttons and the greeting  {"shown":false,"askBtns":0,"greets":0}
 [PASS] the Ask how-to item is hidden in a plain file  false
-[PASS] a chapter plays from its button  {"src":"T1-02.mp3","paused":false,"t":3.244628,"d":188.424}
+[PASS] a chapter plays from its button  {"src":"T1-02.mp3","paused":false,"t":3.331423,"d":188.424}
 [PASS] paragraph highlight follows the audio  {"count":1,"inChapter":"ch-1"}
 [PASS] next chapter starts on its own  {"src":"T1-03.mp3","now":"2"}
 [PASS] finished chapter fills the route and is saved  {"done":true,"fill":58.09375,"saved":{"T1":[1]}}
@@ -96,11 +96,11 @@
 [PASS] after the passcode the chapter question reaches /api/ask  ["/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech"]
 [PASS] server mode calls /api/speak  ["/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech"]
 [PASS] the passcode is saved
-[PASS] a course question on the front page reaches /api/course and cites #T4  {"paths":["/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech","/api/v1/chat/completions","/api/v1/chat/completions"],"courseSrc":{"href":"#T4","text":"Class 4, chapter 3: Two models of the ecosystem"}}
+[PASS] a course question on the front page reaches /api/course and cites #T4  {"paths":["/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech","/api/v1/chat/completions","/api/v1/chat/completions","/api/v1/audio/speech","/api/v1/audio/speech"],"courseSrc":{"href":"#T4","text":"Class 4, chapter 3: Two models of the ecosystem"}}
 [PASS] a course question sends an array of hits to /api/course  {"question":"What is an entrepreneurial ecosystem?","hits":[{"id":"T4","chapter":5},{"id":"T4","chapter":4},{"id":"T4","chapter":7}]}
 [PASS] "Read again" replays the server voice with no new /api/speak request  {"replayShown":true,"before":4,"after":4}
-[PASS] on a phone the orb is 56px and the open bubble 358px wide with no horizontal scroll  {"cv":56,"bw":358,"inner":390,"scroll":390,"orbBottom":699,"playerTop":707,"saved":null,"pos":{"x":318,"y":643},"gTop":643,"gH":56,"btnTop":643,"btnBottom":699,"pTop":707,"pH":137,"side":"above","bTop":282,"bBottom":607}
-[PASS] the phone orb does not overlap the player  {"cv":56,"bw":358,"inner":390,"scroll":390,"orbBottom":699,"playerTop":707,"saved":null,"pos":{"x":318,"y":643},"gTop":643,"gH":56,"btnTop":643,"btnBottom":699,"pTop":707,"pH":137,"side":"above","bTop":282,"bBottom":607}
+[PASS] on a phone the orb is 56px and the open bubble 358px wide with no horizontal scroll  {"cv":56,"bw":358,"inner":390,"scroll":390,"orbBottom":699,"playerTop":707,"saved":null,"pos":{"x":318,"y":643},"gTop":643,"gH":56,"btnTop":643,"btnBottom":699,"pTop":707,"pH":137,"side":"above","bTop":306,"bBottom":631}
+[PASS] the phone orb does not overlap the player  {"cv":56,"bw":358,"inner":390,"scroll":390,"orbBottom":699,"playerTop":707,"saved":null,"pos":{"x":318,"y":643},"gTop":643,"gH":56,"btnTop":643,"btnBottom":699,"pTop":707,"pH":137,"side":"above","bTop":306,"bBottom":631}
   screenshot workspace/lecture-audio/checks/phone-grokbot.png
   screenshot workspace/lecture-audio/checks/phone-grokbot-dark.png
   screenshot workspace/lecture-audio/checks/desktop-grokbot.png
