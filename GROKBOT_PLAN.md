@@ -361,7 +361,7 @@ Added at the student's request on 2026-10-23. Without a stored choice, the page 
 - **The call:** `POST ${OPENROUTER_BASE}/chat/completions`.
   - Headers: `Authorization: Bearer ${OPENROUTER_API_KEY}`, `Content-Type: application/json`, `HTTP-Referer: https://inn514.canner.app`, `X-Title: INN514 Course Companion`.
   - Body: `{model, messages: [{role:"user", content: context}, ...history, {role:"user", content: question}], max_tokens: 1000, temperature: 0.3}`. (1000 since 2026-10-24: room for a reasoning model's thinking. An empty answer tries the next model.)
-  - The models are tried in order from `GROKBOT_ANSWER_MODELS`, default `openrouter/free,nvidia/nemotron-3.5-super-vl:free` (the student's choice on 2026-10-24; before that Gemma 4 31B, then Nemotron 3 Super). The next one is tried on a 429, a 5xx or a timeout (40 s each, `AbortSignal.timeout`).
+  - The models are tried in order from `GROKBOT_ANSWER_MODELS`, default `nvidia/nemotron-3.5-super-vl:free,openrouter/free` since 2026-10-26, after timing on Canner (Nemotron 3.5 Super VL gave the first sentence in 3–5 s every time; `openrouter/free` varied from 3 to 26 s; Gemma 4, Xing 4.0 and Nemotron 3 Super were busy or unavailable; low reasoning effort made little difference, so `GROKBOT_REASONING` stays unset). Before that: `openrouter/free` first (2026-10-24), and earlier Gemma 4 31B, then Nemotron 3 Super. The next one is tried on a 429, a 5xx or a timeout (40 s each, `AbortSignal.timeout`).
   - The reply is `{"text": choices[0].message.content.trim()}`. If every model fails: `502 {"error": "upstream"}`, or `429` if the last failure was a 429.
 - **`OPENROUTER_BASE`** defaults to `https://openrouter.ai/api/v1`. Tests point it at the mock.
 

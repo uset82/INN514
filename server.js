@@ -118,7 +118,9 @@ function mergePicks(picks, hits) {   // the model's picks first, then the search
 /* ---------- the OpenRouter call (S2) ---------- */
 const BASE = process.env.OPENROUTER_BASE || "https://openrouter.ai/api/v1";
 const KEY = process.env.OPENROUTER_API_KEY || "";
-const MODELS = (process.env.GROKBOT_ANSWER_MODELS || "openrouter/free,nvidia/nemotron-3.5-super-vl:free").split(",").map((s) => s.trim()).filter(Boolean);
+// Timed on Canner on 2026-10-26: Nemotron 3.5 Super VL gave the first sentence in 3-5 s every time;
+// openrouter/free picks a model at random (3-26 s), so it is the fallback.
+const MODELS = (process.env.GROKBOT_ANSWER_MODELS || "nvidia/nemotron-3.5-super-vl:free,openrouter/free").split(",").map((s) => s.trim()).filter(Boolean);
 const VOICE_EN = process.env.GROKBOT_VOICE_MODEL_EN || "fish-audio/s2.1-pro-free:free";
 const VOICE_ES = process.env.GROKBOT_VOICE_MODEL_ES || "fish-audio/s2.1-pro-free:free";
 const PICK_MODELS = (process.env.GROKBOT_PICK_MODELS || "").split(",").map((s) => s.trim()).filter(Boolean);

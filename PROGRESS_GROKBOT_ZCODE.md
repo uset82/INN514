@@ -527,6 +527,12 @@ Added by Claude Code on 2026-10-24: the student asked for a faster voice reply (
 
       The model's thinking before it writes dominates, so the next step is the model timing (F.6), which needs the student's yes. The Spanish question about "causalidad ascendente" got "not covered", because the pick only sees chapter titles.
     - **Tidied:** the five test logs DeepSeek committed (`page-check-f4.log` and the `server-check-*.log` files) were removed from the repo and kept in the scratchpad quarantine.
+  - **Model timing on Canner (2026-10-26, with the student's yes).** One streamed chapter question per run, Class 4 chapter 3, "What is upward causation?":
+    - Nemotron 3.5 Super VL gave the first sentence in 3.8, 4.5, 3.5 and 3.2 s, and 4.4 s with low effort;
+    - `openrouter/free` gave it in 3.3 and 6.4 s, and 3.1 s with low effort (9–26 s earlier);
+    - Nemotron 3.5 Lightning, Inkling Small and Nemotron 3 Super gave 502; Gemma 4 26B, Gemma 4 31B and Xing 4.0 gave 429.
+    - **The new default** is `nvidia/nemotron-3.5-super-vl:free,openrouter/free`, with `GROKBOT_REASONING` unset. The temporary Canner settings are removed.
+    - **With that pair,** English course questions with search hits took 20, 13.5 and 8.3 s in all. A Spanish course question with no hits took 28.6 s and then 81 s and failed upstream after the pick: still the weak spot.
 
 ## Part B: one-command pack sync
 - [x] B1. `scripts/sync_knowledge.py` (plan Part B)
