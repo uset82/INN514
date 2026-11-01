@@ -16,7 +16,7 @@ Spec: CHEATSHEET_PLAN.md. One task per conversation; a gate review always in a f
   - Files written: `cheatsheet/scripts/test_check_cheatsheet.py` (new). Also `check_cheatsheet.py`: `scan()` now skips `__pycache__/` and `.pyc`, because git ignores bytecode (`.gitignore` line 3) and the compiled test file otherwise reports the fake key that test 23 builds. Plan 11: one note on that skip.
   - Tests 8 and 10 take their copied runs from `pages("P01")[431]` and `pages("P02")[2]` at runtime, as 6.3 asks. Opened: P01 pages 431, 433, 434, 437, 440, 442 and 444 (references), P02 pages 1–17 (17 references); no pictures.
   - Student feedback recorded in plan 11: approved; `__pycache__` is ignored and not deleted; G0 stages by name (plan files and `cheatsheet/scripts`), never `git add -- cheatsheet`.
-- [ ] STOP GATE G0: review the scripts against plan 6; commit and push the plan files and scripts
+- [x] STOP GATE G0: review the scripts against plan 6; commit and push the plan files and scripts
   - Review of 6.2, row by row against the code (re-read from disk):
 
 | Check (6.2) | Applies to | In the code | Result |
@@ -42,11 +42,24 @@ Spec: CHEATSHEET_PLAN.md. One task per conversation; a gate review always in a f
 | assembled | `--all` | `assembled()` | four part titles once, 12,000/11,000 |
 
   - Found at the review and fixed: the bare-Guimarães rule was missing; a slide-only quotation gave the wrong reason; "every paper is in at least one theme" was not coded. After the fixes: `test_check_cheatsheet.py` 24/24 and the probe 26/26.
+  - Commit `76f34e6 cheatsheet: G0 the checker and its tests`; push `3299637..76f34e6  main -> main`; `status -sb` now `## main...origin/main`.
+  - Before the commit: `test_check_cheatsheet.py` → `ALL CHECKER TESTS PASSED (24 tests)`; `--all --partial` → `ALL CHEATSHEET CHECKS PASSED`; `--scan` → `SCAN CLEAN`.
 
 ## Part C: paper cards
-- [ ] P01 card (pilot)
-- [ ] P09 card (pilot)
+- [x] P01 card (pilot)
+  - `check_cheatsheet.py cards/P01.md` → `PASS cards/P01.md (300 words)`.
+  - Opened: P01 pages 431, 433, 434, 436, 437, 438, 439, 440 and 442 (text), 444 (references); Class 1 slides 2, 15 and 32, section 1 only, for the Norwegian terms. No pictures needed.
+- [x] P09 card (pilot)
+  - `check_cheatsheet.py cards/P09.md` → `PASS cards/P09.md (300 words)`.
+  - Opened: P09 pages 415, 416, 423, 426, 427, 428 and 429; page 426 text for Figure 2's motors A, B and C (`img/` holds only `page-413.png`, so the figure itself was not opened); Class 6 slides 12, 15, 22 and 23, section 1 only, for the Norwegian terms.
 - [ ] STOP GATE G1: review P01 and P09; Lessons; commit and push
+  - Review table (each bullet against its cited page):
+
+| File | Bullets | Confirmed on the source | Fixed (what) |
+|---|---|---|---|
+| cards/P01.md | 14 | pp. 431 (broad definition, Freeman–Lundvall–Nelson, Arthur), 433 (North, the quotation), 434 (Dutch disease, domestic suppliers), 436 ("five out of the six comparisons"), 438 (diffusion and cooperation), 439 (the three paths, named as the page names them), 440 (SIMULA and GSM, payoffs in oil and gas), 442 (what the authors cannot pursue) | the cooperation finding moved from p. 437 to p. 438, where the claim stands; "citing Wicken" removed from the model line, because p. 439 cites that work only as a numbered reference |
+| cards/P09.md | 15 | pp. 415 (activities called functions), 416 (Carlsson and Stankiewicz), 423 (function 4), 426 (interactions, motors of change, Fig. 2 A–C), 427 (vicious cycle), 428 (first Dutch studies), 429 (heuristic value) | none |
+
 - [ ] P02 card
 - [ ] P03 card
 - [ ] P04 card
