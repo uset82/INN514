@@ -981,9 +981,11 @@ try {
       link: rows.find((r) => r.classList.contains('ready'))?.querySelector('a.row-title')?.getAttribute('href'),
       soon: rows.filter((r) => r.classList.contains('soon')).length,
       soonText: rows.find((r) => r.classList.contains('soon'))?.textContent || ''}; })()`);
+  const revReady = await ev(`({ready: REVISION.filter((v) => DATA.lectures[v.id]).length, first: (REVISION.find((v) => DATA.lectures[v.id]) || {}).id})`);
   check('#revision lists ten rows, a link for a ready lesson and In preparation for the rest',
-    revPage.n === 10 && revPage.h1 === 'Revision' && revPage.ready === 1 && revPage.link === '#R07' &&
-      revPage.soon === 9 && revPage.soonText.includes('In preparation'), JSON.stringify(revPage));
+    revPage.n === 10 && revPage.h1 === 'Revision' && revPage.ready === revReady.ready &&
+      revPage.link === '#' + revReady.first && revPage.soon === 10 - revReady.ready &&
+      revPage.soonText.includes('In preparation'), JSON.stringify({revPage, revReady}));
   await shot('phone-revision.png');
 
   await go('R07'); await sleep(600);
@@ -1017,9 +1019,16 @@ try {
     await new Promise((r) => setTimeout(r, 600));
     return {src: a.getAttribute('src') || '', hash: location.hash}; })()`);
   check('with Repeat off the end of the lesson does not start it again',
-    repeatOff.pressed === 'false' &&
-      (repeatOff.series > 1 ? afterOff.hash !== '#R07' : !afterOff.src.includes('R07-01.mp3')),
+    repeatOff.pressed === 'false' && !afterOff.src.includes('R07-01.mp3'),
     JSON.stringify({repeatOff, afterOff}));
+  await go('R01'); await sleep(600);
+  await ev(`document.querySelectorAll('.route.chapters .stop .body')[DATA.lectures.R01.chapters.length - 1].click()`);
+  await sleep(700);
+  const handedOver = await ev(`(async () => { const a = document.getElementById('audio'); a.dispatchEvent(new Event('ended'));
+    await new Promise((r) => setTimeout(r, 700));
+    return {hash: location.hash, src: a.getAttribute('src') || ''}; })()`);
+  check('with Repeat off and Auto on, the end of a lesson goes on to the next one',
+    handedOver.hash === '#R02' && handedOver.src.includes('R02-01.mp3'), JSON.stringify(handedOver));
 
   await ev(`document.querySelector('.gb-orb').click()`); await sleep(400);
   const gbHead = await ev(`(() => ({head: document.querySelector('.gb-head')?.textContent || '',

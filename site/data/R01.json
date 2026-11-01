@@ -1,0 +1,231 @@
+{
+ "id": "R01",
+ "title": "Revision 1: Exam day: what to know by heart",
+ "session": "Revision",
+ "lecturer": "none",
+ "deck": "none",
+ "chapters": [
+  {
+   "n": 1,
+   "title": "How the exam works",
+   "slides": [],
+   "readings": "Class 9, slide 33",
+   "paragraphs": [
+    "The exam is written and held at school. You answer Question 1, and then you answer either Question 2 or Question 3. The two answers you give count equally, so there is no reason to spend all your time on one of them.",
+    "You are not allowed to bring any aids. The papers say so plainly, and they also say that answers can be tested for plagiarism. Learn the concepts and the moves, then write in your own words.",
+    "The December paper from 2024 allows four hours. The date for the exam in 2026 is not published in the papers we have, so check the course plan when it appears.",
+    "One more thing about timing. Four hours sounds generous until you are inside them. Plan roughly equal time for the two answers, keep a few minutes to read your own text, and do not start writing before you have read the question twice.",
+    "Remember: one concept question, one discussion question, no aids, and equal weight."
+   ],
+   "checks": [
+    {
+     "q": "What do you answer on the exam?",
+     "a": "Question 1, and then either Question 2 or Question 3."
+    },
+    {
+     "q": "Are aids allowed?",
+     "a": "No. The papers allow no aids, and answers can be tested for plagiarism."
+    }
+   ],
+   "audio": "audio/R01-01.mp3",
+   "seconds": 68.4,
+   "words": 171
+  },
+  {
+   "n": 2,
+   "title": "The six past questions",
+   "slides": [],
+   "readings": "Class 9, slides 37, 38",
+   "paragraphs": [
+    "There are six past questions, and they come in two shapes.",
+    "The concept questions ask what you understand by a term. In December 2024 the first question asked what you understand by innovation system, sustainable transformation, agency and institutions. In June 2025 the first question asked what you understand by a regional innovation system, institutional work and sustainability.",
+    "The discussion questions ask you to use examples. In December 2024 the second question asked how agency in innovation systems can promote or inhibit sustainable transformation. The third asked how technologies in innovation systems can do the same. In June 2025 the second question asked in what way a regional innovation system can promote or inhibit industrial restructuring, and the third asked how technological innovation systems can be guided to promote sustainable transformation.",
+    "Notice two habits in the wording. The examiners like the pair promote or inhibit, and they like the word guided. Both invite you to show two sides and to say who is doing the steering.",
+    "Remember: three concept questions ask what you understand, and three discussion questions ask how systems promote, inhibit or are guided."
+   ],
+   "checks": [
+    {
+     "q": "Which questions ask what you understand by a term?",
+     "a": "The first question in each paper, the one on concepts."
+    },
+    {
+     "q": "Which word appears in the discussion questions of both papers?",
+     "a": "Promote or inhibit."
+    }
+   ],
+   "audio": "audio/R01-02.mp3",
+   "seconds": 86.9,
+   "words": 192
+  },
+  {
+   "n": 3,
+   "title": "Answering Question 1",
+   "slides": [],
+   "readings": "Class 9, slides 34, 35",
+   "paragraphs": [
+    "Question 1 is a concept question, so start with a definition. The lecture suggests a plain formula. By sustainable transformation, I understand a change that cuts emissions and pollution, improves resource use and protects biodiversity.",
+    "Then show that you know where the term comes from. Name the readings and the classes that use it, and say how they use it. If two authors define a term differently, say so and choose the one your answer needs.",
+    "Keep the structure simple. One paragraph per term, with a definition, a source and one short example. If the question asks for four terms, give four paragraphs and a short opening that says how you read the task.",
+    "Do not turn the definition into a list of everything you know. A concept answer is judged on precision. Say what the term means, say who uses it that way, and stop.",
+    "Remember: define the term, name the source, add one short example, and move on."
+   ],
+   "checks": [
+    {
+     "q": "How should a concept answer begin?",
+     "a": "With a direct definition, in the form By this term I understand."
+    },
+    {
+     "q": "What should follow the definition?",
+     "a": "The source that uses the term that way, and one short example."
+    }
+   ],
+   "audio": "audio/R01-03.mp3",
+   "seconds": 70.1,
+   "words": 165
+  },
+  {
+   "n": 4,
+   "title": "Answering Question 2 or 3",
+   "slides": [],
+   "readings": "Class 9, slides 39, 40, 41",
+   "paragraphs": [
+    "The discussion question has three parts. The introduction says how you understand the question and how you will answer it. The main part uses the readings and the lectures in paragraphs, with the concepts clarified first and then an example. The conclusion returns to the question.",
+    "The introduction can be short. Say what the question asks, and say which two or three moves you will make. You may also announce one main argument, as long as you carry it through.",
+    "In the main part, use the theory before the case. Define the system you are discussing, then bring in the functions, the kinds of agency or the regional conditions, depending on the question. Then put the case to work. Do not let the case run the answer.",
+    "The conclusion is where you answer the question in one or two sentences. Add one sentence on what your answer cannot settle, and you have shown judgement without weakening the answer.",
+    "Remember: say what you will do, do it with theory and a case, and then say what it means."
+   ],
+   "checks": [
+    {
+     "q": "What are the three parts of a discussion answer?",
+     "a": "The introduction, the main part and the conclusion."
+    },
+    {
+     "q": "Where does the case belong?",
+     "a": "In the main part, after the concepts and the theory are set out."
+    }
+   ],
+   "audio": "audio/R01-04.mp3",
+   "seconds": 73.6,
+   "words": 184
+  },
+  {
+   "n": 5,
+   "title": "What examiners look for",
+   "slides": [],
+   "readings": "Class 9, slide 43",
+   "paragraphs": [
+    "The marking guide lists six criteria, and each one can be read as a question you ask your own text.",
+    "Structure. Does the answer give weight to the introduction, the theory, the empirical material, the analysis and the conclusion?",
+    "The problem statement. Does the answer follow the question you were given, and show how you read it?",
+    "Language and argument. Is the writing independent, and does the argument run through every part, including the conclusion?",
+    "Theory. Are the readings put to use, are the theories relevant and understood, and do they fit the problem and the case?",
+    "Analysis. Is the empirical material relevant, and is it analysed rather than summarised?",
+    "Conclusion. Does the answer return to the problem, sum up the findings and state the limits?",
+    "Remember: six criteria, and the last one asks you to admit what your answer does not settle."
+   ],
+   "checks": [
+    {
+     "q": "How many criteria does the marking guide list?",
+     "a": "Six, from structure to conclusion."
+    },
+    {
+     "q": "What does the analysis criterion ask for?",
+     "a": "Relevant empirical material, analysed critically and related to theory."
+    }
+   ],
+   "audio": "audio/R01-05.mp3",
+   "seconds": 65.5,
+   "words": 149
+  },
+  {
+   "n": 6,
+   "title": "Compare the systems",
+   "slides": [],
+   "readings": "Class 9, slide 25; Hekkert et al. 2007, p. 416; Stam & van de Ven 2021, p. 811; Quero & Ventura 2019, p. 48",
+   "paragraphs": [
+    "The course gives you five systems, and the exam may ask you to keep them apart.",
+    "A national innovation system covers a whole country. Its focus is the learning and innovation of an economy, and its key actors are firms, universities and the state. It changes through path dependency and policy. Norway is the example, with petroleum suppliers instead of Dutch disease.",
+    "A regional innovation system covers a region. Its focus is the knowledge and industry of that region, and its actors are regional firms, clusters and agencies. It changes through related variety and institutional work. Hordaland and Rogaland are the examples.",
+    "A technological innovation system covers one technology. Its actors are the firms, researchers and policies around it, and it changes through its functions. Longship and maritime batteries are the examples.",
+    "An entrepreneurial ecosystem covers new ventures and their context. Its actors are entrepreneurs, investors and mentors, and it changes through selection and strategic choice. The investor and founder house in Bergen is the example.",
+    "A crowdfunding ecosystem covers platforms and the value they cocreate. Its actors are platforms, backers and creators, and it changes through value propositions. The growth of Norwegian crowdfunding is the example.",
+    "Remember: five systems, five boundaries, and a Norwegian example for each."
+   ],
+   "checks": [
+    {
+     "q": "What separates a national system from a regional one?",
+     "a": "The boundary, the nation against the region, and the actors that come with it."
+    },
+    {
+     "q": "What drives change in an entrepreneurial ecosystem?",
+     "a": "Selection effects and strategic choice."
+    }
+   ],
+   "audio": "audio/R01-06.mp3",
+   "seconds": 105.0,
+   "words": 213
+  },
+  {
+   "n": 7,
+   "title": "Twelve definitions to know",
+   "slides": [],
+   "readings": "Fagerberg et al. 2009, p. 431; Fløysand et al. 2022, pp. 16, 17; Hekkert et al. 2007, p. 416; Stam & van de Ven 2021, p. 811; Bækkelund 2021, p. 759; Njøs et al. 2020, p. 268; Schlaile et al. 2017, p. 5",
+   "paragraphs": [
+    "Here are twelve definitions, short enough to hold in your head.",
+    "An innovation system is learning and innovation across the whole economy, not only universities. A national innovation system is the country level version, traced to Freeman, Lundvall and Nelson.",
+    "A regional innovation system is a set of interacting subsystems of knowledge and commercial exploitation. A technological innovation system is the agents around one technology.",
+    "An entrepreneurial ecosystem is a system of co-evolution, mutualistic interdependence and diverse, nested actors. Institutions are the formal and informal rules that shape action.",
+    "Institutional work is the work that actors do on institutions. Agency comes in two kinds: change agency alters a path, and reproductive agency keeps it going.",
+    "Path dependence is history that favours some solutions and holds others back. Path creation is the emergence of new development trajectories in a region.",
+    "Sustainable transformation is change that cuts emissions and protects biodiversity. Sustainability is ecological continuity, justice within and between generations, and quality of life.",
+    "Remember: twelve definitions, each tied to a source, and each one usable as the first line of an answer."
+   ],
+   "checks": [
+    {
+     "q": "What are the two kinds of agency?",
+     "a": "Change agency, which alters a path, and reproductive agency, which keeps it going."
+    },
+    {
+     "q": "Which definition belongs to the regional level?",
+     "a": "A regional innovation system, as interacting subsystems of knowledge and commercial exploitation."
+    }
+   ],
+   "audio": "audio/R01-07.mp3",
+   "seconds": 90.8,
+   "words": 187
+  },
+  {
+   "n": 8,
+   "title": "Test yourself",
+   "slides": [],
+   "readings": "Class 9, slide 33; Class 9, slide 43",
+   "paragraphs": [
+    "Question one. What do you answer on the exam, and does either answer count more?",
+    "Pause the audio and answer in your head.",
+    "Here is the answer. Question 1, and then either Question 2 or Question 3. The two answers count equally.",
+    "Question two. What are the three parts of a discussion answer?",
+    "Pause the audio and answer in your head.",
+    "Here is the answer. An introduction that says how you read the question, a main part that uses theory and a case, and a conclusion that answers the question and states its limits.",
+    "Question three. Which word in the discussion questions asks you to show two sides?",
+    "Pause the audio and answer in your head.",
+    "Here is the answer. Inhibit. The pair promote or inhibit asks for both the positive and the negative case, and an answer that shows only one is half an answer.",
+    "Remember: read the question twice, plan equal time, define before you discuss, and answer the question you were given."
+   ],
+   "checks": [
+    {
+     "q": "What should you do before you start writing?",
+     "a": "Read the question twice and plan how to divide the four hours."
+    },
+    {
+     "q": "What does the conclusion of a discussion answer do?",
+     "a": "It answers the question and states what the answer cannot settle."
+    }
+   ],
+   "audio": "audio/R01-08.mp3",
+   "seconds": 73.5,
+   "words": 169
+  }
+ ],
+ "seconds": 633.8
+}

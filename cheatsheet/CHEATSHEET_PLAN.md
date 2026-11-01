@@ -1034,6 +1034,11 @@ student approved for the companion. That and the live check are the only online 
 - 2026-11-01, G8: TH7's green-restructuring definition ran to 35 words against the 34-word cap, because a clause about Norway was added where the definition needed none. Rule: keep a definition to what the source defines, and put the Norwegian illustration in the examples.
 - 2026-11-01, V0 and W1, hard stop: check_page.mjs fails one check, the Spanish quick pick over the whole index. A rebuild with the revision list emptied fails the same check, so the failure predates W1 and belongs to Grokbot Part L, where L2 and L3 are still unticked. That is the plan's own hard stop before W1, so W1 is not ticked and nothing is pushed. All ten lesson scripts are written and pass their own check; none is recorded.
 - 2026-11-01, lessons: a readings line can hold a paper or a slide, so an exam paper cannot be cited in it. The lessons that rest on the exam papers cite the summary slides instead.
+- 2026-11-01, G10: the live check asked for the MP3 with HEAD and printed NOT LIVE YET while the site was live.
+  The host answers 404 to HEAD on static files and 200 to GET, so `--live` now uses a GET. Rule: prove a check
+  against the live host before trusting its failure.
+- 2026-11-01, G10 (staging): two paths outside 9's G10 list were staged, `scripts/mock_openrouter.mjs` and
+  `PROGRESS_GROKBOT_ZCODE.md`, so that the commit carries the L2 work its own tests read.
 - 2026-11-01, G9, layout decision: with 17 whole cards of 260-300 words and two columns at 8.5pt, the build reached 13 pages with four pages 35-70 per cent empty. The plan asks for both 9-12 pages and cards in one piece; at this word count the two cannot both hold. Chosen: themes stay in one piece, cards may continue into the next column, the card title stays with its first block. Result: 11 pages, no empty half-pages. The table fix (7.5) also spans the three-column exam table when a cell runs past 12 words, because it was unreadable inside one column.
 
 ## 12. Done means

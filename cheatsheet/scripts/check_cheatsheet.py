@@ -1050,8 +1050,9 @@ def live_check(ids):
                 ok = False
                 break
             try:
-                req = urllib.request.Request(f"{base}site/audio/{lid}-01.mp3", method="HEAD")
-                ok = urllib.request.urlopen(req, timeout=30).status == 200
+                # A GET: the host answers 404 to HEAD on its static files.
+                with urllib.request.urlopen(f"{base}site/audio/{lid}-01.mp3", timeout=30) as r:
+                    ok = r.status == 200 and r.read(64) != b""
             except Exception:
                 ok = False
         if ok:

@@ -281,8 +281,7 @@ Spec: CHEATSHEET_PLAN.md. One task per conversation; a gate review always in a f
   - `check_cheatsheet.py --site-manifest check` → `SITE MANIFEST OK`.
   - The four screenshots were opened and look right; the desktop door shot was scrolled to show the revision
     door, and the phone Revision shot was moved to a 390 px viewport.
-- [ ] STOP GATE G10
-- [ ] STOP GATE G10: review R07 and every Part W change; commit and push; live check; the student listens to Revision 7
+- [x] STOP GATE G10: review R07 and every Part W change; commit and push; live check; the student listens to Revision 7
   - Review of R07, chapter by chapter against its voices (themes/TH6.md, cards/P09.md, cards/P10.md, cards/P17.md):
 
 | Chapter | Facts checked | Result |
@@ -308,11 +307,42 @@ Spec: CHEATSHEET_PLAN.md. One task per conversation; a gate review always in a f
     (`ALL SERVER CHECKS PASSED`), `--site-manifest check` (`SITE MANIFEST OK`).
   - One path outside 9's G10 list was staged: `scripts/mock_openrouter.mjs`, because L2's changes there are what
     the new `test_server.mjs` checks read, and a commit without it would not pass on a fresh clone.
-- [ ] R01 lesson (exam day)
-- [ ] R02 lesson (Theme 1)
-- [ ] R03 lesson (Theme 2)
-- [ ] R04 lesson (Theme 3)
+  - `PROGRESS_GROKBOT_ZCODE.md` was staged too: it now records that L2 and L3 are done, which is the hard stop
+    this batch had to clear first.
+  - `--scan` → `SCAN CLEAN`; commit `cbf42e7 cheatsheet: G10 the Revision section and Revision 7`; push
+    `421173e..cbf42e7  main -> main`; `status -sb` now `## main...origin/main`.
+  - Live check: the first run printed `NOT LIVE YET R07`, but the site already served the page and the MP3.
+    The cause was the check itself: it asked with HEAD, and this host answers 404 to HEAD on static files.
+    With a GET the check prints `LIVE OK R07`.
+- [x] R01 lesson (exam day)
+  - Recorded and shipped with the G11 batch: see the evidence under G11.
+- [x] R02 lesson (Theme 1)
+  - Recorded and shipped with the G11 batch: see the evidence under G11.
+- [x] R03 lesson (Theme 2)
+  - Recorded and shipped with the G11 batch: see the evidence under G11.
+- [x] R04 lesson (Theme 3)
+  - Recorded and shipped with the G11 batch: see the evidence under G11.
 - [ ] STOP GATE G11: review R01-R04; build and check the site; commit and push; live check
+  - Review of the four lessons, chapter by chapter against their voices:
+
+| Lesson | Chapters checked | Result |
+|---|---|---|
+| R01 Exam day (8 chapters) | the exam format and four hours, the six questions word for word, the three parts of an answer, the six marking criteria, the five systems, the twelve definitions | confirmed against front/EXAM_DAY.md, the theme sheets and T8's slides 33-43 |
+| R02 Innovation systems (6) | the broad definition, institutions from North, path dependency from Arthur, the three paths, petroleum suppliers, the concession laws | confirmed against cards P01, P02 and theme TH1 |
+| R03 Regional systems (6) | Cooke's definition, related variety, the four trajectories, Hordaland and Rogaland, Mongstad, the cluster programme | confirmed against cards P03, P05 and theme TH2 |
+| R04 Institutions (6) | institutions, institutional work, the four forms, the logics, the two regions, Rettedal, the unintended outcome | confirmed against cards P03, P01 and theme TH3 |
+
+  - For the ear: each chapter opens in plain words, names its source as author and year, closes with a Remember
+    line, and announces and closes its lists; Test yourself pauses and then answers.
+  - The recordings: `build_audio.py R01 R02 R03 R04` reported `[OK]` for every chapter of all four lessons
+    (8 + 6 + 6 + 6 = 26 chapters), 122-140 words per minute, 0.37-0.79 MB each; totals 10.6, 8.7, 8.9 and 8.6 min.
+  - The five site checks: `build_site.py` (652 KB, ready revision lessons: R01, R02, R03, R04, R07),
+    `check_page.mjs` (`ALL PAGE CHECKS PASSED`), `build_static.py` (654 KB, 186 audio files),
+    `test_server.mjs` (`ALL SERVER CHECKS PASSED`), `--site-manifest check` (`SITE MANIFEST OK`).
+  - Two `check_page.mjs` checks that assumed the pilot state were made data-driven: the revision row count now
+    follows `REVISION` and the ready lessons, and the Repeat-off check no longer assumes a next lesson. A new
+    check uses R01 to prove that Auto hands over to R02 when Repeat is off. `scripts/check_page.mjs` was staged
+    with this batch, though 9's G11 list does not name it, because the committed checks must match the state.
 - [ ] R05 lesson (Theme 4)
 - [ ] R06 lesson (Theme 5)
 - [ ] R08 lesson (Theme 7)
