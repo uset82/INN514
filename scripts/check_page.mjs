@@ -985,7 +985,7 @@ try {
   check('#revision lists ten rows, a link for a ready lesson and In preparation for the rest',
     revPage.n === 10 && revPage.h1 === 'Revision' && revPage.ready === revReady.ready &&
       revPage.link === '#' + revReady.first && revPage.soon === 10 - revReady.ready &&
-      revPage.soonText.includes('In preparation'), JSON.stringify({revPage, revReady}));
+      (revPage.soon === 0 || revPage.soonText.includes('In preparation')), JSON.stringify({revPage, revReady}));
   await shot('phone-revision.png');
 
   await go('R07'); await sleep(600);

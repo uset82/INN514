@@ -354,7 +354,10 @@ Spec: CHEATSHEET_PLAN.md. One task per conversation; a gate review always in a f
   - Recorded and shipped with the G12 batch: see the evidence under G12.
 - [x] R09 lesson (Theme 8)
   - Recorded and shipped with the G12 batch: see the evidence under G12.
-- [ ] STOP GATE G12: review R05, R06, R08, R09; build and check the site; commit and push; live check
+- [x] STOP GATE G12: review R05, R06, R08, R09; build and check the site; commit and push; live check
+  - `--scan` -> `SCAN CLEAN`; commit `109429d cheatsheet: G12 the lessons R05, R06, R08 and R09`; push `b8664e1..109429d  main -> main`; `status -sb` now `## main...origin/main`.
+  - `--live R05 R06 R08 R09` -> `LIVE OK R05 R06 R08 R09`.
+
   - Review of the four lessons, chapter by chapter against their voices:
 
 | Lesson | Chapters checked | Result |
@@ -371,8 +374,29 @@ Spec: CHEATSHEET_PLAN.md. One task per conversation; a gate review always in a f
   - The five site checks: `build_site.py` (690 KB, nine lessons ready), `check_page.mjs` (`ALL PAGE CHECKS PASSED`),
     `build_static.py` (693 KB, 210 audio files), `test_server.mjs` (`ALL SERVER CHECKS PASSED`),
     `--site-manifest check` (`SITE MANIFEST OK`).
-- [ ] R10 lesson (the 17 papers in brief)
+- [x] R10 lesson (the 17 papers in brief)
+  - Recorded and shipped with the G13 batch: see the evidence under G13.
 - [ ] STOP GATE G13: review R10; build and check the site; commit and push; live check; final report
+  - Review of R10, chapter by chapter against the 17 cards:
+
+| Chapters | Content checked | Result |
+|---|---|---|
+| 1-8 (P01 to P08) | each chapter's one-line claim, its Norway or theory point and its source | confirmed against cards P01-P08 |
+| 9-14 (P14, P15, P16, P09, P10, P17) | the three villages, distributed agency and bricolage, the modes of change, the seven functions, the eight functions and the two technologies | confirmed against cards P14, P15, P16, P09, P10, P17 |
+| 15-17 (P11, P12, P13) | the bibliometric map, the eighty nine platforms, the five steps and three levels | confirmed against cards P11, P12, P13 |
+
+  - Fixed at this review: four chapters repeated a sentence from their own earlier text, because the two length
+    passes had overlapped (Paper 2's triangle, Paper 15's enabling and constraining, Paper 9's process analysis
+    and interaction, Paper 11's record count). Each was replaced with a fact the card carries and the chapter
+    did not yet use, and R10 was recorded again.
+  - For the ear: each chapter is about 120 words, says what the paper asks and what it finds, and closes with a
+    Remember line; the paper order is the course order, and each heading names the paper as it is spoken.
+  - The recording: `build_audio.py R10` reported `[OK]` for all 17 chapters, 123-138 words per minute,
+    0.33-0.39 MB each, total 16.5 min.
+  - The five site checks: `build_site.py` (708 KB, ten lessons ready), `check_page.mjs`
+    (`ALL PAGE CHECKS PASSED`), `build_static.py` (711 KB, 227 audio files), `test_server.mjs`
+    (`ALL SERVER CHECKS PASSED`), `--site-manifest check` (`SITE MANIFEST OK`).
+  - `check_cheatsheet.py --all` -> `ALL CHEATSHEET CHECKS PASSED`.
 
 ## Notes for the glossary (filled during Part T)
 | English | Norsk (bokmål) | Where found |
