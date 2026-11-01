@@ -1034,6 +1034,9 @@ student approved for the companion. That and the live check are the only online 
 - 2026-11-01, G8: TH7's green-restructuring definition ran to 35 words against the 34-word cap, because a clause about Norway was added where the definition needed none. Rule: keep a definition to what the source defines, and put the Norwegian illustration in the examples.
 - 2026-11-01, V0 and W1, hard stop: check_page.mjs fails one check, the Spanish quick pick over the whole index. A rebuild with the revision list emptied fails the same check, so the failure predates W1 and belongs to Grokbot Part L, where L2 and L3 are still unticked. That is the plan's own hard stop before W1, so W1 is not ticked and nothing is pushed. All ten lesson scripts are written and pass their own check; none is recorded.
 - 2026-11-01, lessons: a readings line can hold a paper or a slide, so an exam paper cannot be cited in it. The lessons that rest on the exam papers cite the summary slides instead.
+- 2026-11-01, G13, layout: with the part page break removed, `Part 2: Themes` was stranded at the foot of
+  page 1 with nothing under it. The break is back (`break-before: page`), which keeps every part on its own
+  page and still fits 11 pages at the tighter leading. Cards may still continue across a column; themes do not.
 - 2026-11-01, G10: the live check asked for the MP3 with HEAD and printed NOT LIVE YET while the site was live.
   The host answers 404 to HEAD on static files and 200 to GET, so `--live` now uses a GET. Rule: prove a check
   against the live host before trusting its failure.
