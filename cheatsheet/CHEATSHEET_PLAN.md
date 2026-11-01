@@ -1030,6 +1030,7 @@ student approved for the companion. That and the live check are the only online 
 - 2026-11-01, G4: P17's battery bullet cited p. 282, where the outcome is, but the cluster that set the direction is named on p. 281. Rule: when a bullet joins two facts, both must sit on the pages it cites.
 - 2026-11-01, G5: P13's list of six metaphors is printed on p. 60, not on p. 58 where the actors are discussed. Rule: cite the page where a list is printed, not the page where its theme comes up.
 - 2026-11-01, G6: TH6 reached only 425 words at first, under the 480 point where the checker warns. The room went to the second model of 4.3 and to detail in the examples, not to new sections. Rule: a theme's length is filled with its second model and its examples.
+- 2026-11-01, G7: TH1's innovation-system definition was the Markard and Truffer sentence from Class 1, not P01's own broad definition, and TH4 cited munificence to Stam and van de Ven when it is on Spigel and Harrison p. 161. Rule: when two sources give a near-identical definition or a page number looks too small for its paper, check which page prints the words.
 
 ## 12. Done means
 

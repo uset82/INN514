@@ -157,17 +157,36 @@ Spec: CHEATSHEET_PLAN.md. One task per conversation; a gate review always in a f
 - [x] TH6 Technological innovation systems (pilot)
   - `check_cheatsheet.py themes/TH6.md` → `PASS themes/TH6.md (484 words)`.
   - Opened: Hekkert et al. 2007 pp. 415, 416, 421–425 and 426 (through the P09 card), Steen et al. 2024 pp. 2, 3, 4 and 10 (through the P10 card), Njøs et al. 2020 pp. 281–282 (through the P17 card); T8's chapter for slides 33–41, which records slide 37 as the lecturer's TIS-and-seven-functions question. No pictures.
-- [ ] STOP GATE G6: review TH6; Lessons; commit and push
+- [x] STOP GATE G6: review TH6; Lessons; commit and push
   - Review table (each bullet against its cited page):
 
 | File | Bullets | Confirmed on the source | Fixed (what) |
 |---|---|---|---|
 | themes/TH6.md | 5 definitions, 10 model steps, 4 angles, 3 examples | Hekkert pp. 415 (functions as activities), 416 (Carlsson and Stankiewicz), 421–425 (the seven), 423 (guidance), 426 (the motors); Steen pp. 2 (materialization), 3 (legitimation), 4 (Mongstad), 10 (Longship); Njøs pp. 281–282 (batteries); T8 slides 37–38 for the Class 9 example | the TIS definition now reads "under shared institutions", as card P09 does, so the term is defined the same way in both |
-- [ ] TH1 Innovation systems and Norway's NIS
-- [ ] TH2 Regional innovation systems
-- [ ] TH3 Institutions and institutional work
-- [ ] TH4 Entrepreneurial ecosystems
+  - Before the commit: `--all --partial` → `ALL CHEATSHEET CHECKS PASSED`; `--scan` → `SCAN CLEAN`.
+  - Commit `11c4d22 cheatsheet: G6 the pilot theme TH6`; push `b4af468..11c4d22  main -> main`; `status -sb` now `## main...origin/main`.
+  - Glossary notes added for TH6's terms: teknologisk innovasjonssystem [Class 6, slide 12]; funksjon [Class 6, slide 15]; retning for søket [Class 6, slide 22]; materialisering [Class 6, slide 24]; legitimering [Class 6, slide 23].
+- [x] TH1 Innovation systems and Norway's NIS
+  - `check_cheatsheet.py themes/TH1.md` → `PASS themes/TH1.md (488 words)`.
+  - Opened: P01 pp. 431, 433, 434, 439, 441; P02 PDF pp. 9 and 10; T8's chapter for slides 33-41 (slide 38 is the promote-or-inhibit question).
+- [x] TH2 Regional innovation systems
+  - `check_cheatsheet.py themes/TH2.md` → `PASS themes/TH2.md (483 words)`.
+  - Opened: P03 pp. 15 and 16; P05 pp. 324, 328, 330 and 337.
+- [x] TH3 Institutions and institutional work
+  - `check_cheatsheet.py themes/TH3.md` → `PASS themes/TH3.md (482 words)`.
+  - Opened: P03 pp. 15, 16, 17, 18, 22 and 24; T8 slides 30-31.
+- [x] TH4 Entrepreneurial ecosystems
+  - `check_cheatsheet.py themes/TH4.md` → `PASS themes/TH4.md (483 words)`.
+  - Opened: P07 pp. 811 and 813; P06 pp. 161 and 163 (the figure page through the card); P08 p. 1100; T4 slides 17 and 19.
 - [ ] STOP GATE G7: review TH1-TH4; commit and push
+  - Review table (each bullet against its cited page):
+
+| File | Bullets | Confirmed on the source | Fixed (what) |
+|---|---|---|---|
+| themes/TH1.md | 5 definitions, 6 model steps, 3 angles, 3 examples | P01 pp. 431 (broad definition, path dependency), 433 (North), 434 (suppliers), 439 (the paths), 441 (concession laws, fish-farming); P02 PDF pp. 9 and 10; Class 9 slide 38 | the innovation-system definition was Markard and Truffer's sentence from Class 1, not P01's; replaced with P01's own broad definition on p. 431 |
+| themes/TH2.md | 5 definitions, 7 steps, 3 angles, 3 examples | P03 pp. 15 (institutional work), 16 (Cooke); P05 pp. 324 (three levels), 328 (four trajectories), 330 (related variety), 337 (Mongstad) | none |
+| themes/TH3.md | 5 definitions, 8 steps, 3 angles, 3 examples | P03 pp. 15, 16, 17 (the four forms), 18 (logics), 22 (Rettedal), 24 (the lock-in cycle); Class 9 slide 31 | none |
+| themes/TH4.md | 5 definitions, 7 steps, 3 angles, 2 examples | P07 pp. 811 (Hawley), 813 (ten elements); P06 pp. 161 (munificence, functionality), 163 (Figure 2); P08 p. 1100 (selection, strategic choice); Class 4 slides 17 and 19 | munificence and functionality were cited to Stam and van de Ven; they are on Spigel and Harrison p. 161 (P07 has no p. 161) |
 - [ ] TH5 Agency and new path development
 - [ ] TH7 Sustainability and normative direction
 - [ ] TH8 Crowdfunding and service ecosystems
@@ -205,3 +224,26 @@ Spec: CHEATSHEET_PLAN.md. One task per conversation; a gate review always in a f
 ## Notes for the glossary (filled during Part T)
 | English | Norsk (bokmål) | Where found |
 |---|---|---|
+| Innovation system | innovasjonssystem | [Class 1, slide 14] |
+| National innovation system | nasjonalt innovasjonssystem | [Class 1, slide 2] |
+| Institutions | institusjoner | [Class 1, slide 15] |
+| Path dependency | stiavhengighet | [Class 1, slide 32] |
+| Trinity of innovation | treenighet | standard term |
+| Regional innovation system | regionalt innovasjonssystem | [Class 2, slide 13] |
+| Related variety | relatert variasjon | standard term |
+| Path extension | baneforlengelse | standard term |
+| Path creation | baneskaping | standard term |
+| Institutional work | institusjonelt arbeid | [Class 3, slide 1] |
+| Institutional logics | institusjonelle logikker | standard term |
+| Change agency | endringsaktørskap | [Class 3, slide 10] |
+| Reproductive agency | reproduktivt aktørskap | [Class 3, slide 10] |
+| Entrepreneurial ecosystem | entreprenørielt økosystem | [Class 4, slide 1] |
+| Munificence | rikelighet | standard term |
+| Functionality | funksjonalitet | standard term |
+| Selection effects | seleksjonseffekter | standard term |
+| Strategic choice effects | strategiske valgeffekter | standard term |
+| Technological innovation system | teknologisk innovasjonssystem | [Class 6, slide 12] |
+| Function | funksjon | [Class 6, slide 15] |
+| Guidance of the search | retning for søket | [Class 6, slide 22] |
+| Materialization | materialisering | [Class 6, slide 24] |
+| Legitimation | legitimering | [Class 6, slide 23] |
