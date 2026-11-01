@@ -52,19 +52,38 @@ Spec: CHEATSHEET_PLAN.md. One task per conversation; a gate review always in a f
 - [x] P09 card (pilot)
   - `check_cheatsheet.py cards/P09.md` → `PASS cards/P09.md (300 words)`.
   - Opened: P09 pages 415, 416, 423, 426, 427, 428 and 429; page 426 text for Figure 2's motors A, B and C (`img/` holds only `page-413.png`, so the figure itself was not opened); Class 6 slides 12, 15, 22 and 23, section 1 only, for the Norwegian terms.
-- [ ] STOP GATE G1: review P01 and P09; Lessons; commit and push
+- [x] STOP GATE G1: review P01 and P09; Lessons; commit and push
   - Review table (each bullet against its cited page):
 
 | File | Bullets | Confirmed on the source | Fixed (what) |
 |---|---|---|---|
 | cards/P01.md | 14 | pp. 431 (broad definition, Freeman–Lundvall–Nelson, Arthur), 433 (North, the quotation), 434 (Dutch disease, domestic suppliers), 436 ("five out of the six comparisons"), 438 (diffusion and cooperation), 439 (the three paths, named as the page names them), 440 (SIMULA and GSM, payoffs in oil and gas), 442 (what the authors cannot pursue) | the cooperation finding moved from p. 437 to p. 438, where the claim stands; "citing Wicken" removed from the model line, because p. 439 cites that work only as a numbered reference |
 | cards/P09.md | 15 | pp. 415 (activities called functions), 416 (Carlsson and Stankiewicz), 423 (function 4), 426 (interactions, motors of change, Fig. 2 A–C), 427 (vicious cycle), 428 (first Dutch studies), 429 (heuristic value) | none |
+  - `--all --partial` → `ALL CHEATSHEET CHECKS PASSED`; `--scan` → `SCAN CLEAN` before the commit.
+  - Commit `4c84474 cheatsheet: G1 the pilot cards P01 and P09`; push `76f34e6..4c84474  main -> main`; `status -sb` now `## main...origin/main`.
 
-- [ ] P02 card
-- [ ] P03 card
-- [ ] P04 card
-- [ ] P05 card
+- [x] P02 card
+  - `check_cheatsheet.py cards/P02.md` → `PASS cards/P02.md (300 words)`.
+  - Opened: P02 PDF pages 1–17 (text; 16–17 are the reference list) and the picture `workspace/extracted/pages/P02/img/page-10.png` — Figure 1 names Company (actor), Tools (objects), Tasks (ideas) and the links Technique, Production and Rationale, which are the card's three steps. Class 1 slides 25 and 28, section 1 only, for the Norwegian terms. Paraphrase only: no quotation mark outside the title line and no 7-word run from the paper.
+- [x] P03 card
+  - `check_cheatsheet.py cards/P03.md` → `PASS cards/P03.md (300 words)`.
+  - Opened: P03 cover and pp. 14–28 (text), 23, 24 and 25 for the two cases and the crossover; Class 2 slide 13 and Class 3 slides 1, 10 and 26, section 1 only, for the Norwegian terms. Left out the reading's counts of five of fifteen National Centres of Expertise: a search of the paper does not find them on p. 24 (the programme itself is on p. 21).
+- [x] P04 card
+  - `check_cheatsheet.py cards/P04.md` → `PASS cards/P04.md (268 words)`.
+  - Opened: P04 pp. 2, 4, 5 and 10 (Niosi, the paradigm definition, Steward and Weber–Rohracher, the verdict and the Sendzimir closure); Class 2 slide 22 for transformative innovation policy. No pictures.
+- [x] P05 card
+  - `check_cheatsheet.py cards/P05.md` → `PASS cards/P05.md (270 words)`.
+  - Opened: P05 pp. 324–328, 330, 331–333, 337, 340 and 343 (Norwegian text, paraphrased); Class 2 slide 13 for the Norwegian term. No pictures.
 - [ ] STOP GATE G2: review P02-P05; commit and push
+  - Review table (each bullet against its cited page):
+
+| File | Bullets | Confirmed on the source | Fixed (what) |
+|---|---|---|---|
+| cards/P02.md | 16 | PDF pp. 3 (Sayer), 9 (Schwarz–Thompson, Latour), 10 (Figure 1 in the picture), 12 (profit and productivity, contingent relations), 13 (public authorities, the normative limit), 14 (the conclusion) | none; shortened for length only |
+| cards/P03.md | 18 | pp. 15 (institutional work, the two regions), 16 (Cooke, North), 17 (the four forms, Bækkelund), 18 (Thornton and Almandoz), 23 (the forty to fifty firms), 25 (unintended continuation, the regional difference), 19 (validity) | none; the NCE counts in the reading brief were not used because the page does not print them |
+| cards/P04.md | 15 | pp. 2 (Niosi, wicked problems), 4 (paradigm, Pyka), 5 (Steward, Weber and Rohracher), 10 (scattered strands, "in principle", Sendzimir) | none |
+| cards/P05.md | 15 | pp. 324 (the three levels, stagnation), 326 (Cooke), 328 (the four trajectories, in Norwegian), 330 (related variety), 331–332 (24 and 33 percent), 333 (the cluster programme), 337 (ten of eighteen, Mongstad), 340 (the Ulstein conversation), 343 (which driver cannot be settled) | none; no quotation mark, since P05 is never quoted |
+
 - [ ] P06 card
 - [ ] P07 card
 - [ ] P08 card
