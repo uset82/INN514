@@ -141,7 +141,7 @@ Spec: CHEATSHEET_PLAN.md. One task per conversation; a gate review always in a f
 - [x] P13 card
   - `check_cheatsheet.py cards/P13.md` → `PASS cards/P13.md (268 words)`.
   - Opened: P13 pp. 48, 51–53, 55, 58–60.
-- [ ] STOP GATE G5: review P11-P13; commit and push
+- [x] STOP GATE G5: review P11-P13; commit and push
   - Review table (each bullet against its cited page):
 
 | File | Bullets | Confirmed on the source | Fixed (what) |
@@ -149,10 +149,20 @@ Spec: CHEATSHEET_PLAN.md. One task per conversation; a gate review always in a f
 | cards/P11.md | 15 | pp. 1110 (instrument), 1112 (2,544 to 150), 1113 (three tools), 1115 (incremental, radical), 1116 (openness), 1117 (social capital), 1120 (thematic map), 1121 (three clusters), 1127 (limits) | none |
 | cards/P12.md | 17 | pp. 2 (definition), 4 (paradigms), 6 (tracking and trawling, Delphi), 8 (six dimensions, 89 platforms, the display limit), 9 (67, 51 and 38), 10 (Kickstarter), 12 (Latin America, typology) | none |
 | cards/P13.md | 16 | pp. 48 (definition), 51 (five steps), 52 (value proposition), 53 (Eight Co's), 55 (three levels), 58 (public institutions, institutionalisation), 59 (limits), 60 (eight forms, six metaphors) | the six metaphors moved to p. 60; "eighth actor" reworded to the new actor of p. 58 |
+  - Before the commit: `--all --partial` → `ALL CHEATSHEET CHECKS PASSED`; `--scan` → `SCAN CLEAN`.
+  - Commit `b4af468 cheatsheet: G5 the cards P11, P12 and P13`; push `a5723c7..b4af468  main -> main`; `status -sb` now `## main...origin/main`.
+  - All 17 cards are written and pass; the 17-card set is complete.
 
 ## Part T: theme sheets
-- [ ] TH6 Technological innovation systems (pilot)
+- [x] TH6 Technological innovation systems (pilot)
+  - `check_cheatsheet.py themes/TH6.md` → `PASS themes/TH6.md (484 words)`.
+  - Opened: Hekkert et al. 2007 pp. 415, 416, 421–425 and 426 (through the P09 card), Steen et al. 2024 pp. 2, 3, 4 and 10 (through the P10 card), Njøs et al. 2020 pp. 281–282 (through the P17 card); T8's chapter for slides 33–41, which records slide 37 as the lecturer's TIS-and-seven-functions question. No pictures.
 - [ ] STOP GATE G6: review TH6; Lessons; commit and push
+  - Review table (each bullet against its cited page):
+
+| File | Bullets | Confirmed on the source | Fixed (what) |
+|---|---|---|---|
+| themes/TH6.md | 5 definitions, 10 model steps, 4 angles, 3 examples | Hekkert pp. 415 (functions as activities), 416 (Carlsson and Stankiewicz), 421–425 (the seven), 423 (guidance), 426 (the motors); Steen pp. 2 (materialization), 3 (legitimation), 4 (Mongstad), 10 (Longship); Njøs pp. 281–282 (batteries); T8 slides 37–38 for the Class 9 example | the TIS definition now reads "under shared institutions", as card P09 does, so the term is defined the same way in both |
 - [ ] TH1 Innovation systems and Norway's NIS
 - [ ] TH2 Regional innovation systems
 - [ ] TH3 Institutions and institutional work
