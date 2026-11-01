@@ -121,7 +121,7 @@ Spec: CHEATSHEET_PLAN.md. One task per conversation; a gate review always in a f
 - [x] P17 card
   - `check_cheatsheet.py cards/P17.md` → `PASS cards/P17.md (263 words)`.
   - Opened: P17 pp. 266, 268, 271, 272, 279–284.
-- [ ] STOP GATE G4: review P15, P16, P10, P17; commit and push
+- [x] STOP GATE G4: review P15, P16, P10, P17; commit and push
   - Review table (each bullet against its cited page):
 
 | File | Bullets | Confirmed on the source | Fixed (what) |
@@ -130,10 +130,25 @@ Spec: CHEATSHEET_PLAN.md. One task per conversation; a gate review always in a f
 | cards/P16.md | 14 | pp. 481 (regional environment, multi-scalar processes), 486–487 (layering, adaptation, novel application, power), 490 (the three elements), 494 (power and mode), 495 (one case, no generalisation) | none |
 | cards/P10.md | 16 | pp. 2 (TIS, eight functions, materialization), 3 (assessment, legitimation, market formation), 4 (Mongstad), 9 (the function ratings), 10 (Longship and Northern Lights, policy mix), 11 (the three limits) | none |
 | cards/P17.md | 14 | pp. 266 (territory and technology), 268 (path creation, three phases), 271 (three functions), 281 (CCS in preformation, the cluster), 282 (seventy ferry lines), 284 (open questions) | the battery bullets now cite pp. 281–282: the cluster is named on p. 281, the outcome on p. 282 |
-- [ ] P11 card
-- [ ] P12 card
-- [ ] P13 card
+  - Before the commit: `--all --partial` → `ALL CHEATSHEET CHECKS PASSED`; `--scan` → `SCAN CLEAN`.
+  - Commit `a5723c7 cheatsheet: G4 the cards P15, P16, P10 and P17`; push `895440c..a5723c7  main -> main`; `status -sb` now `## main...origin/main`.
+- [x] P11 card
+  - `check_cheatsheet.py cards/P11.md` → `PASS cards/P11.md (260 words)`.
+  - Opened: P11 pp. 1110, 1112–1117, 1119–1123 and 1127.
+- [x] P12 card
+  - `check_cheatsheet.py cards/P12.md` → `PASS cards/P12.md (262 words)`.
+  - Opened: P12 pp. 2, 4, 6, 8–10 and 12.
+- [x] P13 card
+  - `check_cheatsheet.py cards/P13.md` → `PASS cards/P13.md (268 words)`.
+  - Opened: P13 pp. 48, 51–53, 55, 58–60.
 - [ ] STOP GATE G5: review P11-P13; commit and push
+  - Review table (each bullet against its cited page):
+
+| File | Bullets | Confirmed on the source | Fixed (what) |
+|---|---|---|---|
+| cards/P11.md | 15 | pp. 1110 (instrument), 1112 (2,544 to 150), 1113 (three tools), 1115 (incremental, radical), 1116 (openness), 1117 (social capital), 1120 (thematic map), 1121 (three clusters), 1127 (limits) | none |
+| cards/P12.md | 17 | pp. 2 (definition), 4 (paradigms), 6 (tracking and trawling, Delphi), 8 (six dimensions, 89 platforms, the display limit), 9 (67, 51 and 38), 10 (Kickstarter), 12 (Latin America, typology) | none |
+| cards/P13.md | 16 | pp. 48 (definition), 51 (five steps), 52 (value proposition), 53 (Eight Co's), 55 (three levels), 58 (public institutions, institutionalisation), 59 (limits), 60 (eight forms, six metaphors) | the six metaphors moved to p. 60; "eighth actor" reworded to the new actor of p. 58 |
 
 ## Part T: theme sheets
 - [ ] TH6 Technological innovation systems (pilot)

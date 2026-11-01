@@ -1028,6 +1028,7 @@ student approved for the companion. That and the live check are the only online 
 - 2026-11-01, G2: the P03 reading's brief carried counts (five of fifteen National Centres of Expertise, one of three Global Centres) that the paper does not print on p. 24; they were left out. Rule: a number in a reading's brief is still a claim, and it needs its own page before it goes in a card.
 - 2026-11-01, G3: a card holds 3–6 model steps, so P07's ten elements went in as the paper's own three groups (institutional arrangements, resources, output). Rule: when a model is longer than six steps, use the paper's own grouping and name the steps after the groups.
 - 2026-11-01, G4: P17's battery bullet cited p. 282, where the outcome is, but the cluster that set the direction is named on p. 281. Rule: when a bullet joins two facts, both must sit on the pages it cites.
+- 2026-11-01, G5: P13's list of six metaphors is printed on p. 60, not on p. 58 where the actors are discussed. Rule: cite the page where a list is printed, not the page where its theme comes up.
 
 ## 12. Done means
 
