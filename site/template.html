@@ -126,6 +126,7 @@ mark { background: var(--glow); color: var(--glow-ink); border-radius: 3px; padd
 /* The two doors: the one bold element */
 .doors { display: grid; gap: var(--sp-4); }
 @media (min-width: 720px) { .doors { grid-template-columns: 1fr 1fr; gap: var(--sp-5); } }
+@media (min-width: 720px) { .door[data-door="revision"] { grid-column: 1 / -1; } }
 .door { display: grid; gap: var(--sp-3); align-content: start; color: var(--ink); text-decoration: none;
   background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg);
   padding: var(--sp-5); transition: border-color .15s; }
@@ -332,6 +333,13 @@ body.can-ask #grokbot { display: block; }
 .gb-orb { display: block; border: 0; background: none; padding: 0; touch-action: none; cursor: grab; }
 .gb-orb canvas { display: block; width: 72px; height: 72px; }   /* block: no descender gap; the size holds before the first frame */
 @media (max-width: 520px) { .gb-orb canvas { width: 56px; height: 56px; } }
+@media (max-width: 520px) {
+  .topbar .wrap { gap: var(--sp-2); }
+  .brand span { display: none; }
+  .mainnav { gap: 0; }
+  .mainnav a { padding: 0 var(--sp-2); font-size: .875rem; }
+  .mainnav a[aria-current="page"]::after { left: var(--sp-2); right: var(--sp-2); }
+}
 .gb-orb.dragging { cursor: grabbing; }
 .gb-orb:focus-visible { outline: 2px solid var(--clay-ink); outline-offset: 2px; border-radius: 50%; }
 .gb-bubble { position: fixed; z-index: 9; background: var(--surface); border: 1px solid var(--line);
@@ -403,6 +411,7 @@ body.can-ask .howto > .gb-only { display: grid; }
     <nav class="mainnav" aria-label="Main">
       <a href="#classes" data-nav="classes">Classes</a>
       <a href="#papers" data-nav="papers">Papers</a>
+      <a href="#revision" data-nav="revision">Revision</a>
     </nav>
     <a class="theme-btn search-btn" href="#search" aria-label="Search the course" title="Search the course">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.2-4.2"/></svg>
@@ -420,7 +429,8 @@ body.can-ask .howto > .gb-only { display: grid; }
     <div class="row1">
       <a class="now-title" id="nowTitle" href="#home">Choose a class or paper to listen</a>
       <button class="chip follow" id="follow" aria-pressed="true" title="Scroll the text along with the audio">Follow</button>
-      <button class="chip auto" id="auto" aria-pressed="true" title="Go on to the next class or paper when this one ends">Auto</button>
+      <button class="chip auto" id="auto" aria-pressed="true" title="Go on to the next class, paper or lesson when this one ends">Auto</button>
+      <button class="chip repeat" id="repeat" aria-pressed="false" title="Start this class, paper or lesson again when it ends">Repeat</button>
       <button class="chip rate" id="rate" aria-label="Playback speed">1×</button>
     </div>
     <div class="bar">
@@ -494,7 +504,10 @@ audio.playbackRate = RATES[rateIdx];
 const READINGS = DATA.readings || [];
 const cat = (id) => DATA.catalog.find((c) => c.id === id);
 const rcat = (id) => READINGS.find((r) => r.id === id);
-const entry = (id) => cat(id) || rcat(id);
+const REVISION = DATA.revision || [];
+const vcat = (id) => REVISION.find((v) => v.id === id);
+const isRevision = (id) => !!vcat(id);
+const entry = (id) => cat(id) || rcat(id) || vcat(id);
 const isReading = (id) => !!rcat(id);
 let pendingPage = null;          // a page of a reading to scroll to after the route changes
 let pendingChapter = null;       // a chapter index to scroll to after the route changes
@@ -504,15 +517,17 @@ const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&l
 const smooth = () => (matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth");
 const doneSet = (id) => new Set(store.done[id] || []);
 /* One name everywhere: "Class 9", "Bonus class", "Paper 14". */
-const className = (c) => (rcat(c.id) ? "Paper " + c.num : c.num === "Bonus" ? "Bonus class" : "Class " + c.num);
+const className = (c) => (vcat(c.id) ? "Revision " + c.num : rcat(c.id) ? "Paper " + c.num : c.num === "Bonus" ? "Bonus class" : "Class " + c.num);
 /* The listening order: classes in course order (the bonus class last), papers by their number. */
 const SERIES = {
   classes: DATA.catalog.filter((c) => DATA.lectures[c.id]).map((c) => c.id),
   papers: READINGS.filter((r) => DATA.lectures[r.id]).slice().sort((a, b) => a.num - b.num).map((r) => r.id),
+  revision: REVISION.filter((v) => DATA.lectures[v.id]).map((v) => v.id),
 };
-const seriesOf = (id) => (isReading(id) ? SERIES.papers : SERIES.classes);
+const seriesOf = (id) => (isRevision(id) ? SERIES.revision : isReading(id) ? SERIES.papers : SERIES.classes);
 const neighbour = (id, step) => { const s = seriesOf(id), k = s.indexOf(id); return k < 0 ? null : s[k + step] || null; };
-let autoplay = store.autoplay !== false;   // the Auto button: go on to the next class or paper
+let autoplay = store.autoplay !== false;   // the Auto button: go on to the next class, paper or lesson
+let repeat = store.repeat === true;       // the Repeat button: start this one again when it ends
 /* Goes on to another class or paper at chapter i. The audio goes on; the page follows when it was showing
    the one that was playing and Follow is on. */
 function goOn(id, i) {
@@ -606,13 +621,14 @@ let SEARCH_INDEX = null;
 function searchIndex() {               // one document per chapter; the title counts three times
   if (SEARCH_INDEX) return SEARCH_INDEX;
   const docs = [], df = new Map();
-  for (const id of Object.keys(DATA.lectures)) DATA.lectures[id].chapters.forEach((ch, i) => {
+  for (const id of Object.keys(DATA.lectures)) { if (isRevision(id)) continue;
+  DATA.lectures[id].chapters.forEach((ch, i) => {
     const toks = searchNorm([ch.title, ch.title, ch.title, ...(ch.labels || []), ...ch.paragraphs].join(" ")).split(/[^\p{L}\p{N}]+/u).filter(Boolean);
     const tf = new Map();
     for (const t of toks) tf.set(t, (tf.get(t) || 0) + 1);
     for (const t of tf.keys()) df.set(t, (df.get(t) || 0) + 1);
     docs.push({ id, i, tf, len: toks.length });
-  });
+  }); }
   const avg = docs.reduce((s, d) => s + d.len, 0) / docs.length;
   return (SEARCH_INDEX = { docs, df, avg, vocab: [...df.keys()] });
 }
@@ -790,6 +806,7 @@ function renderHome() {
   })() : "";
   const ct = totals(DATA.catalog.map((c) => c.id));
   const pt = totals(READINGS.map((r) => r.id));
+  const vt = totals(REVISION.map((v) => v.id));
   const pct = (t) => (t.chapters ? t.heard / t.chapters : 0);
   const heard = (t) => (t.heard ? `${t.heard} of ${t.chapters} chapters heard` : "No chapters heard yet");
   view.innerHTML = `
@@ -818,6 +835,14 @@ function renderHome() {
         <p class="stats" data-door-info>${heard(pt)}</p>
         <span class="more">See the papers</span>
       </a>
+      <a class="door" href="#revision" data-door="revision" style="--p:${pct(vt)}">
+        <h2>Revision</h2>
+        <p>The cheatsheet as audio lessons, made to be heard again and again.</p>
+        <p class="stats">${REVISION.length} lessons, ${long(vt.secs)}</p>
+        <span class="meter" aria-hidden="true"></span>
+        <p class="stats" data-door-info>${heard(vt)}</p>
+        <span class="more">See the revision lessons</span>
+      </a>
     </div>
     <section class="home-section">
       <h2>What the course is about</h2>
@@ -829,6 +854,7 @@ function renderHome() {
         <div><dt>Listen</dt><dd>Press play on any chapter. The player stays at the bottom while you move around the site, and its title takes you back to what is playing. The speed button changes the pace.</dd></div>
         <div><dt>Read</dt><dd>The paragraph being read is highlighted. Turn off Follow if you want to scroll on your own.</dd></div>
         <div><dt>Check yourself</dt><dd>Each chapter ends with a question or two. The answer stays hidden until you open it.</dd></div>
+        <div><dt>Revise</dt><dd>The revision lessons voice the course cheatsheet. Turn on Repeat in the player to hear a lesson again and again.</dd></div>
         <div><dt>Your progress</dt><dd>Chapters you have heard are marked, and saved in this browser only.</dd></div>
         <div class="gb-only"><dt>Ask</dt><dd>Tap Grokbot, the round face in the corner, and ask a question. It answers out loud and in writing, and says where the answer comes from. Drag it anywhere it's in the way.</dd></div>
       </dl>
@@ -853,6 +879,35 @@ function renderClasses() {
       <p class="lede">The lectures in Kursplan order, with the teacher and the papers for each one. Sessions 7 and 8 have no slides: they go through the papers.</p>
     </div>
     <ol class="list classes">${items.map((it) => (it.c ? classRow(it.c) : sessionRow(it.s))).join("")}</ol>`;
+  refreshProgress();
+}
+
+function revisionInfo(v) {
+  const L = DATA.lectures[v.id];
+  if (!L) return "In preparation";
+  const n = doneSet(v.id).size, total = L.chapters.length;
+  return mins(L.seconds) + (n ? `, ${n} of ${total} chapters heard` : `, ${total} chapters`);
+}
+function revisionRow(v) {
+  return `
+      <li class="row ${v.ready ? "ready" : "soon"}" data-id="${v.id}">
+        <span class="num">${esc(v.num)}</span>
+        <div>
+          ${v.ready ? `<a class="row-title" href="#${v.id}">${esc(v.title)}</a>` : `<span class="row-title">${esc(v.title)}</span>`}
+          <p class="row-teacher">${esc(v.when)}</p>
+          <p class="meta" data-info="${v.id}">${esc(revisionInfo(v))}</p>
+          <span class="meter" aria-hidden="true"></span>
+        </div>
+      </li>`;
+}
+function renderRevision() {
+  viewId = null;
+  view.innerHTML = `
+    <div class="page-head">
+      <h1>Revision</h1>
+      <p class="lede">The course cheatsheet as audio lessons: the exam day, the eight themes and the papers in brief. Turn on Repeat to hear a lesson again and again.</p>
+    </div>
+    <ol class="list classes">${REVISION.map(revisionRow).join("")}</ol>`;
   refreshProgress();
 }
 
@@ -888,7 +943,7 @@ const CHEV_L = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 
 const CHEV_R = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
 /* The previous and next class (or paper) as two small buttons beside the breadcrumb. */
 function pager(id) {
-  const kind = isReading(id) ? "paper" : "class";
+  const kind = isRevision(id) ? "lesson" : isReading(id) ? "paper" : "class";
   const btn = (to, dir) => {
     const e = entry(to), label = (dir < 0 ? "Previous " : "Next ") + kind + ": " + className(e) + ", " + e.title;
     return `<a class="pager-btn" href="#${to}" aria-label="${esc(label)}" title="${esc(label)}">${dir < 0 ? CHEV_L : ""}${esc(className(e))}${dir > 0 ? CHEV_R : ""}</a>`;
@@ -900,11 +955,12 @@ function pager(id) {
 
 function renderLecture(id) {
   viewId = id;
-  const reading = isReading(id);
+  const reading = isReading(id), revision = isRevision(id);
   const c = entry(id), L = DATA.lectures[id];
-  const crumbs = `<nav class="crumbs" aria-label="Breadcrumb"><a href="#${reading ? "papers" : "classes"}">${reading ? "Papers" : "Classes"}</a> <span class="sep" aria-hidden="true">/</span> <span aria-current="page">${esc(className(c))}</span></nav>`;
+  const crumbs = `<nav class="crumbs" aria-label="Breadcrumb"><a href="#${revision ? "revision" : reading ? "papers" : "classes"}">${revision ? "Revision" : reading ? "Papers" : "Classes"}</a> <span class="sep" aria-hidden="true">/</span> <span aria-current="page">${esc(className(c))}</span></nav>`;
   // B1's "when" already opens with the class name, so it is not repeated.
-  const whenText = reading ? `${esc(className(c))}. For ${classLinks(c.lectures)}.`
+  const whenText = revision ? `${esc(className(c))}. ${esc(c.when)}.`
+    : reading ? `${esc(className(c))}. For ${classLinks(c.lectures)}.`
     : c.when.startsWith(className(c)) ? esc(c.when) : `${esc(className(c))}. ${esc(c.when)}`;
   const papersLine = !reading && c.readings && c.readings.length
     ? `<p class="by">Papers for this class: ${c.readings.map(rcat).filter(Boolean)
@@ -917,16 +973,22 @@ function renderLecture(id) {
         ${reading ? `<p class="by">${esc(c.authors)} (${c.year}). ${esc(c.source)}.</p>`
           : `<p class="by">${esc(c.teacher)}</p>${papersLine}`}
       </header>
-      <div class="soon-note">${reading
+      <div class="soon-note">${revision
+        ? "The audio for this revision lesson is in preparation."
+        : reading
         ? "The page-by-page summary and audio for this paper are in preparation."
         : "The summary and audio for this class are in preparation."}</div>`;
     return;
   }
   const pos = store.pos && store.pos.lecture === id ? store.pos : null;
-  const byHtml = reading
+  const byHtml = revision
+    ? `<p class="by">From the INN514 cheatsheet. ${L.chapters.length} chapters, ${long(L.seconds)}.</p>`
+    : reading
     ? `<p class="by">${esc(c.authors)} (${c.year}). ${esc(c.source)}. ${L.chapters.length} chapters, ${long(L.seconds)}.</p>`
     : `<p class="by">${esc(c.teacher)}, from the H2025 slides. ${L.chapters.length} chapters, ${long(L.seconds)}.</p>${c.note ? `<p class="by">${esc(c.note)}</p>` : ""}${papersLine}`;
-  const srcHtml = (ch) => reading
+  const srcHtml = (ch) => revision
+    ? `Sources: ${linkReadings(ch.readings)}. ${fmt(ch.seconds)} of audio.`
+    : reading
     ? `${esc(pagesText(ch.pages))}. ${fmt(ch.seconds)} of audio.`
     : `${esc(slideText(ch.slides))}.${ch.readings && !/^none/i.test(ch.readings) ? " Readings: " + linkReadings(ch.readings) + "." : ""} ${fmt(ch.seconds)} of audio.`;
   const parasHtml = (ch) => ch.paragraphs.map((p, k) => {
@@ -971,7 +1033,13 @@ function renderLecture(id) {
 /* Where next: the way on from a class or a paper. */
 function whereNext(c, reading) {
   const items = [];
-  if (reading) {
+  if (isRevision(c.id)) {
+    const prv = neighbour(c.id, -1), nxt = neighbour(c.id, 1);
+    if (prv) { const p = entry(prv); items.push(`<li><span class="label">Previous lesson:</span> <a href="#${p.id}">${esc(className(p))}, ${esc(p.title)}</a></li>`); }
+    if (nxt) { const p = entry(nxt); items.push(`<li><span class="label">Next lesson:</span> <a href="#${p.id}">${esc(className(p))}, ${esc(p.title)}</a></li>`); }
+    else if (SERIES.revision.length > 1) { const p = entry(SERIES.revision[0]); items.push(`<li><span class="label">Back to the first lesson:</span> <a href="#${p.id}">${esc(className(p))}, ${esc(p.title)}</a></li>`); }
+    items.push(`<li><a href="#revision">All revision lessons</a></li>`);
+  } else if (reading) {
     const first = cat(c.lectures[0]);
     const others = first ? (first.readings || []).map(rcat).filter((r) => r && r.id !== c.id && r.ready) : [];
     if (others.length) items.push(`<li><span class="label">Other papers for ${esc(classWord(first))}:</span> <span class="links">${others
@@ -1003,10 +1071,11 @@ function refreshProgress() {
     li.style.setProperty("--p", frac);
     li.classList.toggle("heard", frac > 0);
     const info = li.querySelector("[data-info]");
-    if (info) info.textContent = rcat(id) ? paperInfo(rcat(id)) : classInfo(cat(id));
+    if (info) info.textContent = isRevision(id) ? revisionInfo(vcat(id)) : rcat(id) ? paperInfo(rcat(id)) : classInfo(cat(id));
   });
   view.querySelectorAll(".door").forEach((d) => {
-    const t = totals(d.dataset.door === "classes" ? DATA.catalog.map((c) => c.id) : READINGS.map((r) => r.id));
+    const t = totals(d.dataset.door === "classes" ? DATA.catalog.map((c) => c.id)
+      : d.dataset.door === "revision" ? REVISION.map((v) => v.id) : READINGS.map((r) => r.id));
     d.style.setProperty("--p", t.chapters ? t.heard / t.chapters : 0);
     const info = d.querySelector("[data-door-info]");
     if (info) info.textContent = t.heard ? `${t.heard} of ${t.chapters} chapters heard` : "No chapters heard yet";
@@ -1094,6 +1163,7 @@ audio.addEventListener("ended", () => {
   if (!pl) return;
   markDone(pl.id, plIdx);
   if (plIdx < pl.chapters.length - 1) return play(pl.id, plIdx + 1, false);
+  if (repeat) return play(pl.id, 0, false);
   const nxt = autoplay ? neighbour(pl.id, 1) : null;
   if (nxt) return goOn(nxt, 0);
   $("playIcon").innerHTML = PLAY; markParagraph(-1);
@@ -1125,6 +1195,8 @@ $("rate").textContent = RATES[rateIdx] + "×";
 $("follow").onclick = () => { follow = !follow; $("follow").setAttribute("aria-pressed", String(follow)); };
 $("auto").setAttribute("aria-pressed", String(autoplay));
 $("auto").onclick = () => { autoplay = !autoplay; $("auto").setAttribute("aria-pressed", String(autoplay)); store.autoplay = autoplay; save(); };
+$("repeat").setAttribute("aria-pressed", String(repeat));
+$("repeat").onclick = () => { repeat = !repeat; $("repeat").setAttribute("aria-pressed", String(repeat)); store.repeat = repeat; save(); };
 if ("mediaSession" in navigator) {
   const h = (a, f) => { try { navigator.mediaSession.setActionHandler(a, f); } catch (e) {} };
   h("play", () => audio.play()); h("pause", () => audio.pause());
@@ -1136,8 +1208,10 @@ if ("mediaSession" in navigator) {
 function setNav(id) {
   const onClasses = id === "classes" || !!cat(id);
   const onPapers = id === "papers" || !!rcat(id);
+  const onRevision = id === "revision" || isRevision(id);
   document.querySelectorAll(".mainnav a").forEach((a) => {
-    const on = (a.dataset.nav === "classes" && onClasses) || (a.dataset.nav === "papers" && onPapers);
+    const on = (a.dataset.nav === "classes" && onClasses) || (a.dataset.nav === "papers" && onPapers)
+      || (a.dataset.nav === "revision" && onRevision);
     if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
   });
 }
@@ -1145,6 +1219,7 @@ function route() {
   const id = location.hash.slice(1);
   if (id === "classes") renderClasses();
   else if (id === "papers") renderPapers();
+  else if (id === "revision") renderRevision();
   else if (id === "search") renderSearch();
   else if (entry(id)) renderLecture(id);
   else renderHome();               // "", "home", "route" and anything unknown
@@ -1371,7 +1446,7 @@ function gbChapterInView(id) {
   return i;
 }
 function gbContext() {
-  if (viewId && DATA.lectures[viewId] && !gbCourse) return { mode: "chapter", id: viewId, i: gbChapterInView(viewId) };
+  if (viewId && DATA.lectures[viewId] && !gbCourse && !isRevision(viewId)) return { mode: "chapter", id: viewId, i: gbChapterInView(viewId) };
   return { mode: "course" };
 }
 const gbSame = (a, b) => !!a && !!b && a.mode === b.mode && a.id === b.id && a.i === b.i;
@@ -1382,7 +1457,7 @@ function gbRender(ctx) {
     gb.querySelector(".gb-words").textContent = ""; gb.querySelector(".gb-src").textContent = "";
   }
   gbCtx = ctx;
-  const chapter = ctx.mode === "chapter", onLecture = !!(viewId && DATA.lectures[viewId]);
+  const chapter = ctx.mode === "chapter", onLecture = !!(viewId && DATA.lectures[viewId] && !isRevision(viewId));
   const head = gb.querySelector(".gb-head"), sw = gb.querySelector(".gb-switch"), input = gb.querySelector(".ask-input");
   if (chapter) {
     const c = entry(ctx.id), ch = DATA.lectures[ctx.id].chapters[ctx.i];

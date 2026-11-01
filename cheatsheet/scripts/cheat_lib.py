@@ -9,7 +9,7 @@ LA = CS.parent                                          # workspace/lecture-audi
 REPO = LA.parents[1]                                    # D:/HVL2025/514
 PREVIEWS = REPO / "workspace" / "cheatsheet_previews"   # outside the repo, never committed
 sys.path.insert(0, str(LA / "scripts"))
-from reading_lib import ORDER, READINGS, page_table     # noqa: E402
+from reading_lib import G, ORDER, READINGS, page_table  # noqa: E402
 from check_reading import qnorm, quoted_on, quotes_in   # noqa: E402
 
 # 3.2: the cite used for each paper (author and the year of its reading).
@@ -175,3 +175,44 @@ def copied(prose, pid):
     w = qnorm(re.sub(r"[\"“«][^\"”»]*[\"”»]", " ", prose)).split()
     runs = (" ".join(w[i:i + n]) for i in range(len(w) - n + 1))
     return [r for r in runs if r in _GRAMS[(pid, n)] and f" {r} " not in title]
+
+# 3.6: the ten revision lessons, their voices and their chapter counts.
+THEME_CHAPTERS = ["The theme in one minute", "The key ideas", "The model, step by step",
+                  "Norway examples", "How the exam asks about it", "Test yourself"]
+EXAM_CHAPTERS = ["How the exam works", "The six past questions", "Answering Question 1",
+                 "Answering Question 2 or 3", "What examiners look for", "Compare the systems",
+                 "Twelve definitions to know", "Test yourself"]
+
+
+def spoken_authors(pid):
+    """READINGS authors as a voice says them: '&' as 'and', 'et al.' as 'and colleagues'."""
+    return READINGS[pid][0].replace(" & ", " and ").replace(" et al.", " and colleagues")
+
+
+def _cards(ids):
+    return [f"cards/{i}.md" for i in ids]
+
+
+REVISION = {
+    "R01": {"num": 1, "title": "Exam day: what to know by heart", "voices": ["front/EXAM_DAY.md"],
+            "chapters": EXAM_CHAPTERS},
+    "R02": {"num": 2, "title": "Innovation systems and Norway's national innovation system",
+            "voices": ["themes/TH1.md"] + _cards(["P01", "P02"]), "chapters": THEME_CHAPTERS},
+    "R03": {"num": 3, "title": "Regional innovation systems and industrial restructuring",
+            "voices": ["themes/TH2.md"] + _cards(["P03", "P05"]), "chapters": THEME_CHAPTERS},
+    "R04": {"num": 4, "title": "Institutions and institutional work",
+            "voices": ["themes/TH3.md"] + _cards(["P03", "P01"]), "chapters": THEME_CHAPTERS},
+    "R05": {"num": 5, "title": "Entrepreneurial ecosystems",
+            "voices": ["themes/TH4.md"] + _cards(["P06", "P07", "P08"]), "chapters": THEME_CHAPTERS},
+    "R06": {"num": 6, "title": "Agency and new path development",
+            "voices": ["themes/TH5.md"] + _cards(["P14", "P15", "P16", "P17"]), "chapters": THEME_CHAPTERS},
+    "R07": {"num": 7, "title": "Technological innovation systems and their functions",
+            "voices": ["themes/TH6.md"] + _cards(["P09", "P10", "P17"]), "chapters": THEME_CHAPTERS},
+    "R08": {"num": 8, "title": "Sustainability, transformation and normative direction",
+            "voices": ["themes/TH7.md"] + _cards(["P04", "P03"]), "chapters": THEME_CHAPTERS},
+    "R09": {"num": 9, "title": "Crowdfunding and service ecosystems",
+            "voices": ["themes/TH8.md"] + _cards(["P11", "P12", "P13"]), "chapters": THEME_CHAPTERS},
+    "R10": {"num": 10, "title": "The 17 papers in brief",
+            "voices": _cards(ORDER),
+            "chapters": [f"Paper {int(pid[1:])}: {spoken_authors(pid)}, {READINGS[pid][1]}" for pid in ORDER]},
+}

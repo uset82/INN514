@@ -543,8 +543,16 @@ Added by Claude Code on 2026-10-26 after the student's "Yes: plan a fix for slow
     - `[FAIL] a Spanish course question makes the quick pick over the whole index` — "¿Qué es la causalidad ascendente?" now finds T4/P07 through the glossary, so claude mode correctly makes **no** pick call and F5's old check (which used this question for the pick) no longer applies. Plan L.3 replaces it with "¿Qué dice el curso sobre el liderazgo de las mujeres?", a question the glossary does not place. I did not weaken the behaviour to satisfy the old check.
     - Every other check passed, including the search page and the English course questions.
   - Files changed: `site/template.html`; generated `site/index.html` and `checks/page-check.log`.
-- [ ] L2. `PICK_TIMEOUT_MS`, `upstreamBody`, the `askUpstream` timeout, the pick options; the mock and the `test_server.mjs` checks; the run ends "ALL SERVER CHECKS PASSED" (plan L.2, L.3)
-- [ ] L3. The `check_page.mjs` checks (plan L.3), full run ending "ALL PAGE CHECKS PASSED", then `build_static.py`
+- [x] L2. `PICK_TIMEOUT_MS`, `upstreamBody`, the `askUpstream` timeout, the pick options; the mock and the `test_server.mjs` checks; the run ends "ALL SERVER CHECKS PASSED" (plan L.2, L.3)
+  - `node workspace/lecture-audio/scripts/test_server.mjs` ends `ALL SERVER CHECKS PASSED`.
+  - `server.js`: `PICK_TIMEOUT_MS` beside `FIRST_TOKEN_MS`; `upstreamBody` defaults `max_tokens` to 2000 and takes `opts.reasoning || REASONING`; `askUpstream` uses `AbortSignal.timeout(opts.timeoutMs || 40000)` with the plan's comment; the pick uses `{max_tokens: 600, temperature: 0, models: [...].slice(0, 1), timeoutMs: PICK_TIMEOUT_MS, reasoning: {effort: "low"}}`.
+  - `scripts/mock_openrouter.mjs`: each call records `max_tokens`, and `MOCK_SLOW_PICK` delays a pick reply.
+  - `scripts/test_server.mjs`: three new checks (the pick's `max_tokens` and reasoning, only the first model picks, a hanging pick does not hold the streamed answer). Two existing checks were scoped to non-pick calls because the pick now always sends a light reasoning setting and the answer loop still walks both models.
+- [x] L3. The `check_page.mjs` checks (plan L.3), full run ending "ALL PAGE CHECKS PASSED", then `build_static.py`
+  - `node workspace/lecture-audio/scripts/check_page.mjs > workspace/lecture-audio/checks/page-check.log 2>&1` ends `ALL PAGE CHECKS PASSED` with 119 passing checks and no failures.
+  - New checks: `expandSpanish` adds `upward causation`; the search places the Spanish causation question (T4 3 and P07 1), the crowdfunding question (P11 or B1) and the value proposition question (P13), and places nothing for `hola`; the search page lists `ecosistema emprendedor` under Chapters with a `#T4` link.
+  - The old Spanish pick check is now two checks: the causation question makes no pick and answers from the search (T4 chapter 3's title in the first turn), and `¿Qué dice el curso sobre el liderazgo de las mujeres?` makes the quick pick over the whole index.
+  - `C:/Python313/python.exe workspace/lecture-audio/scripts/build_static.py` → `index.html: 598 KB, 154 audio files under site/audio/`.
 - [ ] **STOP GATE G9:** student approved (after Claude Code's review, the Spanish timing on Canner before and after, the push and the claude.ai republish)
 
 ## Part B: one-command pack sync

@@ -2,6 +2,7 @@
 
     C:/Python313/python.exe workspace/lecture-audio/scripts/build_audio.py T1 [T2 ...]
     C:/Python313/python.exe workspace/lecture-audio/scripts/build_audio.py P01 [P14 ...]
+    C:/Python313/python.exe workspace/lecture-audio/scripts/build_audio.py R07 [R01 ...]
 
 Readings (P01-P17) come from readings/<id>.md through reading_lib.audio_lecture(): each
 '### Page N' summary is one paragraph, read aloud as "Page N." followed by the summary.
@@ -32,6 +33,7 @@ import edge_tts
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 LECTURES = ROOT / "lectures"
+LISTEN = ROOT / "cheatsheet" / "listen"     # the revision lessons (cheatsheet Part V)
 # COMPANION_SITE may point at a scratch copy of site/ for testing on a fixture.
 SITE = pathlib.Path(os.environ.get("COMPANION_SITE", ROOT / "site"))
 CACHE = ROOT / "cache"
@@ -49,7 +51,8 @@ def parse(lecture_id):
     if re.fullmatch(r"P\d\d", lecture_id):
         from reading_lib import audio_lecture
         return audio_lecture(lecture_id)
-    text = (LECTURES / f"{lecture_id}.md").read_text(encoding="utf-8")
+    src = LISTEN if re.fullmatch(r"R\d\d", lecture_id) else LECTURES
+    text = (src / f"{lecture_id}.md").read_text(encoding="utf-8")
     title = re.search(r"^# (.+)$", text, re.M).group(1).strip()
     meta = re.search(r"<!--\s*lecture:(.*?)-->", text, re.S).group(1)
     info = dict(p.split(":", 1) for p in [x.strip() for x in ("lecture:" + meta).split("|")] if ":" in p)

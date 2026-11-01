@@ -387,6 +387,11 @@ async function run() {
     chat = lastCall(calls, CHAT_PATH);
     check(Boolean(chat?.context.includes("do not quote")), "P02 prompt includes the do-not-quote rule");
 
+    // W3: a revision lesson is never a chapter the server answers from.
+    const revisionAsk = await ask({ ...validAsk, id: "R07" });
+    check(revisionAsk.status === 400 && revisionAsk.json?.error === "bad_request",
+      "an ask naming a revision lesson returns 400", `status ${revisionAsk.status}`);
+
     const badAsks = [
       ["unknown id", { ...validAsk, id: "UNKNOWN" }],
       ["bad chapter index", { ...validAsk, chapter: 999 }],
@@ -551,6 +556,53 @@ async function run() {
       afterNoHits[beforeNoHits]?.context.startsWith("You choose which chapters"),
       "a course question without hits makes a pick, then the answer", `${afterNoHits.length - beforeNoHits}`);
 
+    // L.2: the pick is short and light, and the answer has room for thinking.
+    const pickCall = afterNoHits[beforeNoHits], pickAnswerCall = afterNoHits[beforeNoHits + 1];
+    check(pickCall?.max_tokens === 600 && JSON.stringify(pickCall?.reasoning) === JSON.stringify({ effort: "low" }) &&
+      pickAnswerCall?.max_tokens === 2000,
+      "the pick is short and light, and the answer has room for thinking",
+      `${pickCall?.max_tokens}, ${JSON.stringify(pickCall?.reasoning)}, ${pickAnswerCall?.max_tokens}`);
+
+    // L.2: only the first model picks, even when it fails.
+    const mockPickOncePort = await getFreePort(), serverPickOncePort = await getFreePort();
+    const mockPickOnce = startMock(mockPickOncePort, "chat500");
+    await waitReady(mockPickOnce, mockPickOncePort, "/calls", "mock");
+    const serverPickOnce = startServer(serverPickOncePort, mockPickOncePort, {});
+    await waitReady(serverPickOnce, serverPickOncePort, "/api/health", "server");
+    const pickOnce = await request(serverPickOncePort, "/api/course", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Grokbot-Passcode": TEST_PASS },
+      body: JSON.stringify({ question: "nothing-matches", hits: [] }),
+    }).then((response) => { response.json = parseJson(response); return response; });
+    const pickOnceCalls = (await callsFromMock(mockPickOncePort))
+      .filter((c) => c.path === CHAT_PATH && c.context.startsWith("You choose which chapters"));
+    check(pickOnceCalls.length === 1 && pickOnceCalls[0]?.model === FIRST_MODEL,
+      "only the first model picks", `${pickOnceCalls.length}, ${pickOnceCalls.map((c) => c.model).join(",")}`);
+    await stopProcess(serverPickOnce);
+    await stopProcess(mockPickOnce);
+    check(!isRunning(serverPickOnce) && !isRunning(mockPickOnce), "the one-model pick server and its mock stop cleanly");
+
+    // L.2: a pick that hangs does not hold the streamed answer.
+    const mockSlowPickPort = await getFreePort(), serverSlowPickPort = await getFreePort();
+    const mockSlowPick = startMock(mockSlowPickPort, "", undefined, { MOCK_SLOW_PICK: "3000" });
+    await waitReady(mockSlowPick, mockSlowPickPort, "/calls", "mock");
+    const serverSlowPick = startServer(serverSlowPickPort, mockSlowPickPort, { GROKBOT_PICK_TIMEOUT_MS: "500" });
+    await waitReady(serverSlowPick, serverSlowPickPort, "/api/health", "server");
+    const slowStart = Date.now();
+    const slowPick = await streamRequest(serverSlowPickPort, "/api/course", {
+      headers: { "Content-Type": "application/json", "X-Grokbot-Passcode": TEST_PASS },
+      body: JSON.stringify({ question: "nothing-matches", hits: [], stream: true }),
+    });
+    const slowMs = Date.now() - slowStart;
+    check(slowPick.status === 200 && JSON.stringify(slowPick.lines[0]) === JSON.stringify({ sources: [] }) &&
+      slowPick.lines.slice(1).some((line) => line.sentence) && slowPick.lines.at(-1)?.done === true && slowMs < 2500,
+      "a hanging pick does not hold the streamed answer",
+      `${slowMs} ms, ${JSON.stringify(slowPick.lines).slice(0, 140)}`);
+    await stopProcess(serverSlowPick);
+    await stopProcess(mockSlowPick);
+    check(!isRunning(serverSlowPick) && !isRunning(mockSlowPick), "the slow-pick server and its mock stop cleanly");
+
+
     // The cost of a course question with hits: 1 slot each, so two fit a limit of two.
     const mockCostPort = await getFreePort(), serverCostPort = await getFreePort();
     const mockCost = startMock(mockCostPort, "");
@@ -622,7 +674,8 @@ async function run() {
     const reasonCalls = (await callsFromMock(reasonMockPort)).filter((c) => c.path === CHAT_PATH);
     check(JSON.stringify(reasonCalls.at(-1)?.reasoning) === JSON.stringify({ effort: "low" }),
       "GROKBOT_REASONING is sent with the chat call", JSON.stringify(reasonCalls.at(-1)?.reasoning));
-    const normalCalls = (await callsFromMock(mockPort)).filter((c) => c.path === CHAT_PATH);
+    const normalCalls = (await callsFromMock(mockPort)).filter((c) => c.path === CHAT_PATH)
+      .filter((c) => !c.context.startsWith("You choose which chapters"));   // the pick always sends a light reasoning setting
     check(normalCalls.length > 0 && normalCalls.every((c) => c.reasoning === null),
       "without GROKBOT_REASONING no reasoning settings are sent", `${normalCalls.length} calls`);
     await stopProcess(reasonServer);

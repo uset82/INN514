@@ -12,8 +12,8 @@ import tempfile
 
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from cheat_lib import PREVIEWS, pages, qnorm                 # noqa: E402
-from check_cheatsheet import check_text, scan               # noqa: E402
+from cheat_lib import CS, PREVIEWS, pages, qnorm               # noqa: E402
+from check_cheatsheet import check_text, scan, site_manifest   # noqa: E402
 
 # ---------------------------------------------------------------- fixtures
 
@@ -334,6 +334,145 @@ def t24():
         (pathlib.Path(tmp) / "x.pptx").write_bytes(b"x")
         problems = scan(tmp)
     assert problems, "the scan found no problem"
+
+
+# ---------------------------------------------------------------- the listening checks (plan 6.5)
+
+LESSON = """# Revision 7: Technological innovation systems and their functions
+<!-- lecture: R07 | session: Revision | lecturer: none | deck: none -->
+<!-- voices: themes/TH6.md, cards/P09.md, cards/P10.md, cards/P17.md -->
+
+## 1. The theme in one minute
+<!-- readings: Hekkert et al. 2007 -->
+
+A technological innovation system is the set of actors and rules around one technology. Hekkert and colleagues list seven functions. In Norway, Steen and colleagues studied carbon capture in 2024.
+
+Remember: one technology, seven functions, one system.
+
+<!-- check: What is a technological innovation system? | The actors and rules around one technology. -->
+
+## 2. The key ideas
+<!-- readings: Steen et al. 2024, p. 4 -->
+
+The functions show where a system is strong or weak. Steen and colleagues found that materialization stayed weak.
+
+Remember: the weak function is the place to act.
+
+<!-- check: Which function stayed weak? | Materialization. -->
+"""
+
+FAKE_VOICES = {
+    "themes/TH6.md": "A technological innovation system is the actors and rules around one technology. Materialization is one function.",
+    "cards/P09.md": "Hekkert and colleagues list seven functions in their own words.",
+    "cards/P10.md": "Steen and colleagues studied carbon capture in Norway in 2024.",
+    "cards/P17.md": "Njos wrote about path creation in a region.",
+}
+
+
+def fake_root():
+    return tempfile.TemporaryDirectory(dir=str(PREVIEWS))
+
+
+def make_voices(root):
+    root = pathlib.Path(root)
+    for rel, text in FAKE_VOICES.items():
+        f = root / rel
+        f.parent.mkdir(parents=True, exist_ok=True)
+        f.write_text(text, encoding="utf-8")
+
+
+def listen(text, root):
+    fails, _ = check_text("listen", "listen/R07.md", text, root=root, partial=True)
+    return fails
+
+
+@test("25 a two-chapter R07 lesson passes")
+def t25():
+    with fake_root() as tmp:
+        make_voices(tmp)
+        clean(listen(LESSON, tmp))
+
+
+@test("26 a number no voices file has")
+def t26():
+    with fake_root() as tmp:
+        make_voices(tmp)
+        expect(listen(LESSON.replace("in 2024", "in 1999"), tmp), "not in the voices files")
+
+
+@test("27 page 421 spoken in the prose")
+def t27():
+    with fake_root() as tmp:
+        make_voices(tmp)
+        expect(listen(LESSON.replace("The functions show", "See page 421. The functions show"), tmp),
+               "speaks a page reference")
+
+
+@test("28 a bullet line in the prose")
+def t28():
+    with fake_root() as tmp:
+        make_voices(tmp)
+        expect(listen(LESSON.replace("The functions show", "- Seven functions\n\nThe functions show"), tmp),
+               "starts like a heading or a bullet")
+
+
+@test("29 a chapter with no Remember paragraph")
+def t29():
+    with fake_root() as tmp:
+        make_voices(tmp)
+        expect(listen(LESSON.replace("Remember: the weak function is the place to act.", ""), tmp),
+               "Remember:")
+
+
+@test("30 a 50-word sentence")
+def t30():
+    long_sentence = ("the system is strong when the functions work together and the actors keep the rules "
+                     "in place and the technology spreads through the network over time and the market forms "
+                     "and the resources move and the search is guided and the work is seen as legitimate by "
+                     "the people in the place where it happens")
+    with fake_root() as tmp:
+        make_voices(tmp)
+        expect(listen(LESSON.replace("The functions show", long_sentence + ". The functions show"), tmp),
+               "a sentence has")
+
+
+@test("31 a readings line with the wrong year")
+def t31():
+    with fake_root() as tmp:
+        make_voices(tmp)
+        expect(listen(LESSON.replace("<!-- readings: Steen et al. 2024, p. 4 -->",
+                                     "<!-- readings: Spigel & Harrison 2017, p. 152 -->"), tmp),
+               "is not a course paper")
+
+
+@test("32 the site manifest catches a changed file")
+def t32():
+    import contextlib
+    import io
+    with fake_root() as tmp:
+        site = pathlib.Path(tmp) / "site"
+        (site / "data").mkdir(parents=True)
+        (site / "audio").mkdir()
+        f = site / "data" / "T1.json"
+        f.write_text("{}", encoding="utf-8")
+        (site / "audio" / "T1-01.mp3").write_bytes(b"x")
+        book = pathlib.Path(tmp) / "site-before.txt"
+        with contextlib.redirect_stdout(io.StringIO()):
+            site_manifest("write", root=site, book_path=book)
+        f.write_text('{"changed": 1}', encoding="utf-8")
+        problems = site_manifest("check", root=site, book_path=book)
+    assert problems, "the manifest did not notice the change"
+
+
+@test("33 a secret in the staged diff")
+def t33():
+    diff = ["OPENROUTER_" + "API_KEY=" + "sk-" + "or-v1-" + "a" * 40]
+    assert scan(CS, diff=diff), "the scan missed the key"
+
+
+@test("34 a test key in the staged diff is no problem")
+def t34():
+    assert not scan(CS, diff=["OPENROUTER_API_KEY: 'test-key'"]), "the scan flagged a test key"
 
 
 # ---------------------------------------------------------------- runner

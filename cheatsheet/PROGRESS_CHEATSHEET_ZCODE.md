@@ -223,7 +223,7 @@ Spec: CHEATSHEET_PLAN.md. One task per conversation; a gate review always in a f
 - [x] A4 build, look at every page, fix, README.md, check --all passes
   - `check_cheatsheet.py --all` → `ALL CHEATSHEET CHECKS PASSED` (28 files, complete and assembled included).
   - Pages opened: 1 (exam day), 2 (themes 1-2), 5 (themes 7-8 and the start of Part 3), 6 (cards 1-4), 7 (cards 3-4), 11 (cards 10, 17, 11) and 13 (end of Part 4) of the builds on the way, plus 2 and 6 of the final build. Fixed while looking: the exam table split across a column, lists rendered run-on, and four pages 35-70 per cent empty. README.md written.
-- [ ] STOP GATE G9: final review of front, back and PDF; commit and push everything; final report
+- [x] STOP GATE G9: final review of front, back and PDF; commit and push everything; final report
   - Review table (each file against its source):
 
 | File | Bullets | Confirmed on the source | Fixed (what) |
@@ -232,16 +232,82 @@ Spec: CHEATSHEET_PLAN.md. One task per conversation; a gate review always in a f
 | back/GLOSSARY.md | 36 rows | every theme term, each third column a checked slide, an exam paper or "standard term" | none |
 | back/SOURCES.md | 17 + 8 + 2 | the `READINGS` order and page ranges of 3.2 | none |
 | print/INN514_CHEATSHEET.pdf | 11 pages | assembled from the reviewed files only | layout fixes listed above |
+  - `--all` → `ALL CHEATSHEET CHECKS PASSED`; `--scan` → `SCAN CLEAN`.
+  - Commit `421173e cheatsheet: G9 the exam-day page, the glossary, the sources and the PDF`; push `f921274..421173e  main -> main`; `status -sb` now `## main...origin/main`.
+  - The written cheatsheet is complete: 17 cards, 8 themes, the exam-day page, the glossary, the sources, the assembled Markdown and an 11-page A4 PDF.
 
 ## Part V and Part W: listening lessons and the Revision section (after G9)
-- [ ] V0 check_cheatsheet.py: the listen kind, --site-manifest, --live and the wider scan; tests 25-34 pass (plan 6.4, 6.5)
-- [ ] W1 site manifest written; build_audio.py reads R ids from cheatsheet/listen/; build_site.py adds DATA.revision (plan 7.8)
-- [ ] R07 lesson (pilot): written, checked and recorded (plan 7.7)
-- [ ] W2 site/template.html: the Revision page, door and nav link, Repeat, and the guards (plan 7.8)
-- [ ] W3 server.js skips R files; the test_server.mjs check (plan 7.8)
-- [ ] W4 check_page.mjs: the Revision checks and screenshots (plan 7.8)
-- [ ] W5 build_site, check_page (ALL PAGE CHECKS PASSED), build_static, test_server (ALL SERVER CHECKS PASSED), manifest check
+- [x] V0 check_cheatsheet.py: the listen kind, --site-manifest, --live and the wider scan; tests 25-34 pass (plan 6.4, 6.5)
+  - `test_check_cheatsheet.py` → `ALL CHECKER TESTS PASSED (34 tests)`.
+  - `check_cheatsheet.py --all` → `ALL CHEATSHEET CHECKS PASSED`; `--scan` → `SCAN CLEAN`.
+  - `--site-manifest write` → `WROTE …checks\site-before.txt (179 files)`; `--site-manifest check` → `SITE MANIFEST OK`.
+  - Files: `cheatsheet/scripts/check_cheatsheet.py` (the listen kind, `--site-manifest`, `--live`, the staged-diff and `site/data/R*.json` scan), `cheatsheet/scripts/cheat_lib.py` (`REVISION`, `spoken_authors`), `cheatsheet/scripts/test_check_cheatsheet.py` (tests 25-34), `cheatsheet/checks/site-before.txt`.
+- [x] W1 site manifest written; build_audio.py reads R ids from cheatsheet/listen/; build_site.py adds DATA.revision (plan 7.8)
+  - `check_cheatsheet.py --site-manifest write` → `WROTE …site-before.txt (179 files)`; `--site-manifest check` → `SITE MANIFEST OK` (run twice).
+  - `scripts/build_audio.py`: `LISTEN = ROOT / "cheatsheet" / "listen"` and `src = LISTEN if re.fullmatch(r"R\d\d", lecture_id) else LECTURES`; an R usage line added to the docstring.
+  - `scripts/build_site.py`: the `REVISION` list for R01-R10, `revision = [...]` and `DATA.revision`, and the summary line now ends `ready revision lessons: …`.
+  - `build_site.py` → `index.html: 596 KB; … ready revision lessons: none`; `check_page.mjs` → `ALL PAGE CHECKS PASSED` (the page does not use DATA.revision yet).
+  - The Grokbot hard stop was cleared first: L2 and L3 are now ticked, `test_server.mjs` ends `ALL SERVER CHECKS PASSED` and `check_page.mjs` ends `ALL PAGE CHECKS PASSED`.
+- [x] R07 lesson (pilot): written, checked and recorded (plan 7.7)
+  - `check_cheatsheet.py listen/R07.md` → `PASS listen/R07.md (1149 words)`.
+  - `C:/Python313/python.exe workspace/lecture-audio/scripts/build_audio.py R07` → six chapters, every one `[OK]`: 1.3 min 136 wpm, 1.7 min 116 wpm, 1.7 min 118 wpm, 1.4 min 134 wpm, 1.5 min 136 wpm, 1.4 min 129 wpm; all between -20.4 and -20.7 LUFS and 0.48-0.63 MB; total 9.0 min; `data written to site/data/R07.json`.
+  - `check_cheatsheet.py --site-manifest check` → `SITE MANIFEST OK`: the only new files are `site/data/R07.json` and `site/audio/R07-01.mp3` to `R07-06.mp3`.
+  - `build_site.py` now prints `ready revision lessons: R07`.
+- [x] W2 site/template.html: the Revision page, door and nav link, Repeat, and the guards (plan 7.8)
+  - `site/template.html`: `REVISION`, `vcat`, `isRevision` and the new `entry`; `className` tests `vcat` first;
+    `SERIES.revision` and `seriesOf`; the Auto title; the Repeat chip with `store.repeat`; `renderRevision`,
+    `revisionRow`, `revisionInfo`; the `#revision` route; the header link and `setNav`; the third door with its
+    media query and the Revise row; `renderLecture` and `whereNext` for a revision lesson; `refreshProgress`;
+    the search and Grokbot guards.
+  - One existing check changed because W2 makes it wrong: "both top bar links stay visible" now expects three
+    links ("the top bar links stay visible"), and the phone header CSS was tightened so three links fit at 390 px.
+- [x] W3 server.js skips R files; the test_server.mjs check (plan 7.8)
+  - `server.js`: `if (f.endsWith(".json") && !/^R\d\d\.json$/.test(f))` in the startup loop.
+  - `scripts/test_server.mjs`: `/api/ask` with `id: "R07"` answers 400. Two existing checks were scoped to
+    non-pick calls, because the pick now always sends a light reasoning setting and the answer loop still walks
+    both models. `test_server.mjs` → `ALL SERVER CHECKS PASSED`.
+- [x] W4 check_page.mjs: the Revision checks and screenshots (plan 7.8)
+  - New checks: three doors and the revision door's "10 lessons"; the Revision nav link; `#revision` with ten rows,
+    one link and nine "In preparation"; `#R07` with the Revision crumb, its title and its chapters; the first
+    chapter playing `R07-01.mp3`; Repeat toggling and saving; the end of the last chapter starting the lesson
+    again; Repeat off not restarting it; Grokbot on `#R07`; a revision lesson kept out of the search index; no
+    horizontal scroll on a revision lesson at phone width. Screenshots: `phone-revision.png`,
+    `phone-revision-lesson.png`, `phone-revision-dark.png`, `desktop-home-revision.png`.
+- [x] W5 build_site, check_page (ALL PAGE CHECKS PASSED), build_static, test_server (ALL SERVER CHECKS PASSED), manifest check
+  - `build_site.py` → `index.html: 610 KB; … ready revision lessons: R07`.
+  - `check_page.mjs` → `ALL PAGE CHECKS PASSED` (127 passing checks).
+  - `build_static.py` → `index.html: 613 KB, 160 audio files under site/audio/`.
+  - `test_server.mjs` → `ALL SERVER CHECKS PASSED`.
+  - `check_cheatsheet.py --site-manifest check` → `SITE MANIFEST OK`.
+  - The four screenshots were opened and look right; the desktop door shot was scrolled to show the revision
+    door, and the phone Revision shot was moved to a 390 px viewport.
+- [ ] STOP GATE G10
 - [ ] STOP GATE G10: review R07 and every Part W change; commit and push; live check; the student listens to Revision 7
+  - Review of R07, chapter by chapter against its voices (themes/TH6.md, cards/P09.md, cards/P10.md, cards/P17.md):
+
+| Chapter | Facts checked | Result |
+|---|---|---|
+| 1. The theme in one minute | Carlsson and Stankiewicz's definition, materialization from Steen, the exam link | confirmed |
+| 2. The key ideas | functions as activities, the seven, the eighth, non-linear interaction | confirmed |
+| 3. The model, step by step | the seven functions, materialization, motors A, B and C | confirmed |
+| 4. Norway examples | Longship and Northern Lights, weak market formation, Mongstad, batteries and procurement | confirmed |
+| 5. How the exam asks about it | the June 2025 and December 2024 questions, the moves, the plagiarism line | confirmed |
+| 6. Test yourself | three questions, each answered from chapters 1-5 | confirmed |
+
+  - For the ear: read as a listener. Each chapter opens in plain words, names its source as author and year, and
+    closes with a Remember line; the steps are announced and closed; Test yourself pauses and then answers.
+  - The recording: `build_audio.py R07` reported `[OK]` for all six chapters, 116-136 words per minute (the
+    allowed range is 105-175) and files of 0.48-0.63 MB; `check_cheatsheet.py --all` → `ALL CHEATSHEET CHECKS PASSED`.
+  - Part W compared with 7.8, line by line: items 1-11 are all present in `site/template.html` (the entry helpers,
+    className, SERIES and seriesOf, the Auto title, Look for the Repeat chip, renderRevision and the route, the nav
+    link and setNav, the door and the Revise row, renderLecture and whereNext, refreshProgress, the search and
+    Grokbot guards); `server.js` skips R files; `test_server.mjs` has the R07 ask check; `check_page.mjs` has the
+    Revision checks and the four screenshots.
+  - The five site checks: `build_site.py` (610 KB, ready revision lessons: R07), `check_page.mjs`
+    (`ALL PAGE CHECKS PASSED`, 127 checks), `build_static.py` (613 KB, 160 audio files), `test_server.mjs`
+    (`ALL SERVER CHECKS PASSED`), `--site-manifest check` (`SITE MANIFEST OK`).
+  - One path outside 9's G10 list was staged: `scripts/mock_openrouter.mjs`, because L2's changes there are what
+    the new `test_server.mjs` checks read, and a commit without it would not pass on a fresh clone.
 - [ ] R01 lesson (exam day)
 - [ ] R02 lesson (Theme 1)
 - [ ] R03 lesson (Theme 2)

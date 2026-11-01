@@ -81,6 +81,7 @@ const server = http.createServer((req, res) => {
       authOk: req.headers.authorization === "Bearer test-key",
       stream: body.stream === true,
       reasoning: body.reasoning ?? null,
+      max_tokens: body.max_tokens ?? null,
     });
 
     if (process.env.MOCK_FAIL === "deepgram" && typeof body.model === "string" && body.model.includes("deepgram")) {
@@ -125,9 +126,12 @@ const server = http.createServer((req, res) => {
       const pick = (firstMessage.includes("hola") || firstMessage.includes("who teaches") || firstMessage.includes("nothing-matches")) ? "[]"
         : firstMessage.includes("unknown-pick") ? 'Here you go: [{"id": "T99", "chapter": 1}, {"id": "T4", "chapter": 99}]'
         : '[{"id": "T4", "chapter": 3}]';
-      reply(res, 200, { "Content-Type": "application/json" }, JSON.stringify({
+      const send = () => reply(res, 200, { "Content-Type": "application/json" }, JSON.stringify({
         choices: [{ message: { content: pick } }],
       }));
+      const slow = Number(process.env.MOCK_SLOW_PICK);
+      if (Number.isFinite(slow) && slow > 0) setTimeout(send, slow);
+      else send();
       return;
     }
     if (chat) {

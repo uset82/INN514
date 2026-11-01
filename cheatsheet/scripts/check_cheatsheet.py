@@ -13,9 +13,13 @@ import pathlib
 import re
 import sys
 
-from cheat_lib import (CARD_CLASS, CARD_THEMES, CITES, CITE_TO_PID, CLASSES, CS, EXAM, MISSPELT,
-                       ORDER, READINGS, SECTIONS, SURNAME_PAPERS, THEMES, citable, class_slides,
-                       copied, numbers, page_range, pages, qnorm, quoted_on, quotes_in, words)
+import hashlib
+
+from cheat_lib import (CARD_CLASS, CARD_THEMES, CITES, CITE_TO_PID, CLASSES, CS, EXAM, G, LA, MISSPELT,
+                       ORDER, READINGS, REVISION, SECTIONS, SURNAME_PAPERS, THEMES, citable,
+                       class_slides, copied, numbers, page_range, pages, qnorm, quoted_on, quotes_in,
+                       words)
+from check_sources import names_in, numbers_in
 
 CITE = re.compile(r"\(([A-ZÆØÅ][^()\d]*?) (\d{4}), (p|pp|PDF p)\. (\d[\d–, -]*)\)")
 OWN = re.compile(r"\((p|pp|PDF p)\. (\d[\d–, -]*)\)")             # cards: the card's own paper
@@ -688,6 +692,11 @@ def check_text(kind, name, text, root=None, partial=False):
         check_glossary(key, text, fails, warns)
     elif kind == "sources":
         check_sources_file(key, text, fails, warns)
+    elif kind == "listen":
+        if key not in REVISION:
+            return [f"listen: '{key}' is not a revision lesson"], warns
+        check_listen(key, text, fails, warns, root or CS, partial)
+        return fails, warns
     else:
         return [f"kind: no checks for '{kind}'"], warns
 
@@ -756,6 +765,171 @@ def assembled(root, problems):
         problems.append(("INN514_CHEATSHEET.md", fails, warns))
 
 
+# ------------------------------------------------------------------ listening lessons (plan 6.4)
+
+READINGS_LINE = re.compile(r"(?m)^\s*<!--\s*readings:\s*(.*?)\s*-->\s*$")
+CHECK_LINE = re.compile(r"(?m)^\s*<!--\s*check:\s*(.*?)\s*\|\s*(.*?)\s*-->\s*$")
+PAPER_PART = re.compile(r"^([A-ZÆØÅ][^,;]*? \d{4})(?:, (p|pp|PDF p)\. (\d[\d–, ]*))?$")
+SLIDE_PART = re.compile(r"^(?:Class (\d)|(Bonus)), slides? (\d[\d–, ]*)$")
+BAD_CHARS = ["*", "[", "]", "\"", "“", "”", "«", "»", "&", "→", "/", "e.g.", "i.e."]
+SPOKEN_EXTRA = {"chapter", "remember", "pause", "here", "question", "answer", "revision", "theme",
+                "class", "paper", "papers", "norway", "norwegian", "western", "english"}
+
+
+def chapters_of(text):
+    parts = re.split(r"(?m)^## (.*)$", text)
+    return [(parts[i].strip(), parts[i + 1]) for i in range(1, len(parts), 2)]
+
+
+def prose_of(body):
+    return "\n".join(line for line in body.splitlines()
+                     if not re.fullmatch(r"\s*<!--.*?-->\s*", line)).strip()
+
+
+def reading_parts(spec, fails, where):
+    out = []
+    for part in [p.strip() for p in spec.split(";") if p.strip()]:
+        m = SLIDE_PART.fullmatch(part)
+        if m:
+            cid = m.group(1) or m.group(2)
+            if cid not in CLASSES or not numbers(m.group(3)) or numbers(m.group(3))[0] not in class_slides(cid):
+                fails.append(f"readings: {where}: '{part}' is not a reviewed slide")
+            continue
+        m = PAPER_PART.fullmatch(part)
+        if not m:
+            fails.append(f"readings: {where}: '{part}' is neither a paper nor a slide")
+            continue
+        form = m.group(1).replace(" and ", " & ")
+        pid = CITE_TO_PID.get(form)
+        if not pid:
+            fails.append(f"readings: {where}: '{m.group(1)}' is not a course paper")
+            continue
+        if m.group(3):
+            if pid == "P02" and m.group(2) != "PDF p":
+                fails.append(f"readings: {where}: Paper 2 is cited as 'PDF p. N'")
+            if pid != "P02" and m.group(2) == "PDF p":
+                fails.append(f"readings: {where}: 'PDF p.' is only for Paper 2")
+            for n in numbers(m.group(3)):
+                if not citable(pid, n):
+                    fails.append(f"readings: {where}: page {n} of {CITES[pid]} is not a citable page")
+        out.append(pid)
+    return out
+
+
+def check_listen(key, text, fails, warns, root=CS, partial=False):
+    rev = REVISION[key]
+    lines = text.splitlines()
+    first = next((x for x in lines if x.strip()), "")
+    if first.strip() != f"# Revision {rev['num']}: {rev['title']}":
+        fails.append(f"header: the first line should be '# Revision {rev['num']}: {rev['title']}'")
+    lecture = f"<!-- lecture: {key} | session: Revision | lecturer: none | deck: none -->"
+    if lecture not in text:
+        fails.append(f"header: missing '{lecture}'")
+    voices = f"<!-- voices: {', '.join(rev['voices'])} -->"
+    if voices not in text:
+        fails.append(f"header: missing '{voices}'")
+    root = pathlib.Path(root)
+    for v in rev["voices"]:
+        if not (root / v).exists():
+            fails.append(f"header: the voices file '{v}' does not exist")
+
+    chs = chapters_of(text)
+    want = rev["chapters"]
+    if not partial and len(chs) != len(want):
+        fails.append(f"chapters: {len(chs)} chapters (need {len(want)})")
+    for i, (head, _) in enumerate(chs):
+        if i >= len(want):
+            break
+        if key == "R10":
+            ok = head == f"{i + 1}. {want[i]}" or head == want[i]
+        else:
+            ok = head == f"{i + 1}. {want[i]}"
+        if not ok:
+            fails.append(f"chapters: chapter {i + 1} should be '## {i + 1}. {want[i]}', found '## {head}'")
+
+    voices_text = "\n".join((root / v).read_text(encoding="utf-8") for v in rev["voices"] if (root / v).exists())
+    v_words = G.word_set(voices_text) | G.word_set(" ".join(rev["voices"]))
+    v_numbers = set(re.findall(r"\d+", re.sub(r"(\d)[\s\u00a0\u202f](\d{3})\b", r"\1\2", voices_text)))
+    total = 0
+    for i, (head, body) in enumerate(chs, 1):
+        where = f"chapter {i}"
+        prose = prose_of(body)
+        n = words(prose)
+        total += n
+        lo, hi = (110, 200) if key == "R10" else (100, 340)
+        if not partial and not lo <= n <= hi:
+            fails.append(f"length: {where} has {n} words (need {lo}-{hi})")
+        readings = READINGS_LINE.findall(body)
+        if len(readings) != 1:
+            fails.append(f"readings: {where} has {len(readings)} readings lines (need one)")
+            pids = []
+        else:
+            pids = reading_parts(readings[0], fails, where)
+        checks = CHECK_LINE.findall(body)
+        if not 1 <= len(checks) <= 2:
+            fails.append(f"checks: {where} has {len(checks)} check lines (need 1-2)")
+        paras = [p for p in re.split(r"\n\s*\n", prose) if p.strip()]
+        if not paras or not paras[-1].strip().startswith("Remember:"):
+            fails.append(f"remember: {where} does not end with a paragraph starting 'Remember:'")
+        for line in prose.splitlines():
+            if re.match(r"^\s*(#|[-*+] |\d+[.)] )", line):
+                fails.append(f"prose: {where} has a line that starts like a heading or a bullet: '{line[:40]}'")
+        for ch in BAD_CHARS:
+            if ch in prose:
+                fails.append(f"prose: {where} contains '{ch}'")
+        for bad in (r"\bpage \d", r"\bpages?\b", r"\bpp\."):
+            if re.search(bad, prose, re.I):
+                fails.append(f"prose: {where} speaks a page reference")
+        r = G.readability(prose)
+        if r["mean"] > G.MEAN_SENTENCE_WORDS_MAX:
+            fails.append(f"style: {where} mean sentence {r['mean']:.1f} words (max {G.MEAN_SENTENCE_WORDS_MAX})")
+        if r["max"] > G.SENTENCE_WORDS_MAX:
+            fails.append(f"style: {where} a sentence has {r['max']} words (max {G.SENTENCE_WORDS_MAX})")
+        if r["inflated_per_1000"] > G.INFLATED_PER_1000_MAX:
+            fails.append(f"style: {where} {r['inflated_per_1000']:.1f} inflated words per 1000")
+        no = G.norwegian_words(prose)
+        if no:
+            fails.append(f"style: {where} has Norwegian words {no[:6]}")
+        lower = sorted({w for w in re.findall(r"\b[\w'-]*[æøå][\w'-]*\b", G.strip_exempt(prose)) if w[0].islower()})
+        if lower:
+            fails.append(f"style: {where} has untranslated words {lower[:6]}")
+        for num in sorted(numbers_in(prose)):
+            if not set(re.findall(r"\d+", num)) <= v_numbers:
+                fails.append(f"facts: {where}: the number '{num}' is not in the voices files")
+        for name in sorted(names_in(prose)):
+            low = name.lower()
+            if low in G.NAME_ALLOWLIST or low in SPOKEN_EXTRA or G.word_set(name) <= v_words:
+                continue
+            if len(low) >= 4 and any(w.startswith(low) for w in v_words):
+                continue
+            fails.append(f"facts: {where}: the name '{name}' is not in the voices files")
+        for pid in dict.fromkeys(pids):
+            for run in copied(prose, pid):
+                fails.append(f"copy: {where} copies words from {CITES[pid]}: '{run[:50]}'")
+        for surname, rx in NAME_RE.items():
+            years = {str(READINGS[p][1]) for p in SURNAME_PAPERS[surname]}
+            for m in rx.finditer(prose):
+                if m.group(1) not in years:
+                    fails.append(f"spoken: {where}: '{m.group(0)}' has the wrong year")
+        for wrong, right in MISSPELT.items():
+            if re.search(rf"\b{re.escape(wrong)}\b", prose):
+                fails.append(f"spoken: {where}: '{wrong}' must be spelled '{right}'")
+        for sent in re.split(r"(?<=[.!?])\s+", prose):
+            if "example of our own" in sent and re.search(r"\d", sent):
+                fails.append(f"people: {where}: an example of our own has a digit")
+        if key != "R10" and i == len(want):
+            pauses = prose.count("Pause the audio and answer in your head.")
+            answers = len(re.findall(r"(?m)^Here is the answer\.", prose))
+            if not 3 <= pauses <= 4:
+                fails.append(f"recall: {where} has {pauses} pauses (need 3-4)")
+            if answers != pauses:
+                fails.append(f"recall: {where} has {answers} answers for {pauses} pauses")
+    lo, hi = {"R01": (1300, 1900), "R10": (2000, 3400)}.get(key, (1100, 1600))
+    if not partial and not lo <= total <= hi:
+        fails.append(f"length: {total} words in the lesson (need {lo}-{hi})")
+    check_people(text, fails)
+
+
 # ------------------------------------------------------------------ the pre-push scan
 
 # Written from parts so this file does not match its own patterns (plan 9.4). The value is
@@ -775,6 +949,11 @@ def scan(root=CS, diff=None):
     """Problems found by the pre-push scan (plan 9.4): secrets, course files, big files, Paper 2."""
     problems = []
     root = pathlib.Path(root)
+    if diff:
+        for line in diff:
+            for label, pattern in SECRETS:
+                if re.search(pattern, line):
+                    problems.append(f"the staged diff: looks like {label}")
     if not root.exists():
         return problems
     for path in sorted(root.rglob("*")):
@@ -803,7 +982,85 @@ def scan(root=CS, diff=None):
             runs = copied(text, "P02")
             if runs:
                 problems.append(f"{rel}: 7 words copied from Paper 2: '{runs[0][:60]}'")
+    for f in sorted((LA / "site" / "data").glob("R*.json")):
+        runs = copied(f.read_text(encoding="utf-8", errors="ignore"), "P02")
+        if runs:
+            problems.append(f"site/data/{f.name}: 7 words copied from Paper 2: '{runs[0][:60]}'")
     return problems
+
+
+# ------------------------------------------------------------------ the site manifest and the live check
+
+SITE_DATA = ("data", "audio")
+
+
+def site_manifest(mode, root=None, book_path=None):
+    """Write or check checks/site-before.txt: every site/data and site/audio file except the R ones."""
+    site = pathlib.Path(root) if root else (LA / "site")
+    book = pathlib.Path(book_path) if book_path else (CS / "checks" / "site-before.txt")
+    files = [f for d in SITE_DATA for f in sorted((site / d).glob("*")) if f.is_file()]
+    if mode == "write":
+        book.parent.mkdir(exist_ok=True)
+        rows = []
+        for f in files:
+            rel = f.relative_to(site).as_posix()
+            if re.fullmatch(r"R\d\d\.json", f.name) or re.fullmatch(r"R\d\d-\d\d\.mp3", f.name):
+                continue
+            rows.append(f"{hashlib.sha256(f.read_bytes()).hexdigest()}  {rel}")
+        book.write_text("\n".join(rows) + "\n", encoding="utf-8")
+        print(f"WROTE {book} ({len(rows)} files)")
+        return []
+    if not book.exists():
+        return ["checks/site-before.txt is missing; run --site-manifest write first"]
+    problems, listed = [], set()
+    for line in book.read_text(encoding="utf-8").splitlines():
+        digest, _, rel = line.partition("  ")
+        listed.add(rel)
+        f = site / rel
+        if not f.exists():
+            problems.append(f"{rel}: vanished")
+        elif hashlib.sha256(f.read_bytes()).hexdigest() != digest:
+            problems.append(f"{rel}: changed")
+    for f in files:
+        rel = f.relative_to(site).as_posix()
+        if rel in listed:
+            continue
+        if re.fullmatch(r"R\d\d\.json", f.name) or re.fullmatch(r"R\d\d-\d\d\.mp3", f.name):
+            continue
+        problems.append(f"{rel}: a new file that is not an R file")
+    return problems
+
+
+def live_check(ids):
+    """After a push: the lessons play on the companion site (plan 6.4)."""
+    import time
+    import urllib.request
+    base = "https://inn514.canner.app/"
+    for attempt in range(10):
+        ok = True
+        try:
+            page = urllib.request.urlopen(base, timeout=30).read().decode("utf-8", "ignore")
+        except Exception:
+            ok = False
+            page = ""
+        for lid in ids:
+            if not ok:
+                break
+            if f"site/audio/{lid}-01.mp3" not in page:
+                ok = False
+                break
+            try:
+                req = urllib.request.Request(f"{base}site/audio/{lid}-01.mp3", method="HEAD")
+                ok = urllib.request.urlopen(req, timeout=30).status == 200
+            except Exception:
+                ok = False
+        if ok:
+            print(f"LIVE OK {' '.join(ids)}")
+            return 0
+        if attempt < 9:
+            time.sleep(60)
+    print(f"NOT LIVE YET {' '.join(ids)}")
+    return 1
 
 
 # ------------------------------------------------------------------ command line
@@ -825,6 +1082,22 @@ def main(argv):
     if not argv:
         print(__doc__)
         return 2
+    if "--site-manifest" in argv:
+        mode = argv[argv.index("--site-manifest") + 1]
+        problems = site_manifest(mode)
+        for p in problems:
+            print(f"- {p}")
+        if problems:
+            print(f"SITE MANIFEST FOUND {len(problems)} problems")
+            return 1
+        print("SITE MANIFEST OK")
+        return 0
+    if "--live" in argv:
+        ids = [a for a in argv[argv.index("--live") + 1:] if re.fullmatch(r"R\d\d", a)]
+        if not ids:
+            print("--live needs R ids")
+            return 2
+        return live_check(ids)
     if "--scan" in argv:
         problems = scan(CS)
         for p in problems:
@@ -838,7 +1111,8 @@ def main(argv):
     if "--all" in argv:
         partial = "--partial" in argv
         total = 0
-        for name in all_names():
+        names = all_names() + [f"listen/{f.stem}.md" for f in sorted((CS / "listen").glob("R*.md"))]
+        for name in names:
             path = CS / name
             if not path.exists():
                 if partial:

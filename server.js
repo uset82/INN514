@@ -25,7 +25,8 @@ const DB = (() => {
     const data = JSON.parse(/const DATA = (\{.*?\});\r?\n/s.exec(html)[1]);
     const lectures = {};
     for (const f of fs.readdirSync(path.join(ROOT, "site", "data"))) {
-      if (f.endsWith(".json")) lectures[f.slice(0, -5)] = JSON.parse(fs.readFileSync(path.join(ROOT, "site", "data", f), "utf8"));
+      // The revision lessons (R01-R10) are not chapters the course answers from.
+      if (f.endsWith(".json") && !/^R\d\d\.json$/.test(f)) lectures[f.slice(0, -5)] = JSON.parse(fs.readFileSync(path.join(ROOT, "site", "data", f), "utf8"));
     }
     const tpl = fs.readFileSync(path.join(ROOT, "site", "template.html"), "utf8");
     const rules = /^const RULES = (".*");$/m.exec(tpl);
@@ -125,6 +126,7 @@ const VOICE_EN = process.env.GROKBOT_VOICE_MODEL_EN || "fish-audio/s2.1-pro-free
 const VOICE_ES = process.env.GROKBOT_VOICE_MODEL_ES || "fish-audio/s2.1-pro-free:free";
 const PICK_MODELS = (process.env.GROKBOT_PICK_MODELS || "").split(",").map((s) => s.trim()).filter(Boolean);
 const FIRST_TOKEN_MS = Number(process.env.GROKBOT_FIRST_TOKEN_MS) > 0 ? Number(process.env.GROKBOT_FIRST_TOKEN_MS) : 15000;
+const PICK_TIMEOUT_MS = Number(process.env.GROKBOT_PICK_TIMEOUT_MS) > 0 ? Number(process.env.GROKBOT_PICK_TIMEOUT_MS) : 10000;
 /* Optional OpenRouter "reasoning" settings, as JSON (for example {"effort":"low"}); unset means none are sent. */
 const REASONING = (() => {
   if (!process.env.GROKBOT_REASONING) return null;
@@ -135,8 +137,9 @@ const upstreamHeaders = () => ({
   "HTTP-Referer": "https://inn514.canner.app", "X-Title": "INN514 Course Companion",
 });
 function upstreamBody(model, messages, opts, stream) {
-  const b = { model, messages, max_tokens: opts.max_tokens || 1000, temperature: opts.temperature ?? 0.3 };
-  if (REASONING) b.reasoning = REASONING;
+  const b = { model, messages, max_tokens: opts.max_tokens || 2000, temperature: opts.temperature ?? 0.3 };
+  const reasoning = opts.reasoning || REASONING;
+  if (reasoning) b.reasoning = reasoning;
   if (stream) b.stream = true;
   return JSON.stringify(b);
 }
@@ -148,9 +151,9 @@ async function askUpstream(messages, opts = {}) {
       const r = await fetch(`${BASE}/chat/completions`, {
         method: "POST",
         headers: upstreamHeaders(),
-        // Room for a reasoning model's thinking as well as the 3-to-6-sentence answer.
+        // Room for a reasoning model's thinking as well as the answer.
         body: upstreamBody(model, messages, opts, false),
-        signal: AbortSignal.timeout(40000),
+        signal: AbortSignal.timeout(opts.timeoutMs || 40000),
       });
       if (r.ok) {
         const j = await r.json();
@@ -420,7 +423,8 @@ const server = http.createServer((req, res) => {
       };
       if (hits.length) return answer(hits);
       askUpstream([{ role: "user", content: DB.pickRules + "\n\n" + COURSE_INDEX + "\n\nQuestion: " + question }],
-        { max_tokens: 600, temperature: 0, models: PICK_MODELS.length ? PICK_MODELS : MODELS }).then((pick) => {
+        { max_tokens: 600, temperature: 0, models: (PICK_MODELS.length ? PICK_MODELS : MODELS).slice(0, 1),
+          timeoutMs: PICK_TIMEOUT_MS, reasoning: { effort: "low" } }).then((pick) => {
         let picks = [];
         if (!pick.error) {
           const m = /\[[\s\S]*?\]/.exec(pick.text);

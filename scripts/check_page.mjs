@@ -250,8 +250,8 @@ try {
     return {top: Math.round(t.top), vh: window.innerHeight, y: Math.round(window.scrollY), links}; })()`);
   check('the top bar stays at the top of a scrolled paper',
     bar.top >= -1 && bar.top <= 1 && bar.y > 500, JSON.stringify({top: bar.top, y: bar.y}));
-  check('both top bar links stay visible',
-    bar.links.length === 2 && bar.links.every((l) => l.w > 0 && l.top >= 0 && l.bottom <= bar.vh), JSON.stringify(bar.links));
+  check('the top bar links stay visible',
+    bar.links.length === 3 && bar.links.every((l) => l.w > 0 && l.top >= 0 && l.bottom <= bar.vh), JSON.stringify(bar.links));
 
   // ---- the player title leads back to what is playing
   const nowLink = await ev(`({href: document.getElementById('nowTitle').getAttribute('href'),
@@ -416,6 +416,12 @@ try {
   const none = await ev(`document.querySelector('#searchResults .lede')?.textContent || ''`);
   check('a search with no matches shows the no-results sentence',
     none.includes('Nothing in the classes or papers matches that'), none);
+  await searchFor('ecosistema emprendedor');
+  const spanishSearchPage = await ev(`(() => ({links: [...document.querySelectorAll('#searchResults a[data-chapter]')].map((a) => a.getAttribute('href')),
+    groups: [...document.querySelectorAll('#searchResults h2')].map((h) => h.textContent)}))()`);
+  check('the search page places a Spanish ecosystem question under chapters',
+    spanishSearchPage.groups.includes('Chapters') && spanishSearchPage.links.includes('#T4'),
+    JSON.stringify(spanishSearchPage.links.slice(0, 4)));
 
   // ---- claude mock pass: Grokbot on every page, chapter and course questions, drag, keyboard
   await send('Emulation.setDeviceMetricsOverride', { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
@@ -509,13 +515,39 @@ try {
   const src1 = await ev(`(() => { const a = document.querySelector('.gb-src a');
     return {href: a?.getAttribute('href'), text: a?.textContent || ''}; })()`);
   check('the searched answer cites the chapter the search found', src1.href === '#T4', JSON.stringify(src1));
+  const spanishUnits = await ev(`(() => {
+    const hits = (q) => searchHits(q).map((h) => h.id + ' ' + h.chapter);
+    return {expand: expandSpanish('¿Qué es la causalidad ascendente?'),
+      causation: hits('¿Qué es la causalidad ascendente?'),
+      crowd: hits('¿Qué es el micromecenazgo?'),
+      value: hits('¿Qué es la propuesta de valor?'),
+      hola: hits('hola')};
+  })()`);
+  check('expandSpanish adds the English words for a Spanish question',
+    spanishUnits.expand.includes('upward causation'), spanishUnits.expand.slice(0, 80));
+  check('the search places a Spanish causation question',
+    spanishUnits.causation.includes('T4 3') && spanishUnits.causation.includes('P07 1'),
+    JSON.stringify(spanishUnits.causation));
+  check('the search places Spanish crowdfunding and value questions',
+    spanishUnits.crowd.some((h) => h.startsWith('P11') || h.startsWith('B1')) &&
+      spanishUnits.value.some((h) => h.startsWith('P13')),
+    JSON.stringify({crowd: spanishUnits.crowd, value: spanishUnits.value}));
+  check('a greeting places nothing in the search', spanishUnits.hola.length === 0, JSON.stringify(spanishUnits.hola));
   await ev(`window.__lastJson = null; window.__lastSample = null;
     document.querySelector('.ask-input').value = '¿Qué es la causalidad ascendente?';
+    document.querySelector('.ask-send').click()`);
+  await waitFor(`window.__lastSample?.[0]?.content.includes('Two models of the ecosystem')`);
+  const spanishSearch = await ev(`({pick: window.__lastJson,
+    title: window.__lastSample?.[0]?.content.includes('Two models of the ecosystem')})`);
+  check('a Spanish course question the search can place makes no pick',
+    spanishSearch.pick === null && spanishSearch.title, JSON.stringify(spanishSearch));
+  await ev(`window.__lastJson = null; window.__lastSample = null;
+    document.querySelector('.ask-input').value = '¿Qué dice el curso sobre el liderazgo de las mujeres?';
     document.querySelector('.ask-send').click()`);
   await waitFor(`window.__lastJson !== null`);
   const spanishPick = await ev(`({tier: window.__lastJson?.modelTier,
     pick: window.__lastJson?.input?.includes('T4 3:') && window.__lastJson?.input?.includes('P07 1:')})`);
-  check('a Spanish course question makes the quick pick over the whole index',
+  check('a Spanish question the glossary cannot place makes the quick pick over the whole index',
     spanishPick.tier === 'quick' && spanishPick.pick, JSON.stringify(spanishPick));
   await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 2, mobile: true });
   await sleep(500);
@@ -928,6 +960,90 @@ try {
   await shot('phone-paper-pager.png');
   await ev(`window.scrollTo(0, document.body.scrollHeight)`); await sleep(400);
   await shot('phone-player-auto.png');
+
+  // ---- W4: the Revision page, its lessons, Repeat and the Grokbot guards
+  await send('Emulation.setDeviceMetricsOverride', { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+  await go('home'); await sleep(500);
+  const doors3 = await ev(`(() => { const d = document.querySelector('.door[data-door="revision"]');
+    return {count: document.querySelectorAll('.door').length, href: d?.getAttribute('href'),
+      stats: d?.querySelector('.stats')?.textContent || '', nav: document.querySelector('.mainnav a[data-nav="revision"]')?.getAttribute('href')}; })()`);
+  check('the front page has three doors, and the revision door says 10 lessons',
+    doors3.count === 3 && doors3.href === '#revision' && doors3.stats.includes('10 lessons'), JSON.stringify(doors3));
+  check('the top bar has a Revision link', doors3.nav === '#revision', String(doors3.nav));
+  await ev(`document.querySelector('.door[data-door="revision"]').scrollIntoView({ block: 'center' })`);
+  await sleep(400);
+  await shot('desktop-home-revision.png');
+
+  await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 2, mobile: true });
+  await go('revision'); await sleep(500);
+  const revPage = await ev(`(() => { const rows = [...document.querySelectorAll('.list.classes .row[data-id]')];
+    return {n: rows.length, h1: document.querySelector('h1')?.textContent, ready: rows.filter((r) => r.classList.contains('ready')).length,
+      link: rows.find((r) => r.classList.contains('ready'))?.querySelector('a.row-title')?.getAttribute('href'),
+      soon: rows.filter((r) => r.classList.contains('soon')).length,
+      soonText: rows.find((r) => r.classList.contains('soon'))?.textContent || ''}; })()`);
+  check('#revision lists ten rows, a link for a ready lesson and In preparation for the rest',
+    revPage.n === 10 && revPage.h1 === 'Revision' && revPage.ready === 1 && revPage.link === '#R07' &&
+      revPage.soon === 9 && revPage.soonText.includes('In preparation'), JSON.stringify(revPage));
+  await shot('phone-revision.png');
+
+  await go('R07'); await sleep(600);
+  const lessonView = await ev(`(() => ({crumb: document.querySelector('.crumbs a')?.textContent,
+    crumbHref: document.querySelector('.crumbs a')?.getAttribute('href'), h1: document.querySelector('h1')?.textContent,
+    chapters: document.querySelectorAll('.route.chapters .stop').length, expected: DATA.lectures.R07.chapters.length,
+    by: document.querySelector('.by')?.textContent || ''}))()`);
+  check('#R07 has the Revision crumb, its title and its chapters',
+    lessonView.crumb === 'Revision' && lessonView.crumbHref === '#revision' &&
+      DATA.lectures.R07.title.endsWith(lessonView.h1) && lessonView.chapters === lessonView.expected &&
+      lessonView.by.includes('INN514 cheatsheet'), JSON.stringify(lessonView));
+  await ev(`document.querySelectorAll('.route.chapters .stop .body')[0].click()`); await sleep(700);
+  const firstSrc = await ev(`document.getElementById('audio').getAttribute('src') || ''`);
+  check('the first chapter of #R07 plays R07-01.mp3', firstSrc.includes('R07-01.mp3'), firstSrc);
+
+  const repeatOn = await ev(`(() => { const b = document.getElementById('repeat'); b.click();
+    return {pressed: b.getAttribute('aria-pressed'), saved: JSON.parse(localStorage.getItem('inn514-companion') || '{}').repeat}; })()`);
+  check('the Repeat chip toggles and is saved', repeatOn.pressed === 'true' && repeatOn.saved === true, JSON.stringify(repeatOn));
+  await ev(`document.querySelectorAll('.route.chapters .stop .body')[DATA.lectures.R07.chapters.length - 1].click()`);
+  await sleep(700);
+  const restarted = await ev(`(async () => { const a = document.getElementById('audio'); a.dispatchEvent(new Event('ended'));
+    await new Promise((r) => setTimeout(r, 600));
+    return {src: a.getAttribute('src') || ''}; })()`);
+  check('with Repeat on, the end of the last chapter starts the lesson again',
+    restarted.src.includes('R07-01.mp3'), JSON.stringify(restarted));
+  const repeatOff = await ev(`(() => { const b = document.getElementById('repeat'); b.click();
+    return {pressed: b.getAttribute('aria-pressed'), series: SERIES.revision.length}; })()`);
+  await ev(`document.querySelectorAll('.route.chapters .stop .body')[DATA.lectures.R07.chapters.length - 1].click()`);
+  await sleep(700);
+  const afterOff = await ev(`(async () => { const a = document.getElementById('audio'); a.dispatchEvent(new Event('ended'));
+    await new Promise((r) => setTimeout(r, 600));
+    return {src: a.getAttribute('src') || '', hash: location.hash}; })()`);
+  check('with Repeat off the end of the lesson does not start it again',
+    repeatOff.pressed === 'false' &&
+      (repeatOff.series > 1 ? afterOff.hash !== '#R07' : !afterOff.src.includes('R07-01.mp3')),
+    JSON.stringify({repeatOff, afterOff}));
+
+  await ev(`document.querySelector('.gb-orb').click()`); await sleep(400);
+  const gbHead = await ev(`(() => ({head: document.querySelector('.gb-head')?.textContent || '',
+    hidden: document.querySelector('.gb-switch')?.hidden}))()`);
+  check('on #R07 Grokbot says About the whole course and hides its switch',
+    gbHead.head === 'About the whole course' && gbHead.hidden === true, JSON.stringify(gbHead));
+
+  const revSearch = await ev(`({indexed: searchIndex().docs.some((d) => d.id.startsWith('R')),
+    hits: searchHits('Materialization').map((h) => h.id)})`);
+  check('a revision lesson is not in the search index',
+    revSearch.indexed === false && !revSearch.hits.some((id) => typeof id === 'string' && id.startsWith('R')),
+    JSON.stringify(revSearch));
+
+  await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 2, mobile: true });
+  await go('R07'); await sleep(600);
+  await ev(`window.scrollTo(0, 0)`); await sleep(300);
+  await shot('phone-revision-lesson.png');
+  const lessonWidth = await ev(`({scroll: document.documentElement.scrollWidth, inner: window.innerWidth})`);
+  check('a revision lesson has no horizontal scroll at phone width',
+    lessonWidth.scroll <= lessonWidth.inner, JSON.stringify(lessonWidth));
+  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'dark' }] });
+  await sleep(500); await shot('phone-revision-dark.png');
+  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'light' }] });
+
 
   check('no script errors', errors.length === 0, errors.slice(0, 3).join(' | '));
   ws.close();

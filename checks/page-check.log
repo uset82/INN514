@@ -19,7 +19,7 @@
 [PASS] #T1 opens the class with all its chapters  {"stops":7,"sections":7,"h1":"Innovation as systemic and sustainable transformation"}
 [PASS] a plain file hides Grokbot, the ask buttons and the greeting  {"shown":false,"askBtns":0,"greets":0}
 [PASS] the Ask how-to item is hidden in a plain file  false
-[PASS] a chapter plays from its button  {"src":"T1-02.mp3","paused":false,"t":3.386552,"d":188.424}
+[PASS] a chapter plays from its button  {"src":"T1-02.mp3","paused":false,"t":3.392696,"d":188.424}
 [PASS] paragraph highlight follows the audio  {"count":1,"inChapter":"ch-1"}
 [PASS] next chapter starts on its own  {"src":"T1-03.mp3","now":"2"}
 [PASS] finished chapter fills the route and is saved  {"done":true,"fill":58.09375,"saved":{"T1":[1]}}
@@ -30,7 +30,7 @@
 [PASS] a paper has a breadcrumb back to Papers and a Where next block  {"crumbs":true,"next":true,"h2":"Where next"}
 [PASS] a class has a breadcrumb back to Classes and a Where next block  {"crumbs":true,"next":true}
 [PASS] the top bar stays at the top of a scrolled paper  {"top":0,"y":3000}
-[PASS] both top bar links stay visible  [{"href":"#classes","w":76,"top":6,"bottom":50},{"href":"#papers","w":70,"top":6,"bottom":50}]
+[PASS] the top bar links stay visible  [{"href":"#classes","w":76,"top":6,"bottom":50},{"href":"#papers","w":70,"top":6,"bottom":50},{"href":"#revision","w":80,"top":6,"bottom":50}]
 [PASS] the Papers link in the top bar opens the papers page  {"papers":true,"current":"page"}
 [PASS] the player title names what is playing and links to it  {"href":"#T1","text":"Class 1, chapter 3: Norway's innovation puzzle","tag":"A"}
 [PASS] the player title opens what is playing  {"hash":"#T1","h1":"Innovation as systemic and sustainable transformation"}
@@ -42,7 +42,7 @@
 [PASS] the theme button switches colours, label and saved choice  {"start":{"theme":"light","bg":"rgb(250, 249, 245)"},"next":{"theme":"dark","bg":"rgb(38, 38, 36)","label":"Switch to light theme","saved":"dark"}}
 [PASS] the chosen theme survives a reload  {"theme":"dark","bg":"rgb(38, 38, 36)","saved":"dark"}
 [PASS] the second theme click returns to the starting theme  {"theme":"light","bg":"rgb(250, 249, 245)","saved":"light","label":"Switch to dark theme"}
-[PASS] the theme button fits in the phone top bar  {"inner":390,"scroll":390,"left":338.84375,"right":374}
+[PASS] the theme button fits in the phone top bar  {"inner":390,"scroll":390,"left":330,"right":374}
 [PASS] no horizontal scroll at phone width (home)  {"scroll":390,"inner":390}
   screenshot workspace/lecture-audio/checks/phone-home.png
   screenshot workspace/lecture-audio/checks/phone-home-dark.png
@@ -65,6 +65,7 @@
 [PASS] clicking the first chapter result opens its page at that chapter  {"hash":"#T4","found":true,"top":72}
 [PASS] "Stam" lists Paper 7 under Papers  {"paperNo":"Paper 7","text":"Papers\n          \n            Paper 7\n            \n              Entrepreneurial ecosystem elements\n              Stam & van de Ven 2021\n              20 minutes, 7 chapters\n              \n              \n            \n          "}
 [PASS] a search with no matches shows the no-results sentence  Nothing in the classes or papers matches that. Try a shorter word, or ask Grokbot.
+[PASS] the search page places a Spanish ecosystem question under chapters  ["#T4","#T4","#P06","#T8"]
 [PASS] #grokbot is displayed on #home, #T4 and #P02 as the same element  {"gbOnHome":{"shown":true,"same":true},"gbOnT4":{"shown":true,"same":true},"gbOnP02":{"shown":true,"same":true}}
 [PASS] on the front page the bubble opens in course mode, switch and chips hidden  {"open":true,"expanded":"true","head":"About the whole course","switchHidden":true,"chipsHidden":true}
 [PASS] on #T4 with chapter 3 on screen the bubble heads that chapter with a Whole course switch  {"head":"About Class 4, chapter 3: Two models of the ecosystem","switch":"Whole course"}
@@ -74,7 +75,12 @@
 [PASS] "What is upward causation?" answers from the search without a pick  {"json":null,"title":true}
 [PASS] a course answer asks for 2 to 4 short sentences  You are Grokbot, the friendly study companion of the master's course INN514, "Innovation systems and sustainable transfo
 [PASS] the searched answer cites the chapter the search found  {"href":"#T4","text":"Class 4, chapter 3: Two models of the ecosystem"}
-[FAIL] a Spanish course question makes the quick pick over the whole index  {}
+[PASS] expandSpanish adds the English words for a Spanish question  ¿Qué es la causalidad ascendente? upward causation
+[PASS] the search places a Spanish causation question  ["T4 3","P07 1"]
+[PASS] the search places Spanish crowdfunding and value questions  {"crowd":["P11 1","B1 1","P13 2"],"value":["P13 3","P13 1","P13 2"]}
+[PASS] a greeting places nothing in the search  []
+[PASS] a Spanish course question the search can place makes no pick  {"pick":null,"title":true}
+[PASS] a Spanish question the glossary cannot place makes the quick pick over the whole index  {"tier":"quick","pick":true}
 [PASS] "hola" answers from the course overview with the Spanish greeting  {"words":"¡Hola! Soy Grokbot. ¿En qué te ayudo?","sampleCount":1}
 [PASS] the Spanish answer is spoken with a Spanish voice  [{"text":"¡Hola!","lang":"es-ES","voice":"es-ES"},{"text":"Soy Grokbot.","lang":"es-ES","voice":"es-ES"},{"text":"¿En qué te ayudo?","lang":"es-ES","voice":"es-ES"}]
 [PASS] "Read again" is visible after the answer  flex
@@ -132,5 +138,20 @@
 [PASS] the breadcrumb and pager sit on one row, or wrap without overlapping  {"inner":390,"scroll":390,"oneRow":true,"wrapped":false,"overlap":false,"auto":"Auto","playerRow":true}
   screenshot workspace/lecture-audio/checks/phone-paper-pager.png
   screenshot workspace/lecture-audio/checks/phone-player-auto.png
+[PASS] the front page has three doors, and the revision door says 10 lessons  {"count":3,"href":"#revision","stats":"10 lessons, 9 minutes","nav":"#revision"}
+[PASS] the top bar has a Revision link  #revision
+  screenshot workspace/lecture-audio/checks/desktop-home-revision.png
+[PASS] #revision lists ten rows, a link for a ready lesson and In preparation for the rest  {"n":10,"h1":"Revision","ready":1,"link":"#R07","soon":9,"soonText":"\n        1\n        \n          Exam day: what to know by heart\n          From the exam-day page of the cheatsheet\n          In preparation\n          \n        \n      "}
+  screenshot workspace/lecture-audio/checks/phone-revision.png
+[PASS] #R07 has the Revision crumb, its title and its chapters  {"crumb":"Revision","crumbHref":"#revision","h1":"Technological innovation systems and their functions","chapters":6,"expected":6,"by":"From the INN514 cheatsheet. 6 chapters, 9 minutes."}
+[PASS] the first chapter of #R07 plays R07-01.mp3  audio/R07-01.mp3
+[PASS] the Repeat chip toggles and is saved  {"pressed":"true","saved":true}
+[PASS] with Repeat on, the end of the last chapter starts the lesson again  {"src":"audio/R07-01.mp3"}
+[PASS] with Repeat off the end of the lesson does not start it again  {"repeatOff":{"pressed":"false","series":1},"afterOff":{"src":"audio/R07-06.mp3","hash":"#R07"}}
+[PASS] on #R07 Grokbot says About the whole course and hides its switch  {"head":"About the whole course","hidden":true}
+[PASS] a revision lesson is not in the search index  {"indexed":false,"hits":["T6","P10","P10"]}
+  screenshot workspace/lecture-audio/checks/phone-revision-lesson.png
+[PASS] a revision lesson has no horizontal scroll at phone width  {"scroll":390,"inner":390}
+  screenshot workspace/lecture-audio/checks/phone-revision-dark.png
 [PASS] no script errors
-1 check(s) failed
+ALL PAGE CHECKS PASSED

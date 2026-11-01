@@ -52,6 +52,20 @@ SESSIONS = [
      "teacher": "Kelvin Ivankovic"},
 ]
 
+# The revision lessons voice the course cheatsheet (cheatsheet/listen/R01.md ...), shown as "Revision N".
+REVISION = [
+    ("R01", "1", "Exam day: what to know by heart", "From the exam-day page of the cheatsheet"),
+    ("R02", "2", "Innovation systems and Norway's national innovation system", "Theme 1 of the cheatsheet"),
+    ("R03", "3", "Regional innovation systems and industrial restructuring", "Theme 2 of the cheatsheet"),
+    ("R04", "4", "Institutions and institutional work", "Theme 3 of the cheatsheet"),
+    ("R05", "5", "Entrepreneurial ecosystems", "Theme 4 of the cheatsheet"),
+    ("R06", "6", "Agency and new path development", "Theme 5 of the cheatsheet"),
+    ("R07", "7", "Technological innovation systems and their functions", "Theme 6 of the cheatsheet"),
+    ("R08", "8", "Sustainability, transformation and normative direction", "Theme 7 of the cheatsheet"),
+    ("R09", "9", "Crowdfunding and service ecosystems", "Theme 8 of the cheatsheet"),
+    ("R10", "10", "The 17 papers in brief", "The paper cards of the cheatsheet"),
+]
+
 
 def main():
     sys.stdout.reconfigure(encoding="utf-8")
@@ -71,7 +85,9 @@ def main():
                          "lectures": m["lectures"], "ready": pid in lectures})
     catalog = [{"id": i, "num": n, "title": t, "when": w, "teacher": te, "note": no, "ready": i in lectures,
                 "readings": [r["id"] for r in readings if i in r["lectures"]]} for i, n, t, w, te, no in CATALOG]
-    data = {"catalog": catalog, "readings": readings, "sessions": SESSIONS, "lectures": lectures}
+    revision = [{"id": i, "num": n, "title": t, "when": w, "ready": i in lectures} for i, n, t, w in REVISION]
+    data = {"catalog": catalog, "readings": readings, "sessions": SESSIONS, "revision": revision,
+            "lectures": lectures}
     missing = [c["audio"] for lec in lectures.values() for c in lec["chapters"] if not (SITE / c["audio"]).exists()]
     if missing:
         print(f"FAIL: missing audio files {missing}")
@@ -83,8 +99,9 @@ def main():
     size = sum((SITE / f).stat().st_size for f in files)
     ready_l = [c["id"] for c in catalog if c["ready"]]
     ready_r = [r["id"] for r in readings if r["ready"]]
+    ready_v = [r["id"] for r in revision if r["ready"]]
     print(f"index.html: {len(html.encode('utf-8')) / 1024:.0f} KB; ready lectures: {', '.join(ready_l) or 'none'}; "
-          f"ready readings: {', '.join(ready_r) or 'none'}")
+          f"ready readings: {', '.join(ready_r) or 'none'}; ready revision lessons: {', '.join(ready_v) or 'none'}")
     if held:
         print(f"not yet reviewed, so left off the page: {', '.join(held)} (add an id to site/reviewed.json after review)")
     print(f"audio files to publish: {len(files)} ({size / 1e6:.1f} MB)")
