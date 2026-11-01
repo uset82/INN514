@@ -376,7 +376,10 @@ Spec: CHEATSHEET_PLAN.md. One task per conversation; a gate review always in a f
     `--site-manifest check` (`SITE MANIFEST OK`).
 - [x] R10 lesson (the 17 papers in brief)
   - Recorded and shipped with the G13 batch: see the evidence under G13.
-- [ ] STOP GATE G13: review R10; build and check the site; commit and push; live check; final report
+- [x] STOP GATE G13: review R10; build and check the site; commit and push; live check; final report
+  - `--scan` -> `SCAN CLEAN`; commit `8e85cbb cheatsheet: G13 the lesson R10 and the final site build`; push `109429d..8e85cbb  main -> main`.
+  - `--live R10` -> `LIVE OK R10`. All ten lessons are recorded and live.
+
   - Review of R10, chapter by chapter against the 17 cards:
 
 | Chapters | Content checked | Result |
