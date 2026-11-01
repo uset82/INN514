@@ -322,7 +322,10 @@ Spec: CHEATSHEET_PLAN.md. One task per conversation; a gate review always in a f
   - Recorded and shipped with the G11 batch: see the evidence under G11.
 - [x] R04 lesson (Theme 3)
   - Recorded and shipped with the G11 batch: see the evidence under G11.
-- [ ] STOP GATE G11: review R01-R04; build and check the site; commit and push; live check
+- [x] STOP GATE G11: review R01-R04; build and check the site; commit and push; live check
+  - `--scan` -> `SCAN CLEAN`; commit `b8664e1 cheatsheet: G11 the lessons R01 to R04`; push `cbf42e7..b8664e1  main -> main`; `status -sb` now `## main...origin/main`.
+  - `--live R01 R02 R03 R04` -> `LIVE OK R01 R02 R03 R04`.
+
   - Review of the four lessons, chapter by chapter against their voices:
 
 | Lesson | Chapters checked | Result |
@@ -343,11 +346,31 @@ Spec: CHEATSHEET_PLAN.md. One task per conversation; a gate review always in a f
     follows `REVISION` and the ready lessons, and the Repeat-off check no longer assumes a next lesson. A new
     check uses R01 to prove that Auto hands over to R02 when Repeat is off. `scripts/check_page.mjs` was staged
     with this batch, though 9's G11 list does not name it, because the committed checks must match the state.
-- [ ] R05 lesson (Theme 4)
-- [ ] R06 lesson (Theme 5)
-- [ ] R08 lesson (Theme 7)
-- [ ] R09 lesson (Theme 8)
+- [x] R05 lesson (Theme 4)
+  - Recorded and shipped with the G12 batch: see the evidence under G12.
+- [x] R06 lesson (Theme 5)
+  - Recorded and shipped with the G12 batch: see the evidence under G12.
+- [x] R08 lesson (Theme 7)
+  - Recorded and shipped with the G12 batch: see the evidence under G12.
+- [x] R09 lesson (Theme 8)
+  - Recorded and shipped with the G12 batch: see the evidence under G12.
 - [ ] STOP GATE G12: review R05, R06, R08, R09; build and check the site; commit and push; live check
+  - Review of the four lessons, chapter by chapter against their voices:
+
+| Lesson | Chapters checked | Result |
+|---|---|---|
+| R05 Entrepreneurial ecosystems (6) | process not thing, access over presence, recycling, selection and strategic choice, the ten elements, the four types, Jahnebakken, work visas | confirmed against cards P06, P07, P08 and theme TH4 |
+| R06 Agency and new path development (6) | agency from Sotarauta and Suvinen, the two kinds, the three forms each, distributed agency, bricolage, Flam, Odda and Sogndal, the batteries | confirmed against cards P14, P15, P16, P17 and theme TH5 |
+| R08 Sustainability (6) | wicked problems, the dedicated system, transformative innovation, transformational failures, the three questions, the two regions, the end of cheap growth | confirmed against cards P04, P03 and theme TH7 |
+| R09 Crowdfunding (6) | the two kinds of innovativeness, openness, social capital, the value proposition, the five steps, the three levels, the Norwegian figure, the marked application | confirmed against cards P11, P12, P13 and theme TH8 |
+
+  - For the ear: each chapter opens in plain words, speaks its sources as author and year, closes with a Remember
+    line, and announces and closes its lists; Test yourself pauses and then answers.
+  - The recordings: `build_audio.py R05 R06 R08 R09` reported `[OK]` for all 24 chapters (6 + 6 + 6 + 6),
+    118-145 words per minute, 0.40-0.67 MB each; totals 8.7, 8.6, 8.5 and 8.7 min.
+  - The five site checks: `build_site.py` (690 KB, nine lessons ready), `check_page.mjs` (`ALL PAGE CHECKS PASSED`),
+    `build_static.py` (693 KB, 210 audio files), `test_server.mjs` (`ALL SERVER CHECKS PASSED`),
+    `--site-manifest check` (`SITE MANIFEST OK`).
 - [ ] R10 lesson (the 17 papers in brief)
 - [ ] STOP GATE G13: review R10; build and check the site; commit and push; live check; final report
 
