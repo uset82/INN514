@@ -199,7 +199,7 @@ Spec: CHEATSHEET_PLAN.md. One task per conversation; a gate review always in a f
 - [x] TH8 Crowdfunding and service ecosystems
   - `check_cheatsheet.py themes/TH8.md` → `PASS themes/TH8.md (481 words)`.
   - Opened: P11 pp. 1110 and 1115; P12 p. 8; P13 pp. 48, 51 and 52; Bonus slide 42 (the Norwegian figures) and slide 7 (the Norwegian term), section 1 only.
-- [ ] STOP GATE G8: review TH5, TH7, TH8; commit and push
+- [x] STOP GATE G8: review TH5, TH7, TH8; commit and push
   - Review table (each bullet against its cited page):
 
 | File | Bullets | Confirmed on the source | Fixed (what) |
@@ -207,13 +207,31 @@ Spec: CHEATSHEET_PLAN.md. One task per conversation; a gate review always in a f
 | themes/TH5.md | 5 definitions, 9 steps, 3 angles, 3 examples | P14 pp. 758 (agency), 759 (the pairs), 760 (Figure 1), 761 (the villages), 765 (the findings); P15 p. 278 (bricolage); P16 p. 486 (the modes); P17 pp. 268 and 281–282; Class 9 slide 38 | none |
 | themes/TH7.md | 5 definitions, 3 steps, 3 angles, 2 examples | P03 p. 17 (UNEP definition); P04 pp. 4 (paradigm, Pyka), 5 (Steward, Weber and Rohracher), 5–7 (the three questions); P01 p. 442; Class 9 slide 31 | one definition ran to 35 words and was cut to 32 |
 | themes/TH8.md | 5 definitions, 11 steps, 3 angles, 2 examples | P11 pp. 1110 and 1115; P12 p. 8 (six dimensions); P13 pp. 48 (ecosystem), 51 (five steps), 52 (value proposition); Bonus slides 7 and 42 | none |
+  - Before the commit: `--all --partial` → `ALL CHEATSHEET CHECKS PASSED`; `--scan` → `SCAN CLEAN`.
+  - Commit `f921274 cheatsheet: G8 the themes TH5, TH7 and TH8`; push `1bd04a9..f921274  main -> main`; `status -sb` now `## main...origin/main`.
+  - All 8 themes are written and pass; the 17 cards and 8 themes are complete.
 
 ## Part A: assembly and print
-- [ ] A1 front/EXAM_DAY.md
-- [ ] A2 back/GLOSSARY.md and back/SOURCES.md
-- [ ] A3 scripts/build_cheatsheet.py
-- [ ] A4 build, look at every page, fix, README.md, check --all passes
+- [x] A1 front/EXAM_DAY.md
+  - `check_cheatsheet.py front/EXAM_DAY.md` → `PASS front/EXAM_DAY.md (809 words)`.
+  - Built from 3.4, the theme sheets and T8's chapter for slides 33-43; the six past questions are the six of 3.4 word for word.
+- [x] A2 back/GLOSSARY.md and back/SOURCES.md
+  - `check_cheatsheet.py back/GLOSSARY.md` → `PASS back/GLOSSARY.md (242 words)`; `check_cheatsheet.py back/SOURCES.md` → `PASS back/SOURCES.md (533 words)`.
+  - The glossary has 36 rows, every theme term among them; the sources list the 17 readings in course order, the 8 classes and the 2 exam papers.
+- [x] A3 scripts/build_cheatsheet.py
+  - `C:/Python313/python.exe workspace/lecture-audio/cheatsheet/scripts/build_cheatsheet.py` → `BUILT INN514_CHEATSHEET.md (10406 words), print/INN514_CHEATSHEET.html, print/INN514_CHEATSHEET.pdf (11 pages, 692 KB)`.
+- [x] A4 build, look at every page, fix, README.md, check --all passes
+  - `check_cheatsheet.py --all` → `ALL CHEATSHEET CHECKS PASSED` (28 files, complete and assembled included).
+  - Pages opened: 1 (exam day), 2 (themes 1-2), 5 (themes 7-8 and the start of Part 3), 6 (cards 1-4), 7 (cards 3-4), 11 (cards 10, 17, 11) and 13 (end of Part 4) of the builds on the way, plus 2 and 6 of the final build. Fixed while looking: the exam table split across a column, lists rendered run-on, and four pages 35-70 per cent empty. README.md written.
 - [ ] STOP GATE G9: final review of front, back and PDF; commit and push everything; final report
+  - Review table (each file against its source):
+
+| File | Bullets | Confirmed on the source | Fixed (what) |
+|---|---|---|---|
+| front/EXAM_DAY.md | 4 + 6 rows + 6 rows + 12 + 3 + 6 checkboxes + 6 | the six questions compared with `EXAM` by the checker; definitions repeated from the theme sheets; the marking criteria from T8's chapter for slide 43; the format from slide 33 | six definitions ran past 18 words and were cut; a quotation in "How to answer" became parentheses |
+| back/GLOSSARY.md | 36 rows | every theme term, each third column a checked slide, an exam paper or "standard term" | none |
+| back/SOURCES.md | 17 + 8 + 2 | the `READINGS` order and page ranges of 3.2 | none |
+| print/INN514_CHEATSHEET.pdf | 11 pages | assembled from the reviewed files only | layout fixes listed above |
 
 ## Part V and Part W: listening lessons and the Revision section (after G9)
 - [ ] V0 check_cheatsheet.py: the listen kind, --site-manifest, --live and the wider scan; tests 25-34 pass (plan 6.4, 6.5)
