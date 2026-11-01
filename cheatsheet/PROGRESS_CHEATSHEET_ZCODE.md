@@ -178,7 +178,7 @@ Spec: CHEATSHEET_PLAN.md. One task per conversation; a gate review always in a f
 - [x] TH4 Entrepreneurial ecosystems
   - `check_cheatsheet.py themes/TH4.md` → `PASS themes/TH4.md (483 words)`.
   - Opened: P07 pp. 811 and 813; P06 pp. 161 and 163 (the figure page through the card); P08 p. 1100; T4 slides 17 and 19.
-- [ ] STOP GATE G7: review TH1-TH4; commit and push
+- [x] STOP GATE G7: review TH1-TH4; commit and push
   - Review table (each bullet against its cited page):
 
 | File | Bullets | Confirmed on the source | Fixed (what) |
@@ -187,10 +187,26 @@ Spec: CHEATSHEET_PLAN.md. One task per conversation; a gate review always in a f
 | themes/TH2.md | 5 definitions, 7 steps, 3 angles, 3 examples | P03 pp. 15 (institutional work), 16 (Cooke); P05 pp. 324 (three levels), 328 (four trajectories), 330 (related variety), 337 (Mongstad) | none |
 | themes/TH3.md | 5 definitions, 8 steps, 3 angles, 3 examples | P03 pp. 15, 16, 17 (the four forms), 18 (logics), 22 (Rettedal), 24 (the lock-in cycle); Class 9 slide 31 | none |
 | themes/TH4.md | 5 definitions, 7 steps, 3 angles, 2 examples | P07 pp. 811 (Hawley), 813 (ten elements); P06 pp. 161 (munificence, functionality), 163 (Figure 2); P08 p. 1100 (selection, strategic choice); Class 4 slides 17 and 19 | munificence and functionality were cited to Stam and van de Ven; they are on Spigel and Harrison p. 161 (P07 has no p. 161) |
-- [ ] TH5 Agency and new path development
-- [ ] TH7 Sustainability and normative direction
-- [ ] TH8 Crowdfunding and service ecosystems
+  - Before the commit: `--all --partial` → `ALL CHEATSHEET CHECKS PASSED`; `--scan` → `SCAN CLEAN`.
+  - Commit `1bd04a9 cheatsheet: G7 the themes TH1 to TH4`; push `11c4d22..1bd04a9  main -> main`; `status -sb` now `## main...origin/main`.
+  - Glossary notes filled for TH1-TH4 and TH6 (23 rows) in the table at the end of this file.
+- [x] TH5 Agency and new path development
+  - `check_cheatsheet.py themes/TH5.md` → `PASS themes/TH5.md (483 words)`.
+  - Opened: P14 pp. 758, 759, 760, 761 and 765; P15 p. 278; P16 p. 486; P17 pp. 268 and 281–282; T8 slide 38.
+- [x] TH7 Sustainability and normative direction
+  - `check_cheatsheet.py themes/TH7.md` → `PASS themes/TH7.md (481 words)`.
+  - Opened: P03 p. 17; P04 pp. 4, 5 and 5–7; P01 p. 442; T8 slide 31.
+- [x] TH8 Crowdfunding and service ecosystems
+  - `check_cheatsheet.py themes/TH8.md` → `PASS themes/TH8.md (481 words)`.
+  - Opened: P11 pp. 1110 and 1115; P12 p. 8; P13 pp. 48, 51 and 52; Bonus slide 42 (the Norwegian figures) and slide 7 (the Norwegian term), section 1 only.
 - [ ] STOP GATE G8: review TH5, TH7, TH8; commit and push
+  - Review table (each bullet against its cited page):
+
+| File | Bullets | Confirmed on the source | Fixed (what) |
+|---|---|---|---|
+| themes/TH5.md | 5 definitions, 9 steps, 3 angles, 3 examples | P14 pp. 758 (agency), 759 (the pairs), 760 (Figure 1), 761 (the villages), 765 (the findings); P15 p. 278 (bricolage); P16 p. 486 (the modes); P17 pp. 268 and 281–282; Class 9 slide 38 | none |
+| themes/TH7.md | 5 definitions, 3 steps, 3 angles, 2 examples | P03 p. 17 (UNEP definition); P04 pp. 4 (paradigm, Pyka), 5 (Steward, Weber and Rohracher), 5–7 (the three questions); P01 p. 442; Class 9 slide 31 | one definition ran to 35 words and was cut to 32 |
+| themes/TH8.md | 5 definitions, 11 steps, 3 angles, 2 examples | P11 pp. 1110 and 1115; P12 p. 8 (six dimensions); P13 pp. 48 (ecosystem), 51 (five steps), 52 (value proposition); Bonus slides 7 and 42 | none |
 
 ## Part A: assembly and print
 - [ ] A1 front/EXAM_DAY.md
@@ -247,3 +263,15 @@ Spec: CHEATSHEET_PLAN.md. One task per conversation; a gate review always in a f
 | Guidance of the search | retning for søket | [Class 6, slide 22] |
 | Materialization | materialisering | [Class 6, slide 24] |
 | Legitimation | legitimering | [Class 6, slide 23] |
+| Agency | aktørskap | [Class 3, slide 10] |
+| Bricolage | bricolage | standard term |
+| Green industrial restructuring | grønn industriell omstilling | standard term |
+| Paradigm | paradigme | standard term |
+| Dedicated innovation system | dedikert innovasjonssystem | standard term |
+| Transformative innovation | transformativ innovasjon | standard term |
+| Transformational failures | transformasjonssvikt | standard term |
+| Crowdfunding | folkefinansiering | [Bonus, slide 7] |
+| Incremental innovativeness | inkrementell innovativitet | standard term |
+| Radical innovativeness | radikal innovativitet | standard term |
+| Value proposition | verdiforslag | standard term |
+| Crowdfunding ecosystem | folkefinansieringsøkosystem | standard term |
