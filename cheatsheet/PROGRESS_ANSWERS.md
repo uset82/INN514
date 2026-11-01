@@ -155,9 +155,113 @@ ALL PAGE CHECKS PASSED
 ALL SERVER CHECKS PASSED
 SITE MANIFEST OK
 ```
-- [ ] E7 R14 lesson (June 2025 Question 1)
-- [ ] E8 R15 lesson (June 2025 Question 2)
-- [ ] E9 R16 lesson (June 2025 Question 3)
-- [ ] STOP GATE G17: review R14-R16; site checks; commit, push, live check
+
+b469fb8 answers: G16 R11 and R13 lessons. Push: 1be35cb..b469fb8 main -> main.
+
+```
+LIVE OK R11 R13
+```
+- [x] E7 R14 lesson (June 2025 Question 1)
+
+```
+PASS listen/R14.md (1649 words)
+ALL CHEATSHEET CHECKS PASSED
+```
+
+```
+== R14: Revision 14: Worked answer: regional innovation system, institutional work and sustainability (7 chapters)
+  [OK] R14-01.mp3:  1.5 min, 219 words, 147 wpm, -20.8 LUFS, 0.54 MB  (synthesised (attempt 1))
+  [OK] R14-02.mp3:  1.9 min, 247 words, 127 wpm, -20.6 LUFS, 0.70 MB  (synthesised (attempt 1))
+  [OK] R14-03.mp3:  1.8 min, 230 words, 129 wpm, -20.6 LUFS, 0.64 MB  (synthesised (attempt 1))
+  [OK] R14-04.mp3:  2.0 min, 252 words, 124 wpm, -20.6 LUFS, 0.73 MB  (synthesised (attempt 1))
+  [OK] R14-05.mp3:  1.7 min, 228 words, 138 wpm, -20.4 LUFS, 0.60 MB  (synthesised (attempt 1))
+  [OK] R14-06.mp3:  1.7 min, 211 words, 126 wpm, -20.2 LUFS, 0.60 MB  (synthesised (attempt 1))
+  [OK] R14-07.mp3:  2.1 min, 258 words, 125 wpm, -20.6 LUFS, 0.74 MB  (synthesised (attempt 1))
+  total 12.7 min; data written to site/data/R14.json
+```
+
+SITE MANIFEST OK
+- [x] E8 R15 lesson (June 2025 Question 2)
+
+```
+PASS listen/R15.md (2311 words)
+ALL CHEATSHEET CHECKS PASSED
+```
+
+```
+== R15: Revision 15: Worked answer: how a regional innovation system can promote or inhibit industrial restructuring (10 chapters)
+  [OK] R15-01.mp3:  1.5 min, 198 words, 136 wpm, -20.6 LUFS, 0.52 MB  (synthesised (attempt 1))
+  [OK] R15-02.mp3:  1.4 min, 191 words, 138 wpm, -20.7 LUFS, 0.50 MB  (synthesised (attempt 1))
+  [OK] R15-03.mp3:  1.4 min, 221 words, 154 wpm, -20.8 LUFS, 0.52 MB  (synthesised (attempt 1))
+  [OK] R15-04.mp3:  2.2 min, 272 words, 125 wpm, -20.6 LUFS, 0.78 MB  (synthesised (attempt 1))
+  [OK] R15-05.mp3:  1.7 min, 229 words, 134 wpm, -20.5 LUFS, 0.62 MB  (synthesised (attempt 1))
+  [OK] R15-06.mp3:  1.8 min, 246 words, 136 wpm, -20.6 LUFS, 0.65 MB  (synthesised (attempt 1))
+  [OK] R15-07.mp3:  1.8 min, 242 words, 131 wpm, -20.7 LUFS, 0.66 MB  (synthesised (attempt 1))
+  [OK] R15-08.mp3:  1.5 min, 214 words, 144 wpm, -20.5 LUFS, 0.54 MB  (synthesised (attempt 1))
+  [OK] R15-09.mp3:  1.6 min, 214 words, 132 wpm, -20.4 LUFS, 0.58 MB  (synthesised (attempt 1))
+  [OK] R15-10.mp3:  2.2 min, 279 words, 125 wpm, -20.6 LUFS, 0.81 MB  (synthesised (attempt 1))
+  total 17.2 min; data written to site/data/R15.json
+```
+
+SITE MANIFEST OK
+- [x] E9 R16 lesson (June 2025 Question 3)
+
+```
+PASS listen/R16.md (2380 words)
+ALL CHEATSHEET CHECKS PASSED
+```
+
+```
+== R16: Revision 16: Worked answer: guiding technological innovation systems towards sustainable transformation (10 chapters)
+  [OK] R16-01.mp3:  1.4 min, 198 words, 137 wpm, -20.5 LUFS, 0.52 MB  (synthesised (attempt 1))
+  [OK] R16-02.mp3:  1.5 min, 217 words, 147 wpm, -20.7 LUFS, 0.53 MB  (synthesised (attempt 1))
+  [OK] R16-03.mp3:  1.4 min, 211 words, 151 wpm, -20.8 LUFS, 0.50 MB  (synthesised (attempt 1))
+  [OK] R16-04.mp3:  2.1 min, 273 words, 128 wpm, -20.7 LUFS, 0.77 MB  (synthesised (attempt 1))
+  [OK] R16-05.mp3:  1.9 min, 251 words, 130 wpm, -20.5 LUFS, 0.70 MB  (synthesised (attempt 1))
+  [OK] R16-06.mp3:  1.7 min, 232 words, 137 wpm, -20.5 LUFS, 0.61 MB  (synthesised (attempt 1))
+  [OK] R16-07.mp3:  1.7 min, 227 words, 135 wpm, -20.6 LUFS, 0.61 MB  (synthesised (attempt 1))
+  [OK] R16-08.mp3:  1.6 min, 240 words, 148 wpm, -20.5 LUFS, 0.58 MB  (synthesised (attempt 1))
+  [OK] R16-09.mp3:  1.6 min, 222 words, 140 wpm, -20.5 LUFS, 0.57 MB  (synthesised (attempt 1))
+  [OK] R16-10.mp3:  2.3 min, 308 words, 136 wpm, -20.5 LUFS, 0.82 MB  (synthesised (attempt 1))
+  total 17.2 min; data written to site/data/R16.json
+```
+
+SITE MANIFEST OK
+
+Chapter 7 was re-recorded after the gate review changed Northern Light to Northern Lights. The other nine chapters were cache hits.
+
+```
+== R16: Revision 16: Worked answer: guiding technological innovation systems towards sustainable transformation (10 chapters)
+  [OK] R16-01.mp3:  1.4 min, 198 words, 137 wpm, -20.5 LUFS, 0.52 MB  (cache)
+  [OK] R16-02.mp3:  1.5 min, 217 words, 147 wpm, -20.7 LUFS, 0.53 MB  (cache)
+  [OK] R16-03.mp3:  1.4 min, 211 words, 151 wpm, -20.8 LUFS, 0.50 MB  (cache)
+  [OK] R16-04.mp3:  2.1 min, 273 words, 128 wpm, -20.7 LUFS, 0.77 MB  (cache)
+  [OK] R16-05.mp3:  1.9 min, 251 words, 130 wpm, -20.5 LUFS, 0.70 MB  (cache)
+  [OK] R16-06.mp3:  1.7 min, 232 words, 137 wpm, -20.5 LUFS, 0.61 MB  (cache)
+  [OK] R16-07.mp3:  1.7 min, 227 words, 135 wpm, -20.6 LUFS, 0.61 MB  (synthesised (attempt 1))
+  [OK] R16-08.mp3:  1.6 min, 240 words, 148 wpm, -20.5 LUFS, 0.58 MB  (cache)
+  [OK] R16-09.mp3:  1.6 min, 222 words, 140 wpm, -20.5 LUFS, 0.57 MB  (cache)
+  [OK] R16-10.mp3:  2.3 min, 308 words, 136 wpm, -20.5 LUFS, 0.82 MB  (cache)
+  total 17.2 min; data written to site/data/R16.json
+```
+
+```
+PASS listen/R16.md (2380 words)
+ALL CHEATSHEET CHECKS PASSED
+```
+- [x] STOP GATE G17: review R14-R16; site checks; commit, push, live check
+
+| File | Items | Confirmed on the source | Fixed (what) |
+|---|---|---|---|
+| listen/R14.md | 7 chapters | Question 1 rows that are Confirmed or Corrected. Cooke for the subsystems. Stuck for knowledge, industry and governance. Lawrence for work that can maintain, create, change or disrupt. Slide 29 for the three 2023 UN lines. The present-needs sentence stays out. | None. |
+| listen/R15.md | 10 chapters | Question 2 rows that are Confirmed or Corrected. The four trajectories are exhaustion, extension, renewal and creation. Upgrading is the reading's word for renewal. Batteries stay embedded. The 2016 limit is stated. | None. |
+| listen/R16.md | 10 chapters | Question 3 rows that are Confirmed or Corrected. Seven functions, plus materialization. Table 3 rates knowledge and legitimation intermediate. The weak functions are the market, the resources and the plant. Longship has two capture sites, one of them a cement plant. | Northern Light was changed to Northern Lights. TH6 and the P10 card print that form. Chapter 7 was recorded again. |
+
+```
+ALL PAGE CHECKS PASSED
+ALL SERVER CHECKS PASSED
+SITE MANIFEST OK
+ALL CHEATSHEET CHECKS PASSED
+```
 - [ ] E10 answers/PLANS.md, Part 5 in build_cheatsheet.py, PDF rebuilt (13 pages or fewer)
 - [ ] STOP GATE G18: final review; all checks; commit, push, live check R11-R16; final report
