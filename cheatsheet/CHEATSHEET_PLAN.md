@@ -1047,6 +1047,7 @@ student approved for the companion. That and the live check are the only online 
 - 2026-11-01, G15: a gloss that ranks the two kinds of agency as good or bad, and a "shared petroleum past", were cut. The reading does not rank the kinds, and the card calls Hordaland and Rogaland two petroleum regions that shared a green vision. Rule: a teaching line still has to be a line the voices file prints.
 - 2026-11-01, G16: the page check that a ready answer row links to its lesson must not hard-code R12. R12 was the only ready answer at E4. From this gate the first ready answer may be an earlier lesson. Rule: write that check against the first ready answer in the data.
 - 2026-11-01, G17: a project name in an answer lesson has to match a voices file for that lesson. R16's voices print Northern Lights. The singular form belongs to the December audit, which R16 does not voice. Rule: do not borrow a spelling from an audit that is not in the lesson's voices list.
+- 2026-11-01, G18: Part 5 is built only when answers/PLANS.md exists, which matches the assembled check. The sheet is 12 pages. The word count is 11,217, over the 11,000 aim and under the 12,000 cap, so the warning stands and the check still passes.
 
 ## 12. Done means
 

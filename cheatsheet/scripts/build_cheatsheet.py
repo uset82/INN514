@@ -62,12 +62,16 @@ def demote(text):
 
 
 def part_files():
-    return {
+    parts = {
         "1": ("Exam day", "front", [CS / "front" / "EXAM_DAY.md"]),
         "2": ("Themes", "theme", [CS / "themes" / f"TH{i}.md" for i in range(1, 9)]),
         "3": ("Paper cards", "card", [CS / "cards" / f"{pid}.md" for pid in ORDER]),
         "4": ("Glossary and sources", "back", [CS / "back" / "GLOSSARY.md", CS / "back" / "SOURCES.md"]),
     }
+    plans = CS / "answers" / "PLANS.md"
+    if plans.exists():
+        parts["5"] = ("Answer plans", "back", [plans])
+    return parts
 
 
 def first_heading(path):

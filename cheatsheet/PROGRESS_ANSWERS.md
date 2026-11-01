@@ -263,5 +263,42 @@ ALL SERVER CHECKS PASSED
 SITE MANIFEST OK
 ALL CHEATSHEET CHECKS PASSED
 ```
-- [ ] E10 answers/PLANS.md, Part 5 in build_cheatsheet.py, PDF rebuilt (13 pages or fewer)
-- [ ] STOP GATE G18: final review; all checks; commit, push, live check R11-R16; final report
+
+1444061 answers: G17 R14 R15 and R16 lessons. Push: b469fb8..1444061 main -> main.
+
+```
+LIVE OK R14 R15 R16
+```
+- [x] E10 answers/PLANS.md, Part 5 in build_cheatsheet.py, PDF rebuilt (13 pages or fewer)
+
+```
+PASS answers/PLANS.md (796 words)
+ALL CHEATSHEET CHECKS PASSED
+```
+
+```
+BUILT INN514_CHEATSHEET.md (11217 words), print/INN514_CHEATSHEET.html, print/INN514_CHEATSHEET.pdf (12 pages, 712 KB)
+```
+
+Page 12 is Part 5. All six plans are on that page, in two columns. Page 11 is still Part 4.
+
+```
+PASS answers/PLANS.md (796 words)
+PASS INN514_CHEATSHEET.md (0 words)
+  ~ warning: assembled: 11217 words (over the 11,000 aim)
+ALL CHEATSHEET CHECKS PASSED
+```
+- [x] STOP GATE G18: final review; all checks; commit, push, live check R11-R16; final report
+
+| File | Items | Confirmed on the source | Fixed (what) |
+|---|---|---|---|
+| answers/PLANS.md | Six sections, 796 words | Each thesis and its five moves follow that lesson's plan, or the concept openers for each Question 1. Each trap is a Corrected row. | None. |
+| scripts/build_cheatsheet.py | Part 5 | The part is Answer plans, class back, and it is added only when the plans file exists. | None at the review. |
+| print/INN514_CHEATSHEET.pdf | 12 pages | Page 12 holds all six plans. Page 11 is still the glossary and the sources. | None. |
+
+```
+ALL PAGE CHECKS PASSED
+ALL SERVER CHECKS PASSED
+SITE MANIFEST OK
+ALL CHEATSHEET CHECKS PASSED
+```
