@@ -996,7 +996,9 @@ try {
   check('#revision has both headings',
     revPage.heads.includes('Lessons') && revPage.heads.includes('Worked exam answers'), JSON.stringify(revPage.heads));
   check('the answers list has 6 rows', revPage.answers === 6, JSON.stringify(revPage.answers));
-  check('a ready answer row links to its lesson', revPage.answerLink === '#R12', revPage.answerLink);
+  const firstAnswer = DATA.revision.find((v) => v.group === 'answer' && DATA.lectures[v.id]);
+  check('a ready answer row links to its lesson',
+    !!firstAnswer && revPage.answerLink === '#' + firstAnswer.id, revPage.answerLink);
   check('the answers lede is the move-by-move line',
     revPage.ledes.includes('Six past exam questions, answered move by move. Learn the moves, then write your own words.'),
     JSON.stringify(revPage.ledes));

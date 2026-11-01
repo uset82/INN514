@@ -90,9 +90,71 @@ ALL PAGE CHECKS PASSED
 ALL SERVER CHECKS PASSED
 SITE MANIFEST OK
 ```
-- [ ] E5 R11 lesson (December 2024 Question 1)
-- [ ] E6 R13 lesson (December 2024 Question 3)
-- [ ] STOP GATE G16: review R11, R13; site checks; commit, push, live check
+
+1be35cb answers: G15 R12 lesson and the answers list. Push: 5137617..1be35cb main -> main.
+
+```
+1be35cb answers: G15 R12 lesson and the answers list
+LIVE OK R12
+```
+- [x] E5 R11 lesson (December 2024 Question 1)
+
+```
+PASS listen/R11.md (2060 words)
+ALL CHEATSHEET CHECKS PASSED
+```
+
+```
+== R11: Revision 11: Worked answer: innovation system, sustainable transformation, agency and institutions (8 chapters)
+  [OK] R11-01.mp3:  1.5 min, 217 words, 144 wpm, -20.7 LUFS, 0.54 MB  (synthesised (attempt 1))
+  [OK] R11-02.mp3:  2.2 min, 285 words, 130 wpm, -20.6 LUFS, 0.79 MB  (synthesised (attempt 1))
+  [OK] R11-03.mp3:  2.0 min, 268 words, 134 wpm, -20.6 LUFS, 0.72 MB  (synthesised (attempt 1))
+  [OK] R11-04.mp3:  2.0 min, 259 words, 131 wpm, -20.6 LUFS, 0.71 MB  (synthesised (attempt 1))
+  [OK] R11-05.mp3:  1.8 min, 237 words, 128 wpm, -20.7 LUFS, 0.67 MB  (synthesised (attempt 1))
+  [OK] R11-06.mp3:  1.7 min, 253 words, 150 wpm, -20.5 LUFS, 0.61 MB  (synthesised (attempt 1))
+    attempt 1: NoAudioReceived('No audio was received. Please verify that your parameters are correct.')
+  [OK] R11-07.mp3:  1.6 min, 220 words, 140 wpm, -20.4 LUFS, 0.57 MB  (synthesised (attempt 2))
+  [OK] R11-08.mp3:  2.5 min, 318 words, 130 wpm, -20.6 LUFS, 0.88 MB  (synthesised (attempt 1))
+  total 15.2 min; data written to site/data/R11.json
+```
+
+SITE MANIFEST OK
+- [x] E6 R13 lesson (December 2024 Question 3)
+
+```
+PASS listen/R13.md (2282 words)
+ALL CHEATSHEET CHECKS PASSED
+```
+
+```
+== R13: Revision 13: Worked answer: how technologies can promote or inhibit sustainable transformation (10 chapters)
+  [OK] R13-01.mp3:  1.4 min, 188 words, 132 wpm, -20.5 LUFS, 0.51 MB  (synthesised (attempt 1))
+  [OK] R13-02.mp3:  1.4 min, 205 words, 142 wpm, -20.7 LUFS, 0.52 MB  (synthesised (attempt 1))
+  [OK] R13-03.mp3:  1.4 min, 206 words, 151 wpm, -20.8 LUFS, 0.49 MB  (synthesised (attempt 1))
+  [OK] R13-04.mp3:  1.9 min, 258 words, 132 wpm, -20.7 LUFS, 0.70 MB  (synthesised (attempt 1))
+  [OK] R13-05.mp3:  1.6 min, 229 words, 142 wpm, -20.5 LUFS, 0.58 MB  (synthesised (attempt 1))
+  [OK] R13-06.mp3:  1.8 min, 240 words, 137 wpm, -20.6 LUFS, 0.63 MB  (synthesised (attempt 1))
+  [OK] R13-07.mp3:  1.7 min, 234 words, 136 wpm, -20.6 LUFS, 0.62 MB  (synthesised (attempt 1))
+  [OK] R13-08.mp3:  1.5 min, 226 words, 148 wpm, -20.5 LUFS, 0.55 MB  (synthesised (attempt 1))
+  [OK] R13-09.mp3:  1.6 min, 209 words, 127 wpm, -20.4 LUFS, 0.59 MB  (synthesised (attempt 1))
+  [OK] R13-10.mp3:  2.2 min, 285 words, 131 wpm, -20.6 LUFS, 0.78 MB  (synthesised (attempt 1))
+  total 16.6 min; data written to site/data/R13.json
+```
+
+SITE MANIFEST OK
+- [x] STOP GATE G16: review R11, R13; site checks; commit, push, live check
+
+| File | Items | Confirmed on the source | Fixed (what) |
+|---|---|---|---|
+| listen/R11.md | 8 chapters | Question 1 rows that are Confirmed or Corrected, plus the cards and themes. The broad system is learning across the economy. Brundtland is not the definition. The dedicated system is credited to Pyka. Institutions follow North. | The word landscape was removed. A prompt that copied eight words from a model answer was reworded. |
+| listen/R13.md | 10 chapters | Question 3 rows that are Confirmed or Corrected. Batteries are embedded, not recombined. Table 3 rates three functions intermediate. Market formation, resource mobilization and materialization are weak. Longship and Northern Light are the exceptions. | None at the gate. The life-cycle claim and the rebound effect are named as outside the course. |
+| scripts/check_page.mjs | The ready-answer check | The plan asks that a ready answer row link to its lesson. | The check no longer names R12. R11 is now the first ready answer, and the end of R12 goes on to R13. |
+
+```
+ALL PAGE CHECKS PASSED
+ALL SERVER CHECKS PASSED
+SITE MANIFEST OK
+```
 - [ ] E7 R14 lesson (June 2025 Question 1)
 - [ ] E8 R15 lesson (June 2025 Question 2)
 - [ ] E9 R16 lesson (June 2025 Question 3)
