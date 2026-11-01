@@ -1043,6 +1043,7 @@ student approved for the companion. That and the live check are the only online 
 - 2026-11-01, G10 (staging): two paths outside 9's G10 list were staged, `scripts/mock_openrouter.mjs` and
   `PROGRESS_GROKBOT_ZCODE.md`, so that the commit carries the L2 work its own tests read.
 - 2026-11-01, G9, layout decision: with 17 whole cards of 260-300 words and two columns at 8.5pt, the build reached 13 pages with four pages 35-70 per cent empty. The plan asks for both 9-12 pages and cards in one piece; at this word count the two cannot both hold. Chosen: themes stay in one piece, cards may continue into the next column, the card title stays with its first block. Result: 11 pages, no empty half-pages. The table fix (7.5) also spans the three-column exam table when a cell runs past 12 words, because it was unreadable inside one column.
+- 2026-11-01, G14 (answers): eight-word runs that sit wholly inside an exam question are not counted as copies of the model answers, because chapter 1 must say the question word for word and both model PDFs reprint it. Part 5 of the assembled sheet is required only once the plans file exists.
 
 ## 12. Done means
 

@@ -3,6 +3,8 @@
     check_cheatsheet.py cards/P01.md          one file (relative to cheatsheet/, or absolute)
     check_cheatsheet.py --all [--partial]     every file; --partial skips the "missing file" failures
     check_cheatsheet.py --scan                the pre-push scan (section 9)
+    check_cheatsheet.py --model-text "Dec 2024" 7
+                                              print one page of a model answer (for reading, never copying)
 
 One line per file: 'PASS cards/P01.md (287 words)' or 'FAIL cards/P01.md', with indented
 '- reason' lines and '~ warning' lines. The last line is 'ALL CHEATSHEET CHECKS PASSED'
@@ -16,9 +18,9 @@ import sys
 import hashlib
 
 from cheat_lib import (CARD_CLASS, CARD_THEMES, CITES, CITE_TO_PID, CLASSES, CS, EXAM, G, LA, MISSPELT,
-                       ORDER, READINGS, REVISION, SECTIONS, SURNAME_PAPERS, THEMES, citable,
-                       class_slides, copied, numbers, page_range, pages, qnorm, quoted_on, quotes_in,
-                       words)
+                       MODEL, ORDER, READINGS, REVISION, SECTIONS, SURNAME_PAPERS, THEMES, citable,
+                       class_slides, copied, model_copied, model_pages, numbers, page_range, pages,
+                       qnorm, quoted_on, quotes_in, words)
 from check_sources import names_in, numbers_in
 
 CITE = re.compile(r"\(([A-ZÆØÅ][^()\d]*?) (\d{4}), (p|pp|PDF p)\. (\d[\d–, -]*)\)")
@@ -26,7 +28,7 @@ OWN = re.compile(r"\((p|pp|PDF p)\. (\d[\d–, -]*)\)")             # cards: the
 SLIDE = re.compile(r"\[(?:Class (\d)|(Bonus)), slides? (\d[\d–, -]*)\]")
 EXAMID = re.compile(r"\b(Dec 2024|Jun 2025) Q([1-3])\b")
 PRONOUN = re.compile(r"\b(he|she|him|her|his|hers|himself|herself)\b", re.I)
-BRAND = re.compile(r"\b(Claude|Anthropic|ZCode|GLM)\b")
+BRAND = re.compile(r"\b(Claude|Anthropic|ZCode|GLM|Cursor|Grok)\b")
 STRONG = re.compile(r"\b(prove[sd]?|proven|clearly shows?|always|never|obviously|undoubtedly|definitely)\b", re.I)
 
 # '(p. 433, Figure 2)' is the model line of 4.2; the figure part is not part of the cite.
@@ -671,6 +673,10 @@ def identify(name):
         return "sources", "sources"
     if parent == "listen" or re.fullmatch(r"R\d\d", stem):
         return "listen", stem.upper()
+    if parent == "answers" and stem.upper().startswith("AUDIT"):
+        return "audit", stem.upper()
+    if parent == "answers" and stem.upper() == "PLANS":
+        return "plans", "plans"
     return None, None
 
 
@@ -696,6 +702,14 @@ def check_text(kind, name, text, root=None, partial=False):
         if key not in REVISION:
             return [f"listen: '{key}' is not a revision lesson"], warns
         check_listen(key, text, fails, warns, root or CS, partial)
+        return fails, warns
+    elif kind == "audit":
+        check_audit(text, fails)
+        check_people(text, fails)
+        return fails, warns
+    elif kind == "plans":
+        check_plans(text, fails, partial)
+        check_people(text, fails)
         return fails, warns
     else:
         return [f"kind: no checks for '{kind}'"], warns
@@ -740,6 +754,24 @@ def complete(root, problems, partial=False):
         want = [t for t in THEMES if pid in THEMES[t][1]]
         if got != want:
             problems.append((f"cards/{pid}.md", [f"complete: the header themes are {got}, but {want} list it"], []))
+    if partial:
+        return
+    prog = root / "PROGRESS_ANSWERS.md"
+    text = prog.read_text(encoding="utf-8") if prog.exists() else ""
+
+    def ticked(gate):
+        return bool(re.search(rf"(?m)^- \[x\].*\b{gate}\b", text))
+
+    required = []
+    if ticked("G14"):
+        required += ["answers/AUDIT_DEC2024.md", "answers/AUDIT_JUN2025.md"]
+    if ticked("G17"):
+        required += [f"listen/R{i}.md" for i in range(11, 17)]
+    if ticked("G18"):
+        required.append("answers/PLANS.md")
+    for name in required:
+        if not (root / name).exists():
+            problems.append((name, ["complete: the file does not exist"], []))
 
 
 def assembled(root, problems):
@@ -749,13 +781,18 @@ def assembled(root, problems):
     text = f.read_text(encoding="utf-8")
     parts = ["## Part 1: Exam day", "## Part 2: Themes", "## Part 3: Paper cards",
              "## Part 4: Glossary and sources"]
+    # Part 5 is required once the answer-plans sheet exists (E10). Before that the
+    # four-part cheatsheet still passes, which keeps --all green through G14-G17.
+    if (pathlib.Path(root) / "answers" / "PLANS.md").exists():
+        parts.append("## Part 5: Answer plans")
     pos, fails, warns = [], [], []
     for title in parts:
         if text.count(title) != 1:
             fails.append(f"assembled: '{title}' appears {text.count(title)} times (need once)")
         pos.append(text.find(title))
     if pos != sorted(pos):
-        fails.append("assembled: the four parts are not in order")
+        label = "five" if len(parts) == 5 else "four"
+        fails.append(f"assembled: the {label} parts are not in order")
     n = words(text)
     if n > 12000:
         fails.append(f"assembled: {n} words (max 12,000)")
@@ -856,7 +893,7 @@ def check_listen(key, text, fails, warns, root=CS, partial=False):
         prose = prose_of(body)
         n = words(prose)
         total += n
-        lo, hi = (110, 200) if key == "R10" else (100, 340)
+        lo, hi = chapter_bounds(key, rev)
         if not partial and not lo <= n <= hi:
             fails.append(f"length: {where} has {n} words (need {lo}-{hi})")
         readings = READINGS_LINE.findall(body)
@@ -917,17 +954,210 @@ def check_listen(key, text, fails, warns, root=CS, partial=False):
         for sent in re.split(r"(?<=[.!?])\s+", prose):
             if "example of our own" in sent and re.search(r"\d", sent):
                 fails.append(f"people: {where}: an example of our own has a digit")
-        if key != "R10" and i == len(want):
+        if rev.get("kind") in ("essay", "guided", "concept"):
+            ways = len(re.findall(r"(?m)^One way to say it:", prose))
+            if ways > 1:
+                fails.append(f"say: {where} has {ways} lines starting 'One way to say it:' (max one)")
+            for run in model_copied(prose):
+                fails.append(f"modelcopy: {where} copies words from a model answer: '{run[:50]}'")
+            for sent in re.split(r"(?<=[.!?])\s+", prose):
+                if "A memory aid of our own:" in sent and re.search(r"\d", sent):
+                    fails.append(f"memory: {where}: 'A memory aid of our own:' contains a digit")
+            if i == 1 and qnorm(EXAM[rev["question"]]) not in qnorm(prose):
+                fails.append(f"question: {where} does not contain the exam question")
+            if i == len(want):
+                check_answer_recall(prose, where, fails)
+        elif key != "R10" and i == len(want):
             pauses = prose.count("Pause the audio and answer in your head.")
             answers = len(re.findall(r"(?m)^Here is the answer\.", prose))
             if not 3 <= pauses <= 4:
                 fails.append(f"recall: {where} has {pauses} pauses (need 3-4)")
             if answers != pauses:
                 fails.append(f"recall: {where} has {answers} answers for {pauses} pauses")
-    lo, hi = {"R01": (1300, 1900), "R10": (2000, 3400)}.get(key, (1100, 1600))
+    lo, hi = lesson_bounds(key, rev)
     if not partial and not lo <= total <= hi:
         fails.append(f"length: {total} words in the lesson (need {lo}-{hi})")
     check_people(text, fails)
+
+
+def chapter_bounds(key, rev):
+    if rev.get("kind") in ("essay", "guided", "concept"):
+        return 120, 320
+    if key == "R10":
+        return 110, 200
+    return 100, 340
+
+
+def lesson_bounds(key, rev):
+    kind = rev.get("kind", "revision")
+    if kind in ("essay", "guided"):
+        return 2000, 2900
+    if kind == "concept" and key == "R11":
+        return 1500, 2400
+    if kind == "concept" and key == "R14":
+        return 1300, 2100
+    return {"R01": (1300, 1900), "R10": (2000, 3400)}.get(key, (1100, 1600))
+
+
+def check_answer_recall(prose, where, fails):
+    """The last chapter of a worked answer: 4-6 pauses, and the whole-plan prompt last."""
+    marker = "Pause the audio and answer in your head."
+    prompt = "Say your whole plan aloud in under one minute."
+    pauses = prose.count(marker)
+    answers = len(re.findall(r"(?m)^Here is the answer\.", prose))
+    if not 4 <= pauses <= 6:
+        fails.append(f"recall: {where} has {pauses} pauses (need 4-6)")
+    if answers != pauses:
+        fails.append(f"recall: {where} has {answers} answers for {pauses} pauses")
+    idx = prose.rfind(marker)
+    if idx < 0 or not prose[:idx].rstrip().endswith(prompt):
+        fails.append(f"recall: {where} last prompt is not '{prompt}'")
+
+
+# ------------------------------------------------------------------ audits and answer plans (answers plan 6.2)
+
+AUDIT_TITLES = {"Dec 2024": "# Audit: model answers to the December 2024 exam",
+                "Jun 2025": "# Audit: model answers to the June 2025 exam"}
+AUDIT_PAGES = {"Dec 2024": (3, 14), "Jun 2025": (2, 12)}
+AUDIT_INTRO = ("A study document, not an official marking guide. Each claim is paraphrased and "
+               "checked against the course sources; only Confirmed and Corrected rows may be voiced.")
+AUDIT_HEAD = "| # | Claim in the model answer (paraphrased) | Model p. | Verdict | Course source | Note |"
+VERDICTS = {"Confirmed", "Corrected", "Beyond the course", "Wrong"}
+PLAN_SECTIONS = [("December 2024, Question 1", "Dec 2024 Q1"),
+                 ("December 2024, Question 2", "Dec 2024 Q2"),
+                 ("December 2024, Question 3", "Dec 2024 Q3"),
+                 ("June 2025, Question 1", "Jun 2025 Q1"),
+                 ("June 2025, Question 2", "Jun 2025 Q2"),
+                 ("June 2025, Question 3", "Jun 2025 Q3")]
+PLAN_TITLE = "# Answer plans for the six past questions"
+PLAN_COMMENT = "<!-- back: answer-plans -->"
+PLAN_DRAFT = ("Drafting aid (ours): learn the moves, then write your own words. Each plan is voiced "
+              "as a worked answer on the companion site (Revision 11 to 16).")
+
+
+def check_audit(text, fails):
+    lines = text.splitlines()
+    first = next((x for x in lines if x.strip()), "")
+    comment = re.search(r"<!--\s*audit:\s*(Dec 2024|Jun 2025)\s*\|\s*model:\s*(\S+)\s*\|\s*pages:\s*(\d+)\s*-\s*(\d+)\s*-->",
+                        text)
+    if not comment:
+        fails.append("audit: the header comment should name the exam, the model file and the page range")
+        return
+    key, model_name, lo_s, hi_s = comment.group(1), comment.group(2), int(comment.group(3)), int(comment.group(4))
+    if first.strip() != AUDIT_TITLES[key]:
+        fails.append(f"audit: the first line should be '{AUDIT_TITLES[key]}'")
+    if model_name != MODEL[key].name:
+        fails.append(f"audit: the model file should be '{MODEL[key].name}'")
+    if (lo_s, hi_s) != AUDIT_PAGES[key]:
+        fails.append(f"audit: the page range should be {AUDIT_PAGES[key][0]}-{AUDIT_PAGES[key][1]}")
+    if AUDIT_INTRO not in text:
+        fails.append("audit: the study-document line is missing")
+    if any(ch in text for ch in QUOTE_CHARS):
+        fails.append("audit: quotation marks are not allowed")
+    for n in (1, 2, 3):
+        if f"## Question {n}" not in text:
+            fails.append(f"audit: missing '## Question {n}'")
+    parts = re.split(r"(?m)^## Question ([123])\s*$", text)
+    bodies = {int(parts[i]): parts[i + 1] for i in range(1, len(parts), 2)}
+    for q in (1, 2, 3):
+        body = bodies.get(q, "")
+        if AUDIT_HEAD not in body:
+            fails.append(f"audit: Question {q} is missing the table header")
+        rows = data_rows(body)
+        if not 10 <= len(rows) <= 25:
+            fails.append(f"audit: Question {q} has {len(rows)} rows (need 10-25)")
+        for i, row in enumerate(rows, 1):
+            if len(row) < 6:
+                fails.append(f"audit: Question {q} row {i} does not have six cells")
+                continue
+            rid, claim, page, verdict, source, note = row[:6]
+            where = f"row {q}.{i}"
+            if rid != f"{q}.{i}":
+                fails.append(f"audit: {where} has id '{rid}'")
+            if words(claim) > 25:
+                fails.append(f"audit: {where} claim has {words(claim)} words (max 25)")
+            if words(note) > 25:
+                fails.append(f"audit: {where} note has {words(note)} words (max 25)")
+            if verdict not in VERDICTS:
+                fails.append(f"audit: {where} verdict '{verdict}' is not one of the four")
+            try:
+                pg = int(page)
+            except ValueError:
+                pg = None
+                fails.append(f"audit: {where} model page '{page}' is not a number")
+            if pg is not None and not lo_s <= pg <= hi_s:
+                fails.append(f"audit: {where} model page {pg} is outside {lo_s}-{hi_s}")
+            if verdict == "Beyond the course":
+                if source != "none":
+                    fails.append(f"audit: {where} is Beyond the course but its source is not none")
+            elif verdict in ("Confirmed", "Corrected", "Wrong"):
+                if source == "none" or not (CITE.search(source) or SLIDE.search(source)):
+                    fails.append(f"audit: {where} is {verdict} but its source is none")
+                else:
+                    check_cites(source, None, fails)
+                    check_slides(source, fails)
+            for cell in (claim, note):
+                for run in model_copied(cell):
+                    fails.append(f"modelcopy: {where} copies words from a model answer: '{run[:50]}'")
+
+
+def _field(body, label):
+    m = re.search(rf"\*\*{label}:\*\*\s*(.+)", body)
+    return m.group(1).strip() if m else ""
+
+
+def check_plans(text, fails, partial=False):
+    lines = [ln for ln in text.splitlines() if ln.strip()]
+    if not lines or lines[0].strip() != PLAN_TITLE:
+        fails.append(f"plans: the first line should be '{PLAN_TITLE}'")
+    if PLAN_COMMENT not in text:
+        fails.append(f"plans: missing '{PLAN_COMMENT}'")
+    if PLAN_DRAFT not in text:
+        fails.append("plans: the drafting line is missing")
+    if words(text) > 950:
+        fails.append(f"plans: {words(text)} words (max 950)")
+    parts = re.split(r"(?m)^## (.+)$", text)
+    got = [(parts[i].strip(), parts[i + 1]) for i in range(1, len(parts), 2)]
+    want = [title for title, _ in PLAN_SECTIONS]
+    title_to_id = dict(PLAN_SECTIONS)
+    got_titles = [title for title, _ in got]
+    if not partial:
+        if got_titles != want:
+            fails.append(f"plans: sections are {got_titles}, need the six questions in order")
+    else:
+        idx = [want.index(title) if title in want else -1 for title in got_titles]
+        if any(i < 0 for i in idx) or idx != sorted(idx) or len(idx) != len(set(idx)):
+            fails.append("plans: the sections that are present are not in exam order")
+    for title, body in got:
+        eid = title_to_id.get(title)
+        if not eid:
+            fails.append(f"plans: unknown section '{title}'")
+            continue
+        question = _field(body, "Question")
+        if qnorm(question) != qnorm(EXAM[eid]):
+            fails.append(f"plans: {title} question differs from the exam paper")
+        thesis = _field(body, "Thesis")
+        if not thesis:
+            fails.append(f"plans: {title} has no thesis")
+        elif words(thesis) > 20:
+            fails.append(f"plans: {title} thesis has {words(thesis)} words (max 20)")
+        moves_line = _field(body, "Moves")
+        moves = re.findall(r"\d+\.\s*(.*?)(?=\s+\d+\.\s|$)", moves_line)
+        if not 4 <= len(moves) <= 6:
+            fails.append(f"plans: {title} has {len(moves)} moves (need 4-6)")
+        for mv in moves:
+            if words(mv) > 14:
+                fails.append(f"plans: {title} a move has {words(mv)} words (max 14)")
+            if not (CITE.search(mv) or SLIDE.search(mv)):
+                fails.append(f"plans: {title} a move has no source")
+        example = _field(body, "Example")
+        if words(example) > 25 or not CITE.search(example):
+            fails.append(f"plans: {title} example needs a cite and at most 25 words")
+        trap = _field(body, "Trap")
+        if not trap or words(trap) > 20:
+            fails.append(f"plans: {title} trap needs at most 20 words")
+    for run in model_copied(text):
+        fails.append(f"modelcopy: the plans copy words from a model answer: '{run[:50]}'")
 
 
 # ------------------------------------------------------------------ the pre-push scan
@@ -1093,6 +1323,18 @@ def main(argv):
             return 1
         print("SITE MANIFEST OK")
         return 0
+    if "--model-text" in argv:
+        i = argv.index("--model-text")
+        if i + 2 >= len(argv):
+            print("--model-text needs an exam key and a page")
+            return 2
+        key, page = argv[i + 1], int(argv[i + 2])
+        pages_ = model_pages(key)
+        if page not in pages_:
+            print(f"no page {page} in {key}")
+            return 1
+        print(pages_[page])
+        return 0
     if "--live" in argv:
         ids = [a for a in argv[argv.index("--live") + 1:] if re.fullmatch(r"R\d\d", a)]
         if not ids:
@@ -1113,6 +1355,8 @@ def main(argv):
         partial = "--partial" in argv
         total = 0
         names = all_names() + [f"listen/{f.stem}.md" for f in sorted((CS / "listen").glob("R*.md"))]
+        if (CS / "answers").exists():
+            names += [f"answers/{f.name}" for f in sorted((CS / "answers").glob("*.md"))]
         for name in names:
             path = CS / name
             if not path.exists():

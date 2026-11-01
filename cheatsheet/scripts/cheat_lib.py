@@ -176,12 +176,63 @@ def copied(prose, pid):
     runs = (" ".join(w[i:i + n]) for i in range(len(w) - n + 1))
     return [r for r in runs if r in _GRAMS[(pid, n)] and f" {r} " not in title]
 
-# 3.6: the ten revision lessons, their voices and their chapter counts.
+
+# The two model-answer PDFs stay outside the repo. They give structure; they are not evidence.
+MODEL = {"Dec 2024": REPO / "INN514_2024_Model_Exam_Resolution.pdf",
+         "Jun 2025": REPO / "INN514_Exam_Resolution_HVL.pdf"}
+_MODEL_PAGES = {}
+_MODEL_GRAMS = {}
+
+
+def model_pages(key):
+    """{1-based page: text} for a model-answer PDF, cached."""
+    if key not in _MODEL_PAGES:
+        import fitz
+        doc = fitz.open(MODEL[key])
+        _MODEL_PAGES[key] = {i + 1: page.get_text() for i, page in enumerate(doc)}
+        doc.close()
+    return _MODEL_PAGES[key]
+
+
+def _exam_run(run):
+    """True when the run sits inside an exam question. The questions are said word for word,
+    and both model PDFs reprint them, so those words are not a copy of the model answer."""
+    return any(f" {run} " in f" {qnorm(q)} " for q in EXAM.values())
+
+
+def model_copied(prose, n=8):
+    """Runs of n words copied from either model answer, outside quotation marks."""
+    w = qnorm(re.sub(r"[\"“«][^\"”»]*[\"”»]", " ", prose)).split()
+    runs = [" ".join(w[i:i + n]) for i in range(len(w) - n + 1)]
+    found = []
+    for key in MODEL:
+        if (key, n) not in _MODEL_GRAMS:
+            mw = qnorm("\n".join(model_pages(key)[p] for p in sorted(model_pages(key)))).split()
+            _MODEL_GRAMS[(key, n)] = {" ".join(mw[i:i + n]) for i in range(max(0, len(mw) - n + 1))}
+        found += [r for r in runs if r in _MODEL_GRAMS[(key, n)] and not _exam_run(r)]
+    return found
+
+
+# 3.6 and answers plan section 2: revision lessons, then the six worked answers.
 THEME_CHAPTERS = ["The theme in one minute", "The key ideas", "The model, step by step",
                   "Norway examples", "How the exam asks about it", "Test yourself"]
 EXAM_CHAPTERS = ["How the exam works", "The six past questions", "Answering Question 1",
                  "Answering Question 2 or 3", "What examiners look for", "Compare the systems",
                  "Twelve definitions to know", "Test yourself"]
+ESSAY_CHAPTERS = ["Read the question", "Your plan in one minute", "The introduction",
+                  "The theory you need", "How it can promote", "How it can inhibit",
+                  "The Norway example", "Discussion and conclusion", "Traps and upgrades",
+                  "Build it yourself"]
+GUIDED_CHAPTERS = ["Read the question", "Your plan in one minute", "The introduction",
+                   "The theory you need", "Levers that guide it", "What can go wrong",
+                   "The Norway example", "Discussion and conclusion", "Traps and upgrades",
+                   "Build it yourself"]
+R11_CHAPTERS = ["Read the question", "Innovation system", "Sustainable transformation", "Agency",
+                "Institutions", "How the four concepts connect", "Traps and upgrades",
+                "Build it yourself"]
+R14_CHAPTERS = ["Read the question", "Regional innovation system", "Institutional work",
+                "Sustainability", "How the three concepts connect", "Traps and upgrades",
+                "Build it yourself"]
 
 
 def spoken_authors(pid):
@@ -195,24 +246,66 @@ def _cards(ids):
 
 REVISION = {
     "R01": {"num": 1, "title": "Exam day: what to know by heart", "voices": ["front/EXAM_DAY.md"],
-            "chapters": EXAM_CHAPTERS},
+            "chapters": EXAM_CHAPTERS, "kind": "revision"},
     "R02": {"num": 2, "title": "Innovation systems and Norway's national innovation system",
-            "voices": ["themes/TH1.md"] + _cards(["P01", "P02"]), "chapters": THEME_CHAPTERS},
+            "voices": ["themes/TH1.md"] + _cards(["P01", "P02"]), "chapters": THEME_CHAPTERS,
+            "kind": "revision"},
     "R03": {"num": 3, "title": "Regional innovation systems and industrial restructuring",
-            "voices": ["themes/TH2.md"] + _cards(["P03", "P05"]), "chapters": THEME_CHAPTERS},
+            "voices": ["themes/TH2.md"] + _cards(["P03", "P05"]), "chapters": THEME_CHAPTERS,
+            "kind": "revision"},
     "R04": {"num": 4, "title": "Institutions and institutional work",
-            "voices": ["themes/TH3.md"] + _cards(["P03", "P01"]), "chapters": THEME_CHAPTERS},
+            "voices": ["themes/TH3.md"] + _cards(["P03", "P01"]), "chapters": THEME_CHAPTERS,
+            "kind": "revision"},
     "R05": {"num": 5, "title": "Entrepreneurial ecosystems",
-            "voices": ["themes/TH4.md"] + _cards(["P06", "P07", "P08"]), "chapters": THEME_CHAPTERS},
+            "voices": ["themes/TH4.md"] + _cards(["P06", "P07", "P08"]), "chapters": THEME_CHAPTERS,
+            "kind": "revision"},
     "R06": {"num": 6, "title": "Agency and new path development",
-            "voices": ["themes/TH5.md"] + _cards(["P14", "P15", "P16", "P17"]), "chapters": THEME_CHAPTERS},
+            "voices": ["themes/TH5.md"] + _cards(["P14", "P15", "P16", "P17"]), "chapters": THEME_CHAPTERS,
+            "kind": "revision"},
     "R07": {"num": 7, "title": "Technological innovation systems and their functions",
-            "voices": ["themes/TH6.md"] + _cards(["P09", "P10", "P17"]), "chapters": THEME_CHAPTERS},
+            "voices": ["themes/TH6.md"] + _cards(["P09", "P10", "P17"]), "chapters": THEME_CHAPTERS,
+            "kind": "revision"},
     "R08": {"num": 8, "title": "Sustainability, transformation and normative direction",
-            "voices": ["themes/TH7.md"] + _cards(["P04", "P03"]), "chapters": THEME_CHAPTERS},
+            "voices": ["themes/TH7.md"] + _cards(["P04", "P03"]), "chapters": THEME_CHAPTERS,
+            "kind": "revision"},
     "R09": {"num": 9, "title": "Crowdfunding and service ecosystems",
-            "voices": ["themes/TH8.md"] + _cards(["P11", "P12", "P13"]), "chapters": THEME_CHAPTERS},
+            "voices": ["themes/TH8.md"] + _cards(["P11", "P12", "P13"]), "chapters": THEME_CHAPTERS,
+            "kind": "revision"},
     "R10": {"num": 10, "title": "The 17 papers in brief",
             "voices": _cards(ORDER),
-            "chapters": [f"Paper {int(pid[1:])}: {spoken_authors(pid)}, {READINGS[pid][1]}" for pid in ORDER]},
+            "chapters": [f"Paper {int(pid[1:])}: {spoken_authors(pid)}, {READINGS[pid][1]}" for pid in ORDER],
+            "kind": "revision"},
+    "R11": {"num": 11, "kind": "concept", "question": "Dec 2024 Q1",
+            "title": "Worked answer: innovation system, sustainable transformation, agency and institutions",
+            "voices": ["front/EXAM_DAY.md", "answers/AUDIT_DEC2024.md", "themes/TH1.md", "themes/TH3.md",
+                       "themes/TH5.md", "themes/TH7.md", "cards/P01.md", "cards/P03.md", "cards/P04.md",
+                       "cards/P09.md", "cards/P14.md", "cards/P15.md"],
+            "chapters": R11_CHAPTERS},
+    "R12": {"num": 12, "kind": "essay", "question": "Dec 2024 Q2",
+            "title": "Worked answer: how agency can promote or inhibit sustainable transformation",
+            "voices": ["front/EXAM_DAY.md", "answers/AUDIT_DEC2024.md", "themes/TH5.md", "themes/TH3.md",
+                       "cards/P14.md", "cards/P15.md", "cards/P16.md", "cards/P17.md", "cards/P03.md",
+                       "cards/P04.md"],
+            "chapters": ESSAY_CHAPTERS},
+    "R13": {"num": 13, "kind": "essay", "question": "Dec 2024 Q3",
+            "title": "Worked answer: how technologies can promote or inhibit sustainable transformation",
+            "voices": ["front/EXAM_DAY.md", "answers/AUDIT_DEC2024.md", "themes/TH6.md", "themes/TH7.md",
+                       "cards/P09.md", "cards/P10.md", "cards/P17.md", "cards/P04.md", "cards/P01.md"],
+            "chapters": ESSAY_CHAPTERS},
+    "R14": {"num": 14, "kind": "concept", "question": "Jun 2025 Q1",
+            "title": "Worked answer: regional innovation system, institutional work and sustainability",
+            "voices": ["front/EXAM_DAY.md", "answers/AUDIT_JUN2025.md", "themes/TH2.md", "themes/TH3.md",
+                       "themes/TH7.md", "cards/P03.md", "cards/P05.md", "cards/P04.md", "cards/P01.md"],
+            "chapters": R14_CHAPTERS},
+    "R15": {"num": 15, "kind": "essay", "question": "Jun 2025 Q2",
+            "title": "Worked answer: how a regional innovation system can promote or inhibit industrial restructuring",
+            "voices": ["front/EXAM_DAY.md", "answers/AUDIT_JUN2025.md", "themes/TH2.md", "themes/TH5.md",
+                       "cards/P03.md", "cards/P05.md", "cards/P14.md", "cards/P16.md", "cards/P17.md",
+                       "cards/P01.md"],
+            "chapters": ESSAY_CHAPTERS},
+    "R16": {"num": 16, "kind": "guided", "question": "Jun 2025 Q3",
+            "title": "Worked answer: guiding technological innovation systems towards sustainable transformation",
+            "voices": ["front/EXAM_DAY.md", "answers/AUDIT_JUN2025.md", "themes/TH6.md", "themes/TH7.md",
+                       "cards/P09.md", "cards/P10.md", "cards/P17.md", "cards/P04.md"],
+            "chapters": GUIDED_CHAPTERS},
 }

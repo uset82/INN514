@@ -12,7 +12,7 @@ import tempfile
 
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from cheat_lib import CS, PREVIEWS, pages, qnorm               # noqa: E402
+from cheat_lib import CS, EXAM, PREVIEWS, REVISION, model_pages, pages, qnorm  # noqa: E402
 from check_cheatsheet import check_text, scan, site_manifest   # noqa: E402
 
 # ---------------------------------------------------------------- fixtures
@@ -473,6 +473,236 @@ def t33():
 @test("34 a test key in the staged diff is no problem")
 def t34():
     assert not scan(CS, diff=["OPENROUTER_API_KEY: 'test-key'"]), "the scan flagged a test key"
+
+
+# ---------------------------------------------------------------- worked answers (plan 6.3, tests 35-48)
+
+Q2 = EXAM["Dec 2024 Q2"].replace('"', "")
+
+
+def r12_voices(root):
+    root = pathlib.Path(root)
+    for rel in REVISION["R12"]["voices"]:
+        f = root / rel
+        f.parent.mkdir(parents=True, exist_ok=True)
+        f.write_text("agency can promote or inhibit sustainable transformation. Use examples.", encoding="utf-8")
+
+
+def r12_chapter(n, title, prose):
+    return f"""## {n}. {title}
+<!-- readings: Class 9, slide 39 -->
+
+{prose}
+
+Remember: learn the move and use your own words.
+
+<!-- check: What does this part do? | It teaches the move. -->
+"""
+
+
+def r12_text(n_chapters=2, chapter1=None, extra=""):
+    rev = REVISION["R12"]
+    head = (f"# Revision {rev['num']}: {rev['title']}\n"
+            "<!-- lecture: R12 | session: Revision | lecturer: none | deck: none -->\n"
+            f"<!-- voices: {', '.join(rev['voices'])} -->\n\n")
+    titles = rev["chapters"]
+    bodies = []
+    for i, title in enumerate(titles[:n_chapters], 1):
+        if i == 1:
+            prose = chapter1 if chapter1 is not None else (
+                f"{Q2} The command asks for both sides.")
+        elif i == n_chapters and n_chapters == len(titles):
+            prose = extra or (
+                "Name the thesis.\n"
+                "Pause the audio and answer in your head.\n\n"
+                "Here is the answer. Agency can help or hold back.\n\n"
+                "Name one way agency helps.\n"
+                "Pause the audio and answer in your head.\n\n"
+                "Here is the answer. Actors can open a new path.\n\n"
+                "Name one way agency holds back.\n"
+                "Pause the audio and answer in your head.\n\n"
+                "Here is the answer. Actors can defend the old path.\n\n"
+                "Say your whole plan aloud in under one minute.\n"
+                "Pause the audio and answer in your head.\n\n"
+                "Here is the answer. Thesis, both sides, then the case.")
+        else:
+            prose = "This part sets up the next move of the answer."
+        bodies.append(r12_chapter(i, title, prose))
+    return head + "\n".join(bodies)
+
+
+def r12_fails(text, root):
+    fails, _ = check_text("listen", "listen/R12.md", text, root=root, partial=True)
+    return fails
+
+
+def audit_rows(q, n, **over):
+    lines = []
+    for i in range(1, n + 1):
+        verdict = over.get("verdict", "Confirmed") if i == 1 else "Confirmed"
+        source = over.get("source", "(Fagerberg et al. 2009, p. 431)") if i == 1 else "(Fagerberg et al. 2009, p. 431)"
+        claim = "Actors learn across the economy."
+        lines.append(f"| {q}.{i} | {claim} | 3 | {verdict} | {source} | Kept to the course page. |")
+    return "\n".join(lines)
+
+
+def audit_text(q2=10, **over):
+    def section(q, n):
+        return f"## Question {q}\n{AUDIT_HEAD}\n|---|---|---|---|---|---|\n{audit_rows(q, n, **(over if q == 1 else {}))}\n"
+    return f"""# Audit: model answers to the December 2024 exam
+<!-- audit: Dec 2024 | model: INN514_2024_Model_Exam_Resolution.pdf | pages: 3-14 -->
+
+{AUDIT_INTRO}
+
+{section(1, 10)}
+{section(2, q2)}
+{section(3, 10)}
+"""
+
+
+AUDIT_HEAD = "| # | Claim in the model answer (paraphrased) | Model p. | Verdict | Course source | Note |"
+AUDIT_INTRO = ("A study document, not an official marking guide. Each claim is paraphrased and "
+               "checked against the course sources; only Confirmed and Corrected rows may be voiced.")
+
+
+def one_plan(question=None):
+    q = EXAM["Dec 2024 Q1"] if question is None else question
+    return f"""# Answer plans for the six past questions
+<!-- back: answer-plans -->
+Drafting aid (ours): learn the moves, then write your own words. Each plan is voiced as a worked answer on the companion site (Revision 11 to 16).
+
+## December 2024, Question 1
+**Question:** {q}
+- **Thesis:** Four course definitions, each with a source.
+- **Moves:** 1. Name the system (Fagerberg et al. 2009, p. 431) 2. Name the change (Schlaile et al. 2017, p. 4) 3. Name agency (Bækkelund 2021, p. 761) 4. Name the rules (Fagerberg et al. 2009, p. 433)
+- **Example:** Domestic suppliers grew with petroleum (Fagerberg et al. 2009, p. 434).
+- **Trap:** Prefer the course page when a model differs.
+"""
+
+
+@test("35 a two-chapter R12 with partial passes")
+def t35():
+    with fake_root() as tmp:
+        r12_voices(tmp)
+        clean(r12_fails(r12_text(2), tmp))
+
+
+@test("36 R12 chapter 1 without the exam question")
+def t36():
+    with fake_root() as tmp:
+        r12_voices(tmp)
+        text = r12_text(2, chapter1="The command asks for both sides only.")
+        expect(r12_fails(text, tmp), "does not contain the exam question")
+
+
+@test("37 two One way to say it lines in one chapter")
+def t37():
+    with fake_root() as tmp:
+        r12_voices(tmp)
+        text = r12_text(2, extra="")
+        text = text.replace(
+            "This part sets up the next move of the answer.",
+            "One way to say it: By agency, I understand directed work.\n\n"
+            "One way to say it: By agency, I understand a choice.",
+            1)
+        expect(r12_fails(text, tmp), "One way to say it")
+
+
+@test("38 an eight-word run from the December model page 7")
+def t38():
+    run = " ".join(qnorm(model_pages("Dec 2024")[7]).split()[:8])
+    with fake_root() as tmp:
+        r12_voices(tmp)
+        text = r12_text(2, chapter1=f"{Q2} {run}.")
+        expect(r12_fails(text, tmp), "modelcopy")
+
+
+@test("39 Build it yourself with 3 pauses")
+def t39():
+    short = (
+        "Name the thesis.\nPause the audio and answer in your head.\n\n"
+        "Here is the answer. Agency can help or hold back.\n\n"
+        "Name one way agency helps.\nPause the audio and answer in your head.\n\n"
+        "Here is the answer. Actors can open a new path.\n\n"
+        "Say your whole plan aloud in under one minute.\n"
+        "Pause the audio and answer in your head.\n\n"
+        "Here is the answer. Thesis, both sides, then the case.")
+    with fake_root() as tmp:
+        r12_voices(tmp)
+        expect(r12_fails(r12_text(10, extra=short), tmp), "need 4-6")
+
+
+@test("40 Build it yourself whose last prompt is not the whole plan")
+def t40():
+    wrong = (
+        "Name the thesis.\nPause the audio and answer in your head.\n\n"
+        "Here is the answer. Agency can help or hold back.\n\n"
+        "Name one way agency helps.\nPause the audio and answer in your head.\n\n"
+        "Here is the answer. Actors can open a new path.\n\n"
+        "Name one way agency holds back.\nPause the audio and answer in your head.\n\n"
+        "Here is the answer. Actors can defend the old path.\n\n"
+        "Say a different closing line here.\n"
+        "Pause the audio and answer in your head.\n\n"
+        "Here is the answer. Thesis, both sides, then the case.")
+    with fake_root() as tmp:
+        r12_voices(tmp)
+        expect(r12_fails(r12_text(10, extra=wrong), tmp), "last prompt")
+
+
+@test("41 Grok in a lesson")
+def t41():
+    with fake_root() as tmp:
+        r12_voices(tmp)
+        expect(r12_fails(r12_text(2) + "\nGrok\n", tmp), "Grok")
+
+
+@test("42 a memory aid of our own with a digit")
+def t42():
+    with fake_root() as tmp:
+        r12_voices(tmp)
+        text = r12_text(2).replace(
+            "This part sets up the next move of the answer.",
+            "A memory aid of our own: 7 steps.",
+            1)
+        expect(r12_fails(text, tmp), "memory aid")
+
+
+@test("43 an audit row with verdict Maybe")
+def t43():
+    fails, _ = check_text("audit", "answers/AUDIT_DEC2024.md", audit_text(verdict="Maybe"))
+    expect(fails, "Maybe")
+
+
+@test("44 a Confirmed audit row with source none")
+def t44():
+    fails, _ = check_text("audit", "answers/AUDIT_DEC2024.md", audit_text(source="none"))
+    expect(fails, "source is none")
+
+
+@test("45 an audit row citing a page that is not citable")
+def t45():
+    fails, _ = check_text("audit", "answers/AUDIT_DEC2024.md",
+                          audit_text(source="(Fagerberg et al. 2009, p. 999)"))
+    expect(fails, "999")
+
+
+@test("46 an audit with 9 rows under Question 2")
+def t46():
+    fails, _ = check_text("audit", "answers/AUDIT_DEC2024.md", audit_text(q2=9))
+    expect(fails, "Question 2 has 9 rows")
+
+
+@test("47 a plans section whose question differs from the exam")
+def t47():
+    fails, _ = check_text("plans", "answers/PLANS.md", one_plan("What do you understand by a boat?"),
+                          partial=True)
+    expect(fails, "differs from the exam paper")
+
+
+@test("48 a correct one-section plans file, partial")
+def t48():
+    fails, _ = check_text("plans", "answers/PLANS.md", one_plan(), partial=True)
+    clean(fails)
 
 
 # ---------------------------------------------------------------- runner
