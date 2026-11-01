@@ -98,7 +98,7 @@ Spec: CHEATSHEET_PLAN.md. One task per conversation; a gate review always in a f
 - [x] P14 card
   - `check_cheatsheet.py cards/P14.md` → `PASS cards/P14.md (281 words)`.
   - Opened: P14 pp. 758, 759, 760, 761, 765 and 766.
-- [ ] STOP GATE G3: review P06, P07, P08, P14; commit and push
+- [x] STOP GATE G3: review P06, P07, P08, P14; commit and push
   - Review table (each bullet against its cited page):
 
 | File | Bullets | Confirmed on the source | Fixed (what) |
@@ -107,11 +107,29 @@ Spec: CHEATSHEET_PLAN.md. One task per conversation; a gate review always in a f
 | cards/P07.md | 15 | pp. 810 (tautology), 811 (Hawley), 812 (Lindblom), 813 (ten elements, Baumol), 814 (causation), 826 (12.42 Utrecht, 5.99 Drenthe), 827 (limits) | none |
 | cards/P08.md | 17 | pp. 1097 (special issue), 1098 (30 percent, innovation systems), 1100 (the six contexts, selection, strategic choice) | none; Fig. 1 read from the page text because no picture of p. 1100 exists |
 | cards/P14.md | 18 | pp. 758 (path, agency), 759 (the pairs), 760 (Figure 1), 761 (the villages, 29 interviews), 765 (findings), 766 (the rural-tourism limit) | none |
-- [ ] P15 card
-- [ ] P16 card
-- [ ] P10 card
-- [ ] P17 card
+  - Before the commit: `--all --partial` → `ALL CHEATSHEET CHECKS PASSED`; `--scan` → `SCAN CLEAN`.
+  - Commit `895440c cheatsheet: G3 the cards P06, P07, P08 and P14`; push `aa1a3a6..895440c  main -> main`; `status -sb` now `## main...origin/main`.
+- [x] P15 card
+  - `check_cheatsheet.py cards/P15.md` → `PASS cards/P15.md (260 words)`.
+  - Opened: P15 pp. 277–281 and 294 (the case, bricolage, breakthrough, distributed and embedded agency). No pictures: Figure 2 on p. 279 was described from the page text.
+- [x] P16 card
+  - `check_cheatsheet.py cards/P16.md` → `PASS cards/P16.md (261 words)`.
+  - Opened: P16 pp. 481, 486–487, 490–491, 494 and 495.
+- [x] P10 card
+  - `check_cheatsheet.py cards/P10.md` → `PASS cards/P10.md (272 words)`.
+  - Opened: P10 pp. 2, 3, 4, 9, 10 and 11.
+- [x] P17 card
+  - `check_cheatsheet.py cards/P17.md` → `PASS cards/P17.md (263 words)`.
+  - Opened: P17 pp. 266, 268, 271, 272, 279–284.
 - [ ] STOP GATE G4: review P15, P16, P10, P17; commit and push
+  - Review table (each bullet against its cited page):
+
+| File | Bullets | Confirmed on the source | Fixed (what) |
+|---|---|---|---|
+| cards/P15.md | 15 | pp. 277–279 (the case, bricolage, breakthrough, Figure 2), 280 (distributed agency, interpretive asymmetry), 281 (embedded agency) | none |
+| cards/P16.md | 14 | pp. 481 (regional environment, multi-scalar processes), 486–487 (layering, adaptation, novel application, power), 490 (the three elements), 494 (power and mode), 495 (one case, no generalisation) | none |
+| cards/P10.md | 16 | pp. 2 (TIS, eight functions, materialization), 3 (assessment, legitimation, market formation), 4 (Mongstad), 9 (the function ratings), 10 (Longship and Northern Lights, policy mix), 11 (the three limits) | none |
+| cards/P17.md | 14 | pp. 266 (territory and technology), 268 (path creation, three phases), 271 (three functions), 281 (CCS in preformation, the cluster), 282 (seventy ferry lines), 284 (open questions) | the battery bullets now cite pp. 281–282: the cluster is named on p. 281, the outcome on p. 282 |
 - [ ] P11 card
 - [ ] P12 card
 - [ ] P13 card
