@@ -54,16 +54,22 @@ SESSIONS = [
 
 # The revision lessons voice the course cheatsheet (cheatsheet/listen/R01.md ...), shown as "Revision N".
 REVISION = [
-    ("R01", "1", "Exam day: what to know by heart", "From the exam-day page of the cheatsheet"),
-    ("R02", "2", "Innovation systems and Norway's national innovation system", "Theme 1 of the cheatsheet"),
-    ("R03", "3", "Regional innovation systems and industrial restructuring", "Theme 2 of the cheatsheet"),
-    ("R04", "4", "Institutions and institutional work", "Theme 3 of the cheatsheet"),
-    ("R05", "5", "Entrepreneurial ecosystems", "Theme 4 of the cheatsheet"),
-    ("R06", "6", "Agency and new path development", "Theme 5 of the cheatsheet"),
-    ("R07", "7", "Technological innovation systems and their functions", "Theme 6 of the cheatsheet"),
-    ("R08", "8", "Sustainability, transformation and normative direction", "Theme 7 of the cheatsheet"),
-    ("R09", "9", "Crowdfunding and service ecosystems", "Theme 8 of the cheatsheet"),
-    ("R10", "10", "The 17 papers in brief", "The paper cards of the cheatsheet"),
+    ("R01", "1", "Exam day: what to know by heart", "From the exam-day page of the cheatsheet", "lesson"),
+    ("R02", "2", "Innovation systems and Norway's national innovation system", "Theme 1 of the cheatsheet", "lesson"),
+    ("R03", "3", "Regional innovation systems and industrial restructuring", "Theme 2 of the cheatsheet", "lesson"),
+    ("R04", "4", "Institutions and institutional work", "Theme 3 of the cheatsheet", "lesson"),
+    ("R05", "5", "Entrepreneurial ecosystems", "Theme 4 of the cheatsheet", "lesson"),
+    ("R06", "6", "Agency and new path development", "Theme 5 of the cheatsheet", "lesson"),
+    ("R07", "7", "Technological innovation systems and their functions", "Theme 6 of the cheatsheet", "lesson"),
+    ("R08", "8", "Sustainability, transformation and normative direction", "Theme 7 of the cheatsheet", "lesson"),
+    ("R09", "9", "Crowdfunding and service ecosystems", "Theme 8 of the cheatsheet", "lesson"),
+    ("R10", "10", "The 17 papers in brief", "The paper cards of the cheatsheet", "lesson"),
+    ("R11", "11", "Worked answer: innovation system, sustainable transformation, agency and institutions", "December 2024 exam, Question 1", "answer"),
+    ("R12", "12", "Worked answer: how agency can promote or inhibit sustainable transformation", "December 2024 exam, Question 2", "answer"),
+    ("R13", "13", "Worked answer: how technologies can promote or inhibit sustainable transformation", "December 2024 exam, Question 3", "answer"),
+    ("R14", "14", "Worked answer: regional innovation system, institutional work and sustainability", "June 2025 exam, Question 1", "answer"),
+    ("R15", "15", "Worked answer: how a regional innovation system can promote or inhibit industrial restructuring", "June 2025 exam, Question 2", "answer"),
+    ("R16", "16", "Worked answer: guiding technological innovation systems towards sustainable transformation", "June 2025 exam, Question 3", "answer"),
 ]
 
 
@@ -85,7 +91,8 @@ def main():
                          "lectures": m["lectures"], "ready": pid in lectures})
     catalog = [{"id": i, "num": n, "title": t, "when": w, "teacher": te, "note": no, "ready": i in lectures,
                 "readings": [r["id"] for r in readings if i in r["lectures"]]} for i, n, t, w, te, no in CATALOG]
-    revision = [{"id": i, "num": n, "title": t, "when": w, "ready": i in lectures} for i, n, t, w in REVISION]
+    revision = [{"id": i, "num": n, "title": t, "when": w, "group": g, "ready": i in lectures}
+                for i, n, t, w, g in REVISION]
     data = {"catalog": catalog, "readings": readings, "sessions": SESSIONS, "revision": revision,
             "lectures": lectures}
     missing = [c["audio"] for lec in lectures.values() for c in lec["chapters"] if not (SITE / c["audio"]).exists()]

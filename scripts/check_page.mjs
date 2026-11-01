@@ -967,8 +967,8 @@ try {
   const doors3 = await ev(`(() => { const d = document.querySelector('.door[data-door="revision"]');
     return {count: document.querySelectorAll('.door').length, href: d?.getAttribute('href'),
       stats: d?.querySelector('.stats')?.textContent || '', nav: document.querySelector('.mainnav a[data-nav="revision"]')?.getAttribute('href')}; })()`);
-  check('the front page has three doors, and the revision door says 10 lessons',
-    doors3.count === 3 && doors3.href === '#revision' && doors3.stats.includes('10 lessons'), JSON.stringify(doors3));
+  check('the front page has three doors, and the revision door says ' + DATA.revision.length + ' lessons',
+    doors3.count === 3 && doors3.href === '#revision' && doors3.stats.includes(DATA.revision.length + ' lessons'), JSON.stringify(doors3));
   check('the top bar has a Revision link', doors3.nav === '#revision', String(doors3.nav));
   await ev(`document.querySelector('.door[data-door="revision"]').scrollIntoView({ block: 'center' })`);
   await sleep(400);
@@ -976,17 +976,34 @@ try {
 
   await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 2, mobile: true });
   await go('revision'); await sleep(500);
-  const revPage = await ev(`(() => { const rows = [...document.querySelectorAll('.list.classes .row[data-id]')];
-    return {n: rows.length, h1: document.querySelector('h1')?.textContent, ready: rows.filter((r) => r.classList.contains('ready')).length,
-      link: rows.find((r) => r.classList.contains('ready'))?.querySelector('a.row-title')?.getAttribute('href'),
-      soon: rows.filter((r) => r.classList.contains('soon')).length,
-      soonText: rows.find((r) => r.classList.contains('soon'))?.textContent || ''}; })()`);
-  const revReady = await ev(`({ready: REVISION.filter((v) => DATA.lectures[v.id]).length, first: (REVISION.find((v) => DATA.lectures[v.id]) || {}).id})`);
-  check('#revision lists ten rows, a link for a ready lesson and In preparation for the rest',
+  const revPage = await ev(`(() => { const lists = [...document.querySelectorAll('#view ol.list.classes')];
+    const lessonRows = [...(lists[0]?.querySelectorAll('.row[data-id]') || [])];
+    const answerRows = [...(lists[1]?.querySelectorAll('.row[data-id]') || [])];
+    const soon = lessonRows.filter((r) => r.classList.contains('soon'));
+    return {lists: lists.length, heads: [...document.querySelectorAll('#view h2')].map((h) => h.textContent),
+      ledes: [...document.querySelectorAll('#view p.lede')].map((p) => p.textContent),
+      n: lessonRows.length, h1: document.querySelector('h1')?.textContent,
+      ready: lessonRows.filter((r) => r.classList.contains('ready')).length,
+      link: lessonRows.find((r) => r.classList.contains('ready'))?.querySelector('a.row-title')?.getAttribute('href'),
+      soon: soon.length, soonText: soon[0]?.textContent || '',
+      answers: answerRows.length,
+      answerLink: answerRows.find((r) => r.classList.contains('ready'))?.querySelector('a.row-title')?.getAttribute('href') || ''}; })()`);
+  const revReady = await ev(`({ready: REVISION.filter((v) => v.group === 'lesson' && DATA.lectures[v.id]).length, first: (REVISION.find((v) => v.group === 'lesson' && DATA.lectures[v.id]) || {}).id})`);
+  check('#revision lists the lesson rows, a link for a ready lesson and In preparation for the rest',
     revPage.n === 10 && revPage.h1 === 'Revision' && revPage.ready === revReady.ready &&
       revPage.link === '#' + revReady.first && revPage.soon === 10 - revReady.ready &&
       (revPage.soon === 0 || revPage.soonText.includes('In preparation')), JSON.stringify({revPage, revReady}));
+  check('#revision has both headings',
+    revPage.heads.includes('Lessons') && revPage.heads.includes('Worked exam answers'), JSON.stringify(revPage.heads));
+  check('the answers list has 6 rows', revPage.answers === 6, JSON.stringify(revPage.answers));
+  check('a ready answer row links to its lesson', revPage.answerLink === '#R12', revPage.answerLink);
+  check('the answers lede is the move-by-move line',
+    revPage.ledes.includes('Six past exam questions, answered move by move. Learn the moves, then write your own words.'),
+    JSON.stringify(revPage.ledes));
   await shot('phone-revision.png');
+  await ev(`document.querySelectorAll('#view section.group')[1]?.scrollIntoView({ block: 'center' })`);
+  await sleep(400);
+  await shot('phone-revision-answers.png');
 
   await go('R07'); await sleep(600);
   const lessonView = await ev(`(() => ({crumb: document.querySelector('.crumbs a')?.textContent,
@@ -1029,6 +1046,29 @@ try {
     return {hash: location.hash, src: a.getAttribute('src') || ''}; })()`);
   check('with Repeat off and Auto on, the end of a lesson goes on to the next one',
     handedOver.hash === '#R02' && handedOver.src.includes('R02-01.mp3'), JSON.stringify(handedOver));
+
+  await go('R12'); await sleep(600);
+  const r12View = await ev(`(() => ({crumb: document.querySelector('.crumbs a')?.textContent,
+    crumbHref: document.querySelector('.crumbs a')?.getAttribute('href'),
+    chapters: document.querySelectorAll('.route.chapters .stop').length,
+    expected: DATA.lectures.R12.chapters.length}))()`);
+  check('#R12 has the Revision crumb and its 10 chapters',
+    r12View.crumb === 'Revision' && r12View.crumbHref === '#revision' &&
+      r12View.chapters === 10 && r12View.chapters === r12View.expected, JSON.stringify(r12View));
+  await ev(`document.querySelectorAll('.route.chapters .stop .body')[0].click()`); await sleep(700);
+  const r12src = await ev(`document.getElementById('audio').getAttribute('src') || ''`);
+  check('the first Listen of #R12 plays audio/R12-01.mp3', r12src.includes('audio/R12-01.mp3'), r12src);
+  await ev(`document.querySelectorAll('.route.chapters .stop .body')[DATA.lectures.R12.chapters.length - 1].click()`);
+  await sleep(700);
+  const r12end = await ev(`(async () => { const a = document.getElementById('audio'); const next = neighbour('R12', 1);
+    a.dispatchEvent(new Event('ended')); await new Promise((r) => setTimeout(r, 700));
+    return {hash: location.hash, src: a.getAttribute('src') || '', next,
+      repeat: document.getElementById('repeat').getAttribute('aria-pressed'),
+      auto: document.getElementById('auto').getAttribute('aria-pressed')}; })()`);
+  const r12wentOn = !!r12end.next && r12end.hash === '#' + r12end.next && r12end.src.includes(r12end.next + '-01.mp3');
+  const r12stayed = !r12end.next && r12end.hash === '#R12' && !r12end.src.includes('R12-01.mp3');
+  check('with Auto on and Repeat off, the end of R12 goes on to the next ready lesson',
+    r12end.repeat === 'false' && r12end.auto === 'true' && (r12wentOn || r12stayed), JSON.stringify(r12end));
 
   await ev(`document.querySelector('.gb-orb').click()`); await sleep(400);
   const gbHead = await ev(`(() => ({head: document.querySelector('.gb-head')?.textContent || '',

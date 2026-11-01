@@ -38,9 +38,58 @@ ALL CHECKER TESTS PASSED (48 tests)
 ALL CHEATSHEET CHECKS PASSED
 SCAN CLEAN
 ```
-- [ ] E3 R12 lesson (pilot, December 2024 Question 2): written, checked, recorded
-- [ ] E4 site: two Revision groups, the answers list, check_page updates; all site checks pass
-- [ ] STOP GATE G15: review R12 and E4; commit, push, live check
+
+5137617 answers: G14 scripts and both exam audits. Push: e4965f9..5137617 main -> main. Status after push: main...origin/main.
+- [x] E3 R12 lesson (pilot, December 2024 Question 2): written, checked, recorded
+
+```
+PASS listen/R12.md (2249 words)
+ALL CHEATSHEET CHECKS PASSED
+```
+
+```
+== R12: Revision 12: Worked answer: how agency can promote or inhibit sustainable transformation (10 chapters)
+  [OK] R12-01.mp3:  1.5 min, 199 words, 136 wpm, -20.5 LUFS, 0.53 MB  (cache)
+  [OK] R12-02.mp3:  1.3 min, 183 words, 140 wpm, -20.6 LUFS, 0.47 MB  (cache)
+  [OK] R12-03.mp3:  1.4 min, 214 words, 157 wpm, -20.8 LUFS, 0.49 MB  (cache)
+  [OK] R12-04.mp3:  1.8 min, 233 words, 126 wpm, -20.7 LUFS, 0.66 MB  (synthesised (attempt 1))
+  [OK] R12-05.mp3:  1.6 min, 221 words, 138 wpm, -20.5 LUFS, 0.58 MB  (cache)
+  [OK] R12-06.mp3:  1.8 min, 249 words, 139 wpm, -20.5 LUFS, 0.65 MB  (cache)
+  [OK] R12-07.mp3:  1.7 min, 232 words, 135 wpm, -20.6 LUFS, 0.62 MB  (synthesised (attempt 1))
+  [OK] R12-08.mp3:  1.5 min, 222 words, 148 wpm, -20.5 LUFS, 0.54 MB  (cache)
+  [OK] R12-09.mp3:  1.7 min, 225 words, 135 wpm, -20.4 LUFS, 0.60 MB  (cache)
+  [OK] R12-10.mp3:  2.1 min, 269 words, 126 wpm, -20.5 LUFS, 0.77 MB  (cache)
+  total 16.4 min; data written to site/data/R12.json
+```
+
+SITE MANIFEST OK
+- [x] E4 site: two Revision groups, the answers list, check_page updates; all site checks pass
+
+Existing checks changed, because E4 made them wrong:
+- The door check expected the fixed text "10 lessons". It now expects DATA.revision.length lessons. The door says 16 lessons.
+- The revision-list check counted every row as ten. It now counts the Lessons list only (10 rows). The answers list has its own check for 6 rows.
+
+```
+ALL PAGE CHECKS PASSED
+index.html: 730 KB, 237 audio files under site/audio/
+ALL SERVER CHECKS PASSED
+SITE MANIFEST OK
+```
+
+Screenshot phone-revision-answers.png shows the answers list. Revision 12 is ready (16 minutes, 10 chapters). Revisions 11 and 13 to 16 say In preparation.
+- [x] STOP GATE G15: review R12 and E4; commit, push, live check
+
+| File | Items | Confirmed on the source | Fixed (what) |
+|---|---|---|---|
+| listen/R12.md | 10 chapters | Question 2 rows 2.1 to 2.16 are Confirmed or Corrected, and the spoken facts sit on those rows or on TH5, TH3, the cards and the exam-day sheet. Chapter 1 says the question. Five moves, both sides, Hordaland and Rogaland, and the traps use the corrected lines. | Two glosses cut before the push. Agency is not ranked good or bad. The regions are two petroleum regions with a shared green vision, not a shared petroleum past. |
+| scripts/build_site.py, site/template.html, scripts/check_page.mjs | Section 7 of the answers plan | R11 to R16 are in REVISION with the when lines and the group. The page has Lessons and Worked exam answers, the new lede, and the six-row list. | The two groups sit in the existing section.group so the headings use the papers-page style. |
+
+```
+ALL CHEATSHEET CHECKS PASSED
+ALL PAGE CHECKS PASSED
+ALL SERVER CHECKS PASSED
+SITE MANIFEST OK
+```
 - [ ] E5 R11 lesson (December 2024 Question 1)
 - [ ] E6 R13 lesson (December 2024 Question 3)
 - [ ] STOP GATE G16: review R11, R13; site checks; commit, push, live check

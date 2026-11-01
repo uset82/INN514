@@ -902,12 +902,22 @@ function revisionRow(v) {
 }
 function renderRevision() {
   viewId = null;
+  const lessons = REVISION.filter((v) => v.group === "lesson");
+  const answers = REVISION.filter((v) => v.group === "answer");
   view.innerHTML = `
     <div class="page-head">
       <h1>Revision</h1>
-      <p class="lede">The course cheatsheet as audio lessons: the exam day, the eight themes and the papers in brief. Turn on Repeat to hear a lesson again and again.</p>
+      <p class="lede">The course cheatsheet as audio lessons: the exam day, the eight themes, the papers in brief and six worked exam answers. Turn on Repeat to hear a lesson again and again.</p>
     </div>
-    <ol class="list classes">${REVISION.map(revisionRow).join("")}</ol>`;
+    <section class="group">
+      <h2>Lessons</h2>
+      <ol class="list classes">${lessons.map(revisionRow).join("")}</ol>
+    </section>
+    <section class="group">
+      <h2>Worked exam answers</h2>
+      <p class="lede">Six past exam questions, answered move by move. Learn the moves, then write your own words.</p>
+      <ol class="list classes">${answers.map(revisionRow).join("")}</ol>
+    </section>`;
   refreshProgress();
 }
 

@@ -19,7 +19,7 @@
 [PASS] #T1 opens the class with all its chapters  {"stops":7,"sections":7,"h1":"Innovation as systemic and sustainable transformation"}
 [PASS] a plain file hides Grokbot, the ask buttons and the greeting  {"shown":false,"askBtns":0,"greets":0}
 [PASS] the Ask how-to item is hidden in a plain file  false
-[PASS] a chapter plays from its button  {"src":"T1-02.mp3","paused":false,"t":3.407391,"d":188.424}
+[PASS] a chapter plays from its button  {"src":"T1-02.mp3","paused":false,"t":3.339192,"d":188.424}
 [PASS] paragraph highlight follows the audio  {"count":1,"inChapter":"ch-1"}
 [PASS] next chapter starts on its own  {"src":"T1-03.mp3","now":"2"}
 [PASS] finished chapter fills the route and is saved  {"done":true,"fill":58.09375,"saved":{"T1":[1]}}
@@ -138,17 +138,25 @@
 [PASS] the breadcrumb and pager sit on one row, or wrap without overlapping  {"inner":390,"scroll":390,"oneRow":true,"wrapped":false,"overlap":false,"auto":"Auto","playerRow":true}
   screenshot workspace/lecture-audio/checks/phone-paper-pager.png
   screenshot workspace/lecture-audio/checks/phone-player-auto.png
-[PASS] the front page has three doors, and the revision door says 10 lessons  {"count":3,"href":"#revision","stats":"10 lessons, 1 hours 37 minutes","nav":"#revision"}
+[PASS] the front page has three doors, and the revision door says 16 lessons  {"count":3,"href":"#revision","stats":"16 lessons, 1 hours 53 minutes","nav":"#revision"}
 [PASS] the top bar has a Revision link  #revision
   screenshot workspace/lecture-audio/checks/desktop-home-revision.png
-[PASS] #revision lists ten rows, a link for a ready lesson and In preparation for the rest  {"revPage":{"n":10,"h1":"Revision","ready":10,"link":"#R01","soon":0,"soonText":""},"revReady":{"ready":10,"first":"R01"}}
+[PASS] #revision lists the lesson rows, a link for a ready lesson and In preparation for the rest  {"revPage":{"lists":2,"heads":["Lessons","Worked exam answers"],"ledes":["The course cheatsheet as audio lessons: the exam day, the eight themes, the papers in brief and six worked exam answers. Turn on Repeat to hear a lesson again and again.","Six past exam questions, answered move by move. Learn the moves, then write your own words."],"n":10,"h1":"Revision","ready":10,"link":"#R01","soon":0,"soonText":"","answers":6,"answerLink":"#R12"},"revReady":{"ready":10,"first":"R01"}}
+[PASS] #revision has both headings  ["Lessons","Worked exam answers"]
+[PASS] the answers list has 6 rows  6
+[PASS] a ready answer row links to its lesson  #R12
+[PASS] the answers lede is the move-by-move line  ["The course cheatsheet as audio lessons: the exam day, the eight themes, the papers in brief and six worked exam answers. Turn on Repeat to hear a lesson again and again.","Six past exam questions, answered move by move. Learn the moves, then write your own words."]
   screenshot workspace/lecture-audio/checks/phone-revision.png
+  screenshot workspace/lecture-audio/checks/phone-revision-answers.png
 [PASS] #R07 has the Revision crumb, its title and its chapters  {"crumb":"Revision","crumbHref":"#revision","h1":"Technological innovation systems and their functions","chapters":6,"expected":6,"by":"From the INN514 cheatsheet. 6 chapters, 9 minutes."}
 [PASS] the first chapter of #R07 plays R07-01.mp3  audio/R07-01.mp3
 [PASS] the Repeat chip toggles and is saved  {"pressed":"true","saved":true}
 [PASS] with Repeat on, the end of the last chapter starts the lesson again  {"src":"audio/R07-01.mp3"}
-[PASS] with Repeat off the end of the lesson does not start it again  {"repeatOff":{"pressed":"false","series":10},"afterOff":{"src":"audio/R08-01.mp3","hash":"#R08"}}
+[PASS] with Repeat off the end of the lesson does not start it again  {"repeatOff":{"pressed":"false","series":11},"afterOff":{"src":"audio/R08-01.mp3","hash":"#R08"}}
 [PASS] with Repeat off and Auto on, the end of a lesson goes on to the next one  {"hash":"#R02","src":"audio/R02-01.mp3"}
+[PASS] #R12 has the Revision crumb and its 10 chapters  {"crumb":"Revision","crumbHref":"#revision","chapters":10,"expected":10}
+[PASS] the first Listen of #R12 plays audio/R12-01.mp3  audio/R12-01.mp3
+[PASS] with Auto on and Repeat off, the end of R12 goes on to the next ready lesson  {"hash":"#R12","src":"audio/R12-10.mp3","next":null,"repeat":"false","auto":"true"}
 [PASS] on #R07 Grokbot says About the whole course and hides its switch  {"head":"About the whole course","hidden":true}
 [PASS] a revision lesson is not in the search index  {"indexed":false,"hits":["T6","P10","P10"]}
   screenshot workspace/lecture-audio/checks/phone-revision-lesson.png
