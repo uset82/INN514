@@ -1026,6 +1026,7 @@ student approved for the companion. That and the live check are the only online 
 - 2026-11-01, G0: reading the 6.2 table against the code found three gaps the 24 tests did not cover: the bare-Guimarães rule, the reason given for a slide-only quotation, and "every paper is in at least one theme". Rule for the next gates: compare each row of the plan's check tables with the code by hand; the tests only cover what they enumerate.
 - 2026-11-01, G1: the P01 review found two things the checker cannot see. A finding was cited to p. 437, but the paper states that claim on p. 438. The model line named Wicken, an author the page cites only as a numbered reference. Rules: search the cited page for the claim itself, not for a nearby phrase; and never print a name the page does not print.
 - 2026-11-01, G2: the P03 reading's brief carried counts (five of fifteen National Centres of Expertise, one of three Global Centres) that the paper does not print on p. 24; they were left out. Rule: a number in a reading's brief is still a claim, and it needs its own page before it goes in a card.
+- 2026-11-01, G3: a card holds 3–6 model steps, so P07's ten elements went in as the paper's own three groups (institutional arrangements, resources, output). Rule: when a model is longer than six steps, use the paper's own grouping and name the steps after the groups.
 
 ## 12. Done means
 

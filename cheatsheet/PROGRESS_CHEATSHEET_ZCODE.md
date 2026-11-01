@@ -74,7 +74,7 @@ Spec: CHEATSHEET_PLAN.md. One task per conversation; a gate review always in a f
 - [x] P05 card
   - `check_cheatsheet.py cards/P05.md` → `PASS cards/P05.md (270 words)`.
   - Opened: P05 pp. 324–328, 330, 331–333, 337, 340 and 343 (Norwegian text, paraphrased); Class 2 slide 13 for the Norwegian term. No pictures.
-- [ ] STOP GATE G2: review P02-P05; commit and push
+- [x] STOP GATE G2: review P02-P05; commit and push
   - Review table (each bullet against its cited page):
 
 | File | Bullets | Confirmed on the source | Fixed (what) |
@@ -83,12 +83,30 @@ Spec: CHEATSHEET_PLAN.md. One task per conversation; a gate review always in a f
 | cards/P03.md | 18 | pp. 15 (institutional work, the two regions), 16 (Cooke, North), 17 (the four forms, Bækkelund), 18 (Thornton and Almandoz), 23 (the forty to fifty firms), 25 (unintended continuation, the regional difference), 19 (validity) | none; the NCE counts in the reading brief were not used because the page does not print them |
 | cards/P04.md | 15 | pp. 2 (Niosi, wicked problems), 4 (paradigm, Pyka), 5 (Steward, Weber and Rohracher), 10 (scattered strands, "in principle", Sendzimir) | none |
 | cards/P05.md | 15 | pp. 324 (the three levels, stagnation), 326 (Cooke), 328 (the four trajectories, in Norwegian), 330 (related variety), 331–332 (24 and 33 percent), 333 (the cluster programme), 337 (ten of eighteen, Mongstad), 340 (the Ulstein conversation), 343 (which driver cannot be settled) | none; no quotation mark, since P05 is never quoted |
+  - Before the commit: `--all --partial` → `ALL CHEATSHEET CHECKS PASSED`; `--scan` → `SCAN CLEAN`.
+  - Commit `aa1a3a6 cheatsheet: G2 the cards P02 to P05`; push `4c84474..aa1a3a6  main -> main`; `status -sb` now `## main...origin/main`.
 
-- [ ] P06 card
-- [ ] P07 card
-- [ ] P08 card
-- [ ] P14 card
+- [x] P06 card
+  - `check_cheatsheet.py cards/P06.md` → `PASS cards/P06.md (260 words)`.
+  - Opened: P06 pp. 152, 158, 159, 160, 161, 163, 164 and 165, and the picture `workspace/extracted/pages/P06/img/page-163.png` — Figure 2 marks the axes Network Strength and Resources and the four types Strong, Arid, Irrigated and Weak, which are the card's steps. Class 4 slide 1, section 1 only, for the Norwegian term.
+- [x] P07 card
+  - `check_cheatsheet.py cards/P07.md` → `PASS cards/P07.md (260 words)`.
+  - Opened: P07 pp. 810, 811, 812, 813, 814, 826 and 827. The ten elements go in as the paper's three groups, because a card's model holds 3–6 steps.
+- [x] P08 card
+  - `check_cheatsheet.py cards/P08.md` → `PASS cards/P08.md (260 words)`.
+  - Opened: P08 pp. 1097, 1098, 1099 and 1100 (`img/` holds page-1097.png and page-1098.png only, so Fig. 1 on p. 1100 was read from the page text, which lists the six contexts).
+- [x] P14 card
+  - `check_cheatsheet.py cards/P14.md` → `PASS cards/P14.md (281 words)`.
+  - Opened: P14 pp. 758, 759, 760, 761, 765 and 766.
 - [ ] STOP GATE G3: review P06, P07, P08, P14; commit and push
+  - Review table (each bullet against its cited page):
+
+| File | Bullets | Confirmed on the source | Fixed (what) |
+|---|---|---|---|
+| cards/P06.md | 16 | pp. 152 (chaotic conception), 158 (process), 159 (access), 160 (recycling), 161 (munificence, functionality), 163 (Figure 2 in the picture), 164 (circularity), 165 (research agenda) | none |
+| cards/P07.md | 15 | pp. 810 (tautology), 811 (Hawley), 812 (Lindblom), 813 (ten elements, Baumol), 814 (causation), 826 (12.42 Utrecht, 5.99 Drenthe), 827 (limits) | none |
+| cards/P08.md | 17 | pp. 1097 (special issue), 1098 (30 percent, innovation systems), 1100 (the six contexts, selection, strategic choice) | none; Fig. 1 read from the page text because no picture of p. 1100 exists |
+| cards/P14.md | 18 | pp. 758 (path, agency), 759 (the pairs), 760 (Figure 1), 761 (the villages, 29 interviews), 765 (findings), 766 (the rural-tourism limit) | none |
 - [ ] P15 card
 - [ ] P16 card
 - [ ] P10 card
