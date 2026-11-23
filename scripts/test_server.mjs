@@ -357,8 +357,10 @@ async function run() {
     check(healthResponse.status === 200 && health?.ask === true, "health reports ask: true",
       `status ${healthResponse.status}`);
     check(health?.key === true && health?.passcode === true, "health reports that the key and the passcode are present");
-    check(health && !("seen" in health) && !("runtime" in health) && JSON.stringify(Object.keys(health)) === JSON.stringify(["ok", "ask", "key", "passcode", "voices"]),
-      "health shows only ok, ask, key, passcode and voices", JSON.stringify(Object.keys(health || {})));
+    check(health && !("seen" in health) && !("runtime" in health) && JSON.stringify(Object.keys(health)) === JSON.stringify(["ok", "ask", "key", "passcode", "voices", "models"]),
+      "health shows only ok, ask, key, passcode, voices and models", JSON.stringify(Object.keys(health || {})));
+    check(Array.isArray(health?.models) && health.models.join(",") === `${FIRST_MODEL},${SECOND_MODEL}`,
+      "health reports the configured answer models", JSON.stringify(health?.models));
 
     const validAsk = { id: "T4", chapter: 2, question: "What is upward causation?", history: [] };
     const noPass = await postJson(serverPort, "/api/ask", validAsk);
@@ -664,8 +666,8 @@ async function run() {
     await stopProcess(thinkMock);
     check(!isRunning(thinkServer) && !isRunning(thinkMock), "the thinking-model server and its mock stop cleanly");
 
-    // GROKBOT_REASONING is passed through only when it is set.
-    const reasonMockPort = await getFreePort(), reasonServerPort = await getFreePort();
+    // GROKBOT_REASONING overrides the low-effort default; an explicit null turns reasoning off.
+    const reasonMockPort = await getFreePort(), reasonServerPort = await getFreePort(), noReasonServerPort = await getFreePort();
     const reasonMock = startMock(reasonMockPort, "");
     await waitReady(reasonMock, reasonMockPort, "/calls", "mock");
     const reasonServer = startServer(reasonServerPort, reasonMockPort, { GROKBOT_REASONING: '{"effort":"low"}' });
@@ -676,11 +678,20 @@ async function run() {
       "GROKBOT_REASONING is sent with the chat call", JSON.stringify(reasonCalls.at(-1)?.reasoning));
     const normalCalls = (await callsFromMock(mockPort)).filter((c) => c.path === CHAT_PATH)
       .filter((c) => !c.context.startsWith("You choose which chapters"));   // the pick always sends a light reasoning setting
-    check(normalCalls.length > 0 && normalCalls.every((c) => c.reasoning === null),
-      "without GROKBOT_REASONING no reasoning settings are sent", `${normalCalls.length} calls`);
+    check(normalCalls.length > 0 && normalCalls.every((c) => JSON.stringify(c.reasoning) === JSON.stringify({ effort: "low" })),
+      "without GROKBOT_REASONING the low-effort default is sent", `${normalCalls.length} calls`);
+    const beforeOff = (await callsFromMock(reasonMockPort)).filter((c) => c.path === CHAT_PATH).length;
+    const noReasonServer = startServer(noReasonServerPort, reasonMockPort, { GROKBOT_REASONING: "null" });
+    await waitReady(noReasonServer, noReasonServerPort, "/api/health", "server");
+    await postJson(noReasonServerPort, "/api/ask", validAsk, { passcode: TEST_PASS });
+    const offCalls = (await callsFromMock(reasonMockPort)).filter((c) => c.path === CHAT_PATH).slice(beforeOff)
+      .filter((c) => !c.context.startsWith("You choose which chapters"));
+    check(offCalls.length > 0 && offCalls.every((c) => c.reasoning === null),
+      "GROKBOT_REASONING=null sends no reasoning settings", `${offCalls.length} calls`);
     await stopProcess(reasonServer);
+    await stopProcess(noReasonServer);
     await stopProcess(reasonMock);
-    check(!isRunning(reasonServer) && !isRunning(reasonMock), "the reasoning server and its mock stop cleanly");
+    check(!isRunning(reasonServer) && !isRunning(noReasonServer) && !isRunning(reasonMock), "the reasoning servers and their mock stop cleanly");
 
     // Every model failing: a streamed ask falls back to a normal 502 JSON reply.
     const failMockPort = await getFreePort(), failServerPort = await getFreePort();

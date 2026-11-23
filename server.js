@@ -120,18 +120,20 @@ function mergePicks(picks, hits) {   // the model's picks first, then the search
 const BASE = process.env.OPENROUTER_BASE || "https://openrouter.ai/api/v1";
 /* The key without the spaces or quotes that a host's settings page or a copy-paste can add around it. */
 const KEY = String(process.env.OPENROUTER_API_KEY || "").trim().replace(/^(["'])(.*)\1$/, "$2");
-// Timed on Canner on 2026-10-26: Nemotron 3.5 Super VL gave the first sentence in 3-5 s every time;
-// openrouter/free picks a model at random (3-26 s), so it is the fallback.
-const MODELS = (process.env.GROKBOT_ANSWER_MODELS || "nvidia/nemotron-3.5-super-vl:free,openrouter/free").split(",").map((s) => s.trim()).filter(Boolean);
+// Timed on 2026-11-23 with reasoning effort low: Nemotron 3 Ultra gave the first sentence in 1.2 s,
+// Nemotron 3.5 Super VL in 3.0 s (it has the highest free intelligence score, 13.6), and
+// openrouter/free in 1.7 s as the last resort; their answers were equally correct.
+const MODELS = (process.env.GROKBOT_ANSWER_MODELS || "nvidia/nemotron-3-ultra-550b-a55b:free,nvidia/nemotron-3.5-super-vl:free,openrouter/free").split(",").map((s) => s.trim()).filter(Boolean);
 const VOICE_EN = process.env.GROKBOT_VOICE_MODEL_EN || "fish-audio/s2.1-pro-free:free";
 const VOICE_ES = process.env.GROKBOT_VOICE_MODEL_ES || "fish-audio/s2.1-pro-free:free";
 const PICK_MODELS = (process.env.GROKBOT_PICK_MODELS || "").split(",").map((s) => s.trim()).filter(Boolean);
 const FIRST_TOKEN_MS = Number(process.env.GROKBOT_FIRST_TOKEN_MS) > 0 ? Number(process.env.GROKBOT_FIRST_TOKEN_MS) : 15000;
 const PICK_TIMEOUT_MS = Number(process.env.GROKBOT_PICK_TIMEOUT_MS) > 0 ? Number(process.env.GROKBOT_PICK_TIMEOUT_MS) : 10000;
-/* Optional OpenRouter "reasoning" settings, as JSON (for example {"effort":"low"}); unset means none are sent. */
+/* Low reasoning effort by default: measured on 2026-11-23, it halved the time to the first sentence on both
+   free Nemotron models and the answers stayed correct. GROKBOT_REASONING=null turns it off. */
 const REASONING = (() => {
-  if (!process.env.GROKBOT_REASONING) return null;
-  try { return JSON.parse(process.env.GROKBOT_REASONING); } catch (e) { console.error("GROKBOT_REASONING is not JSON; ignored"); return null; }
+  if (!process.env.GROKBOT_REASONING) return { effort: "low" };
+  try { return JSON.parse(process.env.GROKBOT_REASONING); } catch (e) { console.error("GROKBOT_REASONING is not JSON; using low effort"); return { effort: "low" }; }
 })();
 const upstreamHeaders = () => ({
   "Authorization": `Bearer ${KEY}`, "Content-Type": "application/json",
@@ -525,6 +527,7 @@ const server = http.createServer((req, res) => {
       // Whether each setting is present (never its value). The page asks for a passcode only when one is set.
       key: !!KEY, passcode: !!cleanPass(process.env.GROKBOT_PASSCODE),
       voices: { en: VOICE_EN, es: VOICE_ES },
+      models: MODELS,
     };
     // Opt-in, so Canner's fast health checks stay fast: /api/health?upstream=1 also asks OpenRouter
     // whether it accepts the key, and reports only the status and OpenRouter's own message.
