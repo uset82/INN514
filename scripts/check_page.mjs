@@ -430,6 +430,12 @@ try {
     window.__sampleMode = 'ok'; window.__lastSample = null; window.__lastJson = null;
     window.__sampleCount = 0; window.__utterances = [];
     window.__voices = [{ lang: 'es-ES', name: 'Test ES voice' }, { lang: 'en-GB', name: 'Test EN voice' }];
+    window.__rec = { starts: [], stops: 0, last: null };
+    window.SpeechRecognition = window.webkitSpeechRecognition = class {
+      constructor() { window.__rec.last = this; }
+      start() { window.__rec.starts.push(this.lang); if (this.onstart) this.onstart(); }
+      stop() { window.__rec.stops++; if (this.onend) this.onend(); }
+    };
     if (window.speechSynthesis) {
       window.speechSynthesis.getVoices = () => window.__voices;
       // A fake utterance: the real one refuses the stub's plain-object voice.
@@ -687,6 +693,34 @@ try {
     return {left: Math.round(g.left), bottom: Math.round(g.bottom), playerTop: Math.round(p.top)}; })()`);
   check('a far-off position clamps to 16px from the left and 8px above the player',
     clamped.left === 16 && clamped.playerTop - clamped.bottom >= 8, JSON.stringify(clamped));
+
+  // voice input: the microphone fills the question box, sends what was heard and remembers the language
+  await go('T4'); await sleep(400);
+  await ev(`document.querySelector('.gb-orb').click()`); await sleep(400);
+  const voiceUi = await ev(`(() => ({mic: !document.querySelector('.ask-mic').hidden,
+    lang: document.querySelector('.ask-lang').textContent,
+    wide: document.querySelector('.ask-form').scrollWidth <= document.querySelector('.ask-form').clientWidth + 1}))()`);
+  check('the microphone and language buttons appear where speech recognition exists',
+    voiceUi.mic && voiceUi.lang === 'EN' && voiceUi.wide, JSON.stringify(voiceUi));
+  await ev(`document.querySelector('.ask-lang').click()`);
+  const langEs = await ev(`(() => ({label: document.querySelector('.ask-lang').textContent,
+    saved: localStorage.getItem('inn514-grokbot-lang')}))()`);
+  check('the language button switches to Spanish and is remembered',
+    langEs.label === 'ES' && langEs.saved === 'es-ES', JSON.stringify(langEs));
+  await ev(`window.__lastSample = null; document.querySelector('.ask-mic').click()`);
+  const rec = await ev(`(() => ({pressed: document.querySelector('.ask-mic').getAttribute('aria-pressed'),
+    lang: window.__rec.starts.at(-1)}))()`);
+  check('tapping the microphone starts listening in Spanish',
+    rec.pressed === 'true' && rec.lang === 'es-ES', JSON.stringify(rec));
+  await ev(`(() => { const r = window.__rec.last;
+    r.onresult({ resultIndex: 0, results: [{ 0: { transcript: '¿Qué es la causalidad ascendente?' }, isFinal: true }] });
+    r.onend(); })()`);
+  await sleep(400);
+  const voiceAsk = await ev(`(() => ({pressed: document.querySelector('.ask-mic').getAttribute('aria-pressed'),
+    input: document.querySelector('.ask-input').value, asked: (window.__lastSample || []).at(-1)?.content || ''}))()`);
+  check('the spoken question is sent and the microphone resets',
+    voiceAsk.pressed === 'false' && voiceAsk.input === '' && voiceAsk.asked.includes('causalidad ascendente'),
+    JSON.stringify(voiceAsk));
   await send('Page.removeScriptToEvaluateOnNewDocument', { identifier: mockPage.result.identifier });
 
   // ---- server mode pass: the orb asks the local server, passcode row in between, course on the front page

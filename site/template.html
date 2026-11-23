@@ -396,6 +396,25 @@ body.can-ask .howto > .gb-only { display: grid; }
   color: var(--on-clay); font-size: var(--s-1); font-weight: 500; cursor: pointer;
   transition: background-color .15s; }
 .ask-send:hover { background: var(--btn-hover); }
+.ask-lang { flex: none; height: 2.5rem; min-width: 2.7rem; padding: 0 .45rem; border: 1px solid var(--line); border-radius: 999px;
+  background: none; color: var(--muted); font: inherit; font-size: var(--s-1); font-weight: 600; letter-spacing: .04em; cursor: pointer;
+  transition: background-color .15s; }
+.ask-lang:hover { background: var(--surface-2); }
+.ask-mic { flex: none; width: 2.5rem; height: 2.5rem; display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--line); border-radius: 999px; background: none; color: var(--ink); cursor: pointer;
+  transition: background-color .15s, color .15s; }
+.ask-mic svg { width: 18px; height: 18px; fill: currentColor; }
+.ask-mic:hover { background: var(--surface-2); }
+.ask-mic .stop-icon { display: none; }
+.ask-mic[aria-pressed="true"] { border-color: transparent; background: var(--btn); color: var(--on-clay); animation: mic-breathe 1.6s ease-in-out infinite; }
+.ask-mic[aria-pressed="true"]:hover { background: var(--btn-hover); }
+.ask-mic[aria-pressed="true"] .mic-icon { display: none; }
+.ask-mic[aria-pressed="true"] .stop-icon { display: block; }
+.ask-lang[hidden], .ask-mic[hidden] { display: none; }
+@keyframes mic-breathe {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--btn) 45%, transparent); }
+  50% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--btn) 0%, transparent); }
+}
 .ask-status { min-height: 1.25em; color: var(--muted); font-size: var(--s-1); }
 .ask-stop { padding: 0; border: 0; background: none; color: var(--clay-ink); font: inherit; font-size: var(--s-1);
   font-weight: 500; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
@@ -472,6 +491,11 @@ body.can-ask .howto > .gb-only { display: grid; }
         <button type="button">Key terms</button>
       </div>
       <div class="ask-form">
+        <button class="ask-lang" type="button" hidden aria-label="Recognition language: English">EN</button>
+        <button class="ask-mic" type="button" hidden aria-label="Ask by voice" aria-pressed="false">
+          <svg class="mic-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3z"/><path d="M18 11a1 1 0 1 0-2 0 4 4 0 0 1-8 0 1 1 0 1 0-2 0 6 6 0 0 0 5 5.9V19H8a1 1 0 1 0 0 2h8a1 1 0 1 0 0-2h-3v-2.1a6 6 0 0 0 5-5.9z"/></svg>
+          <svg class="stop-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2.5"/></svg>
+        </button>
         <input class="ask-input" type="text">
         <button class="ask-send" type="button">Ask</button>
       </div>
@@ -1408,6 +1432,7 @@ function gbOpen() {
 }
 function gbClose() {
   stopAsk(gb);
+  gbStopListen(true);
   gb.querySelector(".gb-bubble").hidden = true; gbOrb.setAttribute("aria-expanded", "false");
   gb._ask = { hist: [], first: true, ctl: null, busy: "", pending: null, lastBlobs: [] };   // work still running sees a new state and stops
   gbCtx = null; gbCourse = false;
@@ -1447,7 +1472,9 @@ gbOrb.addEventListener("keydown", (e) => {
   e.preventDefault(); gbMoveTo({ x: gbPos.x + d[0], y: gbPos.y + d[1] }); gbSave();
 });
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && !gb.querySelector(".gb-bubble").hidden) { gbClose(); gbOrb.focus(); }
+  if (e.key !== "Escape") return;
+  if (gbListening) { e.preventDefault(); gbStopListen(true); return; }
+  if (!gb.querySelector(".gb-bubble").hidden) { gbClose(); gbOrb.focus(); }
 });
 function gbChapterInView(id) {
   if (pl === DATA.lectures[id] && !audio.paused) return plIdx;
@@ -2043,11 +2070,93 @@ gbColors();
 addEventListener("resize", () => gbMoveTo(gbPos));
 window.addEventListener("hashchange", () => { gbClose(); });     // replaces today's closeAsk(openAsk) line
 gb.querySelectorAll(".ask-chips button").forEach((b, k) => (b.onclick = () => gbAsk(CHIPS[k][1], true)));
-const gbTyped = () => { const q = gb.querySelector(".ask-input").value.trim(); if (q) { gb.querySelector(".ask-input").value = ""; gbAsk(q, false); } };
+const gbTyped = () => { if (gbListening) gbStopListen(true); const q = gb.querySelector(".ask-input").value.trim(); if (q) { gb.querySelector(".ask-input").value = ""; gbAsk(q, false); } };
 gb.querySelector(".ask-send").onclick = gbTyped;
 gb.querySelector(".ask-input").onkeydown = (e) => { if (e.key === "Enter") gbTyped(); };
 gb.querySelector(".gb-switch").onclick = () => { gbCourse = !gbCourse; gbRender(gbContext()); };
 gb.querySelector(".gb-close").onclick = () => { gbClose(); gbOrb.focus(); };
 gb.querySelector(".gb-replay").onclick = gbReplay;
 wirePass(gb, (p) => (p.course ? askCourse(gb, p.question) : askSend(p.id, p.i, gb, p.question, p.isChip)));
+
+/* Voice input: the same question box, filled by the browser's own speech recogniser and sent when the
+   student stops talking. The buttons stay hidden where the API is missing (Firefox), and the page
+   still works by typing. */
+const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+const gbMic = gb.querySelector(".ask-mic"), gbLang = gb.querySelector(".ask-lang");
+let gbRec = null, gbRecText = "", gbRecError = "", gbListening = false, gbSkipSend = false, gbRelisten = false;
+let gbRecLang = "en-GB";
+try { const v = localStorage.getItem("inn514-grokbot-lang"); if (v === "es-ES" || v === "en-GB") gbRecLang = v; } catch (e) {}
+function gbPaintLang() {
+  const es = gbRecLang === "es-ES";
+  gbLang.textContent = es ? "ES" : "EN";
+  gbLang.setAttribute("aria-label", "Recognition language: " + (es ? "Spanish" : "English") + ". Change it.");
+}
+function gbStopListen(skip) {      // skip: do not send what was heard (Escape, closing, switching language)
+  if (!gbRec) return;
+  gbSkipSend = !!skip;
+  try { gbRec.stop(); } catch (e) {}
+}
+function gbListen() {
+  if (!SpeechRec || gbListening) return;
+  const status = gb.querySelector(".ask-status"), input = gb.querySelector(".ask-input");
+  gbSkipSend = false; gbRecText = ""; gbRecError = "";
+  if ("speechSynthesis" in window) speechSynthesis.cancel();
+  if (orbAudio) orbAudio.pause();
+  audio.pause();
+  status.textContent = "";
+  input.value = "";
+  const rec = new SpeechRec();
+  rec.lang = gbRecLang;
+  rec.continuous = false;
+  rec.interimResults = true;
+  rec.maxAlternatives = 1;
+  rec.onresult = (e) => {
+    let interim = "";
+    for (let k = e.resultIndex; k < e.results.length; k++) {
+      const r = e.results[k];
+      if (r.isFinal) gbRecText += r[0].transcript; else interim += r[0].transcript;
+    }
+    input.value = (gbRecText + interim).trim();
+  };
+  rec.onerror = (e) => {
+    gbRecError = (e && e.error) || "unknown";
+    const say = {
+      "not-allowed": "The microphone is blocked. Allow it for this site in your browser's settings.",
+      "service-not-allowed": "The microphone is blocked. Allow it for this site in your browser's settings.",
+      "no-speech": "I didn't hear anything. Tap the microphone and try again.",
+      "audio-capture": "No microphone was found.",
+      "network": "Speech recognition needs a network connection."
+    }[gbRecError];
+    if (say) status.textContent = say;
+  };
+  rec.onend = () => {
+    gbRec = null; gbListening = false;
+    gbMic.setAttribute("aria-pressed", "false");
+    gbMic.setAttribute("aria-label", "Ask by voice");
+    if (gbRelisten) { gbRelisten = false; gbListen(); return; }
+    const q = gbRecText.trim();
+    if (q && !gbSkipSend && gbRecError !== "aborted") { input.value = ""; gbAsk(q, false); }
+    else if (!q && !gbSkipSend && !gbRecError) status.textContent = "I didn't hear anything. Tap the microphone and try again.";
+    else if (!q) input.value = "";
+  };
+  gbListening = true;
+  gbMic.setAttribute("aria-pressed", "true");
+  gbMic.setAttribute("aria-label", "Listening. Tap to stop.");
+  try { rec.start(); gbRec = rec; } catch (e) {
+    gbRec = null; gbListening = false;
+    gbMic.setAttribute("aria-pressed", "false"); gbMic.setAttribute("aria-label", "Ask by voice");
+    status.textContent = "Voice input could not start.";
+  }
+}
+if (SpeechRec) {
+  gbMic.hidden = false; gbLang.hidden = false;
+  gbPaintLang();
+  gbMic.onclick = () => { if (gbListening) gbStopListen(false); else gbListen(); };
+  gbLang.onclick = () => {
+    gbRecLang = gbRecLang === "es-ES" ? "en-GB" : "es-ES";
+    try { localStorage.setItem("inn514-grokbot-lang", gbRecLang); } catch (e) {}
+    gbPaintLang();
+    if (gbListening) { gbRelisten = true; gbStopListen(true); }
+  };
+}
 </script>
