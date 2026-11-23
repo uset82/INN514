@@ -118,7 +118,8 @@ function mergePicks(picks, hits) {   // the model's picks first, then the search
 
 /* ---------- the OpenRouter call (S2) ---------- */
 const BASE = process.env.OPENROUTER_BASE || "https://openrouter.ai/api/v1";
-const KEY = process.env.OPENROUTER_API_KEY || "";
+/* The key without the spaces or quotes that a host's settings page or a copy-paste can add around it. */
+const KEY = String(process.env.OPENROUTER_API_KEY || "").trim().replace(/^(["'])(.*)\1$/, "$2");
 // Timed on Canner on 2026-10-26: Nemotron 3.5 Super VL gave the first sentence in 3-5 s every time;
 // openrouter/free picks a model at random (3-26 s), so it is the fallback.
 const MODELS = (process.env.GROKBOT_ANSWER_MODELS || "nvidia/nemotron-3.5-super-vl:free,openrouter/free").split(",").map((s) => s.trim()).filter(Boolean);
@@ -136,6 +137,26 @@ const upstreamHeaders = () => ({
   "Authorization": `Bearer ${KEY}`, "Content-Type": "application/json",
   "HTTP-Referer": "https://inn514.canner.app", "X-Title": "INN514 Course Companion",
 });
+/* The reason the upstream refused, without the key: the status, and OpenRouter's message if it sent one.
+   Used by /api/health?upstream=1 and by the failure logs, so a broken key or an exhausted account is
+   visible from outside without reading the host's logs. */
+function upstreamWhy(model, status, body) {
+  const message = String(body || "").replace(/sk-or-[A-Za-z0-9-]+/g, "[key]").replace(/\s+/g, " ").trim().slice(0, 160);
+  console.error(`upstream ${model} answered ${status}${message ? ": " + message : ""}`);
+  return message;
+}
+async function probeUpstream() {
+  const model = "key";
+  if (!KEY) return { status: 0, ok: false, message: "no key set" };
+  try {
+    const r = await fetch(`${BASE}/key`, { headers: upstreamHeaders(), signal: AbortSignal.timeout(4000) });
+    let body = "";
+    try { body = await r.text(); } catch (e) {}
+    return { status: r.status, ok: r.ok, ...(r.ok ? {} : { message: upstreamWhy(model, r.status, body) }) };
+  } catch (e) {
+    return { status: 0, ok: false, message: e && e.name === "TimeoutError" ? "timeout" : "network error" };
+  }
+}
 function upstreamBody(model, messages, opts, stream) {
   const b = { model, messages, max_tokens: opts.max_tokens || 2000, temperature: opts.temperature ?? 0.3 };
   const reasoning = opts.reasoning || REASONING;
@@ -162,6 +183,9 @@ async function askUpstream(messages, opts = {}) {
         last429 = false;                                 // an empty answer tries the next model
         continue;
       }
+      let why = "";
+      try { why = await r.text(); } catch (e) {}
+      upstreamWhy(model, r.status, why);
       last429 = r.status === 429;
       if (r.status !== 429 && r.status < 500) break;   // only a 429, a 5xx or a timeout tries the next model
     } catch (e) { last429 = false; }
@@ -188,6 +212,9 @@ async function askUpstreamStream(messages, onSentence, models = MODELS) {
       });
       if (!r.ok) {
         clearTimeout(first); clearTimeout(total);
+        let why = "";
+        try { why = await r.text(); } catch (e) {}
+        upstreamWhy(model, r.status, why);
         last429 = r.status === 429;
         if (r.status !== 429 && r.status < 500) break;
         continue;
@@ -268,7 +295,12 @@ async function speakUpstream(text, lang) {
       body: JSON.stringify(body),
       signal: AbortSignal.timeout(40000),
     });
-    if (!r.ok) return null;
+    if (!r.ok) {
+      let why = "";
+      try { why = await r.text(); } catch (e) {}
+      upstreamWhy(model, r.status, why);
+      return null;
+    }
     return Buffer.from(await r.arrayBuffer());
   };
   // Deepgram needs one of its Flux voices; Fish picks its own when none is given.
@@ -487,13 +519,18 @@ const server = http.createServer((req, res) => {
     return done(200, Object.assign({}, base, { "Content-Length": String(size) }), buf);
   }
   if (p === "/api/health") {
-    return done(200, JSONH, JSON.stringify({
+    const base = {
       ok: true,
       ask: !!KEY,
       // Whether each setting is present (never its value). The page asks for a passcode only when one is set.
       key: !!KEY, passcode: !!cleanPass(process.env.GROKBOT_PASSCODE),
       voices: { en: VOICE_EN, es: VOICE_ES },
-    }));
+    };
+    // Opt-in, so Canner's fast health checks stay fast: /api/health?upstream=1 also asks OpenRouter
+    // whether it accepts the key, and reports only the status and OpenRouter's own message.
+    if (/[?&]upstream=1(?:&|$)/.test(req.url))
+      return probeUpstream().then((u) => done(200, JSONH, JSON.stringify({ ...base, upstream: u })));
+    return done(200, JSONH, JSON.stringify(base));
   }
   return notFound();
 });
