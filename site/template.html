@@ -342,17 +342,28 @@ body.can-ask #grokbot { display: block; }
 }
 .gb-orb.dragging { cursor: grabbing; }
 .gb-orb:focus-visible { outline: 2px solid var(--clay-ink); outline-offset: 2px; border-radius: 50%; }
-.gb-bubble { position: fixed; z-index: 9; background: var(--surface); border: 1px solid var(--line);
+.gb-bubble { position: fixed; z-index: 9; display: flex; flex-direction: column;
+  background: var(--surface); border: 1px solid var(--line);
   border-radius: var(--r-lg); box-shadow: 0 6px 24px color-mix(in srgb, var(--ink) 14%, transparent); }
-.gb-inner { max-height: min(70vh, 32rem); overflow-y: auto; padding: var(--sp-4); display: grid; gap: var(--sp-3); }
+/* The inner box is the only scroller: one scrollbar for the whole conversation, never a horizontal one. */
+.gb-inner { flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain;
+  scrollbar-gutter: stable; scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--muted) 40%, transparent) transparent;
+  padding: var(--sp-4); padding-bottom: max(var(--sp-4), env(safe-area-inset-bottom, 0px));
+  display: grid; align-content: start; gap: var(--sp-3); overflow-wrap: anywhere; }
+.gb-inner::-webkit-scrollbar { width: 8px; height: 0; }
+.gb-inner::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--muted) 40%, transparent); border-radius: 999px; }
+/* A grid item will not shrink below its longest word unless min-width says it may. */
+.gb-inner > * { min-width: 0; }
 .gb-bubble::after { content: ""; position: absolute; width: 14px; height: 14px; background: var(--surface);
   border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); transform: rotate(45deg);
   left: calc(var(--tail, 24px) - 7px); bottom: -8px; }
 .gb-bubble[data-side="below"]::after { top: -8px; bottom: auto; border-right: 0; border-bottom: 0;
   border-left: 1px solid var(--line); border-top: 1px solid var(--line); }
-.gb-top { display: flex; align-items: center; gap: var(--sp-2); }
-.gb-head { flex: 1; min-width: 0; margin: 0; font-family: var(--sans); font-size: var(--s-1); font-weight: 600;
-  line-height: 1.35; }
+.gb-bubble[data-side="full"]::after { display: none; }   /* expanded: no tail, it is no longer tied to the orb */
+.gb-top { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); }
+.gb-head { flex: 1 1 100%; order: -1; min-width: 0; margin: 0; font-family: var(--sans); font-size: var(--s-1); font-weight: 600;
+  line-height: 1.35; overflow-wrap: anywhere; }
 .gb-switch { flex: none; height: 2rem; padding: 0 .7rem; border: 1px solid var(--line); border-radius: 999px;
   background: none; color: var(--ink); font-size: var(--s-1); font-weight: 500; cursor: pointer;
   transition: background-color .15s; }
@@ -361,12 +372,27 @@ body.can-ask #grokbot { display: block; }
   border-radius: 999px; background: none; color: var(--muted); font-size: 1.125rem; line-height: 1; cursor: pointer;
   transition: background-color .15s; }
 .gb-close:hover { background: var(--surface-2); color: var(--ink); }
+.gb-expand { flex: none; display: grid; place-items: center; width: 2rem; height: 2rem; border: 0;
+  border-radius: 999px; background: none; color: var(--muted); cursor: pointer; margin-left: auto;
+  transition: background-color .15s, color .15s; }
+.gb-expand:hover { background: var(--surface-2); color: var(--ink); }
+.gb-expand[aria-pressed="true"] { background: var(--surface-2); color: var(--ink); }
+.gb-expand svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+/* The grip sits in the corner away from the tail; it follows the side the panel is placed on. */
+.gb-resize { position: absolute; right: 1px; bottom: 1px; width: 1.5rem; height: 1.5rem; display: grid;
+  place-items: center; border: 0; border-radius: 0 0 var(--r-lg) 0; background: none; color: var(--muted);
+  opacity: .5; cursor: nwse-resize; touch-action: none; transition: opacity .15s, color .15s; }
+.gb-resize:hover, .gb-resize:focus-visible { opacity: 1; color: var(--ink); }
+.gb-resize svg { width: 12px; height: 12px; fill: currentColor; }
+.gb-bubble[data-side="above"] .gb-resize { top: 1px; bottom: auto; border-radius: var(--r-lg) 0 0 0; cursor: nesw-resize; }
+.gb-bubble[data-side="full"] .gb-resize { display: none; }
+.gb-bubble.resizing .gb-inner { user-select: none; }
 .gb-hello { margin: 0; font-family: var(--serif); color: var(--ink-2); font-size: 1.0625rem; line-height: 1.6; }
 .gb-hint { margin: 0; color: var(--muted); font-size: var(--s-1); }
 .gb-words { margin: 0; font-family: var(--serif); font-size: 1.0625rem; line-height: 1.6; white-space: pre-line;
-  max-height: 12rem; overflow-y: auto; }
+  overflow-wrap: anywhere; }
 .gb-words:empty { display: none; }
-.gb-src { margin: 0; color: var(--muted); font-size: var(--s-1); line-height: 1.45; }
+.gb-src { margin: 0; color: var(--muted); font-size: var(--s-1); line-height: 1.45; overflow-wrap: anywhere; }
 .gb-src:empty { display: none; }
 .gb-replay { flex: none; height: 2rem; padding: 0 .7rem; border: 1px solid var(--line); border-radius: 999px;
   background: none; color: var(--ink); font-size: var(--s-1); font-weight: 500; cursor: pointer;
@@ -375,6 +401,12 @@ body.can-ask #grokbot { display: block; }
 #grokbot:has(.ask-status:empty) .gb-words:not(:empty) + .gb-replay { display: inline-flex; align-items: center; }
 .howto > .gb-only { display: none; }
 body.can-ask .howto > .gb-only { display: grid; }
+/* The question row is pinned below the scroll area: on a short phone the answer scrolls, the box stays. */
+.gb-askbar { flex: none; display: grid; gap: var(--sp-2); background: var(--surface);
+  padding: var(--sp-3) calc(var(--sp-4) + 12px) max(var(--sp-3), env(safe-area-inset-bottom, 0px)) var(--sp-4);
+  border-top: 1px solid var(--line); border-radius: 0 0 calc(var(--r-lg) - 1px) calc(var(--r-lg) - 1px); }
+.gb-bubble[data-side="full"] .gb-askbar { padding-right: var(--sp-4); }
+.gb-askbar > * { min-width: 0; }   /* the input may shrink instead of pushing Ask off the panel */
 .ask-pass { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; }
 .ask-pass[hidden] { display: none; }
 .ask-pass label { flex: 1 1 auto; min-width: 0; color: var(--muted); font-size: var(--s-1); }
@@ -475,20 +507,29 @@ body.can-ask .howto > .gb-only { display: grid; }
       <div class="gb-top">
         <p class="gb-head"></p>
         <button class="gb-switch" type="button"></button>
+        <button class="gb-expand" type="button" aria-label="Expand the panel" aria-pressed="false" title="Expand the panel">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+        </button>
         <button class="gb-close" type="button" aria-label="Close">×</button>
       </div>
       <p class="gb-hello"></p>
       <p class="gb-hint">You can drag me anywhere on the page.</p>
-      <div class="ask-pass" hidden>
-        <label for="gb-pass">Enter the passcode to ask questions</label>
-        <input id="gb-pass" type="password" autocomplete="off">
-        <button type="button">OK</button>
-      </div>
       <div class="ask-chips">
         <button type="button">Explain this simply</button>
         <button type="button">Give me an example</button>
         <button type="button">What could the exam ask?</button>
         <button type="button">Key terms</button>
+      </div>
+      <p class="gb-words"></p>
+      <button class="gb-replay" type="button">Read again</button>
+      <p class="gb-src"></p>
+      <p class="ask-status" aria-live="polite"></p>
+    </div>
+    <div class="gb-askbar">
+      <div class="ask-pass" hidden>
+        <label for="gb-pass">Enter the passcode to ask questions</label>
+        <input id="gb-pass" type="password" autocomplete="off">
+        <button type="button">OK</button>
       </div>
       <div class="ask-form">
         <button class="ask-lang" type="button" hidden aria-label="Recognition language: English">EN</button>
@@ -499,11 +540,11 @@ body.can-ask .howto > .gb-only { display: grid; }
         <input class="ask-input" type="text">
         <button class="ask-send" type="button">Ask</button>
       </div>
-      <p class="gb-words"></p>
-      <button class="gb-replay" type="button">Read again</button>
-      <p class="gb-src"></p>
-      <p class="ask-status" aria-live="polite"></p>
     </div>
+    <button class="gb-resize" type="button" title="Drag to resize. Double-click to reset."
+      aria-label="Resize the panel. Drag, or use the arrow keys. Double-click to reset.">
+      <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M11 4.6 4.6 11H11zM11 1 1 11h2.4L11 3.4z"/></svg>
+    </button>
   </section>
 </div>
 
@@ -1377,16 +1418,26 @@ document.addEventListener("visibilitychange", () => { if (!document.hidden) gbKi
 darkQuery.addEventListener("change", () => { gbColors(); gbKick(); });
 new MutationObserver(() => { gbColors(); gbKick(); }).observe(document.documentElement, { attributeFilter: ["data-theme"] });
 const GB_POS_KEY = "inn514-grokbot-pos", GB_MOVED_KEY = "inn514-grokbot-moved";
+const GB_SIZE_KEY = "inn514-grokbot-size";
+const GB_MIN_W = 240, GB_MIN_H = 176, GB_MAX_W = 640;   // the panel never becomes too small to read or wider than a page
 const gb = $("grokbot");          // the panel the ask helpers use: it holds the .orb and every .ask-* element
 let gbPos = null;                 // the orb's top-left corner, in CSS px
 let gbCtx = null;                 // the context the bubble shows: { mode: "chapter", id, i } or { mode: "course" }
 let gbCourse = false;             // "Whole course" chosen on this route
+let gbUserSize = null;            // { w, h } the student dragged the grip to, or null for the automatic size
+let gbExpanded = false;           // the expand button: fill the side of the page the orb leaves free
+let gbSide = null;                // the side the panel sat on; a dragged size keeps that side stable
+let gbPlaceRaf = 0;
 gb._ask = { hist: [], first: true, ctl: null, busy: "", pending: null, lastBlobs: [] };
 function gbSize() { return matchMedia("(max-width: 520px)").matches ? 56 : 72; }
 function gbBounds() {
-  const top = document.querySelector(".topbar").getBoundingClientRect().bottom + 8;
+  // The visual viewport is the screen the student actually sees: on a phone the keyboard shrinks it.
+  const vv = window.visualViewport;
+  const vTop = vv ? vv.offsetTop : 0;
+  const vBottom = vv ? vv.offsetTop + vv.height : innerHeight;
+  const top = Math.max(document.querySelector(".topbar").getBoundingClientRect().bottom + 8, vTop + 8);
   const p = document.querySelector(".player").getBoundingClientRect();
-  const bottom = (p.height > 0 ? Math.min(innerHeight, p.top) : innerHeight) - 8;
+  const bottom = Math.min(p.height > 0 ? Math.min(innerHeight, p.top) : vBottom, vBottom) - 8;
   return { top, bottom };
 }
 function gbClamp(pos) {
@@ -1407,19 +1458,76 @@ function gbStart() {
   try { saved = JSON.parse(localStorage.getItem(GB_POS_KEY) || "null"); } catch (e) {}
   const s = gbSize();
   gbMoveTo(saved && Number.isFinite(saved.x) && Number.isFinite(saved.y) ? saved : { x: innerWidth - s - 16, y: gbBounds().bottom - s });
+  try {
+    const size = JSON.parse(localStorage.getItem(GB_SIZE_KEY) || "null");
+    if (size && Number.isFinite(size.w) && Number.isFinite(size.h)) gbUserSize = { w: size.w, h: size.h };
+    gbExpanded = !!(size && size.expanded === true);
+  } catch (e) { gbUserSize = null; gbExpanded = false; }
+  gbPaintSize();
   try { gb.querySelector(".gb-hint").hidden = localStorage.getItem(GB_MOVED_KEY) === "1"; } catch (e) {}
+}
+function gbPaintSize() {
+  const ex = gb.querySelector(".gb-expand");
+  const label = gbExpanded ? "Shrink the panel" : "Expand the panel";
+  ex.setAttribute("aria-pressed", String(gbExpanded));
+  ex.setAttribute("aria-label", label); ex.title = label;
+}
+function gbSaveSize() {
+  try {
+    if (!gbUserSize && !gbExpanded) localStorage.removeItem(GB_SIZE_KEY);
+    else localStorage.setItem(GB_SIZE_KEY, JSON.stringify({
+      w: gbUserSize ? gbUserSize.w : null, h: gbUserSize ? gbUserSize.h : null, expanded: gbExpanded }));
+  } catch (e) {}
+}
+function gbResetSize() {
+  gbUserSize = null; gbExpanded = false; gbSide = null;
+  gbSaveSize(); gbPaintSize();
+  if (!gb.querySelector(".gb-bubble").hidden) gbPlace();
+}
+function gbSchedulePlace() {
+  if (gbPlaceRaf) return;
+  gbPlaceRaf = requestAnimationFrame(() => {
+    gbPlaceRaf = 0;
+    if (!gb.querySelector(".gb-bubble").hidden) gbPlace();
+  });
 }
 function gbPlace() {
   const b = gb.querySelector(".gb-bubble"), s = gbSize(), gap = 12;
-  const w = innerWidth <= 520 ? innerWidth - 32 : Math.min(352, innerWidth - 32);   // 352px = 22rem
+  const bounds = gbBounds();
+  const maxW = Math.max(GB_MIN_W, Math.min(GB_MAX_W, innerWidth - 24));
+  // Default: 352px on a desktop, the full width minus 32px on a phone. A dragged size or the
+  // expand button overrides it, always clamped to the room the viewport actually has.
+  const aimed = gbExpanded ? maxW : gbUserSize ? gbUserSize.w
+    : (innerWidth <= 520 ? innerWidth - 32 : Math.min(352, innerWidth - 32));
+  const w = Math.round(Math.min(maxW, Math.max(Math.min(GB_MIN_W, innerWidth - 24), aimed)));
   b.style.width = w + "px";
-  const h = b.offsetHeight, above = gbPos.y - gap - h >= 16;
-  const top = above ? gbPos.y - gap - h : Math.min(gbPos.y + s + gap, innerHeight - h - 16);
+  b.style.height = ""; b.style.maxHeight = "none";
+  const natural = b.offsetHeight;              // the height the whole answer wants at this width
+  const spaceAbove = gbPos.y - gap - bounds.top;
+  const spaceBelow = bounds.bottom - (gbPos.y + s + gap);
+  const wantH = gbExpanded ? Infinity : gbUserSize ? gbUserSize.h : natural;
+  let above;
+  if (!gbExpanded && gbUserSize && gbSide) above = gbSide === "above";   // a chosen size keeps its side
+  else if (wantH <= spaceAbove) above = true;
+  else if (wantH <= spaceBelow) above = false;
+  else above = spaceAbove >= spaceBelow;       // no side fits: use the roomier one and scroll
+  if (!gbExpanded) gbSide = above ? "above" : "below";
+  const room = Math.max(120, above ? spaceAbove : spaceBelow);
+  const maxH = Math.max(12, bounds.bottom - bounds.top - 8);
+  const h = Math.round(Math.min(gbExpanded ? room : wantH, room, maxH));
+  b.style.maxHeight = room + "px";
+  if (gbExpanded || gbUserSize) b.style.height = h + "px";
+  const height = b.offsetHeight;
+  const top = above ? gbPos.y - gap - height : gbPos.y + s + gap;
   const mid = gbPos.x + s / 2;
-  const left = Math.min(Math.max(16, mid > innerWidth / 2 ? gbPos.x + s - w : gbPos.x), innerWidth - w - 16);
-  b.style.left = left + "px"; b.style.top = Math.max(16, top) + "px";
-  b.dataset.side = above ? "above" : "below";
+  // Anchored to the orb normally; the expanded panel is detached from it and centred on the page.
+  const left = gbExpanded ? Math.max(12, (innerWidth - w) / 2)
+    : Math.min(Math.max(16, mid > innerWidth / 2 ? gbPos.x + s - w : gbPos.x), Math.max(16, innerWidth - w - 16));
+  b.style.left = Math.round(left) + "px";
+  b.style.top = Math.round(Math.min(Math.max(bounds.top, top), Math.max(bounds.top, bounds.bottom - height))) + "px";
+  b.dataset.side = gbExpanded ? "full" : above ? "above" : "below";
   b.style.setProperty("--tail", Math.min(Math.max(20, mid - left), w - 20) + "px");
+  gbPaintSize();
 }
 function gbOpen() {
   const b = gb.querySelector(".gb-bubble");
@@ -1513,8 +1621,10 @@ function gbRender(ctx) {
 function caption(panel, text) {         // the words appear part by part as they are spoken
   const w = panel.querySelector(".gb-words");
   w.textContent += (w.textContent ? " " : "") + text.trim();
-  w.scrollTop = w.scrollHeight;
+  const inner = panel.querySelector(".gb-inner");
+  inner.scrollTop = inner.scrollHeight;    // the newest sentence stays in view
   panel.querySelector(".gb-hello").hidden = true;
+  if (panel === gb) gbSchedulePlace();     // a growing answer re-anchors the panel instead of running off screen
 }
 function gbAsk(question, isChip) {
   const ctx = gbContext();
@@ -1555,6 +1665,7 @@ function showSources(panel, picks) {
     return a;
   });
   src.append("From ", ...links.flatMap((a, k) => (k ? ["; ", a] : [a])));
+  if (panel === gb) gbSchedulePlace();
 }
 async function askCourse(panel, question) {
   const st = panel._ask;
@@ -2076,6 +2187,82 @@ gb.querySelector(".ask-input").onkeydown = (e) => { if (e.key === "Enter") gbTyp
 gb.querySelector(".gb-switch").onclick = () => { gbCourse = !gbCourse; gbRender(gbContext()); };
 gb.querySelector(".gb-close").onclick = () => { gbClose(); gbOrb.focus(); };
 gb.querySelector(".gb-replay").onclick = gbReplay;
+
+/* The panel is adjustable: drag the corner grip (or use the arrow keys on it) to choose its size,
+   press the expand button for a large panel, or double-click the grip to go back to the default. */
+const gbBubble = gb.querySelector(".gb-bubble"), gbGrip = gb.querySelector(".gb-resize"), gbExpand = gb.querySelector(".gb-expand");
+gbExpand.onclick = () => {
+  gbExpanded = !gbExpanded;
+  gbSaveSize(); gbPaintSize(); gbPlace();
+};
+let gbDrag = null;
+const gbDragHeight = (e) => {
+  const g = gbDrag, bounds = gbBounds();
+  const room = g.side === "above" ? g.top + g.h - bounds.top : bounds.bottom - g.top;
+  const wanted = g.side === "above" ? g.h - (e.clientY - g.y) : g.h + (e.clientY - g.y);
+  return Math.round(Math.min(Math.max(GB_MIN_H, wanted), Math.max(GB_MIN_H, room)));
+};
+const gbDragWidth = (e) => {
+  const g = gbDrag;
+  const maxW = Math.max(GB_MIN_W, Math.min(GB_MAX_W, innerWidth - 24));
+  return Math.round(Math.min(Math.max(GB_MIN_W, g.w + (e.clientX - g.x)), Math.min(maxW, innerWidth - g.left - 16)));
+};
+gbGrip.addEventListener("pointerdown", (e) => {
+  if (e.button !== 0) return;
+  e.preventDefault();
+  const r = gbBubble.getBoundingClientRect();
+  gbDrag = { id: e.pointerId, x: e.clientX, y: e.clientY, w: r.width, h: r.height, top: r.top, left: r.left,
+    side: gbBubble.dataset.side === "above" ? "above" : "below" };
+  gbExpanded = false;
+  gbBubble.classList.add("resizing");
+  try { gbGrip.setPointerCapture(e.pointerId); } catch (err) {}
+  // Move and release on the window too: a resize must not stop because the pointer left the small grip.
+  addEventListener("pointermove", gbOnDragMove);
+  addEventListener("pointerup", gbEndDrag);
+  addEventListener("pointercancel", gbEndDrag);
+  gbPaintSize();
+});
+function gbOnDragMove(e) {
+  if (!gbDrag || e.pointerId !== gbDrag.id) return;
+  const w = gbDragWidth(e), h = gbDragHeight(e);
+  gbBubble.style.width = w + "px"; gbBubble.style.height = h + "px";
+  if (gbDrag.side === "above") gbBubble.style.top = Math.round(gbDrag.top + gbDrag.h - h) + "px";
+  gbBubble.style.setProperty("--tail", Math.min(Math.max(20, gbPos.x + gbSize() / 2 - gbDrag.left), w - 20) + "px");
+}
+function gbEndDrag(e) {
+  if (!gbDrag || e.pointerId !== gbDrag.id) return;
+  gbDrag = null;
+  gbBubble.classList.remove("resizing");
+  removeEventListener("pointermove", gbOnDragMove);
+  removeEventListener("pointerup", gbEndDrag);
+  removeEventListener("pointercancel", gbEndDrag);
+  gbUserSize = { w: parseFloat(gbBubble.style.width), h: parseFloat(gbBubble.style.height) };
+  gbSaveSize();
+  gbPlace();                        // re-anchor to the orb and clamp into the page
+}
+gbGrip.addEventListener("pointerup", gbEndDrag);
+gbGrip.addEventListener("pointercancel", gbEndDrag);
+gbGrip.addEventListener("dblclick", gbResetSize);
+gbGrip.addEventListener("keydown", (e) => {
+  const d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
+  if (!d) return;
+  e.preventDefault();
+  const step = e.shiftKey ? 32 : 8, r = gbBubble.getBoundingClientRect(), bounds = gbBounds();
+  const side = gbBubble.dataset.side === "above" ? "above" : "below";
+  const maxW = Math.max(GB_MIN_W, Math.min(GB_MAX_W, innerWidth - 24));
+  const w = Math.round(Math.min(Math.max(GB_MIN_W, r.width + d[0] * step), Math.min(maxW, innerWidth - r.left - 16)));
+  const room = side === "above" ? r.bottom - bounds.top : bounds.bottom - r.top;
+  const h = Math.round(Math.min(Math.max(GB_MIN_H, r.height + (side === "above" ? -d[1] : d[1]) * step), Math.max(GB_MIN_H, room)));
+  gbUserSize = { w, h }; gbExpanded = false;
+  gbSaveSize(); gbPaintSize(); gbPlace();
+});
+if (window.visualViewport)
+  window.visualViewport.addEventListener("resize", () => { if (!gbBubble.hidden) gbSchedulePlace(); });
+// In the automatic size the answer grows the panel; re-anchor it so it stays beside the orb and on screen.
+if (window.ResizeObserver)
+  new ResizeObserver(() => {
+    if (!gbBubble.hidden && !gbUserSize && !gbExpanded && !gbDrag) gbSchedulePlace();
+  }).observe(gb.querySelector(".gb-inner"));
 wirePass(gb, (p) => (p.course ? askCourse(gb, p.question) : askSend(p.id, p.i, gb, p.question, p.isChip)));
 
 /* Voice input: the same question box, filled by the browser's own speech recogniser and sent when the
